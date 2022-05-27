@@ -7,7 +7,7 @@
             </div>
             <ul class="nav navbar-top-links navbar-right">
                 <li class="dropdown hidden-xs">
-                    <a href="/" target="_blank"><i class="fa fa-home"></i> 站点主页</a>
+                    <a href="/" target="_self"><i class="fa fa-home"></i> 站点主页</a>
                 </li>
             </ul>
         </nav>
@@ -43,8 +43,8 @@
         <iframe class="J_iframe" name="iframe0" width="100%" height="100%" src="{{route('index.main')}}" frameborder="0" data-id="index_v1.html" seamless></iframe>
     </div>
     <div class="footer">
-        <div class="pull-right">&copy; 2015-2017 <a href="http://www.yicms.vip/" target="_blank">{{config('app.name')}}</a>
-        </div>
+{{--        <div class="pull-right">&copy; 2015-2017 <a href="http://www.yicms.vip/" target="_blank">{{config('app.name')}}</a>--}}
+{{--        </div>--}}
     </div>
 </div>
 <!--右侧部分结束-->

@@ -32,13 +32,13 @@
                         <li><a href="{{route('admin.logout')}}">安全退出</a></li>
                     </ul>
                 </div>
-                <div class="logo-element">YS+</div>
+                <div class="logo-element">KD</div>
             </li>
 
             @foreach(Auth::guard('admin')->user()->getMenus() as $key => $rule)
                 @if($rule['route'] == 'index.index')
                     <li>
-                        <a title="{{$rule['name']}}" href="{{route($rule['route'])}}" target="_blank">
+                        <a title="{{$rule['name']}}" href="{{route($rule['route'])}}" target="_self">
                             <i class="fa fa-{{$rule['fonts']}}"></i>
                             <span class="nav-label">{{$rule['name']}}</span>
                         </a>
