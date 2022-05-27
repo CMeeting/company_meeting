@@ -29,11 +29,11 @@
                     <div class="m-b"></div>
                     <h4>欢迎使用 <span class="label label-info">{{ config('app.name', 'Laravel') }}</span></h4>
                     <ul class="m-b">
-                        <li><i class="fa fa-circle text-navy"></i> 优势一：采用Laravel 5.5 框架开发</li>
-                        <li><i class="fa fa-circle text-navy"></i> 优势二：采用最流行的前端技术</li>
-                        <li><i class="fa fa-circle text-navy"></i> 优势三：极佳的用户操作体验和安全策略</li>
-                        <li><i class="fa fa-circle text-navy"></i> 优势四：MVC分层模式，应用模块化</li>
-                        <li><i class="fa fa-circle text-navy"></i> 优势五：最大亮点是对接公众平台</li>
+                        <li><i class="fa fa-circle text-navy"></i> 优势一：优雅又牛批的代码规范</li>
+                        <li><i class="fa fa-circle text-navy"></i> 优势二：舒威大神的强力推荐</li>
+                        <li><i class="fa fa-circle text-navy"></i> 优势三：比原来后台高级十倍的UI体验</li>
+                        <li><i class="fa fa-circle text-navy"></i> 优势四：服务组呕心沥血取长补短之做</li>
+                        <li><i class="fa fa-circle text-navy"></i> 优势五：最大亮点是下载下来就能用</li>
                     </ul>
                 </div>
             </div>
