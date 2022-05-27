@@ -31,6 +31,18 @@
                         @endif
                     </div>
                 </div>
+
+                <div class="hr-line-dashed m-t-sm m-b-sm"></div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">角色描述：</label>
+                    <div class="input-group col-sm-3">
+                        <textarea name="remark" class="form-control" rows="5" cols="20" data-msg-required="请输入角色描述">{{$role->remark}}</textarea>
+                        @if ($errors->has('remark'))
+                            <span class="help-block m-b-none"><i class="fa fa-info-circle"></i>{{$errors->first('remark')}}</span>
+                        @endif
+                    </div>
+                </div>
+                
                 <div class="hr-line-dashed m-t-sm m-b-sm"></div>
                 <div class="form-group">
                     <label class="col-sm-2 control-label">排序：</label>
