@@ -141,33 +141,5 @@
     </div>
     <!-- 版权信息 -->
   </div>
-  <div class="row">
-    <div class="col-sm-12">
-      <div class="ibox-title">
-        <h5>系统更新日志</h5>
-      </div>
-      <div class="ibox-content timeline">
 
-        <div class="timeline-item">
-          <div class="row">
-            <div class="col-xs-3 date">
-              <i class="fa fa-file-text"></i>
-              <small class="text-navy">2017年11月21日更新</small>
-            </div>
-            <div class="col-xs-7 content">
-              <p class="m-b-xs"><strong>YICMS V1.0</strong>
-              </p>
-              <p>
-                1、使用Auth进行后台管理员登陆认证√<br>
-                1、RBAC权限操作日志完成以及RBAC缓存优化机制 √<br>
-                2、增加后台管理员操作日志记录 √<br>
-                3、后台权限日志增加登录操作记录以及细节BUG修复 √<br>
-              </p>
-            </div>
-          </div>
-        </div>
-
-      </div>
-    </div>
-  </div>
 @stop

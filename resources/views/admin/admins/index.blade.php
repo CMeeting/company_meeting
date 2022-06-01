@@ -98,7 +98,7 @@
 
 <!-- 显示导出excel模态框（Modal） -->
 <div class="modal fade  bs-example-modal-lg" id="ListStyle" aria-hidden="true"
-     tabindex="-1" role="dialog" aria-labelledby="myModalLabel" style="display: none;z-index: 999">
+     tabindex="-1" role="dialog" aria-labelledby="myModalLabel" style="display: none;">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
