@@ -24,6 +24,12 @@ Route::group(['namespace' => 'Admin','prefix' => 'admin'], function (){
 
         Route::get('index/main', 'IndexsController@main')->name('index.main'); //首页数据分析
 
+        Route::get('blogs/blog', 'BlogsController@blog')->name('blogs.blog'); //blog首页
+        Route::get('blogs/create', 'BlogsController@create')->name('blogs.create'); //blog首页
+//        Route::resource('blogs','BlogsController',['only'=>['blog','create','store','update','edit','destroy'] ]);
+        Route::get('blogs/tags', 'BlogsController@tags')->name('blogs.tags'); //tags首页
+        Route::get('blogs/types', 'BlogsController@types')->name('blogs.types'); //types首页
+
         Route::get('admins/status/{statis}/{admin}','AdminsController@status')->name('admins.status');
 
         Route::get('admins/delete/{admin}','AdminsController@delete')->name('admins.delete');
