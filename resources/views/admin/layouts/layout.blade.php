@@ -14,6 +14,8 @@
     <link href="{{loadEdition('/admin/css/font-awesome.min.css')}}" rel="stylesheet">
     <link href="{{loadEdition('/admin/css/animate.min.css')}}" rel="stylesheet">
     <link href="{{loadEdition('/admin/css/style.min.css')}}" rel="stylesheet">
+    <link rel="stylesheet" href="{{loadEdition('/admin/yanshi/jquery.nestable.css')}}">
+    <link rel="stylesheet" href="{{loadEdition('/admin/yanshi/classify.css')}}">
     @yield('css')
 </head>
 <body class="gray-bg">

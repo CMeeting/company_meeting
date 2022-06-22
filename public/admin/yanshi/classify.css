@@ -1,0 +1,51 @@
+@CHARSET "UTF-8";
+/**
+商品管理-->添加分类
+*/
+
+.btn .btn-outline .mygreen{   
+	border-color: #3598dc;
+    color: #e7505a;
+    background: 0 0;
+}
+.help-block{position:absolute;}
+.btn.btn-outline.mygreen{color: #32c5d2; background: 0 0; border-color: #32c5d2; }
+.btn.btn-outline.mygreen:hover {
+    border-color: #32c5d2;
+    color: #3598dc;
+    background-color: #32c5d2;
+}
+.form-body .form-actions .btn-warning{margin-right:40px;}
+/**
+ *  添加分类 编辑&删除 
+ */
+.dd-list .dd-item .dd3-content .item_edt_del{display:inline-block;float:right;}
+.dd-list .dd-item .dd3-content .item_edt_del .btn{vertical-align:unset;  }
+
+
+.form-horizontal .form-group{margin-bottom:30px;}
+.msgError{color:#e73d4a}
+
+/**
+ * 订单管理
+ */
+.portlet .portlet-font{ font-family: "Helvetica Neue",Helvetica,Arial,sans-serif; }
+.form-body .form-horizontal{font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;}
+.form-gruop .label-padding{ margin-top:1px; }
+.form-group .font-center{text-align: -webkit-center;}
+.form-gruop .order-button{color:#FFF;background-color:#3598dc;border-color:#3598dc;}
+#noMargin-group .formGroup2{marign-bottom:0px;}
+#ajax-data .odd p{margin:0px;}
+#ajax-data .odd td p font{font-size:12px;}
+.portlet .portlet-body-td-one{width:20%;background-color: #EDF3F4;}
+.portlet .portlet-body-td-tow{width:80%;}
+.portlet .portlet-table tr td{text-align: -webkit-right;flaot:none;}
+.portlet .portlet-table tr td .label{float:none;}
+
+/**
+ * 数据统计
+ *店主销量统计
+ */
+.portlet-body .table .regimental .regimental-span{text-align: -webkit-center;}
+.portlet-body .table .regimental .regimental-span span{display:-webkit-box;text-align: -webkit-center;}
+.portlet-body .table .regimental .regimental-span button{display:-webkit-box;text-align: -webkit-center;}
