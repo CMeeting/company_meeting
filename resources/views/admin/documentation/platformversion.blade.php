@@ -54,6 +54,9 @@
         .cloros4{
             background-color: red;
         }
+        #cc{
+            display: inline-block;width: 200px;background: #0b94ea;color: aliceblue;border-radius: 15px
+        }
     </style>
     <div class="row" id="onType">
 
@@ -62,9 +65,9 @@
             <div class="portlet light ">
                 <div class="portlet-title tabbable-line">
                     <div class="actions">
-                        <button class="addClassify btn btn-md  blue  dropdown-toggle mt-ladda-btn ladda-button" data-style="zoom-in"  type="button"  aria-expanded="false"  onclick="addSpace();">
-                            <i class="fa fa-plus-circle"></i> 添加分类
-                        </button>
+                        <a id="cc" class="addClassify btn btn-md  blue  dropdown-toggle mt-ladda-btn ladda-button" data-style="zoom-in"  type="button" href="{{route('documentation.createPlatformVersion')}}">
+                            <i class="fa fa-plus-circle"></i> New Platform&Version
+                        </a>
                     </div>
 
                 </div>

@@ -20,8 +20,9 @@ Route::group(['namespace' => 'Admin','prefix' => 'admin'], function (){
 
        // Route::resource('documentation','DocumentationController',['only'=>['index','create','store','update','edit','destroy','platformVersion'] ]);
 
-        Route::get('documentation', 'DocumentationController@platformVersion')->name('documentation.platformVersion');
-
+        Route::get('platformVersion', 'DocumentationController@platformVersion')->name('documentation.platformVersion');
+        Route::get('platformVersioncreate', 'DocumentationController@createPlatformVersion')->name('documentation.createPlatformVersion');
+        Route::post('createRunPlatformVersion', 'DocumentationController@createRunPlatformVersion')->name('documentation.createRunPlatformVersion');
         Route::get('index/main', 'IndexsController@main')->name('index.main'); //首页数据分析
 
         Route::get('blogs/blog', 'BlogsController@blog')->name('blogs.blog'); //blog首页

@@ -133,9 +133,12 @@ class DocumentationService
     {
         $PlatformVersion = new PlatformVersion();
         $where = "deleted=0 and lv=1";
+        $where=array();
+        $where=array(["deleted","=",0],['lv','=',1]);
         $field = "id,name,lv,pid,displayorder,enabled";
         $order = "displayorder desc";
         $material = $PlatformVersion->select($where, $field, $order);
+        $material = $PlatformVersion->objToArr($material);
         $arr_project = $this->menuLeft($material);
         return $arr_project ?? [];
     }

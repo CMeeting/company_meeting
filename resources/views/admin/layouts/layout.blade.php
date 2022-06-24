@@ -16,6 +16,7 @@
     <link href="{{loadEdition('/admin/css/style.min.css')}}" rel="stylesheet">
     <link rel="stylesheet" href="{{loadEdition('/admin/yanshi/jquery.nestable.css')}}">
     <link rel="stylesheet" href="{{loadEdition('/admin/yanshi/classify.css')}}">
+    <link rel="stylesheet" href="{{loadEdition('/admin/yanshi/ladda-themeless.min.css')}}"/>
     @yield('css')
 </head>
 <body class="gray-bg">

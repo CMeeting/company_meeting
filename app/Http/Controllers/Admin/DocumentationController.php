@@ -27,23 +27,17 @@ class DocumentationController extends BaseController {
     }
 
     /**
-     * 创建||编辑xx页面
+     * 创建
      * @return \think\response\View
      * @throws \think\exception\DbException
      */
-    public function createPlatformVersion()
+    public function createPlatformVersion(Request $request)
     {
-        $param = $this->getRequstParam();
+        $param = $request->input();
         $documentation = new DocumentationService();
-        if (isset($param['id']) && $param['id']) {
-            $data = $documentation->getFindcategorical($param['id']);
-        } else {
-            $data['pid'] = (isset($param['pid']) && $param['pid']) ? $param['pid'] : 0;
-        }
+        $pid = (isset($param['pid']) && $param['pid']) ? $param['pid'] : 0;
         $categorical_data = $documentation->getCategorical();
-        View::assign('data', $data);
-        View::assign('material', $categorical_data);
-        return view();
+        return $this->view('createplatformVersion',['pid'=>$pid,'material'=>$categorical_data]);
     }
 
     /**
@@ -51,9 +45,9 @@ class DocumentationController extends BaseController {
      * @return array|string[]|\think\response\Redirect|\unknown[]|void
      * @throws \think\db\exception\DbException
      */
-    public function createRunPlatformVersion()
+    public function createRunPlatformVersion(Request $request)
     {
-        $param = $this->getRequstParam();
+        $param = $request->input();
         $documentation = new DocumentationService();
         if (!empty($param)) {
             $bool = $documentation->addEditcaregorical($param);
