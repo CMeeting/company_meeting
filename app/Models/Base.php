@@ -30,16 +30,18 @@ class Base{
             ->get();
     }
 
-    public static function find($condition, $filter_str = '', $order = 'created_at DESC') {
+    public static function find($condition, $order = 'created_at DESC') {
         return Db::table(static::$table)
-            ->where($condition)
-            ->where($filter_str)
+            ->whereRaw($condition)
             ->orderByRaw($order)
-            ->get();
+            ->first();
+
     }
 
     public static function insertGetId(array $data)
     {
+        $data['created_at']=date("Y-m-d H:i:s");
+        $data['updated_at']=date("Y-m-d H:i:s");
         return Db::table(static::$table)
             ->insertGetId($data);
     }
