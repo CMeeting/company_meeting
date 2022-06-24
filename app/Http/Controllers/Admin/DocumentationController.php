@@ -8,7 +8,7 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Requests\Admin\AdminRequest;
+use App\Http\Requests\Admin\BlogTagRequest;
 use Illuminate\Http\Request;
 use App\Services\AdminsService;
 use App\Services\DocumentationService;

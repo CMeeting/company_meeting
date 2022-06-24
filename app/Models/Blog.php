@@ -9,10 +9,9 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
 
-class Blog extends Model
+class Blog extends Base
 {
-    protected $fillable = ['title', 'slug', 'cover', 'is_delete'];
+    public static $table = 'blogs';
 
 }

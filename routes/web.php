@@ -43,10 +43,26 @@ Route::group(['namespace' => 'Admin','prefix' => 'admin'], function (){
         Route::get('index/main', 'IndexsController@main')->name('index.main'); //首页数据分析
 
         Route::get('blogs/blog', 'BlogsController@blog')->name('blogs.blog'); //blog首页
-        Route::get('blogs/create', 'BlogsController@create')->name('blogs.create'); //blog首页
+        Route::get('blogs/blogCreate', 'BlogsController@blogCreate')->name('blogs.blogCreate');
+        Route::post('blogs/blogStore', 'BlogsController@blogStore')->name('blogs.blogStore');
+        Route::get('blogs/blogEdit/{id}', 'BlogsController@blogEdit')->name('blogs.blogEdit');
+        Route::post('blogs/blogUpdate/{id}', 'BlogsController@blogUpdate')->name('blogs.blogUpdate');
 //        Route::resource('blogs','BlogsController',['only'=>['blog','create','store','update','edit','destroy'] ]);
+//        Route::resource('blogs','BlogsController',['only'=>['tags','tagCreate','tagStore','update','tagEdit','destroy'] ]);
         Route::get('blogs/tags', 'BlogsController@tags')->name('blogs.tags'); //tags首页
+        Route::get('blogs/tagCreate', 'BlogsController@tagCreate')->name('blogs.tagCreate');
+        Route::post('blogs/tagStore', 'BlogsController@tagStore')->name('blogs.tagStore');
+        Route::get('blogs/tagEdit/{id}', 'BlogsController@tagEdit')->name('blogs.tagEdit');
+        Route::post('blogs/tagUpdate/{id}', 'BlogsController@tagUpdate')->name('blogs.tagUpdate');
+        Route::get('blogs/softDel/{table}/{id}', 'BlogsController@softDel')->name('blogs.softDel');
+//        Route::get('blogs/tagEdit/{id}', function ($id) {
+//            return $id;
+//        })->name('blogs.tagEdit');
         Route::get('blogs/types', 'BlogsController@types')->name('blogs.types'); //types首页
+        Route::get('blogs/typeCreate', 'BlogsController@typeCreate')->name('blogs.typeCreate');
+        Route::post('blogs/typeStore', 'BlogsController@typeStore')->name('blogs.typeStore');
+        Route::get('blogs/typeEdit/{id}', 'BlogsController@typeEdit')->name('blogs.typeEdit');
+        Route::post('blogs/typeUpdate/{id}', 'BlogsController@typeUpdate')->name('blogs.typeUpdate');
 
         Route::get('admins/status/{statis}/{admin}','AdminsController@status')->name('admins.status');
 

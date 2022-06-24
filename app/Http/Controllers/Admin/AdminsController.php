@@ -46,7 +46,7 @@ class AdminsController extends BaseController {
     }
 
     /**
-     * @param AdminRequest $request
+     * @param BlogTagRequest $request
      * @return \Illuminate\Http\RedirectResponse
      */
     public function store(AdminRequest $request)
@@ -73,11 +73,11 @@ class AdminsController extends BaseController {
     }
 
     /**
-     * @param AdminRequest $request
+     * @param BlogTagRequest $request
      * @param $id
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function update(AdminRequest $request, $id)
+    public function update(BlogTagRequest $request, $id)
     {
         $this->adminsService->update($request, $id);
 
