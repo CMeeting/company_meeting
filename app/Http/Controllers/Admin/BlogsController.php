@@ -1,18 +1,32 @@
 <?php
-/**
- * @Created by PhpStorm 2021
- * @Author: Rengar
- * @Date: 2022/5/27
- * @Time: 10:14
- * @By The Way: Everyone here is talented and speaks well. I love being here!!!
- */
 
 namespace App\Http\Controllers\Admin;
 
+use App\Models\Blog;
+
 class BlogsController extends BaseController
 {
-    public function blog()
+    public function blog(Blog $blog)
     {
+//        dd($blog);die;
+        return $this->view('blog',compact('blog'));
+    }
 
+    public function create(){
+        echo 'Add';
+    }
+
+    public function tags()
+    {
+        echo 'Tags';
+//        dd($blog);die;
+//        return $this->view('blog',compact('blog'));
+    }
+
+    public function types()
+    {
+        echo 'Types';
+//        dd($blog);die;
+//        return $this->view('blog',compact('blog'));
     }
 }

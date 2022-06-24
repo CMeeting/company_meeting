@@ -38,9 +38,14 @@ class Base{
             ->get();
     }
 
+    public static function insertGetId(array $data)
+    {
+        return Db::table(static::$table)
+            ->insertGetId($data);
+    }
+
     public static function update(array $data, $where)
     {
-        $data['updated_at'] = StringHepler::time();
         return Db::table(static::$table)
             ->where($where)
             ->update($data);
