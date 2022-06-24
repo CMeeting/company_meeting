@@ -103,10 +103,10 @@
                                                                         </a>
                                                                         @endif
                                                                     </font>
-                                                                    <a class="abutton cloros2" style="text-decoration: none"  href="/admin/documentation/createPlatformVersion?pid={$v.id}">
+                                                                    <a class="abutton cloros2" style="text-decoration: none"  href="{{route('documentation.createPlatformVersion',$v['id'])}}">
                                                                         <i class="fa fa-plus-circle "></i> add
                                                                     </a>
-                                                                    <a class="edit_{$v.id} abutton cloros3" style="text-decoration: none"href="/admin/documentation/createPlatformVersion?id={$v.id}">
+                                                                    <a class="edit_{$v.id} abutton cloros3" style="text-decoration: none" href="{{route('documentation.updatePlatformVersion',$v['id'])}}">
                                                                         <i class="fa fa-edit"></i> edit
                                                                     </a>
 
@@ -137,7 +137,7 @@
                                                                                 @endif
                                                                             </font>
 
-                                                                            <a class="edit_{{$vv['id']}} abutton cloros3" href="/admin/documentation/createPlatformVersion?id={{$vv['id']}}">
+                                                                            <a class="edit_{{$vv['id']}} abutton cloros3"  href="{{route('documentation.updatePlatformVersion',$vv['id'])}}">
                                                                                 <i class="fa fa-edit"></i> edit
                                                                             </a>
 

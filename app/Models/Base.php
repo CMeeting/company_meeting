@@ -49,7 +49,7 @@ class Base{
     public static function update(array $data, $where)
     {
         return Db::table(static::$table)
-            ->where($where)
+            ->whereRaw($where)
             ->update($data);
     }
 

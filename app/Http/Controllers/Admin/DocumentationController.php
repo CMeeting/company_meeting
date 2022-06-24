@@ -31,11 +31,9 @@ class DocumentationController extends BaseController {
      * @return \think\response\View
      * @throws \think\exception\DbException
      */
-    public function createPlatformVersion(Request $request)
+    public function createPlatformVersion($pid=0)
     {
-        $param = $request->input();
         $documentation = new DocumentationService();
-        $pid = (isset($param['pid']) && $param['pid']) ? $param['pid'] : 0;
         $categorical_data = $documentation->getCategorical();
         return $this->view('createplatformVersion',['pid'=>$pid,'material'=>$categorical_data]);
     }
@@ -50,17 +48,56 @@ class DocumentationController extends BaseController {
         $param = $request->input();
         $documentation = new DocumentationService();
         if (!empty($param)) {
-            $bool = $documentation->addEditcaregorical($param);
+                $bool = $documentation->addEditcaregorical($param);
             if ($bool == "repeat") {
-                return error("平台/版本号名称/seotitle/H1title在相同分类下已存在");
+                flash('平台/版本号名称/seotitle/H1title在相同分类下已存在')->error()->important();
+                return redirect()->route('documentation.createPlatformVersion');
             } else {
                 if ($bool) {
-                    if (isset($param['delid']) && $param['delid']) {
-                        return success("操作成功");
-                    }
-                    return redirect('/admin/documentation/platformVersion');
+                    flash('添加成功')->success()->important();
+                    return redirect()->route('documentation.platformVersion');
                 } else {
-                    return error("操作失败");
+                    flash('操作失败')->error()->important();
+                    return redirect()->route('documentation.createPlatformVersion');
+                }
+            }
+        }
+    }
+
+
+    public function updatePlatformVersion($id)
+    {
+        $documentation = new DocumentationService();
+        if (isset($id) && $id) {
+            $data = $documentation->getFindcategorical($id);
+        }else{
+            flash('缺少参数')->error()->important();
+            return redirect()->route('documentation.platformVersion');
+        }
+        $categorical_data = $documentation->getCategorical();
+        return $this->view('updateplatformversion',['data'=>$data,'material'=>$categorical_data]);
+    }
+
+
+    public function updateRunPlatformVersion(Request $request)
+    {
+        $param = $request->input();
+        $documentation = new DocumentationService();
+        if (!empty($param)) {
+            $bool = $documentation->addEditcaregorical($param);
+            if ($bool == "repeat") {
+                flash('平台/版本号名称/seotitle/H1title在相同分类下已存在')->error()->important();
+                return redirect()->route('documentation.createPlatformVersion');
+            } else {
+                if ($bool==1) {
+                    flash('修改成功')->success()->important();
+                    return redirect()->route('documentation.platformVersion');
+                }elseif ($bool==0){
+                    flash('暂无更新')->success()->important();
+                    return redirect()->route('documentation.platformVersion');
+                } else {
+                    flash('修改失败')->error()->important();
+                    return redirect()->route('documentation.updatePlatformVersion');
                 }
             }
         }

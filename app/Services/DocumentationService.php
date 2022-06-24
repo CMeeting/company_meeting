@@ -64,6 +64,7 @@ class DocumentationService
         if (isset($data['id'])) {
             $where = "id='{$data['id']}'";
             $is_find = $PlatformVersion->find($where);
+            $is_find = $PlatformVersion->objToArr($is_find);
             if (($is_find['name'] != $data['name']) || (isset($data['seotitel']) && $is_find['seotitel'] != $data['seotitel']) || (isset($data['h1title']) && $is_find['h1title'] != $data['h1title'])) {
                 if ($lv == 1) {
                     $names = $PlatformVersion->find("(name='" . $data['name'] . "' OR seotitel='" . $data['seotitel'] . "' or h1title='" . $data['h1title'] . "')  and id!='{$data['id']}' and deleted=0");
@@ -87,13 +88,15 @@ class DocumentationService
         } else {
             if ($lv == 1) {
                 $names = $PlatformVersion->find("(name='" . $data['name'] . "' or seotitel='" . $data['seotitel'] . "' or h1title='" . $data['h1title'] . "')  and pid='{$data['pid']}' and deleted=0");
+                $names=$PlatformVersion->objToArr($names);
             } else {
-                $names = $PlatformVersion->find("name='" . $data['name'] . "' and pid='{$data['pid']}' and deleted=0");
+                $names = $PlatformVersion->find("name='" . $data['name'] . "' and pid={$data['pid']} and deleted=0");
+                $names=$PlatformVersion->objToArr($names);
             }
             if (isset($names) && $names) {
                 return "repeat";
             }
-            $bool = $PlatformVersion->insert($data);
+            $bool = $PlatformVersion->insertGetId($data);
         }
         return $bool;
     }
@@ -148,6 +151,7 @@ class DocumentationService
         $PlatformVersion = new PlatformVersion();
         $where = "deleted=0 and id='$id'";
         $data = $PlatformVersion->find($where);
+        $data = $PlatformVersion->objToArr($data);
         return $data;
     }
 

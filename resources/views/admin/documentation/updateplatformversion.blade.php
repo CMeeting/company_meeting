@@ -30,16 +30,16 @@
     <div class="row">
         <div class="col-sm-12">
             <div class="ibox-title">
-                <h5>New Platform&Version</h5>
+                <h5>Edit Platform&Version</h5>
             </div>
             <div class="ibox-content">
-                <form class="form-horizontal" name="form"  method="post" action="{{route('documentation.createRunPlatformVersion')}}" >
+                <form class="form-horizontal" name="form"  method="post" action="{{route('documentation.updateRunPlatformVersion')}}" >
                     {{ csrf_field() }}
-
+                                <input type="hidden" name="data[id]" value="{{$data['id']}}">
                                 <div class="form-group">
                                     <label class="col-sm-2 control-label no-padding-right" for="form-field-1"> order_num(排序 从大到小)：</label>
                                     <div class="col-sm-6 col-xs-12">
-                                        <input id="displayorder"  type="number" class="form-control" name="data[displayorder]" min="1" max="99999999" oninput="if(value.length>8)value=value.slice(0,8)" required>
+                                        <input id="displayorder"  type="number" class="form-control" name="data[displayorder]" min="1" max="99999999" oninput="if(value.length>8)value=value.slice(0,8)" value="{{$data['displayorder']}}" required>
                                         <span class="lbl"></span>
                                     </div>
                                 </div>
@@ -47,11 +47,11 @@
                                 <div class="form-group">
                                     <label class="col-sm-2 control-label no-padding-right" for="form-field-1"> classification(上级分类)：</label>
                                     <div class="col-sm-6 col-xs-12">
-                                        <select name="data[pid]" class="form-control sels"  id="selectid" @if(isset($pid) && $pid) style="pointer-events: none;color: #9f9f9f" @endif>
+                                        <select name="data[pid]" class="form-control sels"  id="selectid" @if(isset($data['pid']) && $data['pid']) style="pointer-events: none;color: #9f9f9f" @endif>
                                             <option value="0">--默认一级分类--</option>
                                             @foreach($material as $vs)
                                                 <option value="{{$vs['id']}}"
-                                                        @if(isset($pid) && $pid==$vs['id'])
+                                                        @if(isset($data['pid']) && $data['pid']==$vs['id'])
                                                         selected
                                                         @endif
                                                 >{{$vs['lefthtml']}}{{$vs['name']}}</option>
@@ -64,25 +64,25 @@
                                 <div class="form-group">
                                     <label class="col-sm-2 control-label no-padding-right" for="form-field-1"> name(平台或版本名称)：</label>
                                     <div class="col-sm-6 col-xs-12">
-                                        <input id="name"  class="form-control" name="data[name]" required onKeyUp="value=value.replace(/[^\w\.\/-]/ig,'')">
+                                        <input id="name"  class="form-control" name="data[name]" value="{{$data['name']}}" required onKeyUp="value=value.replace(/[^\w\.\/-]/ig,'')">
                                         <span class="lbl"></span>
                                     </div>
                                 </div>
 
 
-                                @if(isset($pid) && $pid == 0)
+                                @if(isset($data['pid']) && $data['pid'] == 0)
 
                                     <div class="form-group h1title">
                                         <label class="col-sm-2 control-label no-padding-right" for="form-field-1"> SEO title：</label>
                                         <div class="col-sm-6 col-xs-12">
-                                            <input id="seotitel"  class="form-control  seotitel" name="data[seotitel]" required placeholder="SEO title只会绑定在平台数据">
+                                            <input id="seotitel"  class="form-control  seotitel" name="data[seotitel]" required placeholder="SEO title只会绑定在平台数据" value="{{$data['seotitel']}}">
                                             <span class="lbl"></span>
                                         </div>
                                     </div>
                                     <div class="form-group h1title">
                                         <label class="col-sm-2 control-label no-padding-right" for="form-field-1"> H1 title：</label>
                                         <div class="col-sm-6 col-xs-12">
-                                            <input id="h1title"  class="form-control " name="data[h1title]" required placeholder="H1 title只会绑定在平台数据">
+                                            <input id="h1title"  class="form-control " name="data[h1title]" required placeholder="H1 title只会绑定在平台数据" value="{{$data['h1title']}}">
                                             <span class="lbl"></span>
                                         </div>
                                     </div>
@@ -91,8 +91,8 @@
                                 <div class="form-group">
                                     <label class="col-sm-2 control-label no-padding-right" for="form-field-1"> enabled(是否显示)：</label>
                                     <div class="col-sm-6 col-xs-12">
-                                        <input type="radio" name="data[enabled]" value="1" checked >显示
-                                        <input type="radio" name="data[enabled]" value="0">隐藏
+                                        <input type="radio" name="data[enabled]" value="1" @if(isset($data['enabled']) && $data['enabled']==1) checked @endif >显示
+                                        <input type="radio" name="data[enabled]" value="0" @if(isset($data['enabled']) && $data['enabled']!=1) checked @endif>隐藏
                                     </div>
                                 </div>
                             </ol>
