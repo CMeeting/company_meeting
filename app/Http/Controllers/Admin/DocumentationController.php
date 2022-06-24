@@ -51,7 +51,6 @@ class DocumentationController extends BaseController {
         $documentation = new DocumentationService();
         if (!empty($param)) {
             $bool = $documentation->addEditcaregorical($param);
-
             if ($bool == "repeat") {
                 return error("平台/版本号名称/seotitle/H1title在相同分类下已存在");
             } else {
