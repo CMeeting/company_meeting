@@ -1,13 +1,12 @@
 <?php
 declare (strict_types=1);
 
-namespace app\service;
-use app\api\model\PlatformVersion;
-use app\api\model\SdkClassification;
-use app\api\model\SdKArticle;
-use app\service\DraftBox;
-use \think\Service;
-class SdKArticleService extends Service
+namespace App\Services;
+use App\Models\DocumentationModel as PlatformVersion;
+use App\Models\SdkclassificationModel as SdkClassification;
+use App\Models\SdkarticleModel as SdKArticle;
+
+class SdKArticleService
 {
     public function __construct()
     {
@@ -17,31 +16,32 @@ class SdKArticleService extends Service
 
     public function sele_list($param)
     {
-        $where="deleted=0";
+        $where=array();
+        $where[]=['deleted','=',0];
         if(isset($param['platformid']) &&$param['platformid']){
-            $where.=" and platformid=".$param['platformid'];
+            $where[]=['platformid','=',$param['platformid']];
         }
         if(isset($param['version']) &&$param['version']){
-            $where.=" and version=".$param['version'];
+            $where[]=['version','=',$param['version']];
         }
         if(isset($param['classification']) &&$param['classification']){
-            $where.=" and classification_ids='".$param['classification']."'";
+            $where[]=['classification_ids','=',$param['classification']];
         }
 
         $SdKArticle=new SdKArticle();
-        $data=$SdKArticle->paginate($where, "displayorder,id desc",10);
-        $page = $data->appends($param)->render();
-        $data = $data->toArray();
+        $data=$SdKArticle->paginate($where,"*","displayorder,id desc",10);
+        $data = $SdKArticle->objToArr($data);
+//        $data = $data->toArray();
         $classification=$this->allCategories();
         $banben=$this->allVersion();
-        if(!empty($data)){
-            foreach ($data['data'] as $k=>$v){
-                $fenlei=$this->assemblyClassification($v['classification_ids'],$classification);
-                $data['data'][$k]['classification']=$fenlei?implode("--",$fenlei):"";
-                $data['data'][$k]['platformversion']=$this->assemblyVersion(array($v['platformid'],$v['version']),$banben);
-            }
-        }
-        return array('data'=>$data,'page'=>$page);
+//        if(!empty($data)){
+//            foreach ($data as $k=>$v){
+//                $fenlei=$this->assemblyClassification($v['classification_ids'],$classification);
+//                $data[$k]['classification']=$fenlei?implode("--",$fenlei):"";
+//                $data[$k]['platformversion']=$this->assemblyVersion(array($v['platformid'],$v['version']),$banben);
+//            }
+//        }
+        return array('data'=>$data);
     }
 
     public function appends(array $append)
@@ -131,7 +131,7 @@ class SdKArticleService extends Service
                 $arr[$v['id']]=$v['lefthtml'].$v['title']."&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp".$str;
             }
         }
-       // dump($arr);exit;
+        dump($arr);exit;
         return $arr ?? [];
     }
 
@@ -195,7 +195,8 @@ class SdKArticleService extends Service
     function allCategories()
     {
         $SdkClassification = new SdkClassification();
-        $where = "deleted=0";
+        $where=array(["deleted","=",0]);
+        //$where = "deleted=0";
         $field = "id,title,pid";
         $order = "lv";
         $data = $SdkClassification->select($where, $field,$order);
@@ -204,7 +205,8 @@ class SdKArticleService extends Service
     function allVersion()
     {
         $PlatformVersion = new PlatformVersion();
-        $where = "deleted=0";
+       // $where = "deleted=0";
+        $where=array(["deleted","=",0]);
         $field = "id,name,pid";
         $order = "lv";
         $data = $PlatformVersion->select($where, $field,$order);

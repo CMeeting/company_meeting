@@ -3,7 +3,7 @@
 namespace App\Services;
 
 use App\Models\DocumentationModel as PlatformVersion;
-
+use App\Models\SdkclassificationModel as SdkClassification;
 
 class DocumentationService
 {
@@ -112,6 +112,7 @@ class DocumentationService
         }
 
         $status = $show->find("id=" . $param['id']);
+        $status= $show->objToArr($status);
         $enabled = ($status['enabled'] == 1) ? 0 : 1;
         if ($param['type'] != "sdk_documentation") {
             if ($param['type'] == "platform_version") {
@@ -135,8 +136,6 @@ class DocumentationService
     public function getCategorical()
     {
         $PlatformVersion = new PlatformVersion();
-        $where = "deleted=0 and lv=1";
-        $where=array();
         $where=array(["deleted","=",0],['lv','=',1]);
         $field = "id,name,lv,pid,displayorder,enabled";
         $order = "displayorder desc";
@@ -179,7 +178,9 @@ class DocumentationService
         } elseif ($type == "sdk_classification") {
             $operate = new SdkClassification();
         }
-        $lower_ids = $operate->select("deleted=0 and pid=$id", "id");
+        $where=array(["deleted","=",0],["pid","=",$id]);
+        $lower_ids = $operate->select($where, "id");
+        $lower_ids = $operate->objToArr($lower_ids);
         if ($lower_ids) {
             foreach ($lower_ids as $key => $val) {
 

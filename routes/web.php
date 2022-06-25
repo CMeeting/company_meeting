@@ -21,11 +21,24 @@ Route::group(['namespace' => 'Admin','prefix' => 'admin'], function (){
        // Route::resource('documentation','DocumentationController',['only'=>['index','create','store','update','edit','destroy','platformVersion'] ]);
 
         Route::get('platformVersion', 'DocumentationController@platformVersion')->name('documentation.platformVersion');
+        Route::get('sdkClassification', 'DocumentationController@sdkClassification')->name('documentation.sdkClassification');
+        Route::get('sdkDocumentation', 'DocumentationController@sdkDocumentation')->name('documentation.sdkDocumentation');
+
         Route::get('platformVersioncreate/{pid?}', 'DocumentationController@createPlatformVersion')->name('documentation.createPlatformVersion');
+
+        Route::post('delSdkclassification', 'DocumentationController@delSdkclassification')->name('documentation.delSdkclassification');
+
+        Route::get('createSdkClassification/{pid?}/{platformid?}/{version?}', 'DocumentationController@createSdkClassification')->name('documentation.createSdkClassification');
+
         Route::post('createRunPlatformVersion', 'DocumentationController@createRunPlatformVersion')->name('documentation.createRunPlatformVersion');
         Route::get('updateRunPlatformVersion/{id}', 'DocumentationController@updatePlatformVersion')->name('documentation.updatePlatformVersion');
 
         Route::post('updateRunPlatformVersion', 'DocumentationController@updateRunPlatformVersion')->name('documentation.updateRunPlatformVersion');
+
+        Route::post('showHideclassification', 'DocumentationController@showHideclassification')->name('documentation.showHideclassification');
+        Route::post('delPlatformVersion', 'DocumentationController@delPlatformVersion')->name('documentation.delPlatformVersion');
+
+
 
         Route::get('index/main', 'IndexsController@main')->name('index.main'); //首页数据分析
 

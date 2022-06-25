@@ -1,14 +1,12 @@
 <?php
 declare (strict_types=1);
 
-namespace app\service;
+namespace App\Services;
 
-use app\api\model\PlatformVersion;
-use app\api\model\SdKArticle;
-use app\api\model\SdkClassification;
-use \think\Service;
+use App\Models\DocumentationModel as PlatformVersion;
+use App\Models\SdkclassificationModel as SdkClassification;
 
-class SdkclassificationService extends Service
+class SdkclassificationService
 {
     public function __construct()
     {
@@ -18,10 +16,11 @@ class SdkclassificationService extends Service
     public function getCategoricalData()
     {
         $SdkClassification = new SdkClassification();
-        $where = "deleted=0";
+        $where=array(["deleted","=",0]);
         $field = "id,title,lv,pid,displayorder,enabled,platformid,version";
         $order = "displayorder,id desc";
         $list1 = $SdkClassification->select($where, $field, $order);
+        $list1 = $SdkClassification->objToArr($list1);
         $banben = $this->allVersion();
         if ($list1) {
             $data = $this->assemblyHtml($list1,$banben);
@@ -39,10 +38,11 @@ class SdkclassificationService extends Service
     public function getCategorical()
     {
         $SdkClassification = new SdkClassification();
-        $where = "deleted=0";
+        $where=array(["deleted","=",0]);
         $field = "id,title,lv,pid,displayorder,enabled,platformid,version";
         $order = "displayorder";
         $material = $SdkClassification->select($where, $field, $order);
+        $material = $SdkClassification->objToArr($material);
         $arr_project = $this->menuLeft($material);
         return $arr_project ?? [];
     }
@@ -135,7 +135,7 @@ class SdkclassificationService extends Service
                 } else {
                     $html .= '<a style="text-decoration: none" type="button"  data-id="' . $v['id'] . '"  class="openBtn_' . $v['id'] . ' abutton cloros1" data-style="zoom-out" onclick="show(' . $v['id'] . ');"><span class="ladda-label">hide</span></a>';
                 }
-                $html .= '<a style="text-decoration: none" class="abutton cloros2" href="/admin/documentation/createSdkClassification?pid=' . $v['id'] . '&platformid=' . $v['platformid'] . '&version=' . $v['version'] . '"><i class="fa fa-plus-circle "></i> add</a><a style="text-decoration: none" class="abutton cloros2" href="/admin/documentation/createsdkDocumentation?classification_ids=' . $v['id'] . '"><i class="fa fa-plus-circle "></i> addArticle</a><a style="text-decoration: none" class="edit_' . $v['id'] . ' abutton cloros3" href="/admin/documentation/createSdkClassification?id=' . $v['id'] . '"><i class="fa fa-edit"></i> edit</a><a onclick="del(' . $v['id'] . ')" class="abutton cloros4" style="text-decoration: none"><i class="fa fa-trash-o fa-delete"></i> del</a></div></div>';
+                $html .= '<a style="text-decoration: none" class="abutton cloros2" href="{{route("documentation.createPlatformVersion",' . $v['id'] . ',' . $v['platformid'] . ',' . $v['version'] . ')}}"><i class="fa fa-plus-circle "></i> add</a><a style="text-decoration: none" class="abutton cloros2" href="/admin/documentation/createsdkDocumentation?classification_ids=' . $v['id'] . '"><i class="fa fa-plus-circle "></i> addArticle</a><a style="text-decoration: none" class="edit_' . $v['id'] . ' abutton cloros3" href="/admin/documentation/createSdkClassification?id=' . $v['id'] . '"><i class="fa fa-edit"></i> edit</a><a onclick="del(' . $v['id'] . ')" class="abutton cloros4" style="text-decoration: none"><i class="fa fa-trash-o fa-delete"></i> del</a></div></div>';
                 $html .= $this->assemPage($v['id'],$data);
                 $html .= '</li>';
             }
@@ -155,7 +155,7 @@ class SdkclassificationService extends Service
                 } else {
                     $html .= '<a style="text-decoration: none" type="button"  data-id="' . $v['id'] . '"  class="openBtn_' . $v['id'] . ' abutton cloros1" data-style="zoom-out" onclick="show(' . $v['id'] . ');"><span class="ladda-label">hide</span></a>';
                 }
-                $html .= '<a style="text-decoration: none" class="abutton cloros2" href="/admin/documentation/createSdkClassification?pid=' . $v['id'] . '&platformid=' . $v['platformid'] . '&version=' . $v['version'] . '"><i class="fa fa-plus-circle "></i> add</a><a style="text-decoration: none" class="abutton cloros2" href="/admin/documentation/createsdkDocumentation?classification_ids=' . $v['id'] . '"><i class="fa fa-plus-circle "></i> addArticle</a><a style="text-decoration: none" class="edit_' . $v['id'] . ' abutton cloros3" href="/admin/documentation/createSdkClassification?id=' . $v['id'] . '"><i class="fa fa-edit"></i> edit</a><a style="text-decoration: none" onclick="del(' . $v['id'] . ')" class="abutton cloros4"><i class="fa fa-trash-o fa-delete"></i> del</a></div></div></li>';
+                $html .= '<a style="text-decoration: none" class="abutton cloros2" href="{{route("documentation.createPlatformVersion",' . $v['id'] . ',' . $v['platformid'] . ',' . $v['version'] . ')}}"><i class="fa fa-plus-circle "></i> add</a><a style="text-decoration: none" class="abutton cloros2" href="/admin/documentation/createsdkDocumentation?classification_ids=' . $v['id'] . '"><i class="fa fa-plus-circle "></i> addArticle</a><a style="text-decoration: none" class="edit_' . $v['id'] . ' abutton cloros3" href="/admin/documentation/createSdkClassification?id=' . $v['id'] . '"><i class="fa fa-edit"></i> edit</a><a style="text-decoration: none" onclick="del(' . $v['id'] . ')" class="abutton cloros4"><i class="fa fa-trash-o fa-delete"></i> del</a></div></div></li>';
                 $html .= $this->assemPage($v['id'], $data);
             }
         }
@@ -167,10 +167,11 @@ class SdkclassificationService extends Service
     function allVersion()
     {
         $PlatformVersion = new PlatformVersion();
-        $where = "deleted=0";
+        $where=array(["deleted","=",0]);
         $field = "id,name,pid";
         $order = "lv";
         $data = $PlatformVersion->select($where, $field, $order);
+        $data = $PlatformVersion->objToArr($data);
         return $data;
     }
     function assemblyVersion($ids,$data){
@@ -203,7 +204,9 @@ class SdkclassificationService extends Service
         }elseif ($type == "sdk_classification"){
             $operate = new SdkClassification();
         }
-        $lower_ids = $operate->select("deleted=0 and pid=$id", "id");
+        $where=array(["deleted","=",0],['pid',"=",$id]);
+        $lower_ids = $operate->select($where, "id");
+        $lower_ids = $operate->objToArr($lower_ids);
         if ($lower_ids) {
             foreach ($lower_ids as $key => $val) {
 

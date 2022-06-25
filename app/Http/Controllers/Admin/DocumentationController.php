@@ -12,13 +12,18 @@ use App\Http\Requests\Admin\AdminRequest;
 use Illuminate\Http\Request;
 use App\Services\AdminsService;
 use App\Services\DocumentationService;
+use App\Services\SdkclassificationService;
+use App\Services\SdKArticleService;
 use App\Repositories\RolesRepository;
 use App\Http\Requests\Admin\AdminLoginRequest;
 
 class DocumentationController extends BaseController {
 
 
-
+    /**
+     * 平台/版本主页
+     * @return mixed
+     */
     public function platformVersion()
     {
         $documentation = new DocumentationService();
@@ -64,7 +69,11 @@ class DocumentationController extends BaseController {
         }
     }
 
-
+    /**
+     * 修改平台/版本
+     * @param $id
+     * @return mixed
+     */
     public function updatePlatformVersion($id)
     {
         $documentation = new DocumentationService();
@@ -78,7 +87,11 @@ class DocumentationController extends BaseController {
         return $this->view('updateplatformversion',['data'=>$data,'material'=>$categorical_data]);
     }
 
-
+    /**
+     * 修改平台/版本操作
+     * @param $id
+     * @return mixed
+     */
     public function updateRunPlatformVersion(Request $request)
     {
         $param = $request->input();
@@ -103,31 +116,39 @@ class DocumentationController extends BaseController {
         }
     }
 
-    public function delPlatformVersion()
+    /**
+     * 删除
+     */
+
+    public function delPlatformVersion(Request $request)
     {
-        $param = $this->getRequstParam();
+        $param = $request->input();
         $documentation = new DocumentationService();
         $bool = $documentation->addEditcaregorical($param);
         if ($bool) {
-            return success("删除成功");
+            return ['code'=>0];
         } else {
-            return failure("删除失败");
+            return ['code'=>1,'msg'=>"更新失败"];
         }
     }
 
-    public function showHideclassification()
+    /**
+     * 显示隐藏
+     */
+    public function showHideclassification(Request $request)
     {
-        $param = $this->getRequstParam();
+        $param = $request->input();
         $documentation = new DocumentationService();
-        if (isset($param['id'])) {
+        if ($param['id']) {
             $data = $documentation->showHide($param);
             if ($data) {
-                return success("修改成功");
+               return ['code'=>0];
             } else {
-                return failure("修改失败");
+               return ['code'=>1,'msg'=>"更新失败"];
             }
         } else {
-            return failure("缺少参数");
+            flash('缺少参数')->error()->important();
+            return redirect()->route('documentation.platformVersion');
         }
     }
 
@@ -139,34 +160,20 @@ class DocumentationController extends BaseController {
     {
         $sdkclassification = new SdkclassificationService();
         $data = $sdkclassification->getCategoricalData();
-        View::assign('data', $data);
-        //View::assign('childCateList', $data['childCateList']);
-        return view();
+        return $this->view('sdkclassification',['data'=>$data]);
     }
 
 
-    public function createSdkClassification()
+    public function createSdkClassification($pid=0,$platformid=0,$version=0)
     {
-        $param = $this->getRequstParam();
         $documentation = new DocumentationService();
         $sdkclassification = new SdkclassificationService();
-        if (isset($param['id']) && $param['id']) {
-            $data = $sdkclassification->getFindcategorical($param['id']);
-        } else {
-            $data['platformid'] = (isset($param['platformid']) && $param['platformid']) ? $param['platformid'] : 0;;
-            $data['version'] = (isset($param['version']) && $param['version']) ? $param['version'] : 0;;
-            $data['pid'] = (isset($param['pid']) && $param['pid']) ? $param['pid'] : 0;
-            $pid = (isset($param['pid']) && $param['pid']) ? $param['pid'] : 0;
-        }
+        $data['platformid'] = $platformid;
+        $data['version'] = $version;
+        $data['pid'] = $pid;
         $fenlei = $documentation->getCategoricalData();
-        View::assign('parent', $fenlei['parent']);
-        View::assign('children', $fenlei['childCateList']);
-
         $categorical_data = $sdkclassification->getCategorical();
-        View::assign('pid', isset($pid) ? $pid : 0);
-        View::assign('data', $data);
-        View::assign('material', $categorical_data);
-        return view();
+        return $this->view('createsdkclassification',['pid'=>$pid,'data'=>$data,"material"=>$categorical_data,"parent"=>$fenlei['parent'],"children"=>$fenlei['childCateList']]);
     }
 
 
@@ -191,20 +198,24 @@ class DocumentationController extends BaseController {
         }
     }
 
-
-    public function sdkDocumentation()
+    public function delSdkclassification(Request $request)
     {
-        $param = $this->getRequstParam();
+        $param = $request->input();
+        $sdkclassification = new SdkclassificationService();
+        $bool = $sdkclassification->addEditcaregorical($param);
+        if ($bool) {
+            return ['code'=>0];
+        } else {
+            return ['code'=>1,'msg'=>"更新失败"];
+        }
+    }
+
+    public function sdkDocumentation(Request $request)
+    {
+        $param = $request->input();
         $sdksrvice = new SdKArticleService();
         $data = $sdksrvice->sele_list($param);
-        $assign_where = CommonService::buildAssignWhere($param);
-        View::assign('platformid', $sdksrvice->getplatform());
-        View::assign('version', $sdksrvice->getversion());
-        View::assign('classification_ids', $sdksrvice->getCategorical());
-        View::assign('assign_where', $assign_where);
-        View::assign('data', $data['data']['data']);
-        View::assign('page', $data['page']);
-        return view();
+        return $this->view('sdkdocumentation',['data'=>$data['data']]);
     }
 
     public function createsdkDocumentation()

@@ -87,18 +87,18 @@
                                                         @if(count($cateList)>0)
                                                         @foreach($cateList as $v)
                                                         <li class="dd-item dd3-item item_{{$v['id']}}" data-id="{{$v['id']}}" id="classSecond_{$v['id']}">
-                                                            <div class="dd-handle handless" onclick="zijishow('{{$v['id']}}')"><span id="jiantou_{{$v['id']}}">▷</span></div>
+                                                            <div class="dd-handle handless" onclick="zijishow('{{$v['id']}}')"><span id="jiantou_{{$v['id']}}">▽</span></div>
                                                             <div class="dd3-content">
                                                                 {{$v['name']}}<span class=" numbid_{{$v['id']}}">&nbsp;&nbsp;<font  style="font-size: 1em">排序</font>:[{{$v['displayorder']}}]</span>
 
                                                                 <div class="item_edt_del">
                                                                     <font class="open_{$v.id}">
                                                                         @if($v['enabled'] == 1)
-                                                                        <a  data-id="{$v.id}" style="text-decoration: none"  class="openBtn_{$v.id} abutton cloros" data-style="zoom-out" onclick="show({$v.id});">
+                                                                        <a  data-id="{$v.id}" style="text-decoration: none"  class="openBtn_{$v.id} abutton cloros" data-style="zoom-out" onclick="show({{$v['id']}});">
                                                                             <span class="ladda-label">show</span>
                                                                         </a>
                                                                         @else
-                                                                        <a data-id="{$v.id}" style="text-decoration: none" class="openBtn_{$v.id} abutton cloros1" data-style="zoom-out" onclick="show({$v.id});">
+                                                                        <a data-id="{$v.id}" style="text-decoration: none" class="openBtn_{$v.id} abutton cloros1" data-style="zoom-out" onclick="show({{$v['id']}});">
                                                                             <span class="ladda-label">hide</span>
                                                                         </a>
                                                                         @endif
@@ -110,7 +110,7 @@
                                                                         <i class="fa fa-edit"></i> edit
                                                                     </a>
 
-                                                                    <a onclick="del('{$v.id}')" class="abutton cloros4" style="text-decoration: none">
+                                                                    <a onclick="del('{{$v['id']}}')" class="abutton cloros4" style="text-decoration: none">
                                                                         <i class="fa fa-trash-o fa-delete"></i> del
                                                                     </a>
                                                                 </div>
@@ -119,7 +119,7 @@
                                                             @if(isset($childCateList[$v['id']]))
                                                             <ol class="dd-list">
                                                                 @foreach($childCateList[$v['id']] as $vv)
-                                                                <li class="dd-item dd3-item ziji_{{$v['id']}}" data-id="{{$vv['id']}}" parentid="{{$vv['pid']}}" id="classSecond_{{$vv['id']}}" style="display: none">
+                                                                <li class="dd-item dd3-item ziji_{{$v['id']}}" data-id="{{$vv['id']}}" parentid="{{$vv['pid']}}" id="classSecond_{{$vv['id']}}">
                                                                     <div class="dd-handle dd3-handle"></div>
                                                                     <div class="dd3-content">
                                                                         {{$vv['name']}}<span class=" numbid_{{$vv['id']}}">&nbsp;&nbsp;排序:[{{$vv['displayorder']}}]</span>
@@ -182,8 +182,8 @@
             layer.close(index);
             var index = layer.load();
             $.ajax({
-                url: "/admin/documentation/createRunPlatformVersion",
-                data: {delid:id},
+                url: "{{route('documentation.delPlatformVersion')}}",
+                data: {delid:id, _token: '{{ csrf_token() }}'},
                 type: 'post',
                 dataType: "json",
                 success: function (resp) {
@@ -198,7 +198,7 @@
                         });
                     } else {
                         //失败提示
-                        layer.msg(resp.message, {
+                        layer.msg(resp.msg, {
                             icon: 2,
                             time: 2000
                         });
@@ -212,8 +212,9 @@
     function show(id){
         var index = layer.load();
         $.ajax({
-            url: "/admin/documentation/showHideclassification",
-            data: {id:id,type:'platform_version'},
+            headers: { 'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content') },
+            url: "{{route('documentation.showHideclassification')}}",
+            data: {id:id,type:'platform_version', _token: '{{ csrf_token() }}'},
             type: 'post',
             dataType: "json",
             success: function (resp) {
