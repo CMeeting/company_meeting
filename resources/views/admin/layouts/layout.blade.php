@@ -17,13 +17,12 @@
     <link rel="stylesheet" href="{{loadEdition('/admin/yanshi/jquery.nestable.css')}}">
     <link rel="stylesheet" href="{{loadEdition('/admin/yanshi/classify.css')}}">
     <link rel="stylesheet" href="{{loadEdition('/admin/yanshi/ladda-themeless.min.css')}}"/>
+    <link rel="stylesheet" href="{{loadEdition('/admin/css/hljs.css')}}" />
     <link rel="stylesheet" href="https://unpkg.com/bytemd@1.11.0/dist/index.min.css" />
     <link rel="stylesheet" href="https://unpkg.com/github-markdown-css" />
-    <script src="https://polyfill.io/v3/polyfill.min.js"></script>
-    <script src="https://polyfill.io/v3/polyfill.min.js?features=Uint16Array,Array.prototype.find,smoothscroll"></script>
     <script src="https://unpkg.com/bytemd"></script>
     <script src="https://unpkg.com/@bytemd/plugin-gfm"></script>
-    <script src="https://unpkg.com/@bytemd/plugin-highlight"></script>
+    <script src="{{loadEdition('/admin/js/highlight.js')}}"></script>
     <script src="https://unpkg.com/@bytemd/plugin-gemoji"></script>
     @yield('css')
 </head>
