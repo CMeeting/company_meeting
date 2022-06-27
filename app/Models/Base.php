@@ -11,7 +11,16 @@ class Base{
     /**
      * @return void
      */
-    public static function select($condition, $field = '*', $order ="id desc",$page=10)
+    public static function select($condition, $field = '*', $order ="id desc")
+    {
+        return Db::table(static::$table)
+            ->select(DB::raw($field))
+            ->where($condition)
+            ->orderByRaw($order)
+            ->get();
+    }
+
+    public static function paginates($condition, $field = '*', $order ="id desc",$page=10)
     {
         return Db::table(static::$table)
             ->select(DB::raw($field))
