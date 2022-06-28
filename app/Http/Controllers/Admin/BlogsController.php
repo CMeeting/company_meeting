@@ -17,9 +17,10 @@ class BlogsController extends BaseController
     public function blog()
     {
 //        dd($blog);die;
+        $types = $this->blogService->getBlogTypeskv();
+        $tags = $this->blogService->getBlogTagskv();
         $data = $this->blogService->getBlogList();
-//        print_r($data);die;
-        return $this->view('blog/blog',compact('data'));
+        return $this->view('blog/blog',compact('data','types','tags'));
     }
 
     public function blogCreate(){
@@ -110,8 +111,15 @@ class BlogsController extends BaseController
     }
 
     public function softDel($table,$id){
-        $this->blogService->softDel($table,$id);
-        flash('删除成功')->success()->important();
+        $row = $this->blogService->softDel($table,$id);
+        if(1==$row){
+            flash('删除成功')->success()->important();
+        }elseif ('error'==$row){
+            flash('删除失败,此分类下存在Blog数据，无法删除')->error()->important();
+        }
+        else{
+            flash('删除失败')->error()->important();
+        }
         return redirect()->back();
     }
 }

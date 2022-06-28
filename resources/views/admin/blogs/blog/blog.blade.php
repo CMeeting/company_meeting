@@ -27,16 +27,16 @@
                 <tbody>
                 @foreach($data as $key => $item)
                     <tr>
-                        <td  class="text-center" >{{$item->id}}</td>
-                        <td>{{$item->title_h1}}</td>
-                        <td>{{$item->slug}}</td>
-                        <td class="text-center">{{$item->type_id}}</td>
-                        <td class="text-center">{{$item->tag_id}}</td>
-                        <td>{{$item->title}}</td>
-                        <td>{{$item->keywords}}</td>
-                        <td>{{$item->sort_id}}</td>
-                        <td>{{$item->created_at}}</td>
-                        <td>{{$item->updated_at}}</td>
+                        <td  class="text-center" >{{$item['id']}}</td>
+                        <td>{{$item['title_h1']}}</td>
+                        <td>{{$item['slug']}}</td>
+                        <td class="text-center">{{$types[$item['type_id']]}}</td>
+                        <td class="text-center"></td>
+                        <td>{{$item['title']}}</td>
+                        <td>{{$item['keywords']}}</td>
+                        <td>{{$item['sort_id']}}</td>
+                        <td>{{$item['created_at']}}</td>
+                        <td>{{$item['updated_at']}}</td>
 {{--                        <td class="text-center">--}}
 {{--                            @if($item->status == 1)--}}
 {{--                                <span class="text-navy">启用</span>--}}
@@ -47,8 +47,8 @@
                         <td class="text-center">
                             <div class="btn-group">
 {{--                                <a href="{{route('roles.access',$item->id)}}"><button class="btn btn-primary btn-xs" type="button"><i class="fa fa-paste"></i> 权限设置</button></a>--}}
-                                <a href="{{route('blogs.blogEdit',$item->id)}}"><button class="btn btn-primary btn-xs" type="button"><i class="fa fa-paste"></i> 修改</button></a>
-                                <a href="{{route('blogs.softDel',['blog',$item->id])}}"><button class="btn btn-danger btn-xs" type="button"><i class="fa fa-trash-o"></i> 删除</button></a>
+                                <a href="{{route('blogs.blogEdit',$item['id'])}}"><button class="btn btn-primary btn-xs" type="button"><i class="fa fa-paste"></i> 修改</button></a>
+                                <a href="{{route('blogs.softDel',['blog',$item['id']])}}"><button class="btn btn-danger btn-xs" type="button"><i class="fa fa-trash-o"></i> 删除</button></a>
 {{--                                <form class="form-common" action="{{ route('roles.destroy', $item->id) }}" method="post">--}}
 {{--                                    {{ csrf_field() }}--}}
 {{--                                    {{ method_field('DELETE') }}--}}

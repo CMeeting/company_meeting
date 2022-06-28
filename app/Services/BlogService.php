@@ -48,6 +48,12 @@ class BlogService
 //        }
         $order = 'sort_id,id DESC';
         $data = $this->blogModel->select($where,'*',$order);
+        $data = $this->blogModel->objToArr($data);
+        foreach ($data as $k=>$v){
+            $v['tag_id'] = self::getBlogTagTitle($v['tag_id']);
+            $datas[$k] = $v;
+        }
+        print_r($datas);die;
 //        $datas = Blogs::paginate($where, $sort);
 //        $data['data'] = $datas->toArray();
 //        $data['page'] = $datas->render();
@@ -100,7 +106,7 @@ class BlogService
             }
             $tag_info = rtrim($tag_info, "<br>");
         }
-        echo $tag_info;
+        return $tag_info;
     }
 
     public function blogCreate($param)
@@ -221,8 +227,8 @@ class BlogService
                 $row = Blog::update(['is_delete' => 1], 'id = ' . $id);
                 break;
             case 'type':
-                $data = Blog::where(['type_id' => $id], 'is_delete = 0', '', 'count(*)')->toArray()[0]['count'];
-                if ($data > 0) {
+                $data = $this->blogModel->objToArr(Blog::select(['type_id' =>$id],'count(*)'))[0];
+                if (isset($data)&&$data['count(*)']>0) {
                     $row = 'error';
                 } else {
                     $row = BlogTypes::update(['is_delete' => 1], 'id = ' . $id);
