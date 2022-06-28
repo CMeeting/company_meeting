@@ -24,20 +24,29 @@ Route::group(['namespace' => 'Admin','prefix' => 'admin'], function (){
         Route::get('sdkClassification', 'DocumentationController@sdkClassification')->name('documentation.sdkClassification');
         Route::get('sdkDocumentation', 'DocumentationController@sdkDocumentation')->name('documentation.sdkDocumentation');
 
-        Route::get('platformVersioncreate/{pid?}', 'DocumentationController@createPlatformVersion')->name('documentation.createPlatformVersion');
 
-        Route::post('delSdkclassification', 'DocumentationController@delSdkclassification')->name('documentation.delSdkclassification');
 
-        Route::get('createSdkClassification/{pid?}/{platformid?}/{version?}', 'DocumentationController@createSdkClassification')->name('documentation.createSdkClassification');
-
-        Route::post('createRunPlatformVersion', 'DocumentationController@createRunPlatformVersion')->name('documentation.createRunPlatformVersion');
+        Route::get('updateSdkClassification/{id}', 'DocumentationController@updateSdkClassification')->name('documentation.updateSdkClassification');
         Route::get('updateRunPlatformVersion/{id}', 'DocumentationController@updatePlatformVersion')->name('documentation.updatePlatformVersion');
-
+        Route::get('updatesdkDocumentation/{id}', 'DocumentationController@updatesdkDocumentation')->name('documentation.updatesdkDocumentation');
+        Route::post('updateRunSdkclassification', 'DocumentationController@updateRunSdkclassification')->name('documentation.updateRunSdkclassification');
         Route::post('updateRunPlatformVersion', 'DocumentationController@updateRunPlatformVersion')->name('documentation.updateRunPlatformVersion');
+        Route::post('updateRunsdkDocumentation', 'DocumentationController@updateRunsdkDocumentation')->name('documentation.updateRunsdkDocumentation');
+
+
+        Route::get('platformVersioncreate/{pid?}', 'DocumentationController@createPlatformVersion')->name('documentation.createPlatformVersion');
+        Route::get('createsdkDocumentation/{classification_ids?}', 'DocumentationController@createsdkDocumentation')->name('documentation.createsdkDocumentation');
+        Route::get('createSdkClassification/{pid?}/{platformid?}/{version?}', 'DocumentationController@createSdkClassification')->name('documentation.createSdkClassification');
+        Route::post('createRunSdkclassification', 'DocumentationController@createRunSdkclassification')->name('documentation.createRunSdkclassification');
+        Route::post('createRunPlatformVersion', 'DocumentationController@createRunPlatformVersion')->name('documentation.createRunPlatformVersion');
+        Route::post('createRunsdkDocumentation', 'DocumentationController@createRunsdkDocumentation')->name('documentation.createRunsdkDocumentation');
+
 
         Route::post('showHideclassification', 'DocumentationController@showHideclassification')->name('documentation.showHideclassification');
-        Route::post('delPlatformVersion', 'DocumentationController@delPlatformVersion')->name('documentation.delPlatformVersion');
 
+        Route::post('delPlatformVersion', 'DocumentationController@delPlatformVersion')->name('documentation.delPlatformVersion');
+        Route::post('delsdkDocumentation', 'DocumentationController@delsdkDocumentation')->name('documentation.delsdkDocumentation');
+        Route::post('delSdkclassification', 'DocumentationController@delSdkclassification')->name('documentation.delSdkclassification');
 
 
         Route::get('index/main', 'IndexsController@main')->name('index.main'); //首页数据分析

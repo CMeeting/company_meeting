@@ -24,19 +24,23 @@ class Base{
     {
         return Db::table(static::$table)
             ->select(DB::raw($field))
+            //->leftJoin('sdk_classification', 'users.id', '=', 'posts.user_id')
+            ->where($condition)
+            ->orderByRaw($order)
+            ->paginate($page)
+            ->toArray();
+    }
+    public static function paginates2($condition, $field = '*', $order ="id desc",$page=10)
+    {
+        return Db::table(static::$table)
+            ->select(DB::raw($field))
+            //->leftJoin('sdk_classification', 'users.id', '=', 'posts.user_id')
             ->where($condition)
             ->orderByRaw($order)
             ->paginate($page);
     }
 
-    public static function paginate($condition, $field = '*', $order ="id desc")
-    {
-        return Db::table(static::$table)
-            ->select(DB::raw($field))
-            ->where($condition)
-            ->orderByRaw($order)
-            ->get();
-    }
+
 
     public static function selectLimit($condition, $field = '*', $order = 'id DESC',$limit = 10)
     {

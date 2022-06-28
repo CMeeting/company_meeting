@@ -58,12 +58,14 @@ class SdkclassificationService
         if (isset($data['id'])) {
             $where = "id='{$data['id']}'";
             $is_find = $SdkClassification->find($where);
+            $is_find = $SdkClassification->objToArr($is_find);
             if ($is_find['title'] != $data['title']) {
                 $names = $SdkClassification->find("title='" . $data['title'] . "' and pid='{$data['pid']}' and platformid={$data['platformid']} and version={$data['version']} and deleted=0");
             }
             if (isset($names) && $names) {
                 return "repeat";
             }
+
             $bool = $SdkClassification->update($data, $where);
             if($bool){
                 $ids = $this->getIds($data['id'], "sdk_classification");
@@ -90,11 +92,12 @@ class SdkclassificationService
                 $SdKArticle->update(['deleted' => 1], "classification_ids in(".$strids.")");
             }
         } else {
+            //dump($data);exit;
             $names = $SdkClassification->find("title='" . $data['title'] . "' and pid='{$data['pid']}' and platformid={$data['platformid']} and version={$data['version']} and deleted=0");
             if ($names) {
                 return "repeat";
             }
-            $bool = $SdkClassification->insert($data);
+            $bool = $SdkClassification->insertGetId($data);
         }
         return $bool;
     }
@@ -104,6 +107,7 @@ class SdkclassificationService
         $SdkClassification = new SdkClassification();
         $where = "deleted=0 and id='$id'";
         $data = $SdkClassification->find($where);
+        $data = $SdkClassification->objToArr($data);
         return $data;
     }
 
@@ -135,7 +139,7 @@ class SdkclassificationService
                 } else {
                     $html .= '<a style="text-decoration: none" type="button"  data-id="' . $v['id'] . '"  class="openBtn_' . $v['id'] . ' abutton cloros1" data-style="zoom-out" onclick="show(' . $v['id'] . ');"><span class="ladda-label">hide</span></a>';
                 }
-                $html .= '<a style="text-decoration: none" class="abutton cloros2" href="{{route("documentation.createPlatformVersion",' . $v['id'] . ',' . $v['platformid'] . ',' . $v['version'] . ')}}"><i class="fa fa-plus-circle "></i> add</a><a style="text-decoration: none" class="abutton cloros2" href="/admin/documentation/createsdkDocumentation?classification_ids=' . $v['id'] . '"><i class="fa fa-plus-circle "></i> addArticle</a><a style="text-decoration: none" class="edit_' . $v['id'] . ' abutton cloros3" href="/admin/documentation/createSdkClassification?id=' . $v['id'] . '"><i class="fa fa-edit"></i> edit</a><a onclick="del(' . $v['id'] . ')" class="abutton cloros4" style="text-decoration: none"><i class="fa fa-trash-o fa-delete"></i> del</a></div></div>';
+                $html .= '<a style="text-decoration: none" class="abutton cloros2" href="'.$this->headerurl().'/admin/createSdkClassification/'.$v['id'].'/'.$v['platformid'].'/'.$v['version'].'"><i class="fa fa-plus-circle "></i> add</a><a style="text-decoration: none" class="abutton cloros2" href="/admin/documentation/createsdkDocumentation?classification_ids=' . $v['id'] . '"><i class="fa fa-plus-circle "></i> addArticle</a><a style="text-decoration: none" class="edit_' . $v['id'] . ' abutton cloros3" href="'.$this->headerurl().'/admin/updateSdkClassification/'.$v['id'].'"><i class="fa fa-edit"></i> edit</a><a onclick="del(' . $v['id'] . ')" class="abutton cloros4" style="text-decoration: none"><i class="fa fa-trash-o fa-delete"></i> del</a></div></div>';
                 $html .= $this->assemPage($v['id'],$data);
                 $html .= '</li>';
             }
@@ -155,7 +159,7 @@ class SdkclassificationService
                 } else {
                     $html .= '<a style="text-decoration: none" type="button"  data-id="' . $v['id'] . '"  class="openBtn_' . $v['id'] . ' abutton cloros1" data-style="zoom-out" onclick="show(' . $v['id'] . ');"><span class="ladda-label">hide</span></a>';
                 }
-                $html .= '<a style="text-decoration: none" class="abutton cloros2" href="{{route("documentation.createPlatformVersion",' . $v['id'] . ',' . $v['platformid'] . ',' . $v['version'] . ')}}"><i class="fa fa-plus-circle "></i> add</a><a style="text-decoration: none" class="abutton cloros2" href="/admin/documentation/createsdkDocumentation?classification_ids=' . $v['id'] . '"><i class="fa fa-plus-circle "></i> addArticle</a><a style="text-decoration: none" class="edit_' . $v['id'] . ' abutton cloros3" href="/admin/documentation/createSdkClassification?id=' . $v['id'] . '"><i class="fa fa-edit"></i> edit</a><a style="text-decoration: none" onclick="del(' . $v['id'] . ')" class="abutton cloros4"><i class="fa fa-trash-o fa-delete"></i> del</a></div></div></li>';
+                $html .= '<a style="text-decoration: none" class="abutton cloros2" href=href="'.$this->headerurl().'/admin/createSdkClassification/'.$v['id'].'/'.$v['platformid'].'/'.$v['version'].'"><i class="fa fa-plus-circle "></i> add</a><a style="text-decoration: none" class="abutton cloros2" href="/admin/documentation/createsdkDocumentation?classification_ids=' . $v['id'] . '"><i class="fa fa-plus-circle "></i> addArticle</a><a style="text-decoration: none" class="edit_' . $v['id'] . ' abutton cloros3" href="'.$this->headerurl().'/admin/updateSdkClassification/'.$v['id'].'"><i class="fa fa-edit"></i> edit</a><a style="text-decoration: none" onclick="del(' . $v['id'] . ')" class="abutton cloros4"><i class="fa fa-trash-o fa-delete"></i> del</a></div></div></li>';
                 $html .= $this->assemPage($v['id'], $data);
             }
         }
@@ -214,6 +218,11 @@ class SdkclassificationService
             }
         }
         return $arr;
+    }
+
+    function headerurl(){
+        $http_type = ((isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on') || (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] == 'https')) ? 'https://' : 'http://';
+        return  $http_type . $_SERVER['HTTP_HOST'];
     }
 
 }

@@ -29,19 +29,17 @@ class SdKArticleService
         }
 
         $SdKArticle=new SdKArticle();
-        $data=$SdKArticle->paginate($where,"*","displayorder,id desc",10);
-        $data = $SdKArticle->objToArr($data);
-//        $data = $data->toArray();
+        $data=$SdKArticle->paginates($where,"*","displayorder,id desc",10);
         $classification=$this->allCategories();
         $banben=$this->allVersion();
-//        if(!empty($data)){
-//            foreach ($data as $k=>$v){
-//                $fenlei=$this->assemblyClassification($v['classification_ids'],$classification);
-//                $data[$k]['classification']=$fenlei?implode("--",$fenlei):"";
-//                $data[$k]['platformversion']=$this->assemblyVersion(array($v['platformid'],$v['version']),$banben);
-//            }
-//        }
-        return array('data'=>$data);
+        if(!empty($data)){
+            foreach ($data['data'] as $k=>$v){
+                $fenlei=$this->assemblyClassification($v->classification_ids,$classification);
+                $data['data'][$k]->classification=$fenlei?implode("--",$fenlei):"";
+                $data['data'][$k]->platformversion=$this->assemblyVersion(array($v->platformid,$v->version),$banben);
+            }
+        }
+        return $data;
     }
 
     public function appends(array $append)
@@ -73,8 +71,10 @@ class SdKArticleService
             $classification_ids=$data['classification_ids'];
             $wheres = "deleted=0 and id='$classification_ids'";
             $classification_data = $SdkClassification->find($wheres);
+            $classification_data=$SdkClassification->objToArr($classification_data);
             if (isset($data['id'])){
                 $is_edit=$SdKArticle->find("id='{$data['id']}'");
+                $is_edit=$SdKArticle->objToArr($is_edit);
                 if($data['titel']!=$is_edit['titel'] || $data['seotitel']!=$is_edit['seotitel']){
                     $is_titel=$SdKArticle->find("classification_ids='".$classification_ids."' and id!={$data['id']}  and (titel='".$data['titel']."' or seotitel='".$data['seotitel']."')  and deleted=0");
                 }
@@ -100,13 +100,13 @@ class SdKArticleService
             $where = "id='{$data['id']}'";
             $bool = $SdKArticle->update($data, $where);
         }  else {
-            $bool = $SdKArticle->insert($data);
-            if($bool){
-                $where['admin_id'] = $user_id;
-                $where['type'] = 'SdkDocumentation';
-                $DraftBox=new DraftBox();
-                $DraftBox->del_draft($where);
-            }
+            $bool = $SdKArticle->insertGetId($data);
+//            if($bool){
+//                $where['admin_id'] = $user_id;
+//                $where['type'] = 'SdkDocumentation';
+//                $DraftBox=new DraftBox();
+//                $DraftBox->del_draft($where);
+//            }
         }
         if($bool){
             return ['code'=>1];
@@ -131,7 +131,6 @@ class SdKArticleService
                 $arr[$v['id']]=$v['lefthtml'].$v['title']."&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp".$str;
             }
         }
-        dump($arr);exit;
         return $arr ?? [];
     }
 
@@ -190,6 +189,7 @@ class SdKArticleService
         $SdKArticle = new SdKArticle();
         $where = "deleted=0 and id='$id'";
         $data = $SdKArticle->find($where);
+        $data = $SdKArticle->objToArr($data);
         return $data;
     }
     function allCategories()
@@ -200,6 +200,7 @@ class SdKArticleService
         $field = "id,title,pid";
         $order = "lv";
         $data = $SdkClassification->select($where, $field,$order);
+        $data = $SdkClassification->objToArr($data);
         return $data;
     }
     function allVersion()
@@ -210,6 +211,7 @@ class SdKArticleService
         $field = "id,name,pid";
         $order = "lv";
         $data = $PlatformVersion->select($where, $field,$order);
+        $data = $PlatformVersion->objToArr($data);
         return $data;
     }
 

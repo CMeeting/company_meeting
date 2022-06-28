@@ -16,6 +16,7 @@ use App\Services\SdkclassificationService;
 use App\Services\SdKArticleService;
 use App\Repositories\RolesRepository;
 use App\Http\Requests\Admin\AdminLoginRequest;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 class DocumentationController extends BaseController {
 
@@ -104,14 +105,12 @@ class DocumentationController extends BaseController {
             } else {
                 if ($bool==1) {
                     flash('修改成功')->success()->important();
-                    return redirect()->route('documentation.platformVersion');
                 }elseif ($bool==0){
-                    flash('暂无更新')->success()->important();
-                    return redirect()->route('documentation.platformVersion');
+                    flash('暂无更新')->error()->important();
                 } else {
                     flash('修改失败')->error()->important();
-                    return redirect()->route('documentation.updatePlatformVersion');
                 }
+                return redirect()->route('documentation.platformVersion');
             }
         }
     }
@@ -173,27 +172,57 @@ class DocumentationController extends BaseController {
         $data['pid'] = $pid;
         $fenlei = $documentation->getCategoricalData();
         $categorical_data = $sdkclassification->getCategorical();
-        return $this->view('createsdkclassification',['pid'=>$pid,'data'=>$data,"material"=>$categorical_data,"parent"=>$fenlei['parent'],"children"=>$fenlei['childCateList']]);
+        return $this->view('createsdkclassification',['pid'=>$pid,'data'=>$data,"material"=>$categorical_data,"parent"=>json_encode($fenlei['parent']),"children"=>$fenlei['childCateList']]);
     }
 
 
-    public function createRunSdkclassification()
+    public function createRunSdkclassification(Request $request)
     {
-        $param = $this->getRequstParam();
+        $param = $request->input();
         $sdkclassification = new SdkclassificationService();
         if (!empty($param)) {
             $bool = $sdkclassification->addEditcaregorical($param);
             if ($bool == "repeat") {
-                return error("分类名称在顶级/相同分类下已存在");
+                flash('分类名称在顶级/相同分类下已存在')->error()->important();
+                return redirect()->route('documentation.createSdkClassification');
             } else {
                 if ($bool) {
-                    if (isset($param['delid'])) {
-                        return success("操作成功");
-                    }
-                    return redirect('/admin/documentation/sdkClassification');
+                    flash('添加成功')->success()->important();
                 } else {
-                    return failure("操作失败");
+                    flash('添加失败')->error()->important();
                 }
+                return redirect()->route('documentation.createSdkClassification');
+            }
+        }
+    }
+
+    public function updateSdkClassification($id)
+    {
+        $documentation = new DocumentationService();
+        $sdkclassification = new SdkclassificationService();
+        $data = $sdkclassification->getFindcategorical($id);
+        $fenlei = $documentation->getCategoricalData();
+        $categorical_data = $sdkclassification->getCategorical();
+        return $this->view('updatesdkclassification',['data'=>$data,"material"=>$categorical_data,"parent"=>json_encode($fenlei['parent']),"children"=>$fenlei['childCateList']]);
+    }
+    public function updateRunSdkclassification(Request $request)
+    {
+        $param = $request->input();
+        $sdkclassification = new SdkclassificationService();
+        if (!empty($param)) {
+            $bool = $sdkclassification->addEditcaregorical($param);
+            if ($bool == "repeat") {
+                flash('分类名称在顶级/相同分类下已存在')->error()->important();
+                return redirect()->route('documentation.sdkClassification');
+            } else {
+                if ($bool==1) {
+                    flash('修改成功')->success()->important();
+                }elseif ($bool==0){
+                    flash('暂无更新')->error()->important();
+                } else {
+                    flash('修改失败')->error()->important();
+                }
+                return redirect()->route('documentation.sdkClassification');
             }
         }
     }
@@ -215,58 +244,89 @@ class DocumentationController extends BaseController {
         $param = $request->input();
         $sdksrvice = new SdKArticleService();
         $data = $sdksrvice->sele_list($param);
-        return $this->view('sdkdocumentation',['data'=>$data['data']]);
+        $data = $this->page_with_array($request,$data);
+        return $this->view('sdkdocumentation',['data'=>$data]);
     }
 
-    public function createsdkDocumentation()
+
+    function page_with_array($request,$array_item){
+        $currentPage = \Illuminate\Pagination\LengthAwarePaginator::resolveCurrentPage();
+        $itemCollection = collect($array_item);
+        $perPage = 10; // 每页数量
+        $currentPageItems = $itemCollection->slice(($currentPage*$perPage)-$perPage,$perPage)->all();
+        $paginatedItems = new \Illuminate\Pagination\LengthAwarePaginator($currentPageItems,count($itemCollection),$perPage);
+        return $paginatedItems->setPath($request->url());
+
+    }
+
+
+
+    public function createsdkDocumentation($classification_ids=0)
     {
-        $DraftBox = new DraftBox();
         $sdkclassification = new SdkclassificationService();
-        $SdKArticleService = new SdKArticleService();
-        $admin = $this->getUserInfo();
-        $param = $this->getRequstParam();
-        $where['admin_id'] = $admin['user_id'];
-        $where['type'] = 'SdkDocumentation';
-        if (isset($param['id']) && $param['id']) {
-            $data = $SdKArticleService->getFindcategorical($param['id']);
-        }
-        if (!isset($param['delid'])) {
-            $page = isset($param['page']) ? $param['page'] : 1;
-            if(isset($param['platformid'])){
-                $assign_where = "platformid={$param['platformid']}&version={$param['version']}&classification={$param['classification']}&created_at_start={$param['created_at_start']}&created_at_end={$param['created_at_end']}&updated_at_start={$param['updated_at_start']}&updated_at_end={$param['updated_at_end']}&commit={$param['commit']}&page=$page";
-            }else{
-                $assign_where = "page=$page";
-            }
-        }
         $categorical_data = $sdkclassification->getCategorical();
-        $draft = $DraftBox->find_draft($where);
-        $draft = $draft ? json_decode($draft, true) : "";
-        View::assign('draft', $draft);
-        View::assign('assign_where', $assign_where);
-        View::assign('classification_ids', isset($param['classification_ids']) ? $param['classification_ids'] : 0);
-        View::assign('data', $data ?? []);
-        View::assign('material', $categorical_data);
-        return view();
+        return $this->view('createsdkdocumentation',['classification_ids'=>$classification_ids,'material'=>$categorical_data]);
     }
 
-    public function createRunsdkDocumentation()
+    public function createRunsdkDocumentation(Request $request)
     {
-        $admin = $this->getUserInfo();
-        $param = $this->getRequstParam();
+        //$admin = $this->getUserInfo();
+        $param = $request->input();
         $SdKArticleService = new SdKArticleService();
         if (!empty($param)) {
-            if (empty($param['data']['classification_ids']) && !isset($param['delid'])) return error("请选择文章分类");
-            $bool = $SdKArticleService->addEditcaregorical($param, $admin['user_id']);
+            if (empty($param['data']['classification_ids']) && !isset($param['delid'])){
+                flash('请选择文章分类')->error()->important();
+                return redirect()->route('documentation.createsdkDocumentation');
+            }
+            $bool = $SdKArticleService->addEditcaregorical($param);
             if ($bool['code'] == 1) {
-                if (isset($param['delid'])) {
-                    return success("操作成功");
-                } elseif (isset($param['data']['id'])) {
-                    return redirect('/admin/documentation/sdkDocumentation?' . $param['assign_where']);
+                    flash('添加成功')->success()->important();
+                    return redirect()->route('documentation.sdkDocumentation');
                 } else {
-                    return redirect('/admin/documentation/sdkDocumentation');
-                }
+                flash($bool['msg'])->error()->important();
+                return redirect()->route('documentation.createsdkDocumentation');
+            }
+        }
+    }
+
+    public function updatesdkDocumentation($id)
+    {
+        $sdkclassification = new SdkclassificationService();
+        $SdKArticleService = new SdKArticleService();
+        $data = $SdKArticleService->getFindcategorical($id);
+        $categorical_data = $sdkclassification->getCategorical();
+        return $this->view('updatesdkdocumentation',['data'=>$data,'material'=>$categorical_data]);
+    }
+
+    public function updateRunsdkDocumentation(Request $request)
+    {
+        $param = $request->input();
+        $SdKArticleService = new SdKArticleService();
+        if (!empty($param)) {
+            if (empty($param['data']['classification_ids']) && !isset($param['delid'])){
+                flash('请选择文章分类')->error()->important();
+                return redirect()->route('documentation.createsdkDocumentation');
+            }
+            $bool = $SdKArticleService->addEditcaregorical($param);
+            if ($bool['code'] == 1) {
+                flash('修改成功')->success()->important();
+                return redirect()->route('documentation.sdkDocumentation');
             } else {
-                return error($bool['msg']);
+                flash($bool['msg'])->error()->important();
+                return redirect()->route('documentation.sdkDocumentation');
+            }
+        }
+    }
+    public function delsdkDocumentation(Request $request)
+    {
+        $param = $request->input();
+        $SdKArticleService = new SdKArticleService();
+        if (!empty($param)) {
+            $bool = $SdKArticleService->addEditcaregorical($param);
+            if ($bool['code'] == 1) {
+                return ['code'=>0];
+            } else {
+                return ['code'=>0,'msg'=>$bool['msg']];
             }
         }
     }

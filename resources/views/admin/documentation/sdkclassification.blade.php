@@ -1,7 +1,10 @@
 @extends('admin.layouts.layout')
 @section('content')
     <style>
-
+        .banben{
+            margin-left: 20%;
+            color: #529f9d;
+        }
         .handless span {
 
             display: block;
