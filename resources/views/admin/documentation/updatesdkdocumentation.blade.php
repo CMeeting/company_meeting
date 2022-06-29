@@ -15,7 +15,7 @@
             <div class="ibox-content">
                 <form class="form-horizontal" name="form"  method="post" action="{{route('documentation.updateRunsdkDocumentation')}}" >
                     {{ csrf_field() }}
-
+                            <input type="hidden" name="data[id]" value="{{$data['id']}}">
                                 <div class="form-group">
                                     <label class="col-sm-2 control-label no-padding-right" for="form-field-1"> order_num(排序 从大到小)：</label>
                                     <div class="col-sm-6 col-xs-12">

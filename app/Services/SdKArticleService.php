@@ -111,7 +111,7 @@ class SdKArticleService
         if($bool){
             return ['code'=>1];
         }else{
-            return ['code'=>0,'操作失败'];
+            return ['code'=>0,'msg'=>'没有更新数据'];
         }
 
     }
