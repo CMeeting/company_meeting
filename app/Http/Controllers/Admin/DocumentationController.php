@@ -140,8 +140,8 @@ class DocumentationController extends BaseController {
         $documentation = new DocumentationService();
         if ($param['id']) {
             $data = $documentation->showHide($param);
-            if ($data) {
-               return ['code'=>0];
+            if ($data['code']) {
+               return ['code'=>0,'status'=>$data['status']];
             } else {
                return ['code'=>1,'msg'=>"更新失败"];
             }

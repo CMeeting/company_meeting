@@ -6,7 +6,7 @@
             border-radius: 10px;
             border: 1px solid lavenderblush;
             margin-right: 3px;
-            width: 70px;
+            width: 75px;
             padding: 0px 5px 0px 5px;
             text-decoration:none;
             color: #f6fff8;
@@ -53,7 +53,7 @@
                     </thead>
                     <tbody>
                     @foreach($data['data'] as $key => $value)
-                        <tr>
+                        <tr id="han_{{$value->id}}">
                             <td class="text-center">{{$value->id}}</td>
                             <td>{{$value->titel}}</td>
                             <td class="text-center">{{$value->seotitel}}</td>
@@ -96,3 +96,66 @@
 </div>
 
 @endsection
+<script>
+    function del(id){
+        layer.confirm('您确定要删除吗？', {
+            btn: ['确定','取消']
+        }, function(){
+            layer.close(index);
+            var index = layer.load();
+            $.ajax({
+                url: "{{route('documentation.delsdkDocumentation')}}",
+                data: {delid:id, _token: '{{ csrf_token() }}'},
+                type: 'post',
+                dataType: "json",
+                success: function (resp) {
+                     layer.close(index);
+                    //成功提示
+                    if (resp.code==0) {
+                        layer.msg("删除成功", {
+                            icon: 1,
+                            time: 1000
+                        }, function () {
+                            $("#han_"+id).remove();
+                        });
+                    } else {
+                        //失败提示
+                        layer.msg(resp.message, {
+                            icon: 2,
+                            time: 2000
+                        });
+                    }
+                }
+            });
+        }, function(index){
+            layer.close(index);
+        });
+    }
+
+    function show(id){
+        var index = layer.load();
+        $.ajax({
+            url: "{{route('documentation.showHideclassification')}}",
+            data: {id:id,type:'sdk_documentation', _token: '{{ csrf_token() }}'},
+            type: 'post',
+            dataType: "json",
+            success: function (resp) {
+                if (resp.code==0) {
+                    if(resp.status==1){
+                        var htmls='<a type="button" style="text-decoration: none;color: #f6fff8"   data-id="{$v.id}"  class="openBtn_'+id+' abutton cloros" data-style="zoom-out" onclick="show('+id+');"> <span class="ladda-label">show</span></a>';
+                    }else{
+                        var htmls='<a type="button" style="text-decoration: none;color: #f6fff8"  data-id="{$v.id}"  class="openBtn_'+id+' abutton cloros1" data-style="zoom-out" onclick="show('+id+');"> <span class="ladda-label">hide</span></a>';
+                    }
+                    $(".open_"+id).html(htmls);
+                    layer.close(index);
+                } else {
+                    //失败提示
+                    layer.msg(resp.msg, {
+                        icon: 2,
+                        time: 2000
+                    });
+                }
+            }
+        });
+    }
+</script>

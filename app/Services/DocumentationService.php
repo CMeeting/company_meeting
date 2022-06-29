@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\DocumentationModel as PlatformVersion;
 use App\Models\SdkclassificationModel as SdkClassification;
+use App\Models\SdkarticleModel as SdKArticle;
 
 class DocumentationService
 {
@@ -125,7 +126,7 @@ class DocumentationService
         } elseif ($param['type'] == "sdk_documentation") {
             $bool = $show->update(['enabled' => $enabled], "id=" . $param['id']);
         }
-        return $bool;
+        return array('code'=>$bool,"status"=>$enabled);
     }
 
     /**
