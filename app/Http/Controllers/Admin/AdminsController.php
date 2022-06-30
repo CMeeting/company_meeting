@@ -42,7 +42,8 @@ class AdminsController extends BaseController {
     {
         $roles = $this->rolesRepository->getRoles();
         $rolesinfo = $this->rolesRepository->getrolesinfo();
-        return view('admin.admins.create', compact('roles','rolesinfo'));
+        $rolesarr = json_encode($this->rolesRepository->getrolesarr());
+        return view('admin.admins.create', compact('roles','rolesinfo','rolesarr'));
     }
 
     /**

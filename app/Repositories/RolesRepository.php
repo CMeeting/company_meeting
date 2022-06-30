@@ -50,6 +50,18 @@ class RolesRepository
          return $arr;
     }
 
+    public function getrolesarr(){
+        $data=Db::table("role_auth")
+            ->selectRaw("role_id,rule_id")
+            ->get();
+        $data=$this->objToArr($data);
+        $arr=array();
+        foreach ($data as $k=>$v){
+                $arr[$v['role_id']][]=$v['rule_id'];
+        }
+        return $arr;
+    }
+
     function assembly_data($id,$data,$arr=array()){
         foreach ($data as $k=>$v){
           if($v['pid']==$id){
