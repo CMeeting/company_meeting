@@ -1,6 +1,6 @@
 @extends('admin.layouts.layout')
 @section('content')
-    <script src="/tinymce/tinymce.min.js"></script>
+    <script src="/tinymce/js/tinymce/tinymce.min.js"></script>
     <div class="row">
         <div class="col-sm-12">
             <div class="ibox-title">

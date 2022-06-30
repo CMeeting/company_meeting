@@ -62,13 +62,22 @@
                                         </select>
                                     </div>
                                 </div>
-
                     <div class="form-group">
+                        <label class="col-sm-2 control-label no-padding-right" for="form-field-1">编辑器：</label>
+                        <div class="input-group col-sm-6 col-xs-12">
+                            <select class="form-control" name="data[type]" id="type">
+                                    <option value="1">富文本编辑器</option>
+                                    <option value="2">MarkDown编辑器</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group tinyeditor">
                         <label class="col-sm-2 control-label no-padding-right" for="form-field-1"> content：</label>
                         <div class="col-sm-6 col-xs-12">
                             <textarea id="content" name="data[info]" class="form-control" rows="5" cols="20"></textarea>
                         </div>
                     </div>
+                    <div class="editor mdeditor hidden"></div>
 
                                 <div class="form-group">
                                     <label class="col-sm-2 control-label no-padding-right" for="form-field-1"> enabled(是否显示)：</label>
@@ -94,8 +103,8 @@
         </div>
     </div>
 
+    <script src="{{loadEdition('/js/jquery.min.js')}}"></script>
     <script>
-        debugger
         tinymce.init({
             selector: '#content',
             // skin:'oxide-dark',
@@ -127,6 +136,89 @@
             autosave_ask_before_unload: true,
             autosave_interval: '5s',
         });
+        const zhHans = {
+            "bold": "粗体",
+            "boldText": "粗体文本",
+            "cheatsheet": "Markdown 语法",
+            "closeHelp": "关闭帮助",
+            "closeToc": "关闭目录",
+            "code": "代码",
+            "codeBlock": "代码块",
+            "codeLang": "编程语言",
+            "codeText": "代码",
+            "exitFullscreen": "退出全屏",
+            "exitPreviewOnly": "恢复默认",
+            "exitWriteOnly": "恢复默认",
+            "fullscreen": "全屏",
+            "h1": "一级标题",
+            "h2": "二级标题",
+            "h3": "三级标题",
+            "h4": "四级标题",
+            "h5": "五级标题",
+            "h6": "六级标题",
+            "headingText": "标题",
+            "help": "帮助",
+            "hr": "分割线",
+            "image": "图片",
+            "imageAlt": "alt",
+            "imageTitle": "图片描述",
+            "italic": "斜体",
+            "italicText": "斜体文本",
+            "limited": "已达最大字符数限制",
+            "lines": "行数",
+            "link": "链接",
+            "linkText": "链接描述",
+            "ol": "有序列表",
+            "olItem": "项目",
+            "preview": "预览",
+            "previewOnly": "仅预览区",
+            "quote": "引用",
+            "quotedText": "引用文本",
+            "shortcuts": "快捷键",
+            "source": "源代码",
+            "sync": "同步滚动",
+            "toc": "目录",
+            "top": "回到顶部",
+            "ul": "无序列表",
+            "ulItem": "项目",
+            "words": "字数",
+            "write": "编辑",
+            "writeOnly": "仅编辑区",
+            "strike": "删除线",
+            "strikeText": "文本",
+            "table": "表格",
+            "tableHeading": "标题",
+            "task": "任务列表",
+            "taskText": "待办事项"
+        }
+        var plugins = [bytemdPluginGfm({
+            locale: zhHans
+        }), bytemdPluginHighlight(), bytemdPluginGemoji()];
+        const $el = document.querySelector('.editor')
+        console.log($el)
+        var editor = new bytemd.Editor({
+            target: $el,
+            props: {
+                plugins: plugins,
+                locale: zhHans
+            }
+        });
+        editor.$on('change', function (e) {
+            editor.$set({ value: e.detail.value });
+            console.log(e.detail.value)
+        });
+        $("#type").change(function(){
+            var v = $(this).val();
+            if(1==v){
+                $(".mdeditor").addClass('hidden');
+                $(".tinyeditor").removeClass('hidden');
+            }else if(2==v){
+                $(".tinyeditor").addClass('hidden');
+                $(".mdeditor").removeClass('hidden');
+            }else{
+                $(".mdeditor").addClass('hidden');
+                $(".tinyeditor").removeClass('hidden');
+            }
+        });
     </script>
-<script src="{{loadEdition('/js/jquery.min.js')}}"></script>
 @endsection

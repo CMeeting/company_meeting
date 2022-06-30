@@ -53,12 +53,11 @@ class BlogService
             $v['tag_id'] = self::getBlogTagTitle($v['tag_id']);
             $datas[$k] = $v;
         }
-        print_r($datas);die;
 //        $datas = Blogs::paginate($where, $sort);
 //        $data['data'] = $datas->toArray();
 //        $data['page'] = $datas->render();
 //        $data['assign_where'] = CommonService::buildAssignWhere($param);
-        return $data ?? [];
+        return $datas ?? [];
     }
 
     public function getBlogTagskv()
@@ -97,14 +96,17 @@ class BlogService
     public static function getBlogTagTitle($tags)
     {
         $tag_info = '';
-        $tags_kv = (new BlogService(app()))->getBlogTagskv();
+        $arr = json_decode(json_encode(BlogTags::getTagskv()), true);
+        foreach ($arr as $v) {
+            $tags_kv[$v['id']] = $v['title'];
+        }
         if (!empty($tags)) {
             $tags = explode(',', $tags);
             foreach ($tags as $v) {
                 $t = $tags_kv[$v] ?? '';
-                $tag_info .= '|-' . $t . '<br>';
+                $tag_info .= $t . ' | ';
             }
-            $tag_info = rtrim($tag_info, "<br>");
+            $tag_info = rtrim($tag_info, " | ");
         }
         return $tag_info;
     }
