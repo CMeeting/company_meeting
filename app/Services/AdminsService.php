@@ -21,6 +21,7 @@ use App\Handlers\ImageUploadHandler;
 use App\Repositories\AdminsRepository;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Input;
+use Illuminate\Support\Facades\DB;
 class AdminsService
 {
     protected $uploader;
@@ -62,12 +63,14 @@ class AdminsService
         $datas['password'] = Hash::make($request->password);
         $datas['create_ip'] = $request->ip();
         $datas['last_login_ip'] = $request->ip();
-
+        dump($datas);exit;
         $admin = $this->adminsRepository->create($datas);
 
         //插入模型关联数据
         $admin->roles()->attach($request->role_id);
+        if(count($datas['role_id'])>0){
 
+        }
         return $admin;
     }
 

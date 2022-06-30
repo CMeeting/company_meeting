@@ -64,7 +64,7 @@
                                 </div>
                     <div class="form-group">
                         <label class="col-sm-2 control-label no-padding-right" for="form-field-1">编辑器：</label>
-                        <div class="input-group col-sm-6 col-xs-12">
+                        <div class="col-sm-6 col-xs-12">
                             <select class="form-control" name="data[type]" id="type">
                                     <option value="1">富文本编辑器</option>
                                     <option value="2">MarkDown编辑器</option>
@@ -73,7 +73,7 @@
                     </div>
                     <div class="form-group tinyeditor">
                         <label class="col-sm-2 control-label no-padding-right" for="form-field-1"> content：</label>
-                        <div class="col-sm-6 col-xs-12">
+                        <div class="col-sm-10 col-xs-12">
                             <textarea id="content" name="data[info]" class="form-control" rows="5" cols="20"></textarea>
                         </div>
                     </div>
@@ -113,7 +113,7 @@
             toolbar: 'code undo redo restoredraft | cut copy paste pastetext | forecolor backcolor bold italic underline strikethrough link anchor | alignleft aligncenter alignright alignjustify outdent indent | \
     formatselect fontselect fontsizeselect | bullist numlist | blockquote subscript superscript removeformat | \
     table image media charmap emoticons hr pagebreak insertdatetime print preview | fullscreen | bdmap indent2em lineheight axupimgs',
-            width: 1100,
+            width: '100%',
             height: 750, //编辑器高度
             min_height: 300,
             toolbar_mode: 'sliding',
