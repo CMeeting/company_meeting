@@ -9,9 +9,11 @@
             <a class="menuid btn btn-primary btn-sm" href="javascript:history.go(-1)">返回</a>
             <a href="{{route('admins.index')}}"><button class="btn btn-primary btn-sm" type="button"><i class="fa fa-plus-circle"></i> 管理员管理</button></a>
             <div class="hr-line-dashed m-t-sm m-b-sm"></div>
-            <form class="form-horizontal m-t-md" id="thisForm" action="{{ route('admins.store') }}" method="post" accept-charset="UTF-8" enctype="multipart/form-data">
-                {!! csrf_field() !!}
+                <form class="form-horizontal m-t-md" id="thisForm" action="{{ route('admins.update',$admin->id) }}" method="post" accept-charset="UTF-8" enctype="multipart/form-data">
+                    {!! csrf_field() !!}
+
                 {{method_field('PATCH')}}
+
                 <div class="form-group">
                     <label class="col-sm-2 control-label">用户名：</label>
                     <div class="input-group col-sm-2">

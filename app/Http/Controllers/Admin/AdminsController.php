@@ -80,7 +80,7 @@ class AdminsController extends BaseController {
      * @param $id
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function update(BlogTagRequest $request, $id)
+    public function update(Request $request, $id)
     {
         $this->adminsService->update($request, $id);
 

@@ -127,6 +127,30 @@ class AdminsService
         //更新关联表数据
         $admin->roles()->sync($request->role_id);
 
+        $rolesarr = $this->rolesRepository->getrolesarr();
+        $arr=array();
+        if(count($datas['role_id'])>0){
+            //第一层循环，循环所勾选了什么角色
+            foreach ($datas['role_id'] as $k=>$v){
+                //判断角色ID下标的数组是否存在
+                if(isset($rolesarr[$v])){
+                    //第二层循环，循环角色ID下标数组内权限ID是否被勾选
+                    foreach ($rolesarr[$v] as $ks=>$vs){
+                        if(in_array($vs,$datas['rules_id'])){
+                            $arr[]=[
+                                'admin_id'=>$id,
+                                'role_id'=>$v,
+                                'rule_id'=>$vs,
+                                'created_at'=>date("Y-m-d H:i:s"),
+                                'updated_at'=>date("Y-m-d H:i:s")
+                            ];
+                        }
+                    }
+                }
+            }
+        }
+        DB::table('admin_auth')->where("admin_id","=",$id)->delete();
+        DB::table('admin_auth')->insert($arr);
         return $admin;
     }
 

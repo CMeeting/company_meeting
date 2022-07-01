@@ -69,7 +69,7 @@
                             <!-- /.循环一级权限数据 -->
                             @foreach($rolesinfo as $k=>$vo)
                                 <div class="md-checkbox" style="margin-right:10px;">
-                                    <input type="checkbox" id="new_rules_{{$vo['id']}}" name="rules_id[]" value="{{$vo['id']}}"  class="md-check checkbox-parent" dataid="id-{{$vo['id']}}"/>
+                                    <input type="checkbox" id="new_rules_{{$vo['id']}}" name="rules_id[]" value="{{$vo['id']}}"  class="md-check checkbox-parent" dataid="id-{{$vo['id']}}" disabled/>
                                     <label for="new_rules_{{$vo['id']}}">
                                         <span></span>
                                         <span class="check"></span>
@@ -79,7 +79,7 @@
                                 <!-- /.循环二级权限数据 -->
                                 @foreach($vo['sub'] as $ks=>$sub)
                                     <div class="md-checkbox" style="padding-left:30px; color:#333333">
-                                        <input type="checkbox" id="new_rules_{{$sub['id']}}" name="rules_id[]" value="{{$sub['id']}}"  class="md-check checkbox-parent checkbox-child" dataid="id-{{$vo['id']}}-{{$sub['id']}}" />
+                                        <input type="checkbox" id="new_rules_{{$sub['id']}}" name="rules_id[]" value="{{$sub['id']}}"  class="md-check checkbox-parent checkbox-child" dataid="id-{{$vo['id']}}-{{$sub['id']}}" disabled/>
                                         <label for="new_rules_{{$sub['id']}}">
                                             <span></span>
                                             <span class="check"></span>
@@ -90,7 +90,7 @@
                                     <div style="display: flex; flex-wrap: wrap; padding-left:60px;">
                                     @foreach($sub['sub'] as $kss=>$subb)
                                         <div class="md-checkbox" style="margin-right: 20px; margin-bottom: 10px; color:#666666">
-                                            <input type="checkbox" id="new_rules_{{$subb['id']}}" name="rules_id[]" value="{{$subb['id']}}"  class="md-check checkbox-parent checkbox-child"  dataid="id-{{$vo['id']}}-{{$sub['id']}}-{{$subb['id']}}" />
+                                            <input type="checkbox" id="new_rules_{{$subb['id']}}" name="rules_id[]" value="{{$subb['id']}}"  class="md-check checkbox-parent checkbox-child"  dataid="id-{{$vo['id']}}-{{$sub['id']}}-{{$subb['id']}}" disabled/>
                                             <label for="new_rules_{{$subb['id']}}">
                                                 <span></span>
                                                 <span class="check"></span>
