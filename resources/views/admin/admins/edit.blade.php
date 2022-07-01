@@ -9,7 +9,7 @@
             <a class="menuid btn btn-primary btn-sm" href="javascript:history.go(-1)">返回</a>
             <a href="{{route('admins.index')}}"><button class="btn btn-primary btn-sm" type="button"><i class="fa fa-plus-circle"></i> 管理员管理</button></a>
             <div class="hr-line-dashed m-t-sm m-b-sm"></div>
-            <form class="form-horizontal m-t-md" action="{{ route('admins.update',$admin->id) }}" method="post" accept-charset="UTF-8" enctype="multipart/form-data">
+            <form class="form-horizontal m-t-md" id="thisForm" action="{{ route('admins.store') }}" method="post" accept-charset="UTF-8" enctype="multipart/form-data">
                 {!! csrf_field() !!}
                 {{method_field('PATCH')}}
                 <div class="form-group">
@@ -44,22 +44,69 @@
                         </span>
                     </div>
                 </div>
+                <teleport style="display: none" id="testt123">{{$rolesarr}}</teleport>
                 <div class="hr-line-dashed m-t-sm m-b-sm"></div>
                 <div class="form-group">
-                    <label class="col-sm-2 control-label">所属角色：</label>
-                    <div class="input-group col-sm-2">
+                    <label class="col-sm-2 control-label" style="padding-top: 0">所属角色：</label>
+                    <div class="input-group col-sm-10" style="display: flex; flex-wrap: wrap;">
                         @php
                             $ruleids = $admin->roles->pluck('id')->toArray();
                         @endphp
                         @foreach($roles as $k=>$item)
-                            <label><input type="checkbox" name="role_id[]" value="{{$item->id}}" @if(in_array($item->id,$ruleids)) checked="checked" @endif> {{$item->name}}</label><br/>
+                            <label style="margin-right: 10px;"><input  onchange="dd()" class="check" id="{{$item->id}}" type="checkbox" name="role_id[]" value="{{$item->id}}" @if(in_array($item->id,$ruleids)) checked="checked" @endif> {{$item->name}}</label><br/>
                         @endforeach
-                        @if ($errors->has('role_id'))
+                        @if ($errors->has('role_id' ))
                             <span class="help-block m-b-none"><i class="fa fa-info-circle"></i>{{$errors->first('role_id')}}</span>
                         @endif
                     </div>
                 </div>
                 <div class="hr-line-dashed m-t-sm m-b-sm"></div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label" style="padding-top: 0">拥有权限：</label>
+                    <div class="col-sm-6 col-xs-12" style="padding-left: 0">
+                        <!-- /.循环一级权限数据 -->
+                        @foreach($rolesinfo as $k=>$vo)
+                            <div class="md-checkbox" style="margin-right:10px;">
+                                <input type="checkbox" id="new_rules_{{$vo['id']}}" name="rules_id[]" value="{{$vo['id']}}"  class="md-check checkbox-parent" dataid="id-{{$vo['id']}}" @if(in_array($vo['id'],$adminroles)) checked @else disabled @endif/>
+                                <label for="new_rules_{{$vo['id']}}">
+                                    <span></span>
+                                    <span class="check"></span>
+                                    <span class="box"></span> {{$vo['name']}}</label>
+                            </div>
+                            @if(count($vo['sub'])>1)
+                            <!-- /.循环二级权限数据 -->
+                                @foreach($vo['sub'] as $ks=>$sub)
+                                    <div class="md-checkbox" style="padding-left:30px; color:#333333">
+                                        <input type="checkbox" id="new_rules_{{$sub['id']}}" name="rules_id[]" value="{{$sub['id']}}"  class="md-check checkbox-parent checkbox-child" dataid="id-{{$vo['id']}}-{{$sub['id']}}" @if(in_array($sub['id'],$adminroles)) checked @else disabled @endif/>
+                                        <label for="new_rules_{{$sub['id']}}">
+                                            <span></span>
+                                            <span class="check"></span>
+                                            <span class="box"></span> {{$sub['name']}}</label>
+                                    </div>
+                                    @if(count($sub['sub'])>1)
+                                    <!-- /.循环三级权限数据 -->
+                                        <div style="display: flex; flex-wrap: wrap; padding-left:60px;">
+                                            @foreach($sub['sub'] as $kss=>$subb)
+                                                <div class="md-checkbox" style="margin-right: 20px; margin-bottom: 10px; color:#666666">
+                                                    <input type="checkbox" id="new_rules_{{$subb['id']}}" name="rules_id[]" value="{{$subb['id']}}"  class="md-check checkbox-parent checkbox-child"  dataid="id-{{$vo['id']}}-{{$sub['id']}}-{{$subb['id']}}" @if(in_array($subb['id'],$adminroles)) checked @else disabled @endif />
+                                                    <label for="new_rules_{{$subb['id']}}">
+                                                        <span></span>
+                                                        <span class="check"></span>
+                                                        <span class="box"></span> {{$subb['name']}}</label>
+                                                </div>
+                                            @endforeach
+                                        </div>
+                                    @endif
+
+                                <!-- 循环二级权限数据./ -->
+                                @endforeach
+                            @endif
+                        <!-- 循环一级权限数据./ -->
+                        @endforeach
+                    </div>
+                </div>
+
+
                 <div class="form-group">
                     <label class="col-sm-2 control-label">状态：</label>
                     <div class="input-group col-sm-1">
@@ -85,3 +132,87 @@
     </div>
 </div>
 @endsection
+<script src="{{loadEdition('/js/jquery.min.js')}}"></script>
+<script>
+    var c="";
+    var $categroys = "";
+
+    /* 权限配置	选中上级自动选中下级 */
+    $(function () {
+        c=$("#testt123").text();
+        $categroys = JSON.parse(c);
+        //判断是否已全选
+        function isAllChecked(){
+            var form = $('#thisForm')[0];
+            var isChecked = true;
+
+            for (var i = 0; i < form.elements.length; i++) {
+                var e = form.elements[i];
+                if (e.type == 'checkbox' && e.name != 'chkAll' && e.disabled == false) {
+                    if (!e.checked) {
+                        isChecked = false;
+                        break;
+                    }
+                }
+            }
+
+            $('#chkAll').prop('checked', isChecked);
+        }
+        var rules = $('#rules').val();
+        if(rules === 'all'){
+            $('#chkAll').click();
+        }else{
+            isAllChecked();
+        }
+
+        //动态选择框，上下级选中状态变化
+        $('input.checkbox-parent').on('change', function () {
+            var dataid = $(this).attr("dataid");
+            $('input[dataid^=' + dataid + '-]').prop('checked', $(this).is(':checked'));
+
+            isAllChecked();
+        });
+        $('input.checkbox-child').on('change', function () {
+            var dataid = $(this).attr("dataid");
+            dataid = dataid.substring(0, dataid.lastIndexOf("-"));
+            var parent = $('input[dataid=' + dataid + ']');
+            if ($(this).is(':checked')) {
+                parent.prop('checked', true);
+                //循环到顶级
+                while (dataid.lastIndexOf("-") != 2) {
+                    dataid = dataid.substring(0, dataid.lastIndexOf("-"));
+                    parent = $('input[dataid=' + dataid + ']');
+                    parent.prop('checked', true);
+                }
+            } else {
+                //父级
+                if ($('input[dataid^=' + dataid + '-]:checked').length == 0) {
+                    parent.prop('checked', false);
+                    //循环到顶级
+                    while (dataid.lastIndexOf("-") != 2) {
+                        dataid = dataid.substring(0, dataid.lastIndexOf("-"));
+                        parent = $('input[dataid=' + dataid + ']');
+                        if ($('input[dataid^=' + dataid + '-]:checked').length == 0) {
+                            parent.prop('checked', false);
+                        }
+                    }
+                }
+            }
+        });
+    });
+
+
+    function dd(){
+        $(".md-check").attr("disabled", true);
+        $(".md-check").attr("checked", false);
+        $(".check").each(function (){
+            if($(this).is(':checked')){
+                var id=$(this).attr("id");
+                for (var i=0;i<$categroys[id].length;i++){
+                    $("#new_rules_"+$categroys[id][i]).prop("checked", true);
+                    $("#new_rules_"+$categroys[id][i]).attr("disabled", false);
+                }
+            }
+        })
+    }
+</script>

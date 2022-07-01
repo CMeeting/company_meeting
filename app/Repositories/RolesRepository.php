@@ -62,6 +62,19 @@ class RolesRepository
         return $arr;
     }
 
+    public function admingetrolesarr($id){
+        $data=Db::table("admin_auth")
+            ->where("admin_id",'=',$id)
+            ->selectRaw("rule_id")
+            ->get();
+        $data=$this->objToArr($data);
+        foreach ($data as $k=>$v){
+            $arr[]=$v['rule_id'];
+        }
+        $arr=array_unique($arr);
+        return $arr;
+    }
+
     function assembly_data($id,$data,$arr=array()){
         foreach ($data as $k=>$v){
           if($v['pid']==$id){

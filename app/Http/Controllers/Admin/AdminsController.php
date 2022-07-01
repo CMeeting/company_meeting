@@ -69,8 +69,10 @@ class AdminsController extends BaseController {
         $admin = $this->adminsService->ById($id);
 
         $roles = $this->rolesRepository->getRoles();
-
-        return view('admin.admins.edit', compact('admin', 'roles'));
+        $rolesinfo = $this->rolesRepository->getrolesinfo();
+        $rolesarr = json_encode($this->rolesRepository->getrolesarr());
+        $adminroles = $this->rolesRepository->admingetrolesarr($id);
+        return view('admin.admins.edit', compact('admin', 'roles','rolesinfo','rolesarr','adminroles'));
     }
 
     /**

@@ -48,7 +48,9 @@
                             @endif
                         </div>
                     </div>
+
                     <teleport style="display: none" id="testt123">{{$rolesarr}}</teleport>
+
                     <div class="hr-line-dashed m-t-sm m-b-sm"></div>
                     <div class="form-group">
                         <label class="col-sm-2 control-label" style="padding-top: 0">所属角色：</label>
@@ -67,7 +69,7 @@
                             <!-- /.循环一级权限数据 -->
                             @foreach($rolesinfo as $k=>$vo)
                                 <div class="md-checkbox" style="margin-right:10px;">
-                                    <input type="checkbox" id="new_rules_{{$vo['id']}}" name="rules_id[]" value="{{$vo['id']}}"  class="md-check checkbox-parent" dataid="id-{{$vo['id']}}" disabled/>
+                                    <input type="checkbox" id="new_rules_{{$vo['id']}}" name="rules_id[]" value="{{$vo['id']}}"  class="md-check checkbox-parent" dataid="id-{{$vo['id']}}"/>
                                     <label for="new_rules_{{$vo['id']}}">
                                         <span></span>
                                         <span class="check"></span>
@@ -77,7 +79,7 @@
                                 <!-- /.循环二级权限数据 -->
                                 @foreach($vo['sub'] as $ks=>$sub)
                                     <div class="md-checkbox" style="padding-left:30px; color:#333333">
-                                        <input type="checkbox" id="new_rules_{{$sub['id']}}" name="rules_id[]" value="{{$sub['id']}}"  class="md-check checkbox-parent checkbox-child" dataid="id-{{$vo['id']}}-{{$sub['id']}}" disabled/>
+                                        <input type="checkbox" id="new_rules_{{$sub['id']}}" name="rules_id[]" value="{{$sub['id']}}"  class="md-check checkbox-parent checkbox-child" dataid="id-{{$vo['id']}}-{{$sub['id']}}" />
                                         <label for="new_rules_{{$sub['id']}}">
                                             <span></span>
                                             <span class="check"></span>
@@ -88,7 +90,7 @@
                                     <div style="display: flex; flex-wrap: wrap; padding-left:60px;">
                                     @foreach($sub['sub'] as $kss=>$subb)
                                         <div class="md-checkbox" style="margin-right: 20px; margin-bottom: 10px; color:#666666">
-                                            <input type="checkbox" id="new_rules_{{$subb['id']}}" name="rules_id[]" value="{{$subb['id']}}"  class="md-check checkbox-parent checkbox-child"  dataid="id-{{$vo['id']}}-{{$sub['id']}}-{{$subb['id']}}" disabled/>
+                                            <input type="checkbox" id="new_rules_{{$subb['id']}}" name="rules_id[]" value="{{$subb['id']}}"  class="md-check checkbox-parent checkbox-child"  dataid="id-{{$vo['id']}}-{{$sub['id']}}-{{$subb['id']}}" />
                                             <label for="new_rules_{{$subb['id']}}">
                                                 <span></span>
                                                 <span class="check"></span>
@@ -208,8 +210,6 @@
                 var id=$(this).attr("id");
                 for (var i=0;i<$categroys[id].length;i++){
                     $("#new_rules_"+$categroys[id][i]).prop("checked", true);
-                    console.log($("#new_rules_"+$categroys[id][i]))
-                    debugger
                     $("#new_rules_"+$categroys[id][i]).attr("disabled", false);
                 }
             }
