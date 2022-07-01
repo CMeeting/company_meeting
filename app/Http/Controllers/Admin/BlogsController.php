@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Handlers\ImageUploadHandler;
 use App\Http\Requests\Blog\BlogTagRequest;
 use App\Services\BlogService;
 
@@ -122,4 +123,11 @@ class BlogsController extends BaseController
         }
         return redirect()->back();
     }
+
+    public function editorUpload(){
+        $param = request();
+        print_r($param);die;
+        $this->editor_upload($param);
+    }
+
 }

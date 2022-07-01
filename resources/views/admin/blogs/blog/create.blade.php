@@ -33,9 +33,9 @@
                     <div class="form-group">
                         <label class="col-sm-2 control-label">Tags：</label>
                         <div class="input-group col-sm-2">
-{{--                            @foreach ($tags as $k=>$v)--}}
-{{--                            <label><input class="required" type="checkbox" name="tags[]" value="{{$k}}">{{$v}}</label><br>--}}
-{{--                            @endforeach--}}
+                            @foreach ($tags as $k=>$v)
+                            <label><input class="required" type="checkbox" name="tags[]" value="{{$k}}">{{$v}}</label><br>
+                            @endforeach
                         </div>
                     </div>
                     <div class="hr-line-dashed m-t-sm m-b-sm"></div>
@@ -130,7 +130,7 @@
     height: 750, //编辑器高度
     min_height: 300,
     toolbar_mode: 'sliding',
-    images_upload_url: '/admin/changelogs/e_upload',
+    images_upload_url: '/admin/blogs/editorUpload',
     images_upload_base_path: '',
     contextmenu: "paste | link image inserttable | cell row column deletetable",
     // content_css: [ //可设置编辑区内容展示的css，谨慎使用

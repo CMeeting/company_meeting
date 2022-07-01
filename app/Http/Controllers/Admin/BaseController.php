@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Admin;
 
 use Auth;
+use Illuminate\Support\Facades\Input;
+use App\Handlers\ImageUploadHandler;
 use Route;
 use App\Http\Controllers\Controller;
 
@@ -66,5 +68,16 @@ class BaseController extends Controller
         $module = Request()->route()->action['prefix'];
         $module= explode('/',$module);
         return $module[1];
+    }
+
+    public function editor_upload($param,ImageUploadHandler $imageUploadHandler){
+        $param->request->all();
+        $file = Input::file("editor");
+        if ($file) {
+            $result = $imageUploadHandler->save($file, 'editor');
+            if ($result) {
+                return $result;
+            }
+        }
     }
 }

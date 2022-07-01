@@ -78,6 +78,7 @@
                         </div>
                     </div>
                     <div class="editor mdeditor hidden"></div>
+                    <input type="hidden" name="data[info]" id="md_editor">
 
                                 <div class="form-group">
                                     <label class="col-sm-2 control-label no-padding-right" for="form-field-1"> enabled(是否显示)：</label>
@@ -206,17 +207,26 @@
         editor.$on('change', function (e) {
             editor.$set({ value: e.detail.value });
             console.log(e.detail.value)
+            $("#md_editor").val(e.detail.value);
         });
         $("#type").change(function(){
             var v = $(this).val();
             if(1==v){
                 $(".mdeditor").addClass('hidden');
+                $("#md_editor").val("");
+                editor.$set({ value: '' });
+                $("#md_editor").removeAttr("name");
                 $(".tinyeditor").removeClass('hidden');
             }else if(2==v){
                 $(".tinyeditor").addClass('hidden');
+                $("#content").val("");
+                tinymce.editors[0].setContent("");
                 $(".mdeditor").removeClass('hidden');
             }else{
                 $(".mdeditor").addClass('hidden');
+                $("#md_editor").val("");
+                editor.$set({ value: '' });
+                $("#md_editor").removeAttr("name");
                 $(".tinyeditor").removeClass('hidden');
             }
         });
