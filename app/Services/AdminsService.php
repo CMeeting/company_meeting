@@ -21,6 +21,7 @@ use App\Handlers\ImageUploadHandler;
 use App\Repositories\AdminsRepository;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Input;
+use App\Repositories\RolesRepository;
 use Illuminate\Support\Facades\DB;
 class AdminsService
 {
@@ -36,11 +37,12 @@ class AdminsService
      * @param ImageUploadHandler $imageUploadHandler
      * @param ActionLogsService $actionLogsService
      */
-    public function __construct(AdminsRepository $adminsRepository, ImageUploadHandler $imageUploadHandler,ActionLogsService $actionLogsService)
+    public function __construct(AdminsRepository $adminsRepository, ImageUploadHandler $imageUploadHandler,ActionLogsService $actionLogsService,RolesRepository $rolesRepository)
     {
         $this->uploader = $imageUploadHandler;
         $this->adminsRepository = $adminsRepository;
         $this->actionLogsService = $actionLogsService;
+        $this->rolesRepository = $rolesRepository;
     }
 
     /**
@@ -63,14 +65,34 @@ class AdminsService
         $datas['password'] = Hash::make($request->password);
         $datas['create_ip'] = $request->ip();
         $datas['last_login_ip'] = $request->ip();
-        dump($datas);exit;
+        $rolesarr = $this->rolesRepository->getrolesarr();
         $admin = $this->adminsRepository->create($datas);
+        $id= DB::getPdo()->lastInsertId();
 
         //插入模型关联数据
         $admin->roles()->attach($request->role_id);
+        $arr=array();
         if(count($datas['role_id'])>0){
-
+            //第一层循环，循环所勾选了什么角色
+            foreach ($datas['role_id'] as $k=>$v){
+                //判断角色ID下标的数组是否存在
+                if(isset($rolesarr[$v])){
+                    //第二层循环，循环角色ID下标数组内权限ID是否被勾选
+                    foreach ($rolesarr[$v] as $ks=>$vs){
+                        if(in_array($vs,$datas['rules_id'])){
+                            $arr[]=[
+                                'admin_id'=>$id,
+                                'role_id'=>$v,
+                                'rule_id'=>$vs,
+                                'created_at'=>date("Y-m-d H:i:s"),
+                                'updated_at'=>date("Y-m-d H:i:s")
+                            ];
+                        }
+                    }
+                }
+            }
         }
+        DB::table('admin_auth')->insert($arr);
         return $admin;
     }
 
