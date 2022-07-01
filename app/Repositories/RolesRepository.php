@@ -71,7 +71,11 @@ class RolesRepository
         foreach ($data as $k=>$v){
             $arr[]=$v['rule_id'];
         }
-        $arr=array_unique($arr);
+        if(isset($arr)){
+            $arr=array_unique($arr);
+        }else{
+            $arr=[];
+        }
         return $arr;
     }
 
