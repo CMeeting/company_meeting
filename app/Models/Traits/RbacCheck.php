@@ -16,6 +16,8 @@
 
 namespace App\Models\Traits;
 
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\DB;
 use App\Handlers\Tree;
 use App\Repositories\RulesRepository;
 use Cache;
@@ -36,18 +38,28 @@ trait RbacCheck
         $cache_key = $this->id . $this->cache_key;
 
         if(!Cache::tags(['rbac', 'rules'])->has($cache_key))
-        {
+       {
             $permissions = [];
-
-            foreach ($this->roles as $role) {
-                $permissions = array_merge($permissions, $role->rules()->pluck('route')->toArray());
+            $data=Db::table("admin_auth")->whereRaw("admin_id='{$this->id}'")->selectRaw("rule_id")->get();
+            $data=$this->objToArr($data);
+            $arr=[];
+            foreach ($data as $k=>$v){
+                $arr[]=$v['rule_id'];
             }
-
+            $arr=array_unique($arr);
+            $rote=Db::table("rules")->selectRaw("route,id")->get();
+            $rote=$this->objToArr($rote);
+            foreach ($arr as $k=>$v){
+                foreach ($rote as $ks=>$vs){
+                    if($v==$vs['id']){
+                        $permissions[]=$vs['route'];
+                    }
+                }
+            }
             /**获得当前用户所有权限路由*/
             $permissions = array_unique($permissions);
-
             /**将权限路由存入缓存中*/
-            Cache::tags(['rbac', 'rules'])->forever($cache_key, $permissions);
+             Cache::tags(['rbac', 'rules'])->forever($cache_key, $permissions);
         }
 
         return Cache::tags(['rbac', 'rules'])->get($cache_key);
@@ -100,5 +112,13 @@ trait RbacCheck
     public function clearRuleAndMenu()
     {
         return Cache::tags('rbac')->flush();
+    }
+
+    public function objToArr($object) {
+
+        //先编码成json字符串，再解码成数组
+
+        return json_decode(json_encode($object), true);
+
     }
 }
