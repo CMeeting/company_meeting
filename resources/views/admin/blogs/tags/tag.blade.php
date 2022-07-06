@@ -37,6 +37,7 @@
                 @endforeach
                 </tbody>
             </table>
+            {{$data->links()}}
         </div>
     </div>
     <div class="clearfix"></div>

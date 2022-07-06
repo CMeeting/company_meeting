@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Handlers\ImageUploadHandler;
 use App\Http\Requests\Blog\BlogTagRequest;
 use App\Services\BlogService;
+use Illuminate\Http\Request;
 
 class BlogsController extends BaseController
 {
@@ -62,9 +63,9 @@ class BlogsController extends BaseController
         return $this->view('tags/create');
     }
 
-    public function tagStore(){
-        $param = request();
-        $this->blogService->blogTagCreate($param);
+    public function tagStore(Request $request){
+//        $param = request();
+        $this->blogService->blogTagCreate($request);
         flash('添加Tag成功')->success()->important();
         return redirect()->route('blogs.tags');
     }
@@ -74,9 +75,9 @@ class BlogsController extends BaseController
         return $this->view('tags/edit', compact('row'));
     }
 
-    public function tagUpdate($id){
-        $param = request();
-        $this->blogService->blogTagUpdate($param, $id);
+    public function tagUpdate(Request $request,$id){
+//        $param = request();
+        $this->blogService->blogTagUpdate($request, $id);
         flash('更新成功')->success()->important();
         return redirect()->route('blogs.tags');
     }
