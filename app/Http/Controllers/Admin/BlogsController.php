@@ -18,10 +18,10 @@ class BlogsController extends BaseController
 
     public function blog()
     {
-//        dd($blog);die;
+        $param = request()->input();
         $types = $this->blogService->getBlogTypeskv();
         $tags = $this->blogService->getBlogTagskv();
-        $data = $this->blogService->getBlogList();
+        $data = $this->blogService->getBlogList($param['slug']??'');
         return $this->view('blog/blog',compact('data','types','tags'));
     }
 

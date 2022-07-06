@@ -7,6 +7,30 @@
         </div>
         <div class="ibox-content">
             <a href="{{route('blogs.blogCreate')}}" link-url="javascript:void(0)"><button class="btn btn-primary btn-sm" type="button"><i class="fa fa-plus-circle"></i> 添加 Blog</button></a>
+            <div class="col-xs-10 col-sm-5 margintop5">
+                <form name="admin_list_sea" class="form-search" method="get" action="{{route('blogs.blog')}}">
+                    <div class="input-group">
+										<span class="input-group-addon">
+											<i class="ace-icon fa fa-check"></i>
+										</span>
+                        <input type="text" name="slug" class="form-control" value="" placeholder="输入需查询的slug" />
+                        <span class="input-group-btn">
+											<button type="submit" class="btn btn-purple btn-sm">
+												<span class="ace-icon fa fa-search icon-on-right bigger-110"></span>
+												搜索
+											</button>
+										</span>
+                    </div>
+                </form>
+            </div>
+            <div class="col-md-4 col-lg-3 col-sm-6 col-xs-12 but-height">
+                <div class="form-group">
+
+                    <button type="button"  id="modal_excel" class="form-control btn blue" data-toggle="modal" data-target="#ListStyle" data-placement="top" placeholder="Chee Kin" >
+                        <i class="fa fa-download "></i> 导出
+                    </button>
+                </div>
+            </div>
             <table class="table table-striped table-bordered table-hover m-t-md">
                 <thead>
                 <tr>
