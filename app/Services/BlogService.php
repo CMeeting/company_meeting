@@ -36,7 +36,7 @@ class BlogService
         $this->blogTagsModel = $blogTagsModel;
         $this->uploader = $imageUploadHandler;
     }
-    public function getBlogList($slug='')
+    public function getBlogList($param)
     {
 //        $data = array();
 //        $where[] = ['is_delete','=','0'];
@@ -58,8 +58,13 @@ class BlogService
 ////        $data['page'] = $datas->render();
 ////        $data['assign_where'] = CommonService::buildAssignWhere($param);
 //        return $datas ?? [];
-        if ($slug){
-            $data = blog::whereRaw('is_delete = 0')->whereRaw("slug = '{$slug}'")->orderByRaw('sort_id,id desc')->paginate(10);
+        $where="";
+        if(isset($param['info'])&&$param['info']){
+
+            $where=$param['query_type']."= '".$param['info']."'";
+        }
+        if ($where){
+            $data = blog::whereRaw('is_delete = 0')->whereRaw($where)->orderByRaw('sort_id,id desc')->paginate(10);
         }else{
             $data = blog::whereRaw('is_delete = 0')->orderByRaw('sort_id,id desc')->paginate(10);
         }

@@ -21,8 +21,10 @@ class BlogsController extends BaseController
         $param = request()->input();
         $types = $this->blogService->getBlogTypeskv();
         $tags = $this->blogService->getBlogTagskv();
-        $data = $this->blogService->getBlogList($param['slug']??'');
-        return $this->view('blog/blog',compact('data','types','tags'));
+        $data = $this->blogService->getBlogList($param);
+        $query_type=isset($param['query_type'])?$param['query_type']:"";
+        $info=isset($param['info'])?$param['info']:"";
+        return $this->view('blog/blog',compact('data','types','tags','query_type','info'));
     }
 
     public function blogCreate(){
