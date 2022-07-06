@@ -10,7 +10,7 @@
 namespace App\Models;
 
 
-//use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Model;
 //class BlogTags extends Base
 class BlogTags extends Model
@@ -18,11 +18,12 @@ class BlogTags extends Model
 //    public static $table = 'blog_tags';
     protected $table = 'blog_tags';
     protected $fillable = ['title','sort_id','is_delete'];
-//    public static function getTagskv(){
-//        return Db::table(self::$table)
-//            ->select(DB::raw('id,title'))
-//            ->whereRaw('is_delete = 0')
-//            ->orderByRaw('sort_id,id DESC')
-//            ->get();
-//    }
+
+    public function getTagskv(){
+        return Db::table($this->table)
+            ->select(DB::raw('id,title'))
+            ->whereRaw('is_delete = 0')
+            ->orderByRaw('sort_id,id DESC')
+            ->get();
+    }
 }

@@ -38,31 +38,39 @@ class BlogService
     }
     public function getBlogList()
     {
-        $data = array();
-        $where[] = ['is_delete','=','0'];
-//        $p = CommonService::buildWhere($param);
-//        if ($p) {
-//            $where .= 'AND ' . $p;
-//        } else {
-//            $where .= $p;
+//        $data = array();
+//        $where[] = ['is_delete','=','0'];
+////        $p = CommonService::buildWhere($param);
+////        if ($p) {
+////            $where .= 'AND ' . $p;
+////        } else {
+////            $where .= $p;
+////        }
+//        $order = 'sort_id,id DESC';
+//        $data = $this->blogModel->select($where,'*',$order);
+//        $data = $this->blogModel->objToArr($data);
+//        foreach ($data as $k=>$v){
+//            $v['tag_id'] = self::getBlogTagTitle($v['tag_id']);
+//            $datas[$k] = $v;
 //        }
-        $order = 'sort_id,id DESC';
-        $data = $this->blogModel->select($where,'*',$order);
-        $data = $this->blogModel->objToArr($data);
+////        $datas = Blogs::paginate($where, $sort);
+////        $data['data'] = $datas->toArray();
+////        $data['page'] = $datas->render();
+////        $data['assign_where'] = CommonService::buildAssignWhere($param);
+//        return $datas ?? [];
+        $data = blog::whereRaw('is_delete = 0')->orderByRaw('sort_id,id desc')->paginate(10);
         foreach ($data as $k=>$v){
-            $v['tag_id'] = self::getBlogTagTitle($v['tag_id']);
-            $datas[$k] = $v;
+            $v->tag_id = $this->getBlogTagTitle($v->tag_id);
+//            echo $v->tag_id."<br>";
         }
-//        $datas = Blogs::paginate($where, $sort);
-//        $data['data'] = $datas->toArray();
-//        $data['page'] = $datas->render();
-//        $data['assign_where'] = CommonService::buildAssignWhere($param);
-        return $datas ?? [];
+//        print_r($data);die;
+        return $data??[];
     }
 
     public function getBlogTagskv()
     {
-        $arr = $this->blogTagsModel->objToArr(BlogTags::getTagskv());
+        $arr = json_decode(json_encode($this->blogTagsModel->getTagskv()), true);
+//        $arr = $this->blogTagsModel->objToArr(BlogTags::getTagskv());
         foreach ($arr as $v) {
             $data[$v['id']] = $v['title'];
         }
@@ -71,7 +79,7 @@ class BlogService
 
     public function getBlogTypeskv()
     {
-        $arr = $this->blogTagsModel->objToArr(BlogTypes::getTypeskv());
+        $arr = $this->blogTypesModel->objToArr(BlogTypes::getTypeskv());
         foreach ($arr as $v) {
             $data[$v['id']] = $v['title'];
         }
@@ -93,10 +101,10 @@ class BlogService
         return $data ?? [];
     }
 
-    public static function getBlogTagTitle($tags)
+    public function getBlogTagTitle($tags)
     {
         $tag_info = '';
-        $arr = json_decode(json_encode(BlogTags::getTagskv()), true);
+        $arr = json_decode(json_encode($this->blogTagsModel->getTagskv()), true);
         foreach ($arr as $v) {
             $tags_kv[$v['id']] = $v['title'];
         }
