@@ -84,7 +84,7 @@ class DocumentationService
                 $SdkClassification = new SdkClassification();
                 $SdKArticle = new SdKArticle();
                 $SdkClassification->update(['deleted' => 1], "platformid=" . $param['delid'] . " or version=" . $param['delid']);
-                $SdKArticle->update(['deleted' => 1], "platformid=" . $param['delid'] . " or version=" . $param['delid']);
+                $SdKArticle->_update(['deleted' => 1], "platformid=" . $param['delid'] . " or version=" . $param['delid']);
             }
         } else {
             if ($lv == 1) {

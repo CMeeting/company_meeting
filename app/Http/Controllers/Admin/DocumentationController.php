@@ -188,10 +188,12 @@ class DocumentationController extends BaseController {
             } else {
                 if ($bool) {
                     flash('添加成功')->success()->important();
+                    return redirect()->route('documentation.SdkClassification');
                 } else {
                     flash('添加失败')->error()->important();
+                    return redirect()->route('documentation.createSdkClassification');
                 }
-                return redirect()->route('documentation.createSdkClassification');
+
             }
         }
     }
