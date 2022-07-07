@@ -9,30 +9,30 @@
         <div class="ibox-content">
             <a class="menuid btn btn-primary btn-sm" href="javascript:history.go(-1)">返回</a>
             <a href="{{route('admins.create')}}" link-url="javascript:void(0)"><button class="btn btn-primary btn-sm" type="button"><i class="fa fa-plus-circle"></i> 添加管理员</button></a>
-            <div class="col-xs-10 col-sm-5 margintop5">
-                <form name="admin_list_sea" class="form-search" method="post" action="{:url('admin/Admin/admin_list')}">
-                    <div class="input-group">
-										<span class="input-group-addon">
-											<i class="ace-icon fa fa-check"></i>
-										</span>
-                        <input type="text" name="search_name" class="form-control" value="" placeholder="输入需查询的用户名" />
-                        <span class="input-group-btn">
-											<button type="submit" class="btn btn-purple btn-sm">
-												<span class="ace-icon fa fa-search icon-on-right bigger-110"></span>
-												搜索
-											</button>
-										</span>
-                    </div>
-                </form>
-            </div>
-            <div class="col-md-4 col-lg-3 col-sm-6 col-xs-12 but-height">
-                <div class="form-group">
+{{--            <div class="col-xs-10 col-sm-5 margintop5">--}}
+{{--                <form name="admin_list_sea" class="form-search" method="post" action="{:url('admin/Admin/admin_list')}">--}}
+{{--                    <div class="input-group">--}}
+{{--										<span class="input-group-addon">--}}
+{{--											<i class="ace-icon fa fa-check"></i>--}}
+{{--										</span>--}}
+{{--                        <input type="text" name="search_name" class="form-control" value="" placeholder="输入需查询的用户名" />--}}
+{{--                        <span class="input-group-btn">--}}
+{{--											<button type="submit" class="btn btn-purple btn-sm">--}}
+{{--												<span class="ace-icon fa fa-search icon-on-right bigger-110"></span>--}}
+{{--												搜索--}}
+{{--											</button>--}}
+{{--										</span>--}}
+{{--                    </div>--}}
+{{--                </form>--}}
+{{--            </div>--}}
+{{--            <div class="col-md-4 col-lg-3 col-sm-6 col-xs-12 but-height">--}}
+{{--                <div class="form-group">--}}
 
-                    <button type="button"  id="modal_excel" class="form-control btn blue" data-toggle="modal" data-target="#ListStyle" data-placement="top" placeholder="Chee Kin" >
-                        <i class="fa fa-download "></i> 导出
-                    </button>
-                </div>
-            </div>
+{{--                    <button type="button"  id="modal_excel" class="form-control btn blue" data-toggle="modal" data-target="#ListStyle" data-placement="top" placeholder="Chee Kin" >--}}
+{{--                        <i class="fa fa-download "></i> 导出--}}
+{{--                    </button>--}}
+{{--                </div>--}}
+{{--            </div>--}}
             <form method="post" action="{{route('admins.index')}}" name="form">
 
                 <table class="table table-striped table-bordered table-hover m-t-md">
@@ -74,15 +74,18 @@
                             </td>
                             <td class="text-center">
                                 <div class="btn-group">
-                                    <a href="{{route('admins.edit',$item->id)}}">
-                                        <button class="btn btn-primary btn-xs" type="button"><i class="fa fa-paste"></i> 修改</button>
-                                    </a>
-                                    @if($item->status == 2)
-                                            <a href="{{route('admins.status',['status'=>1,'id'=>$item->id])}}"><button class="btn btn-info btn-xs" type="button"><i class="fa fa-warning"></i> 恢复</button></a>
+                                    @if($item->id ==1)
                                     @else
-                                            <a href="{{route('admins.status',['status'=>2,'id'=>$item->id])}}"><button class="btn btn-warning btn-xs" type="button"><i class="fa fa-warning"></i> 禁用</button></a>
+                                        <a href="{{route('admins.edit',$item->id)}}">
+                                            <button class="btn btn-primary btn-xs" type="button"><i class="fa fa-paste"></i> 修改</button>
+                                        </a>
+                                        @if($item->status == 2)
+                                                <a href="{{route('admins.status',['status'=>1,'id'=>$item->id])}}"><button class="btn btn-info btn-xs" type="button"><i class="fa fa-warning"></i> 恢复</button></a>
+                                        @else
+                                                <a href="{{route('admins.status',['status'=>2,'id'=>$item->id])}}"><button class="btn btn-warning btn-xs" type="button"><i class="fa fa-warning"></i> 禁用</button></a>
+                                        @endif
+                                        <a href="{{route('admins.delete',$item->id)}}"><button class="btn btn-danger btn-xs" type="button"><i class="fa fa-trash-o"></i> 删除</button></a>
                                     @endif
-                                    <a href="{{route('admins.delete',$item->id)}}"><button class="btn btn-danger btn-xs" type="button"><i class="fa fa-trash-o"></i> 删除</button></a>
                                 </div>
                             </td>
                         </tr>

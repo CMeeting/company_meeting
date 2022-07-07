@@ -1554,7 +1554,7 @@ abstract class Model implements ArrayAccess, Arrayable, Jsonable, JsonSerializab
             ->get();
     }
 
-    public function find($condition, $order = 'created_at DESC') {
+    public function _find($condition, $order = 'created_at DESC') {
         return Db::table($this->table)
             ->whereRaw($condition)
             ->orderByRaw($order)

@@ -31,14 +31,14 @@
             </div>
 
 
-            <div class="col-md-4 col-lg-3 col-sm-6 col-xs-12 but-height">
-                <div class="form-group">
+{{--            <div class="col-md-4 col-lg-3 col-sm-6 col-xs-12 but-height">--}}
+{{--                <div class="form-group">--}}
 
-                    <button type="button"  id="modal_excel" class="form-control btn blue" data-toggle="modal" data-target="#ListStyle" data-placement="top" placeholder="Chee Kin" >
-                        <i class="fa fa-download "></i> 导出
-                    </button>
-                </div>
-            </div>
+{{--                    <button type="button"  id="modal_excel" class="form-control btn blue" data-toggle="modal" data-target="#ListStyle" data-placement="top" placeholder="Chee Kin" >--}}
+{{--                        <i class="fa fa-download "></i> 导出--}}
+{{--                    </button>--}}
+{{--                </div>--}}
+{{--            </div>--}}
             <table class="table table-striped table-bordered table-hover m-t-md">
                 <thead>
                 <tr>

@@ -155,7 +155,7 @@ class BlogService
             $arr['tag_id'] = rtrim($tag, ",");
         }
 //        print_r($arr);die;
-        $row = Blog::insertGetId($arr);
+        $row = $this->blogModel->insertGetId($arr);
         return $row ??'';
     }
 

@@ -14,7 +14,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Blog extends Model
 {
-    public $table = 'blogs';
+    protected $table = 'blogs';
     protected $fillable = [
         'title',
         'title_h1',
