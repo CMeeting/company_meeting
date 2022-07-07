@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Notifications\Notifiable;
 use App\Models\Base;
 
-class DocumentationModel extends Model {
+class DocumentationModel extends Base {
 
-    protected $table = 'platform_version';
+    public static $table = 'platform_version';
 }

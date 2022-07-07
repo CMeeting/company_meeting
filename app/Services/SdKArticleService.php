@@ -70,7 +70,7 @@ class SdKArticleService
         $SdkClassification = new SdkClassification();
         $SdKArticle=new SdKArticle();
         if (isset($param['delid'])) {
-            $bool = $SdKArticle->update(['deleted' => 1], "id=" . $param['delid']);
+            $bool = $SdKArticle->_update(['deleted' => 1], "id=" . $param['delid']);
             if($bool){
                 return ['code'=>1];
             }else{
@@ -84,17 +84,17 @@ class SdKArticleService
             $classification_data = $SdkClassification->find($wheres);
             $classification_data=$SdkClassification->objToArr($classification_data);
             if (isset($data['id'])){
-                $is_edit=$SdKArticle->find("id='{$data['id']}'");
+                $is_edit=$SdKArticle->_find("id='{$data['id']}'");
                 $is_edit=$SdKArticle->objToArr($is_edit);
                 if($data['titel']!=$is_edit['titel'] || $data['seotitel']!=$is_edit['seotitel']){
-                    $is_titel=$SdKArticle->find("classification_ids='".$classification_ids."' and id!={$data['id']}  and (titel='".$data['titel']."' or seotitel='".$data['seotitel']."')  and deleted=0");
+                    $is_titel=$SdKArticle->_find("classification_ids='".$classification_ids."' and id!={$data['id']}  and (titel='".$data['titel']."' or seotitel='".$data['seotitel']."')  and deleted=0");
                 }
                 if($data['slug']!=$is_edit['slug']){
-                    $slug=$SdKArticle->find("slug='".$data['slug']."'  and deleted=0 and platformid=".$classification_data['platformid']);
+                    $slug=$SdKArticle->_find("slug='".$data['slug']."'  and deleted=0 and platformid=".$classification_data['platformid']);
                 }
             }else{
-                $is_titel=$SdKArticle->find("classification_ids='".$classification_ids."' and (titel='".$data['titel']."' or seotitel='".$data['seotitel']."')  and deleted=0");
-                $slug=$SdKArticle->find("slug='".$data['slug']."'  and deleted=0 and platformid=".$classification_data['platformid']);
+                $is_titel=$SdKArticle->_find("classification_ids='".$classification_ids."' and (titel='".$data['titel']."' or seotitel='".$data['seotitel']."')  and deleted=0");
+                $slug=$SdKArticle->_find("slug='".$data['slug']."'  and deleted=0 and platformid=".$classification_data['platformid']);
             }
         }
         if(isset($is_titel) && $is_titel){
@@ -109,7 +109,7 @@ class SdKArticleService
         }
         if (isset($data['id'])) {
             $where = "id='{$data['id']}'";
-            $bool = $SdKArticle->update($data, $where);
+            $bool = $SdKArticle->_update($data, $where);
         }  else {
             $bool = $SdKArticle->insertGetId($data);
 //            if($bool){
@@ -199,7 +199,7 @@ class SdKArticleService
     {
         $SdKArticle = new SdKArticle();
         $where = "deleted=0 and id='$id'";
-        $data = $SdKArticle->find($where);
+        $data = $SdKArticle->_find($where);
         $data = $SdKArticle->objToArr($data);
         return $data;
     }

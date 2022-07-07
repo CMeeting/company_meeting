@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Notifications\Notifiable;
 use App\Models\Base;
 
-class SdkclassificationModel extends Model {
+class SdkclassificationModel extends Base {
 
-    protected $table = 'sdk_classification';
+    public static $table = 'sdk_classification';
 }

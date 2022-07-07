@@ -111,8 +111,11 @@ class DocumentationService
         } elseif ($param['type'] == "sdk_documentation") {
             $show = new SdKArticle();
         }
-
-        $status = $show->find("id=" . $param['id']);
+        if($param['type'] == "sdk_documentation"){
+            $status = $show->_find("id=" . $param['id']);
+        }else{
+            $status = $show->find("id=" . $param['id']);
+        }
         $status= $show->objToArr($status);
         $enabled = ($status['enabled'] == 1) ? 0 : 1;
         if ($param['type'] != "sdk_documentation") {
@@ -124,7 +127,7 @@ class DocumentationService
             $ids = implode(',', $ids);
             $bool = $show->update(['enabled' => $enabled], "id in(" . $ids . ")");
         } elseif ($param['type'] == "sdk_documentation") {
-            $bool = $show->update(['enabled' => $enabled], "id=" . $param['id']);
+            $bool = $show->_update(['enabled' => $enabled], "id=" . $param['id']);
         }
         return array('code'=>$bool,"status"=>$enabled);
     }
