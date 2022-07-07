@@ -16,29 +16,40 @@ class SdKArticleService
 
     public function sele_list($param)
     {
-        $where=array();
-        $where[]=['deleted','=',0];
+//        $where=array();
+        $where='';
+//        $where[]=['deleted','=',0];
+        $where.='deleted = 0';
         if(isset($param['platformid']) &&$param['platformid']){
-            $where[]=['platformid','=',$param['platformid']];
+//            $where[]=['platformid','=',$param['platformid']];
+            $where.='AND platformid = '.$param['platformid'];
         }
         if(isset($param['version']) &&$param['version']){
-            $where[]=['version','=',$param['version']];
+//            $where[]=['version','=',$param['version']];
+            $where.='AND version = '.$param['version'];
         }
         if(isset($param['classification']) &&$param['classification']){
-            $where[]=['classification_ids','=',$param['classification']];
+//            $where[]=['classification_ids','=',$param['classification']];
+            $where.='AND classification_ids = '.$param['classification_ids'];
         }
 
         $SdKArticle=new SdKArticle();
-        $data=$SdKArticle->paginates($where,"*","displayorder,id desc",10);
+//        $data=$SdKArticle->paginates($where,"*","displayorder,id desc",10);
+        $data=$SdKArticle->whereRaw($where)->orderByRaw('displayorder,id desc')->paginate(10);;
+//        dd($data);die;
         $classification=$this->allCategories();
         $banben=$this->allVersion();
         if(!empty($data)){
-            foreach ($data['data'] as $k=>$v){
+            foreach ($data as $k=>$v){
+//                dump($v);
+//                echo "-----------<br>";
                 $fenlei=$this->assemblyClassification($v->classification_ids,$classification);
-                $data['data'][$k]->classification=$fenlei?implode("--",$fenlei):"";
-                $data['data'][$k]->platformversion=$this->assemblyVersion(array($v->platformid,$v->version),$banben);
+                $v->classification=$fenlei?implode("--",$fenlei):"";
+                $v->platformversion=$this->assemblyVersion(array($v->platformid,$v->version),$banben);
+//                dump($v);die;
             }
         }
+//        dd($data);die;
         return $data;
     }
 

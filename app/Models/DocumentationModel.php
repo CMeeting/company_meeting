@@ -2,10 +2,11 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Notifications\Notifiable;
 use App\Models\Base;
 
-class DocumentationModel extends Base{
+class DocumentationModel extends Model {
 
-    public static $table = 'platform_version';
+    protected $table = 'platform_version';
 }

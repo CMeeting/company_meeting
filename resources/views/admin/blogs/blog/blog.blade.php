@@ -12,14 +12,14 @@
                     <div class="input-group">
                         <div class="input-group-btn">
                             <select name="query_type" class="form-control" style="width: 115px;">
-                                <option value="id" @if($query_type=='id') selected @endif>ID </option>
-                                <option value="title_h1" @if($query_type=='title_h1') selected @endif>title_h1 </option>
+                                <option value="id" @if(isset($query)&&$query['query_type']=='id') selected @endif>ID </option>
+                                <option value="title_h1" @if(isset($query)&&$query['query_type']=='title_h1') selected @endif>title_h1 </option>
                                 <option value="3" >slug </option>
-                                <option value="type_id" @if($query_type=='type_id') selected @endif>categories </option>
+                                <option value="type_id" @if(isset($query)&&$query['query_type']=='type_id') selected @endif>categories </option>
                                 <option value="5" >seo title </option>
                             </select>
                         </div>
-                        <input type="text" name="info" class="form-control" value="{{$info}}" />
+                        <input type="text" name="info" class="form-control" value="@if(isset($query)){{$query['info']}}@endif" />
                         <span class="input-group-btn">
 											<button type="submit" class="btn btn-purple btn-sm">
 												<span class="ace-icon fa fa-search icon-on-right bigger-110"></span>

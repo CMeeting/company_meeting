@@ -22,9 +22,10 @@ class BlogsController extends BaseController
         $types = $this->blogService->getBlogTypeskv();
         $tags = $this->blogService->getBlogTagskv();
         $data = $this->blogService->getBlogList($param);
-        $query_type=isset($param['query_type'])?$param['query_type']:"";
-        $info=isset($param['info'])?$param['info']:"";
-        return $this->view('blog/blog',compact('data','types','tags','query_type','info'));
+        $query["query_type"] = isset($param['query_type']) ? $param['query_type'] : "type_id";
+        $query["info"] = isset($param['info']) ? $param['info'] : "1";
+//        dd($query);die;
+        return $this->view('blog/blog',compact('data','types','tags'));
     }
 
     public function blogCreate(){

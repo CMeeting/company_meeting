@@ -2,10 +2,11 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Notifications\Notifiable;
 use App\Models\Base;
 
-class SdkclassificationModel extends Base{
+class SdkclassificationModel extends Model {
 
-    public static $table = 'sdk_classification';
+    protected $table = 'sdk_classification';
 }

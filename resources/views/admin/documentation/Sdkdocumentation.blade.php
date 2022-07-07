@@ -52,7 +52,7 @@
                     </tr>
                     </thead>
                     <tbody>
-                    @foreach($data['data'] as $key => $value)
+                    @foreach($data as $key => $value)
                         <tr id="han_{{$value->id}}">
                             <td class="text-center">{{$value->id}}</td>
                             <td>{{$value->titel}}</td>

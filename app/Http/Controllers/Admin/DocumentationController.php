@@ -244,7 +244,7 @@ class DocumentationController extends BaseController {
         $param = $request->input();
         $sdksrvice = new SdKArticleService();
         $data = $sdksrvice->sele_list($param);
-        $data = $this->page_with_array($request,$data);
+//        $data = $this->page_with_array($request,$data);
         return $this->view('sdkdocumentation',['data'=>$data]);
     }
 

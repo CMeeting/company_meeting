@@ -4,6 +4,7 @@ namespace Illuminate\Database\Eloquent;
 
 use Exception;
 use ArrayAccess;
+use Illuminate\Support\Facades\DB;
 use JsonSerializable;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
@@ -1507,5 +1508,92 @@ abstract class Model implements ArrayAccess, Arrayable, Jsonable, JsonSerializab
     public function __wakeup()
     {
         $this->bootIfNotBooted();
+    }
+
+    /**
+     * base---------------------
+     */
+    public function select($condition, $field = '*', $order ="id desc")
+    {
+        return Db::table($this->table)
+            ->select(DB::raw($field))
+            ->where($condition)
+            ->orderByRaw($order)
+            ->get();
+    }
+
+    public function paginates($condition, $field = '*', $order ="id desc",$page=10)
+    {
+        return Db::table($this->table)
+            ->select(DB::raw($field))
+            //->leftJoin('sdk_classification', 'users.id', '=', 'posts.user_id')
+            ->where($condition)
+            ->orderByRaw($order)
+            ->paginate($page)
+            ->toArray();
+    }
+    public function paginates2($condition, $field = '*', $order ="id desc",$page=10)
+    {
+        return Db::table($this->table)
+            ->select(DB::raw($field))
+            //->leftJoin('sdk_classification', 'users.id', '=', 'posts.user_id')
+            ->where($condition)
+            ->orderByRaw($order)
+            ->paginate($page);
+    }
+
+
+
+    public function selectLimit($condition, $field = '*', $order = 'id DESC',$limit = 10)
+    {
+        return Db::table($this->table)
+            ->select(DB::raw($field))
+            ->where($condition)
+            ->orderByRaw($order)
+            ->limit($limit)
+            ->get();
+    }
+
+    public function find($condition, $order = 'created_at DESC') {
+        return Db::table($this->table)
+            ->whereRaw($condition)
+            ->orderByRaw($order)
+            ->first();
+
+    }
+
+    public function insertGetId(array $data)
+    {
+        $data['created_at']=date("Y-m-d H:i:s");
+        $data['updated_at']=date("Y-m-d H:i:s");
+        return Db::table($this->table)
+            ->insertGetId($data);
+    }
+
+    public function _update(array $data, $where)
+    {
+        return Db::table($this->table)
+            ->whereRaw($where)
+            ->update($data);
+    }
+
+    /**
+     * @param $where
+     * 删除数据方法
+     * @return mixed
+     */
+    public function _delete($where)
+    {
+        return Db::table($this->table)
+            ->where($where)
+            ->delete();
+    }
+
+    public function objToArr($object) {
+
+        //先编码成json字符串，再解码成数组
+
+        return json_decode(json_encode($object), true);
+
     }
 }
