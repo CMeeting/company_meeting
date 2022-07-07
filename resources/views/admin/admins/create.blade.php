@@ -10,6 +10,10 @@
     </style>
     <div class="row">
         <div class="col-sm-12">
+            <?php
+              $groupidsjson=json_encode($groupids);
+              $ruleidsjson=json_encode($ruleids);
+            ?>
             <div class="ibox-title">
                 <h5>添加管理员</h5>
             </div>
@@ -17,6 +21,8 @@
                 <a class="menuid btn btn-primary btn-sm" href="javascript:history.go(-1)">返回</a>
                 <a href="{{route('admins.index')}}"><button class="btn btn-primary btn-sm" type="button"><i class="fa fa-plus-circle"></i> 管理员管理</button></a>
                 <div class="hr-line-dashed m-t-sm m-b-sm"></div>
+                <teleport id="groupidsjson" style="display: none">{{$groupidsjson}}</teleport>
+                <teleport id="ruleidsjson"  style="display: none">{{$ruleidsjson}}</teleport>
                 <form class="form-horizontal" id="thisForm" action="{{ route('admins.store') }}" method="post" accept-charset="UTF-8" enctype="multipart/form-data">
                     {!! csrf_field() !!}
                     <div class="form-group">
@@ -56,7 +62,13 @@
                         <label class="col-sm-2 control-label" style="padding-top: 0">所属角色：</label>
                         <div class="input-group col-sm-10" style="display: flex; flex-wrap: wrap;">
                             @foreach($roles as $k=>$item)
+                                @if($item->id!=1)
+                                    @if(in_array(1,$groupids))
                                 <label style="margin-right: 10px;"><input type="checkbox" class="check" id="{{$item->id}}" name="role_id[]" value="{{$item->id}}"  onchange="dd()"> {{$item->name}}</label><br/>
+                                        @else
+                                        <label style="margin-right: 10px;"><input type="checkbox" class="check" id="{{$item->id}}" name="role_id[]" value="{{$item->id}}"  onchange="dd()" @if(!in_array($item->id,$groupids)) disabled @endif> {{$item->name}}</label><br/>
+                                    @endif
+                                @endif
                             @endforeach
                             @if ($errors->has('role_id'))
                                 <span class="help-block m-b-none"><i class="fa fa-info-circle"></i>请先添加角色</span>
@@ -135,12 +147,19 @@
 <script src="{{loadEdition('/js/jquery.min.js')}}"></script>
 <script>
     var c="";
+    var a = "";
+    var b = "";
     var $categroys = "";
-
+    var $groupidsjson = "";
+    var $ruleidsjson = "";
     /* 权限配置	选中上级自动选中下级 */
     $(function () {
+        a=$("#groupidsjson").text();
+        b=$("#ruleidsjson").text();
         c=$("#testt123").text();
         $categroys = JSON.parse(c);
+        $groupidsjson = JSON.parse(a);
+        $ruleidsjson = JSON.parse(b);
         //判断是否已全选
         function isAllChecked(){
             var form = $('#thisForm')[0];
@@ -205,12 +224,21 @@
     function dd(){
         $(".md-check").attr("disabled", true);
         $(".md-check").attr("checked", false);
+        var index = $.inArray(1, $groupidsjson);
         $(".check").each(function (){
             if($(this).is(':checked')){
                 var id=$(this).attr("id");
                 for (var i=0;i<$categroys[id].length;i++){
-                    $("#new_rules_"+$categroys[id][i]).prop("checked", true);
-                    $("#new_rules_"+$categroys[id][i]).attr("disabled", false);
+                    if(index>=0){
+                        $("#new_rules_"+$categroys[id][i]).prop("checked", true);
+                        $("#new_rules_"+$categroys[id][i]).attr("disabled", false);
+                    }else{
+                        var pndex=$.inArray($categroys[id][i], $ruleidsjson)
+                        if(pndex>=0){
+                            $("#new_rules_"+$categroys[id][i]).prop("checked", true);
+                            $("#new_rules_"+$categroys[id][i]).attr("disabled", false);
+                        }
+                    }
                 }
             }
         })

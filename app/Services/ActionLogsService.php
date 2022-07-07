@@ -21,6 +21,7 @@ use Route;
 use Zhuzhichao\IpLocationZh\Ip;
 use App\Repositories\RulesRepository;
 use App\Repositories\ActionLogsRepository;
+use Illuminate\Support\Facades\DB;
 
 class ActionLogsService
 {
@@ -66,7 +67,27 @@ class ActionLogsService
         $datas['admin_id'] = $admin->id ;
         return $this->actionLogsRepository->create($datas);
     }
-
+    public function getadmingroupids(){
+        $admin = Auth::guard('admin')->user();
+        $damin_auth=DB::table("admin_role")->selectRaw("role_id")->whereRaw("admin_id=".$admin->id)->get();
+        $arr=json_decode(json_encode($damin_auth), true);
+        $data=[];
+        foreach ($arr as $k=>$v){
+            $data[]=$v['role_id'];
+        }
+        return $data;
+    }
+    public function getadminrousids(){
+        $admin = Auth::guard('admin')->user();
+        $damin_auth=DB::table("admin_auth")->selectRaw("rule_id")->whereRaw("admin_id=".$admin->id)->get();
+        $arr=json_decode(json_encode($damin_auth), true);
+        $data=[];
+        foreach ($arr as $k=>$v){
+            $data[]=$v['rule_id'];
+        }
+        $data=array_unique($data);
+        return $data;
+    }
 
     /**
      * 后台操作日志

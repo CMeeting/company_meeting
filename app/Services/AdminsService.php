@@ -71,10 +71,12 @@ class AdminsService
 
         //插入模型关联数据
         $admin->roles()->attach($request->role_id);
+        $i=0;
         $arr=array();
         if(count($datas['role_id'])>0){
             //第一层循环，循环所勾选了什么角色
             foreach ($datas['role_id'] as $k=>$v){
+                $i=$v;
                 //判断角色ID下标的数组是否存在
                 if(isset($rolesarr[$v])){
                     //第二层循环，循环角色ID下标数组内权限ID是否被勾选
@@ -92,6 +94,13 @@ class AdminsService
                 }
             }
         }
+        $arr[]=[
+            'admin_id'=>$id,
+            'role_id'=>$i,
+            'rule_id'=>2,
+            'created_at'=>date("Y-m-d H:i:s"),
+            'updated_at'=>date("Y-m-d H:i:s")
+        ];
         DB::table('admin_auth')->insert($arr);
         return $admin;
     }
@@ -129,9 +138,11 @@ class AdminsService
 
         $rolesarr = $this->rolesRepository->getrolesarr();
         $arr=array();
+        $i=0;
         if(count($datas['role_id'])>0){
             //第一层循环，循环所勾选了什么角色
             foreach ($datas['role_id'] as $k=>$v){
+                $i=$v;
                 //判断角色ID下标的数组是否存在
                 if(isset($rolesarr[$v])){
                     //第二层循环，循环角色ID下标数组内权限ID是否被勾选
@@ -150,6 +161,13 @@ class AdminsService
             }
         }
         DB::table('admin_auth')->where("admin_id","=",$id)->delete();
+        $arr[]=[
+            'admin_id'=>$id,
+            'role_id'=>$i,
+            'rule_id'=>2,
+            'created_at'=>date("Y-m-d H:i:s"),
+            'updated_at'=>date("Y-m-d H:i:s")
+        ];
         DB::table('admin_auth')->insert($arr);
         return $admin;
     }
@@ -193,7 +211,6 @@ class AdminsService
 
         //增加登录次数.
         $admin = Auth::guard('admin')->user();
-
         $admin->increment('login_count');
 
         //记录登录操作记录

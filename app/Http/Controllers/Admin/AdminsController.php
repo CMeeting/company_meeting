@@ -5,23 +5,24 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Requests\Admin\AdminRequest;
 use Illuminate\Http\Request;
 use App\Services\AdminsService;
+use App\Services\ActionLogsService;
 use App\Repositories\RolesRepository;
 use App\Http\Requests\Admin\AdminLoginRequest;
 
 class AdminsController extends BaseController {
     protected $adminsService;
-
     protected $rolesRepository;
+    protected $actionLogsService;
 
     /**
      * AdminsController constructor.
      * @param AdminsService $adminsService
      * @param RolesRepository $rolesRepository
      */
-    public function __construct(AdminsService $adminsService, RolesRepository $rolesRepository)
+    public function __construct(AdminsService $adminsService, RolesRepository $rolesRepository,ActionLogsService $actionLogsService)
     {
         $this->adminsService = $adminsService;
-
+        $this->actionLogsService = $actionLogsService;
         $this->rolesRepository = $rolesRepository;
     }
 
@@ -40,10 +41,12 @@ class AdminsController extends BaseController {
      */
     public function create()
     {
+        $groupids=$this->actionLogsService->getadmingroupids();
+        $ruleids=$this->actionLogsService->getadminrousids();
         $roles = $this->rolesRepository->getRoles();
         $rolesinfo = $this->rolesRepository->getrolesinfo();
         $rolesarr = json_encode($this->rolesRepository->getrolesarr());
-        return view('admin.admins.create', compact('roles','rolesinfo','rolesarr'));
+        return view('admin.admins.create', compact('roles','rolesinfo','rolesarr','groupids','ruleids'));
     }
 
     /**
@@ -67,12 +70,13 @@ class AdminsController extends BaseController {
     public function edit($id)
     {
         $admin = $this->adminsService->ById($id);
-
+        $groupids=$this->actionLogsService->getadmingroupids();
+        $ruleids=$this->actionLogsService->getadminrousids();
         $roles = $this->rolesRepository->getRoles();
         $rolesinfo = $this->rolesRepository->getrolesinfo();
         $rolesarr = json_encode($this->rolesRepository->getrolesarr());
         $adminroles = $this->rolesRepository->admingetrolesarr($id);
-        return view('admin.admins.edit', compact('admin', 'roles','rolesinfo','rolesarr','adminroles'));
+        return view('admin.admins.edit', compact('admin', 'roles','rolesinfo','rolesarr','adminroles','groupids','ruleids'));
     }
 
     /**
