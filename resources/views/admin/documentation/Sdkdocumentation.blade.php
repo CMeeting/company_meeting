@@ -31,10 +31,63 @@
     <div class="col-sm-12">
         <div class="ibox-title">
             <h5>Documentation</h5>
+            <a style="float: right" href="{{route('documentation.createsdkDocumentation')}}" link-url="javascript:void(0)"><button class="btn btn-primary btn-sm" type="button"><i class="fa fa-plus-circle"></i> New Sdkdocumentation</button></a>
         </div>
 
         <div class="ibox-content">
-            <a href="{{route('documentation.createsdkDocumentation')}}" link-url="javascript:void(0)"><button class="btn btn-primary btn-sm" type="button"><i class="fa fa-plus-circle"></i> New Sdkdocumentation</button></a>
+            <form name="admin_list_sea" class="form-search" method="get" action="{{route('documentation.sdkDocumentation')}}">
+            <div class="col-xs-10 col-sm-5 margintop5">
+                    <div class="input-group">
+                        <div class="input-group-btn">
+                            <select name="query_type" class="form-control" style="width: 115px;">
+                                <option value="id" @if(isset($query)&&$query['query_type']=='id') selected @endif>ID </option>
+                                <option value="titel" @if(isset($query)&&$query['query_type']=='title_h1') selected @endif>Title H1 </option>
+                                <option value="seotitel" @if(isset($query)&&$query['query_type']=='seotitel') selected @endif>SEO Title </option>
+                                <option value="slug" @if(isset($query)&&$query['query_type']=='slug') selected @endif>Slug </option>
+                            </select>
+                        </div>
+                        <input type="text" name="info" class="form-control" value="@if(isset($query)){{$query['info']}}@endif" />
+                    </div>
+            </div>
+            <div class="col-md-4 col-lg-2 col-sm-6 col-xs-12">
+                <div class="form-group">
+                    <select class="form-control"  name="platformid" tabindex="1">
+                        <option value="">筛选平台</option>
+                        @foreach($platformid as $k=>$v)
+                            <option value="{{$k}}" @if(isset($query)&&$query['platformid']==$k) selected @endif>{{$v}}</option>
+                        @endforeach
+                    </select>
+                </div>
+            </div>
+            <div class="col-md-4 col-lg-2 col-sm-6 col-xs-12">
+                <div class="form-group">
+                    <select class="form-control"  name="version" tabindex="1">
+                        <option value="">筛选版本</option>
+                        @foreach($version as $k=>$v)
+                            <option value="{{$k}}" @if(isset($query)&&$query['version']==$k) selected @endif>{{$v}}</option>
+                        @endforeach
+                    </select>
+                </div>
+            </div>
+                <div class="col-md-4 col-lg-2 col-sm-6 col-xs-12">
+                    <div class="form-group">
+                        <select class="form-control"  name="version" tabindex="1">
+                            <option value="">筛选分类</option>
+                            @foreach($classification_ids as $k=>$v)
+                                <option value="{{$k}}" @if(isset($query)&&$query['version']==$k) selected @endif>{{$v}}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                </div>
+                <span class="input-group-btn">
+											<button type="submit" class="btn btn-purple btn-sm">
+												<span class="ace-icon fa fa-search icon-on-right bigger-110"></span>
+												搜索
+											</button>
+										</span>
+            </form>
+
+
             <form method="post" action="{{route('documentation.sdkDocumentation')}}" name="form">
 
                 <table class="table table-striped table-bordered table-hover m-t-md">
@@ -88,7 +141,7 @@
                     @endforeach
                     </tbody>
                 </table>
-                {{$data->appends(['sort' => 'votes'])->links()}}
+                {{$data->appends(['query' => isset($query)?$query:'','query_type'=>isset($query['query_type'])?$query['query_type']:'','platformid'=>isset($query['platformid'])?$query['platformid']:'','version'=>isset($query['version'])?$query['version']:'','classification_ids'=>isset($query['classification_ids'])?$query['classification_ids']:''])->links()}}
             </form>
         </div>
     </div>

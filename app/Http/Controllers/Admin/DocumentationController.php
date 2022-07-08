@@ -244,11 +244,17 @@ class DocumentationController extends BaseController {
     public function sdkDocumentation(Request $request)
     {
         $param = $request->input();
-        dump($param);
         $sdksrvice = new SdKArticleService();
         $data = $sdksrvice->sele_list($param);
-//        $data = $this->page_with_array($request,$data);
-        return $this->view('sdkdocumentation',['data'=>$data]);
+        $platformid = $sdksrvice->getplatform();
+        $version = $sdksrvice->getversion();
+        $classification_ids = $sdksrvice->getCategorical();
+        $query["query_type"] = isset($param['query_type']) ? $param['query_type'] : "";
+        $query["info"] = isset($param['info']) ? $param['info'] : "";
+        $query["platformid"] = isset($param['platformid']) ? $param['platformid'] : "";
+        $query["version"] = isset($param['version']) ? $param['version'] : "";
+        $query["classification_ids"] = isset($param['classification_ids']) ? $param['classification_ids'] : "";
+        return $this->view('sdkdocumentation',['data'=>$data,'query'=>$query,'platformid'=>$platformid,'version'=>$version,'classification_ids'=>$classification_ids]);
     }
 
 

@@ -16,40 +16,33 @@ class SdKArticleService
 
     public function sele_list($param)
     {
-//        $where=array();
-        $where='';
-//        $where[]=['deleted','=',0];
-        $where.='deleted = 0';
+
+        $where='deleted = 0';
+        if(isset($param['info']) &&$param['info']){
+            $where.=" AND ".$param['query_type']." = '{$param['info']}'";
+        }
         if(isset($param['platformid']) &&$param['platformid']){
-//            $where[]=['platformid','=',$param['platformid']];
-            $where.='AND platformid = '.$param['platformid'];
+            $where.=' AND platformid = '.$param['platformid'];
         }
         if(isset($param['version']) &&$param['version']){
-//            $where[]=['version','=',$param['version']];
-            $where.='AND version = '.$param['version'];
+            $where.=' AND version = '.$param['version'];
         }
         if(isset($param['classification']) &&$param['classification']){
-//            $where[]=['classification_ids','=',$param['classification']];
-            $where.='AND classification_ids = '.$param['classification_ids'];
+            $where.=' AND classification_ids = '.$param['classification_ids'];
         }
 
         $SdKArticle=new SdKArticle();
-//        $data=$SdKArticle->paginates($where,"*","displayorder,id desc",10);
         $data=$SdKArticle->whereRaw($where)->orderByRaw('displayorder,id desc')->paginate(10);;
-//        dd($data);die;
         $classification=$this->allCategories();
         $banben=$this->allVersion();
         if(!empty($data)){
             foreach ($data as $k=>$v){
-//                dump($v);
-//                echo "-----------<br>";
                 $fenlei=$this->assemblyClassification($v->classification_ids,$classification);
                 $v->classification=$fenlei?implode("--",$fenlei):"";
                 $v->platformversion=$this->assemblyVersion(array($v->platformid,$v->version),$banben);
-//                dump($v);die;
+
             }
         }
-//        dd($data);die;
         return $data;
     }
 
@@ -130,16 +123,17 @@ class SdKArticleService
     public function getCategorical()
     {
         $SdkClassification = new SdkClassification();
-        $where = "deleted=0";
+        $where=array(['deleted','=',0]);
         $field = "id,title,lv,pid,displayorder,enabled,platformid,version";
         $order = "displayorder";
         $material = $SdkClassification->select($where, $field, $order);
+        $material = $SdkClassification->objToArr($material);
         $arr_project = $this->menuLeft($material);
         $banben = $this->allVersion();
         if($arr_project){
             foreach ($arr_project as $k=>$v){
                 $str=$this->assemblyVersion(array($v['platformid'],$v['version']),$banben);;
-                $arr[$v['id']]=$v['lefthtml'].$v['title']."&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp".$str;
+                $arr[$v['id']]=$v['lefthtml'].$v['title']."------".$str;
             }
         }
         return $arr ?? [];
@@ -164,8 +158,9 @@ class SdKArticleService
     public function getplatform()
     {
         $PlatformVersion = new PlatformVersion();
-        $where = "deleted=0 and lv=1";
+        $where=array(['deleted','=',0],['lv','=',1]);
         $data = $PlatformVersion->select($where,'id,name','displayorder');
+        $data =$PlatformVersion->objToArr($data);
         $arr=[];
         if($data){
             foreach ($data as $k=>$v){
@@ -176,8 +171,9 @@ class SdKArticleService
     }
     public function getversion(){
         $PlatformVersion = new PlatformVersion();
-        $where = "deleted=0";
+        $where=array(['deleted','=',0]);
         $data = $PlatformVersion->select($where,'id,name,pid,lv','displayorder');
+        $data =$PlatformVersion->objToArr($data);
         $arr=[];
         if($data){
             foreach ($data as $k=>$v){
