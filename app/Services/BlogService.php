@@ -106,7 +106,7 @@ class BlogService
 
     public function blogRow($id)
     {
-        $data = Blog::find('id =' . $id);
+        $data = $this->blogModel->_find('id =' . $id);
         return $data ?? [];
     }
 
@@ -178,7 +178,7 @@ class BlogService
             $arr['tag_id'] = rtrim($tag, ",");
         }
 //        print_r($arr);die;
-        $row = Blog::update($arr,'id = '.$id);
+        $row = $this->blogModel->_update($arr,'id = '.$id);
         return $row ??'';
     }
 
@@ -250,7 +250,7 @@ class BlogService
     {
         switch ($table) {
             case 'blog':
-                $row = Blog::update(['is_delete' => 1], 'id = ' . $id);
+                $row = $this->blogModel->_update(['is_delete' => 1], 'id = ' . $id);
                 break;
             case 'type':
                 $data = $this->blogModel->objToArr(Blog::select(['type_id' =>$id],'count(*)'))[0];
