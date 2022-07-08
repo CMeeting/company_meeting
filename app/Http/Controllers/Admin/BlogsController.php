@@ -65,9 +65,9 @@ class BlogsController extends BaseController
         return $this->view('tags/create');
     }
 
-    public function tagStore(Request $request){
-//        $param = request();
-        $this->blogService->blogTagCreate($request);
+    public function tagStore(){
+        $param = request();
+        $this->blogService->blogTagCreate($param);
         flash('添加Tag成功')->success()->important();
         return redirect()->route('blogs.tags');
     }

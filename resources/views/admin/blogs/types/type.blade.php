@@ -28,7 +28,7 @@
                     <tr>
                         <td  class="text-center" >{{$item->id}}</td>
                         <td>{{$item->title}}</td>
-                        <td>{{$item->slug}}</td>
+                        <td class="text-center">{{$item->slug}}</td>
                         <td>{{$item->seo_title}}</td>
                         <td>{{$item->keywords}}</td>
                         <td>{{$item->description}}</td>

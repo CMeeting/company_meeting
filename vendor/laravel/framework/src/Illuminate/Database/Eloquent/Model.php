@@ -1572,6 +1572,7 @@ abstract class Model implements ArrayAccess, Arrayable, Jsonable, JsonSerializab
 
     public function _update(array $data, $where)
     {
+        $data['updated_at']=date("Y-m-d H:i:s");
         return Db::table($this->table)
             ->whereRaw($where)
             ->update($data);

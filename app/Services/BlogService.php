@@ -38,26 +38,6 @@ class BlogService
     }
     public function getBlogList($param)
     {
-//        $data = array();
-//        $where[] = ['is_delete','=','0'];
-////        $p = CommonService::buildWhere($param);
-////        if ($p) {
-////            $where .= 'AND ' . $p;
-////        } else {
-////            $where .= $p;
-////        }
-//        $order = 'sort_id,id DESC';
-//        $data = $this->blogModel->select($where,'*',$order);
-//        $data = $this->blogModel->objToArr($data);
-//        foreach ($data as $k=>$v){
-//            $v['tag_id'] = self::getBlogTagTitle($v['tag_id']);
-//            $datas[$k] = $v;
-//        }
-////        $datas = Blogs::paginate($where, $sort);
-////        $data['data'] = $datas->toArray();
-////        $data['page'] = $datas->render();
-////        $data['assign_where'] = CommonService::buildAssignWhere($param);
-//        return $datas ?? [];
         $where="";
         if(isset($param['info'])&&$param['info']){
 
@@ -70,9 +50,7 @@ class BlogService
         }
         foreach ($data as $k=>$v){
             $v->tag_id = $this->getBlogTagTitle($v->tag_id);
-//            echo $v->tag_id."<br>";
         }
-//        print_r($data);die;
         return $data??[];
     }
 
@@ -162,6 +140,7 @@ class BlogService
     public function blogUpdate($param,$id){
         $data = $param->request->all();
         $arr = $data['data'];
+        $arr['updated_at'] =
         //上传图片
         $file = Input::file("cover");
         if ($file) {
@@ -177,7 +156,6 @@ class BlogService
             }
             $arr['tag_id'] = rtrim($tag, ",");
         }
-//        print_r($arr);die;
         $row = $this->blogModel->_update($arr,'id = '.$id);
         return $row ??'';
     }
@@ -211,39 +189,27 @@ class BlogService
 
     public function getBlogTagList()
     {
-//        $where[] = ['is_delete','=','0'];
-//        $order = 'sort_id,id DESC';
-//        $data = $this->blogTagsModel->select($where,'*',$order);
-
-//        return $data ?? [];
         return blogTags::whereRaw('is_delete = 0')->orderByRaw('sort_id,id desc')->paginate(10);
     }
 
     public function blogTagRow($id)
     {
-        $data = BlogTags::find($id);
+        $data = $this->blogTagsModel->_find('id = '.$id);
         return $data ?? [];
     }
 
-    public function blogTagCreate($request)
+    public function blogTagCreate($param)
     {
-//        $data = $param->request->all()['data'];
-//        $data['created_at'] = date('Y-m-d H:i:s',time());
-//        $data['updated_at'] = date('Y-m-d H:i:s',time());
-//        $row = $this->blogTagsModel->insertGetId($data);
-        $data = $request->all();
-        $tag = BlogTags::insert($data['data']);
-        return $tag??[];
+        $data = $param->request->all()['data'];
+        $row = $this->blogTagsModel->insertGetId($data);
+        return $row??[];
     }
 
     public function blogTagUpdate($request,$id)
     {
-        $data = $request->all();
-//        dd($data['data']);die;
-        $tag = BlogTags::find($id);
-        $tag->update($data['data']);
-//        $row = blogTags::update($data,'id = ' . $id);
-        return $tag ??'';
+        $data = $request->all()['data'];
+        $row = $this->blogTagsModel->_update($data,'id = ' . $id);
+        return $row ??'';
     }
 
     public function softDel($table,$id)
@@ -253,7 +219,7 @@ class BlogService
                 $row = $this->blogModel->_update(['is_delete' => 1], 'id = ' . $id);
                 break;
             case 'type':
-                $data = $this->blogModel->objToArr(Blog::select(['type_id' =>$id],'count(*)'))[0];
+                $data = $this->blogModel->objToArr($this->blogModel->select(['type_id' =>$id],'count(*)'))[0];
                 if (isset($data)&&$data['count(*)']>0) {
                     $row = 'error';
                 } else {
@@ -261,8 +227,8 @@ class BlogService
                 }
                 break;
             case 'tag':
-//                $row = BlogTags::update(['is_delete' => 1], 'id = ' . $id);
-                $row = BlogTags::find($id)->update(['is_delete' => 1]);
+                $row = $this->blogTagsModel->_update(['is_delete' => 1], 'id = ' . $id);
+//                $row = BlogTags::find($id)->update(['is_delete' => 1]);
                 break;
             default:
                 $row = '';
