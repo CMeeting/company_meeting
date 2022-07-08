@@ -254,7 +254,7 @@ class DocumentationController extends BaseController {
         $query["platformid"] = isset($param['platformid']) ? $param['platformid'] : "";
         $query["version"] = isset($param['version']) ? $param['version'] : "";
         $query["classification_ids"] = isset($param['classification_ids']) ? $param['classification_ids'] : "";
-        return $this->view('sdkdocumentation',['data'=>$data,'query'=>$query,'platformid'=>$platformid,'version'=>$version,'classification_ids'=>$classification_ids]);
+        return $this->view('Sdkdocumentation',['data'=>$data,'query'=>$query,'platformid'=>$platformid,'version'=>$version,'classification_ids'=>$classification_ids]);
     }
 
 
