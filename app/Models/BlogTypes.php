@@ -16,16 +16,16 @@ class BlogTypes extends Model
 {
 //    public static $table = 'blog_types';
     protected $table = 'blog_types';
-    public static function getTypeskv(){
-        return Db::table(self::$table)
+    public function getTypeskv(){
+        return Db::table($this->table)
             ->select(DB::raw('id,title'))
             ->whereRaw('is_delete = 0')
             ->orderByRaw('sort_id,id DESC')
             ->get();
     }
 
-    public static function getTypeAndSlugkv(){
-        return Db::table(self::$table)
+    public function getTypeAndSlugkv(){
+        return Db::table($this->table)
             ->select(DB::raw('id,title,slug'))
             ->whereRaw('is_delete = 0')
             ->orderByRaw('sort_id,id DESC')

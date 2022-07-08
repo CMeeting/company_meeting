@@ -16,7 +16,7 @@
                                 <option value="id" @if(isset($query)&&$query['query_type']=='id') selected @endif>ID </option>
                                 <option value="title_h1" @if(isset($query)&&$query['query_type']=='title_h1') selected @endif>title_h1 </option>
                                 <option value="slug" @if(isset($query)&&$query['query_type']=='slug') selected @endif>slug </option>
-                                <option value="type_id" @if(isset($query)&&$query['query_type']=='type_id') selected @endif>categories </option>
+{{--                                <option value="type_id" @if(isset($query)&&$query['query_type']=='type_id') selected @endif>categories </option>--}}
                                 <option value="title" @if(isset($query)&&$query['query_type']=='title') selected @endif>seo title </option>
                             </select>
                         </div>

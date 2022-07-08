@@ -66,7 +66,7 @@ class BlogService
 
     public function getBlogTypeskv()
     {
-        $arr = $this->blogTypesModel->objToArr(BlogTypes::getTypeskv());
+        $arr = $this->blogTypesModel->objToArr($this->blogTypesModel->getTypeskv());
         foreach ($arr as $v) {
             $data[$v['id']] = $v['title'];
         }
@@ -173,20 +173,20 @@ class BlogService
 
     public function blogTypeRow($id)
     {
-        $data = BlogTypes::find('id = '.$id);
+        $data = $this->blogTypesModel->_find('id = '.$id);
         return $data ?? [];
     }
 
     public function blogTypeCreate($param)
     {
         $arr = $param->request->all()['data'];
-        $row = BlogTypes::insertGetId($arr);
+        $row = $this->blogTypesModel->insertGetId($arr);
         return $row ?? '';
     }
 
     public function blogTypeUpdate($param,$id){
         $arr = $param->request->all()['data'];
-        $row = BlogTypes::update($arr,'id = '.$id);
+        $row = $this->blogTypesModel->_update($arr,'id = '.$id);
         return $row ?? '';
     }
 
