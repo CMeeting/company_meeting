@@ -75,7 +75,7 @@
                     <div class="form-group tinyeditor">
                         <label class="col-sm-2 control-label no-padding-right" for="form-field-1"> content：</label>
                         <div class="col-sm-10 col-xs-12">
-                            <textarea id="content" name="data[info]" class="form-control" rows="5" cols="20"></textarea>
+                            <textarea id="content" name="data[info]" class="form-control" rows="5" cols="20">{{$data['info']}}</textarea>
                         </div>
                     </div>
                     <div class="editor mdeditor hidden"></div>
@@ -212,19 +212,19 @@
     });
     window.onload = function(){
         var v = $("#type").val();
+        var value = $("#content").val();
         if(1==v){
             $(".mdeditor").addClass('hidden');
             $("#md_editor").val("");
             editor.$set({ value: '' });
             $("#md_editor").removeAttr("name");
             $(".tinyeditor").removeClass('hidden');
-            {{--tinymce.editors[0].setContent("{{$data['info']}}");--}}
         }else {
             $(".tinyeditor").addClass('hidden');
             $("#content").val("");
             tinymce.editors[0].setContent("");
             $(".mdeditor").removeClass('hidden');
-            editor.$set({ value: '{{$data['info']}}' });
+            editor.$set({ value: value });
         }
     }
 </script>
