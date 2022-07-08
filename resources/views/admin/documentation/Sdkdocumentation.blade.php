@@ -88,7 +88,7 @@
                     @endforeach
                     </tbody>
                 </table>
-                {{$data->links()}}
+                {{$data->appends(['sort' => 'votes'])->links()}}
             </form>
         </div>
     </div>

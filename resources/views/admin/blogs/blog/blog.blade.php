@@ -92,7 +92,7 @@
                 @endforeach
                 </tbody>
             </table>
-            {{$data->links()}}
+            {{$data->appends(['info' => isset($query['info'])?$query['info']:'','query_type'=>isset($query['query_type'])?$query['query_type']:''])->links()}}
         </div>
     </div>
     <div class="clearfix"></div>
