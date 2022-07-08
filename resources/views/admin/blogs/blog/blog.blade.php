@@ -4,19 +4,20 @@
     <div class="col-sm-12">
         <div class="ibox-title">
             <h5>Blog</h5>
+            <a style="float: right" href="{{route('blogs.blogCreate')}}" link-url="javascript:void(0)"><button class="btn btn-primary btn-sm" type="button"><i class="fa fa-plus-circle"></i> 添加 Blog</button></a>
         </div>
         <div class="ibox-content">
-            <a href="{{route('blogs.blogCreate')}}" link-url="javascript:void(0)"><button class="btn btn-primary btn-sm" type="button"><i class="fa fa-plus-circle"></i> 添加 Blog</button></a>
-            <div class="col-xs-10 col-sm-5 margintop5">
+
+            <div class="col-xs-10 col-sm-5 margintop5" style="margin-bottom: 5px">
                 <form name="admin_list_sea" class="form-search" method="get" action="{{route('blogs.blog')}}">
                     <div class="input-group">
                         <div class="input-group-btn">
                             <select name="query_type" class="form-control" style="width: 115px;">
                                 <option value="id" @if(isset($query)&&$query['query_type']=='id') selected @endif>ID </option>
                                 <option value="title_h1" @if(isset($query)&&$query['query_type']=='title_h1') selected @endif>title_h1 </option>
-                                <option value="3" >slug </option>
+                                <option value="slug" @if(isset($query)&&$query['query_type']=='slug') selected @endif>slug </option>
                                 <option value="type_id" @if(isset($query)&&$query['query_type']=='type_id') selected @endif>categories </option>
-                                <option value="5" >seo title </option>
+                                <option value="title" @if(isset($query)&&$query['query_type']=='title') selected @endif>seo title </option>
                             </select>
                         </div>
                         <input type="text" name="info" class="form-control" value="@if(isset($query)){{$query['info']}}@endif" />

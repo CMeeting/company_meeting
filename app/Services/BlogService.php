@@ -160,9 +160,12 @@ class BlogService
         return $row ??'';
     }
 
-    public function getBlogTypeList()
+    public function getBlogTypeList($param)
     {
         $where[] = ['is_delete','=','0'];
+        if(isset($param['info'])&&$param['info']){
+            $where[]=[$param['query_type'],"=", "'".$param['info']."'"];
+        }
         $order = 'sort_id,id DESC';
         $data = $this->blogTypesModel->select($where,'*',$order);
         return $data ?? [];
@@ -187,9 +190,13 @@ class BlogService
         return $row ?? '';
     }
 
-    public function getBlogTagList()
+    public function getBlogTagList($param)
     {
-        return blogTags::whereRaw('is_delete = 0')->orderByRaw('sort_id,id desc')->paginate(10);
+        $where="is_delete = 0";
+        if(isset($param['info'])&&$param['info']){
+            $where.=" and ".$param['query_type']."= '".$param['info']."'";
+        }
+        return blogTags::whereRaw($where)->orderByRaw('sort_id,id desc')->paginate(10);
     }
 
     public function blogTagRow($id)

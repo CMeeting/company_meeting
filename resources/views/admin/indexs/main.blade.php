@@ -37,7 +37,7 @@
         </div>
         <div class="value">
           <a href="#"><h1 id="count3">1876</h1></a>
-          <p>笑话总数</p>
+          <p>当前Documentation总数</p>
         </div>
       </section>
     </div>
@@ -48,7 +48,7 @@
         </div>
         <div class="value">
           <a href="#"><h1 id="count4">3</h1></a>
-          <p>待审核笑话总数</p>
+          <p>当前blog总数</p>
         </div>
       </section>
     </div>
@@ -58,7 +58,7 @@
     <div class="col-lg-6">
       <section class="panel">
         <header class="panel-heading bm0">
-          <span><strong>最新发布内容</strong></span>
+          <span><strong>最新发布Blog</strong></span>
           <span class="tools pull-right">
                                 <a class="icon-chevron-down" href="javascript:;"></a>
                             </span>
@@ -94,7 +94,7 @@
               <td></td>
             </tr>
             <tr>
-              <td><strong>程序名称</strong>：YICMS系统 </td>
+              <td><strong>程序名称</strong>: ComPDF后台系统 </td>
               <td></td>
             </tr>
             <tr>
@@ -102,11 +102,7 @@
               <td></td>
             </tr>
             <tr>
-              <td><strong>开发团队</strong>：科诺设计 </td>
-              <td></td>
-            </tr>
-            <tr>
-              <td><strong>版权所有</strong>：<a href="http://www.yicms.vip" target="_bliank">YICMS</a> </td>
+              <td><strong>开发团队</strong>：凯钿云端服务组 </td>
               <td></td>
             </tr>
             <tr>
@@ -122,16 +118,6 @@
             <tr>
               <td>
                 <strong>PHP版本</strong>：{{PHP_VERSION}}</td>
-              <td></td>
-            </tr>
-            <tr>
-              <td>
-                <strong>官方网址</strong>：http://www.yicms.vip</td>
-              <td></td>
-            </tr>
-            <tr>
-              <td>
-                <strong>开发者QQ</strong>：1402992668</td>
               <td></td>
             </tr>
             </tbody>

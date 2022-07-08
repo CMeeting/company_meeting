@@ -9,12 +9,13 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 
-class BlogTypes extends Base
+class BlogTypes extends Model
 {
-    public static $table = 'blog_types';
-
+//    public static $table = 'blog_types';
+    protected $table = 'blog_types';
     public static function getTypeskv(){
         return Db::table(self::$table)
             ->select(DB::raw('id,title'))

@@ -56,9 +56,11 @@ class BlogsController extends BaseController
 
     public function tags()
     {
-        $data = $this->blogService->getBlogTagList();
-//        print_r($data);die;
-        return $this->view('tags/tag',compact('data'));
+        $param = request()->input();
+        $data = $this->blogService->getBlogTagList($param);
+        $query["query_type"] = isset($param['query_type']) ? $param['query_type'] : "";
+        $query["info"] = isset($param['info']) ? $param['info'] : "";
+        return $this->view('tags/tag',compact('data','query'));
     }
 
     public function tagCreate(){
@@ -86,9 +88,12 @@ class BlogsController extends BaseController
 
     public function types()
     {
-        $data = $this->blogService->getBlogTypeList();
+        $param = request()->input();
+        $query["query_type"] = isset($param['query_type']) ? $param['query_type'] : "";
+        $query["info"] = isset($param['info']) ? $param['info'] : "";
+        $data = $this->blogService->getBlogTypeList($param);
 //        print_r($data);die;
-        return $this->view('types/type',compact('data'));
+        return $this->view('types/type',compact('data','query'));
     }
 
     public function typeCreate(){

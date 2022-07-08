@@ -4,13 +4,34 @@
     <div class="col-sm-12">
         <div class="ibox-title">
             <h5>Tags</h5>
+            <a style="float: right" href="{{route('blogs.tagCreate')}}" link-url="javascript:void(0)"><button class="btn btn-primary btn-sm" type="button"><i class="fa fa-plus-circle"></i> 添加 Tag</button></a>
         </div>
         <div class="ibox-content">
-            <a href="{{route('blogs.tagCreate')}}" link-url="javascript:void(0)"><button class="btn btn-primary btn-sm" type="button"><i class="fa fa-plus-circle"></i> 添加 Tag</button></a>
+
+
+            <div class="col-xs-10 col-sm-5 margintop5" style="margin-bottom: 5px">
+                <form name="admin_list_sea" class="form-search" method="get" action="{{route('blogs.tags')}}">
+                    <div class="input-group">
+                        <div class="input-group-btn">
+                            <select name="query_type" class="form-control" style="width: 115px;">
+                                <option value="id" @if(isset($query)&&$query['query_type']=='id') selected @endif>ID </option>
+                                <option value="title" @if(isset($query)&&$query['query_type']=='title') selected @endif>title </option>
+                                <option value="sort_id" @if(isset($query)&&$query['query_type']=='sort_id') selected @endif>sort_id </option>
+                            </select>
+                        </div>
+                        <input type="text" name="info" class="form-control" value="@if(isset($query)){{$query['info']}}@endif" />
+                        <span class="input-group-btn">
+											<button type="submit" class="btn btn-purple btn-sm">
+												<span class="ace-icon fa fa-search icon-on-right bigger-110"></span>
+												搜索
+											</button>
+										</span>
+                    </div>
+                </form>
+            </div>
             <table class="table table-striped table-bordered table-hover m-t-md">
                 <thead>
                 <tr>
-{{--                    'id','title_h1','slug','categories','tags','seo title','keywords','sort_id','created_at','updated_at'--}}
                     <th class="text-center">ID</th>
                     <th class="text-center">title</th>
                     <th class="text-center">sort_id</th>
@@ -37,7 +58,7 @@
                 @endforeach
                 </tbody>
             </table>
-            {{$data->links()}}
+            {{$data->appends(['info' => isset($query['info'])?$query['info']:'','query_type'=>isset($query['query_type'])?$query['query_type']:''])->links()}}
         </div>
     </div>
     <div class="clearfix"></div>
