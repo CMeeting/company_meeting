@@ -5,11 +5,7 @@
             <div class="navbar-header"><a class="navbar-minimalize minimalize-styl-2 btn btn-primary " href="#"><i
                             class="fa fa-bars"></i> </a>
             </div>
-            <ul class="nav navbar-top-links navbar-right">
-                <li class="dropdown hidden-xs">
-                    <a href="/" target="_self"><i class="fa fa-home"></i> 站点主页</a>
-                </li>
-            </ul>
+
         </nav>
     </div>
     <div class="row content-tabs">
@@ -27,9 +23,6 @@
 
             </button>
             <ul role="menu" class="dropdown-menu dropdown-menu-right">
-                <li class="J_tabShowActive"><a>定位当前选项卡</a>
-                </li>
-                <li class="divider"></li>
                 <li class="J_tabCloseAll"><a>关闭全部选项卡</a>
                 </li>
                 <li class="J_tabCloseOther"><a>关闭其他选项卡</a>

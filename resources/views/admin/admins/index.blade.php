@@ -7,7 +7,7 @@
         </div>
 
         <div class="ibox-content">
-            <a class="menuid btn btn-primary btn-sm" href="javascript:history.go(-1)">返回</a>
+{{--            <a class="menuid btn btn-primary btn-sm" href="javascript:history.go(-1)">返回</a>--}}
             <a href="{{route('admins.create')}}" link-url="javascript:void(0)"><button class="btn btn-primary btn-sm" type="button"><i class="fa fa-plus-circle"></i> 添加管理员</button></a>
 {{--            <div class="col-xs-10 col-sm-5 margintop5">--}}
 {{--                <form name="admin_list_sea" class="form-search" method="post" action="{:url('admin/Admin/admin_list')}">--}}

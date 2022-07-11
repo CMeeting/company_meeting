@@ -26,13 +26,13 @@
                                 </span>
                                 </a>
                     <ul class="dropdown-menu animated fadeInRight m-t-xs">
-                        <li><a class="J_menuItem" href="form_avatar.html">修改头像</a></li>
-                        <li><a class="J_menuItem" href="form_avatar.html">修改密码</a></li>
-                        <li class="divider"></li>
+{{--                        <li><a class="J_menuItem" href="form_avatar.html">修改头像</a></li>--}}
+{{--                        <li><a class="J_menuItem" href="form_avatar.html">修改密码</a></li>--}}
+{{--                        <li class="divider"></li>--}}
                         <li><a href="{{route('admin.logout')}}">安全退出</a></li>
                     </ul>
                 </div>
-                <div class="logo-element">KD</div>
+                <div class="logo-element">KDAN</div>
             </li>
 
             @foreach(Auth::guard('admin')->user()->getMenus() as $key => $rule)
