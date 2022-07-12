@@ -70,14 +70,18 @@ class BaseController extends Controller
         return $module[1];
     }
 
-    public function editor_upload($param,ImageUploadHandler $imageUploadHandler){
-        $param->request->all();
-        $file = Input::file("editor");
+    public function editor_upload(){
+        $imageUploadHandler = new ImageUploadHandler();
+        $file = Input::file('file');
         if ($file) {
-            $result = $imageUploadHandler->save($file, 'editor');
+            $result = $imageUploadHandler->save($file, 'editors');
             if ($result) {
-                return $result;
+                return $result['path'];
+            }else{
+                return 'no result';
             }
+        }else{
+            return 'no file';
         }
     }
 }

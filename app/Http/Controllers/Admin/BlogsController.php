@@ -133,9 +133,8 @@ class BlogsController extends BaseController
     }
 
     public function editorUpload(){
-        $param = request();
-        print_r($param);die;
-        $this->editor_upload($param);
+        $row['location'] = $this->editor_upload();
+        print_r(json_encode($row));die;
     }
 
 }

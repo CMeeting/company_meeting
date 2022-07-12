@@ -56,7 +56,7 @@ Route::group(['namespace' => 'Admin','prefix' => 'admin'], function (){
         Route::post('blogs/blogStore', 'BlogsController@blogStore')->name('blogs.blogStore');
         Route::get('blogs/blogEdit/{id}', 'BlogsController@blogEdit')->name('blogs.blogEdit');
         Route::post('blogs/blogUpdate/{id}', 'BlogsController@blogUpdate')->name('blogs.blogUpdate');
-        Route::post('blogs/editorUpload', 'BlogsController@editorUpload');
+        Route::post('blogs/editorUpload', 'BlogsController@editorUpload')->name('editorUpload');
 //        Route::resource('blogs','BlogsController',['only'=>['blog','create','store','update','edit','destroy'] ]);
 //        Route::resource('blogs','BlogsController',['only'=>['tags','tagCreate','tagStore','update','tagEdit','destroy'] ]);
         Route::get('blogs/tags', 'BlogsController@tags')->name('blogs.tags'); //tags首页

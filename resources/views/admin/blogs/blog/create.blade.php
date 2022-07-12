@@ -130,7 +130,7 @@
     height: 750, //编辑器高度
     min_height: 300,
     toolbar_mode: 'sliding',
-    images_upload_url: '/admin/blogs/editorUpload',
+    images_upload_url: '{{ route('editorUpload') }}',
     images_upload_base_path: '',
     contextmenu: "paste | link image inserttable | cell row column deletetable",
     // content_css: [ //可设置编辑区内容展示的css，谨慎使用
