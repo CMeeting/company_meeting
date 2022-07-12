@@ -35,8 +35,14 @@ class BlogsController extends BaseController
 
     public function blogStore(){
         $param = request();
-        $this->blogService->blogCreate($param);
-        flash('添加Blog成功')->success()->important();
+        $back = $this->blogService->blogCreate($param);
+        if ("error" == $back){
+            flash('slug已存在')->error()->important();
+        }else if(!empty($back)){
+            flash('添加Blog成功')->success()->important();
+        }else{
+            flash('添加Blog失败')->error()->important();
+        }
         return redirect()->route('blogs.blog');
     }
 
@@ -49,8 +55,14 @@ class BlogsController extends BaseController
 
     public function blogUpdate($id){
         $param = request();
-        $this->blogService->blogUpdate($param, $id);
-        flash('更新成功')->success()->important();
+        $back = $this->blogService->blogUpdate($param, $id);
+        if ("error" == $back){
+            flash('slug已存在')->error()->important();
+        }else if(!empty($back)){
+            flash('更新Blog成功')->success()->important();
+        }else{
+            flash('更新Blog失败')->error()->important();
+        }
         return redirect()->route('blogs.blog');
     }
 
@@ -69,8 +81,12 @@ class BlogsController extends BaseController
 
     public function tagStore(){
         $param = request();
-        $this->blogService->blogTagCreate($param);
-        flash('添加Tag成功')->success()->important();
+        $back = $this->blogService->blogTagCreate($param);
+        if(!empty($back)){
+            flash('添加Tag成功')->success()->important();
+        }else{
+            flash('添加Tag失败')->error()->important();
+        }
         return redirect()->route('blogs.tags');
     }
 
@@ -81,8 +97,12 @@ class BlogsController extends BaseController
 
     public function tagUpdate(Request $request,$id){
 //        $param = request();
-        $this->blogService->blogTagUpdate($request, $id);
-        flash('更新成功')->success()->important();
+        $back = $this->blogService->blogTagUpdate($request, $id);
+        if(!empty($back)){
+            flash('更新Tag成功')->success()->important();
+        }else{
+            flash('更新Tag失败')->error()->important();
+        }
         return redirect()->route('blogs.tags');
     }
 
@@ -102,8 +122,14 @@ class BlogsController extends BaseController
 
     public function typeStore(){
         $param = request();
-        $this->blogService->blogTypeCreate($param);
-        flash('添加Category成功')->success()->important();
+        $back = $this->blogService->blogTypeCreate($param);
+        if ("error" == $back){
+            flash('slug已存在')->error()->important();
+        }else if(!empty($back)){
+            flash('添加Category成功')->success()->important();
+        }else{
+            flash('添加Category失败')->error()->important();
+        }
         return redirect()->route('blogs.types');
     }
 
@@ -114,8 +140,14 @@ class BlogsController extends BaseController
 
     public function typeUpdate($id){
         $param = request();
-        $this->blogService->blogTypeUpdate($param, $id);
-        flash('更新成功')->success()->important();
+        $back = $this->blogService->blogTypeUpdate($param, $id);
+        if ("error" == $back){
+            flash('slug已存在')->error()->important();
+        }else if(!empty($back)){
+            flash('更新Category成功')->success()->important();
+        }else{
+            flash('更新Category失败')->error()->important();
+        }
         return redirect()->route('blogs.types');
     }
 

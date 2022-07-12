@@ -111,6 +111,12 @@ class BlogService
 //        dd($param);die;
         $data = $param->request->all();
         $arr = $data['data'];
+        if($arr['slug']){
+            $list = $this->blogModel->_find('slug = '."'".$arr['slug']."'");
+            if ($list){
+                return "error";
+            }
+        }
         //上传图片
         $file = Input::file("cover");
         if ($file) {
@@ -140,7 +146,12 @@ class BlogService
     public function blogUpdate($param,$id){
         $data = $param->request->all();
         $arr = $data['data'];
-        $arr['updated_at'] =
+        if($arr['slug']){
+            $list = $this->blogModel->_find('slug = '."'".$arr['slug']."' ".'AND id <> '.$id);
+            if ($list){
+                return "error";
+            }
+        }
         //上传图片
         $file = Input::file("cover");
         if ($file) {
@@ -180,12 +191,24 @@ class BlogService
     public function blogTypeCreate($param)
     {
         $arr = $param->request->all()['data'];
+        if($arr['slug']){
+            $list = $this->blogTypesModel->_find('slug = '."'".$arr['slug']."'");
+            if ($list){
+                return "error";
+            }
+        }
         $row = $this->blogTypesModel->insertGetId($arr);
         return $row ?? '';
     }
 
     public function blogTypeUpdate($param,$id){
         $arr = $param->request->all()['data'];
+        if($arr['slug']){
+            $list = $this->blogTypesModel->_find('slug = '."'".$arr['slug']."' ".'AND id <> '.$id);
+            if ($list){
+                return "error";
+            }
+        }
         $row = $this->blogTypesModel->_update($arr,'id = '.$id);
         return $row ?? '';
     }
@@ -244,7 +267,7 @@ class BlogService
 
     }
 
-    public function slugVerify($param)
+    public function slugVerify($slug)
     {
         if (isset($param['id'])) {
             $row = Blogs::find([['slug', '=', $param['slug']], ['id', '<>', $param['id']]]);
