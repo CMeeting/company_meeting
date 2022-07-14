@@ -4,6 +4,7 @@ declare (strict_types=1);
 namespace App\Services;
 
 use App\Models\DocumentationModel as PlatformVersion;
+use App\Models\SdkarticleModel as SdKArticle;
 use App\Models\SdkclassificationModel as SdkClassification;
 
 class SdkclassificationService
@@ -35,10 +36,14 @@ class SdkclassificationService
      * @return array|mixed
      * @throws \think\exception\DbException
      */
-    public function getCategorical()
+    public function getCategorical($data=array())
     {
         $SdkClassification = new SdkClassification();
         $where=array(["deleted","=",0]);
+        if(count($data)>0){
+            $where[]=['platformid','=',$data['platformid']];
+            $where[]=['version','=',$data['version']];
+        }
         $field = "id,title,lv,pid,displayorder,enabled,platformid,version";
         $order = "displayorder";
         $material = $SdkClassification->select($where, $field, $order);
@@ -89,7 +94,7 @@ class SdkclassificationService
                 $ids = implode(',', $ids);
                 $SdkClassification->update(['deleted' => 1], "id in(".$ids.")");
                 $SdKArticle = new SdKArticle();
-                $SdKArticle->update(['deleted' => 1], "classification_ids in(".$strids.")");
+                $SdKArticle->_update(['deleted' => 1], "classification_ids in(".$strids.")");
             }
         } else {
             //dump($data);exit;
@@ -139,6 +144,7 @@ class SdkclassificationService
                 } else {
                     $html .= '<a style="text-decoration: none" type="button"  data-id="' . $v['id'] . '"  class="openBtn_' . $v['id'] . ' abutton cloros1" data-style="zoom-out" onclick="show(' . $v['id'] . ');"><span class="ladda-label">hide</span></a>';
                 }
+                $html .='<a style="text-decoration: none" onclick="level(' . $v['id'] . ')" class="abutton cloros2 "><i class="fa fa-files-o"></i> level</a>';
                 $html .= '<a style="text-decoration: none" class="abutton cloros2" href="'.$this->headerurl().'/admin/createSdkClassification/'.$v['id'].'/'.$v['platformid'].'/'.$v['version'].'"><i class="fa fa-plus-circle "></i> add</a><a style="text-decoration: none" class="abutton cloros2" href="'.$this->headerurl().'/admin/createsdkDocumentation/' . $v['id'] . '"><i class="fa fa-plus-circle "></i> addArticle</a><a style="text-decoration: none" class="edit_' . $v['id'] . ' abutton cloros3" href="'.$this->headerurl().'/admin/updateSdkClassification/'.$v['id'].'"><i class="fa fa-edit"></i> edit</a><a onclick="del(' . $v['id'] . ')" class="abutton cloros4" style="text-decoration: none"><i class="fa fa-trash-o fa-delete"></i> del</a></div></div>';
                 $html .= $this->assemPage($v['id'],$data);
                 $html .= '</li>';
@@ -159,7 +165,7 @@ class SdkclassificationService
                 } else {
                     $html .= '<a style="text-decoration: none" type="button"  data-id="' . $v['id'] . '"  class="openBtn_' . $v['id'] . ' abutton cloros1" data-style="zoom-out" onclick="show(' . $v['id'] . ');"><span class="ladda-label">hide</span></a>';
                 }
-                $html .= '<a style="text-decoration: none" class="abutton cloros2" href=href="'.$this->headerurl().'/admin/createSdkClassification/'.$v['id'].'/'.$v['platformid'].'/'.$v['version'].'"><i class="fa fa-plus-circle "></i> add</a><a style="text-decoration: none" class="abutton cloros2" href="'.$this->headerurl().'/admin/createsdkDocumentation/' . $v['id'] . '"><i class="fa fa-plus-circle "></i> addArticle</a><a style="text-decoration: none" class="edit_' . $v['id'] . ' abutton cloros3" href="'.$this->headerurl().'/admin/updateSdkClassification/'.$v['id'].'"><i class="fa fa-edit"></i> edit</a><a style="text-decoration: none" onclick="del(' . $v['id'] . ')" class="abutton cloros4"><i class="fa fa-trash-o fa-delete"></i> del</a></div></div></li>';
+                $html .= '<a style="text-decoration: none" class="abutton cloros2" href="'.$this->headerurl().'/admin/createSdkClassification/'.$v['id'].'/'.$v['platformid'].'/'.$v['version'].'"><i class="fa fa-plus-circle "></i> add</a><a style="text-decoration: none" class="abutton cloros2" href="'.$this->headerurl().'/admin/createsdkDocumentation/' . $v['id'] . '"><i class="fa fa-plus-circle "></i> addArticle</a><a style="text-decoration: none" class="edit_' . $v['id'] . ' abutton cloros3" href="'.$this->headerurl().'/admin/updateSdkClassification/'.$v['id'].'"><i class="fa fa-edit"></i> edit</a><a style="text-decoration: none" onclick="del(' . $v['id'] . ')" class="abutton cloros4"><i class="fa fa-trash-o fa-delete"></i> del</a></div></div></li>';
                 $html .= $this->assemPage($v['id'], $data);
             }
         }
@@ -223,6 +229,43 @@ class SdkclassificationService
     function headerurl(){
         $http_type = ((isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on') || (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] == 'https')) ? 'https://' : 'http://';
         return  $http_type . $_SERVER['HTTP_HOST'];
+    }
+
+    public function update_level($id){
+        $SdkClassification = new SdkClassification();
+        $PlatformVersion = new PlatformVersion();
+        $SdKArticle = new SdKArticle();
+        $wheres = "deleted=0 and id='$id'";
+        $data = $SdkClassification->find($wheres);
+        $data = $SdkClassification->objToArr($data);
+        $wheres = "deleted=0 and pid='{$data['platformid']}' and name='{$data['title']}'";
+        $banben = $PlatformVersion->find($wheres);
+        if(!$banben)return ['code'=>0,'msg'=>'相同平台下没有对应版本信息'];
+        $banben =$PlatformVersion->objToArr($banben);
+        $ids=$this->getIds($id,'sdk_classification');
+        if($ids){
+            $ids=implode(',',$ids);
+            $SdkClassification->update([
+                'version'=>$banben['id'],
+                'updated_at'=>date("Y-m-d H:i:s")],
+                "id in(".$ids.") and deleted=0");
+            $SdKArticle->_update([
+                'version'=>$banben['id'],
+                'updated_at'=>date("Y-m-d H:i:s")],
+                "classification_ids in(".$ids.") and deleted=0");
+
+        }
+        $rest=$SdkClassification->update([
+            'lv'=>1,
+            'pid'=>0,
+            'version'=>$banben['id'],
+            'updated_at'=>date("Y-m-d H:i:s")],"pid='{$id}' and deleted=0");
+        if($rest){
+            $SdkClassification->update(['deleted'=>1,'updated_at'=>date("Y-m-d H:i:s")],"id='{$id}' and deleted=0");
+            return ['code'=>1];
+        }else{
+            return ['code'=>0,'msg'=>'调整失败'];
+        }
     }
 
 }

@@ -78,8 +78,43 @@
                     </div>
                 </div>
     </div>
+
 @endsection
             <script>
+                function level(id){
+                    layer.confirm('您确定要调整层级关系吗？', {
+                        btn: ['确定','取消']
+                    }, function(){
+                        layer.close(index);
+                        var index = layer.load();
+                        $.ajax({
+                            url: "{{route('documentation.update_leve')}}",
+                            data: {id:id, _token: '{{ csrf_token() }}'},
+                            type: 'post',
+                            dataType: "json",
+                            success: function (resp) {
+                                // layer.close(index);
+                                //成功提示
+                                if (resp.code==0) {
+                                    layer.msg("修改成功", {
+                                        icon: 1,
+                                        time: 1000
+                                    }, function () {
+                                        location.reload();
+                                    });
+                                } else {
+                                    //失败提示
+                                    layer.msg(resp.message, {
+                                        icon: 2,
+                                        time: 2000
+                                    });
+                                }
+                            }
+                        });
+                    }, function(index){
+                        layer.close(index);
+                    });
+                }
                 function del(id){
                     layer.confirm('您确定要删除吗？', {
                         btn: ['确定','取消']

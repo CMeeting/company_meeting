@@ -42,7 +42,7 @@
                                 <div class="form-group">
                                     <label class="col-sm-2 control-label no-padding-right" for="form-field-1"> classification(上级分类)：</label>
                                     <div class="col-sm-6 col-xs-12">
-                                        <select name="data[pid]" class="form-control sels"  id="selectid" @if(isset($data['pid']) && $data['pid']) style="pointer-events: none;color: #9f9f9f" @endif>
+                                        <select name="data[pid]" class="form-control sels"  id="selectid" @if(isset($data['pid']) && $data['pid'])  @endif>
                                             <option value="0">--默认一级分类--</option>
                                             @foreach($material as $vs)
                                                 <option value="{{$vs['id']}}"
@@ -52,6 +52,10 @@
                                                 >{{$vs['lefthtml']}}{{$vs['title']}}</option>
                                             @endforeach
                                         </select>
+                                        @foreach($material as $vs)
+                                            <span style="display: none" id="a_{{$vs['id']}}">{{$vs['platformid']}}</span>
+                                            <span style="display: none" id="b_{{$vs['id']}}">{{$vs['version']}}</span>
+                                        @endforeach
                                     </div>
                                 </div>
 
@@ -189,7 +193,7 @@
         chage_specialbysid();
 
         $("form").submit(function(e){
-            if($("#category_parent").val()==0 || $("#category_child").val()==0){
+            if(($("#category_parent").val()==0 || $("#category_child").val()==0) && $("#selectid").val()==0){
                 layer.msg("请选择平台/版本", {
                     icon: 2,
                     time: 2000

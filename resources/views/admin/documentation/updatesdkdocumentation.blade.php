@@ -50,7 +50,7 @@
                                 <div class="form-group">
                                     <label class="col-sm-2 control-label no-padding-right" for="form-field-1"> classification(文章分类)：</label>
                                     <div class="col-sm-6 col-xs-12">
-                                        <select name="data[classification_ids]" class="form-control ccs"  id="classification_ids" @if(isset($data['classification_ids']) && $data['classification_ids']) style="pointer-events: none;color: #9f9f9f" @endif>
+                                        <select name="data[classification_ids]" class="form-control ccs"  id="classification_ids">
                                             <option value="0">--请选择文章分类--</option>
                                             @foreach($material as $vs)
                                                 <option value="{{$vs['id']}}"

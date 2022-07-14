@@ -188,7 +188,7 @@ class DocumentationController extends BaseController {
             } else {
                 if ($bool) {
                     flash('添加成功')->success()->important();
-                    return redirect()->route('documentation.SdkClassification');
+                    return redirect()->route('documentation.sdkClassification');
                 } else {
                     flash('添加失败')->error()->important();
                     return redirect()->route('documentation.createSdkClassification');
@@ -204,7 +204,7 @@ class DocumentationController extends BaseController {
         $sdkclassification = new SdkclassificationService();
         $data = $sdkclassification->getFindcategorical($id);
         $fenlei = $documentation->getCategoricalData();
-        $categorical_data = $sdkclassification->getCategorical();
+        $categorical_data = $sdkclassification->getCategorical($data);
         return $this->view('updatesdkclassification',['data'=>$data,"material"=>$categorical_data,"parent"=>json_encode($fenlei['parent']),"children"=>$fenlei['childCateList']]);
     }
     public function updateRunSdkclassification(Request $request)
@@ -290,6 +290,9 @@ class DocumentationController extends BaseController {
             $bool = $SdKArticleService->addEditcaregorical($param);
             if ($bool['code'] == 1) {
                     flash('添加成功')->success()->important();
+                    if($param['type']){
+                        return redirect()->route('documentation.sdkClassification');
+                    }
                     return redirect()->route('documentation.sdkDocumentation');
                 } else {
                 flash($bool['msg'])->error()->important();
@@ -335,7 +338,22 @@ class DocumentationController extends BaseController {
             if ($bool['code'] == 1) {
                 return ['code'=>0];
             } else {
-                return ['code'=>0,'msg'=>$bool['msg']];
+                return ['code'=>1,'msg'=>$bool['msg']];
+            }
+        }
+    }
+
+
+    public function update_leve(Request $request)
+    {
+        $param = $request->input();
+        $SdKArticleService = new SdkclassificationService();
+        if (!empty($param)) {
+            $bool = $SdKArticleService->update_level($param['id']);
+            if ($bool['code'] == 1) {
+                return ['code'=>0];
+            } else {
+                return ['code'=>1,'msg'=>$bool['msg']];
             }
         }
     }

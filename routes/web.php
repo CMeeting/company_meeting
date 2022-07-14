@@ -47,6 +47,7 @@ Route::group(['namespace' => 'Admin','prefix' => 'admin'], function (){
         Route::post('delPlatformVersion', 'DocumentationController@delPlatformVersion')->name('documentation.delPlatformVersion');
         Route::post('delsdkDocumentation', 'DocumentationController@delsdkDocumentation')->name('documentation.delsdkDocumentation');
         Route::post('delSdkclassification', 'DocumentationController@delSdkclassification')->name('documentation.delSdkclassification');
+        Route::post('update_leve', 'DocumentationController@update_leve')->name('documentation.update_leve');
 
 
         Route::get('index/main', 'IndexsController@main')->name('index.main'); //首页数据分析
