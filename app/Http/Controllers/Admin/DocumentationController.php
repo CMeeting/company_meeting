@@ -41,7 +41,7 @@ class DocumentationController extends BaseController {
     {
         $documentation = new DocumentationService();
         $categorical_data = $documentation->getCategorical();
-        return $this->view('createplatformVersion',['pid'=>$pid,'material'=>$categorical_data]);
+        return $this->view('createplatformversion',['pid'=>$pid,'material'=>$categorical_data]);
     }
 
     /**
