@@ -64,7 +64,7 @@
                                 <div class="form-group">
                                     <label class="col-sm-2 control-label no-padding-right" for="form-field-1"> name(平台或版本名称)：</label>
                                     <div class="col-sm-6 col-xs-12">
-                                        <input id="name"  class="form-control" name="data[name]" value="{{$data['name']}}" required onKeyUp="value=value.replace(/[^\w\.\/-]/ig,'')">
+                                        <input id="name"  class="form-control" name="data[name]" value="{{$data['name']}}" required>
                                         <span class="lbl"></span>
                                     </div>
                                 </div>
