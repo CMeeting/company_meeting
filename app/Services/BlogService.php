@@ -253,7 +253,7 @@ class BlogService
                 if (isset($data)&&$data['count(*)']>0) {
                     $row = 'error';
                 } else {
-                    $row = BlogTypes::update(['is_delete' => 1], 'id = ' . $id);
+                    $row = $this->blogTypesModel->_update(['is_delete' => 1], 'id = ' . $id);
                 }
                 break;
             case 'tag':
