@@ -290,7 +290,7 @@ class DocumentationController extends BaseController {
             $bool = $SdKArticleService->addEditcaregorical($param);
             if ($bool['code'] == 1) {
                     flash('添加成功')->success()->important();
-                    if($param['type']){
+                    if(isset($param['type'])){
                         return redirect()->route('documentation.sdkClassification');
                     }
                     return redirect()->route('documentation.sdkDocumentation');
