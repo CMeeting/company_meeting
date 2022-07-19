@@ -59,6 +59,14 @@ class Base{
             ->first();
 
     }
+    public function finds($condition, $order = 'created_at DESC') {
+        $data=Db::table(static::$table)
+            ->whereRaw($condition)
+            ->orderByRaw($order)
+            ->first();
+        $data=$this->objToArr($data);
+        return $data;
+    }
 
     public static function insertGetId(array $data)
     {
@@ -85,6 +93,17 @@ class Base{
         return Db::table(static::$table)
             ->where($where)
             ->delete();
+    }
+
+    public  function selects($condition, $field = '*', $order ="id desc")
+    {
+         $data=Db::table(static::$table)
+            ->select(DB::raw($field))
+            ->whereRaw($condition)
+            ->orderByRaw($order)
+            ->get();
+         $data=$this->objToArr($data);
+         return $data;
     }
 
     public function objToArr($object) {

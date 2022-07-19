@@ -1522,6 +1522,17 @@ abstract class Model implements ArrayAccess, Arrayable, Jsonable, JsonSerializab
             ->get();
     }
 
+    public  function selects($condition, $field = '*', $order ="id desc")
+    {
+        $data=Db::table($this->table)
+            ->select(DB::raw($field))
+            ->whereRaw($condition)
+            ->orderByRaw($order)
+            ->get();
+        $data=$this->objToArr($data);
+        return $data;
+    }
+
     public function paginates($condition, $field = '*', $order ="id desc",$page=10)
     {
         return Db::table($this->table)
