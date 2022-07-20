@@ -65,7 +65,7 @@ Route::group(['namespace' => 'Admin','prefix' => 'admin'], function (){
         Route::post('blogs/tagStore', 'BlogsController@tagStore')->name('blogs.tagStore');
         Route::get('blogs/tagEdit/{id}', 'BlogsController@tagEdit')->name('blogs.tagEdit');
         Route::post('blogs/tagUpdate/{id}', 'BlogsController@tagUpdate')->name('blogs.tagUpdate');
-        Route::get('blogs/softDel/{table}/{id}', 'BlogsController@softDel')->name('blogs.softDel');
+        Route::get('blogs/softDel/{table?}/{id?}', 'BlogsController@softDel')->name('blogs.softDel');
 //        Route::get('blogs/tagEdit/{id}', function ($id) {
 //            return $id;
 //        })->name('blogs.tagEdit');

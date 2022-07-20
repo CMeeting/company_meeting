@@ -151,17 +151,30 @@ class BlogsController extends BaseController
         return redirect()->route('blogs.types');
     }
 
-    public function softDel($table,$id){
-        $row = $this->blogService->softDel($table,$id);
-        if(1==$row){
-            flash('删除成功')->success()->important();
-        }elseif ('error'==$row){
-            flash('删除失败,此分类下存在Blog数据，无法删除')->error()->important();
+    public function softDel(){
+        $param = request()->input();
+        $table = $param['table'];
+        $id = $param['id'];
+        if(!empty($table)&&!empty($id)){
+            $row = $this->blogService->softDel($table,$id);
+            if(1==$row){
+                $data['code'] = 0;
+                flash('删除成功')->success()->important();
+            }elseif ('error'==$row){
+                $data['code'] = 1;
+                $data['msg'] = '删除失败,此分类下存在Blog数据，无法删除';
+//                flash('删除失败,此分类下存在Blog数据，无法删除')->error()->important();
+            }
+            else{
+                $data['code'] = 1;
+                $data['msg'] = '删除失败';
+                flash('删除失败')->error()->important();
+            }
+        }else{
+            $data['code'] = 1;
+            $data['msg'] = '参数有误，请重试';
         }
-        else{
-            flash('删除失败')->error()->important();
-        }
-        return redirect()->back();
+        return $data;
     }
 
     public function editorUpload(){

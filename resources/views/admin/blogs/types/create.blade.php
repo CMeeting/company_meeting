@@ -12,21 +12,21 @@
                 <form class="form-horizontal m-t-md" action="{{ route('blogs.typeStore') }}" method="post" accept-charset="UTF-8" enctype="multipart/form-data">
                     {!! csrf_field() !!}
                     <div class="form-group">
-                        <label class="col-sm-2 control-label">Title</label>
+                        <label class="col-sm-2 control-label">Title（不允许出现字符）</label>
                         <div class="input-group col-sm-2">
                             <input type="text" class="form-control" name="data[title]" value="" required data-msg-required="请输入标题">
                         </div>
                     </div>
                     <div class="hr-line-dashed m-t-sm m-b-sm"></div>
                     <div class="form-group">
-                        <label class="col-sm-2 control-label">Slug</label>
+                        <label class="col-sm-2 control-label">Slug(确保唯一性)：</label>
                         <div class="input-group col-sm-2">
                             <input type="text" class="form-control" name="data[slug]" value="" required data-msg-required="请输入slug">
                         </div>
                     </div>
                     <div class="hr-line-dashed m-t-sm m-b-sm"></div>
                     <div class="form-group">
-                        <label class="col-sm-2 control-label">Seo Title：</label>
+                        <label class="col-sm-2 control-label">Seo Title（不允许出现字符）：</label>
                         <div class="input-group col-sm-2">
                             <input type="text" class="form-control" name="data[seo_title]" required data-msg-required="请输入Seo Title">
                         </div>
@@ -47,7 +47,7 @@
                     </div>
                     <div class="hr-line-dashed m-t-sm m-b-sm"></div>
                     <div class="form-group">
-                        <label class="col-sm-2 control-label">Sort id</label>
+                        <label class="col-sm-2 control-label">Sort id(排序 从小到大)：</label>
                         <div class="input-group col-sm-2">
                             <input type="number" class="form-control" name="data[sort_id]" value="" required data-msg-required="请输入Sort id">
                         </div>

@@ -173,12 +173,13 @@ class BlogService
 
     public function getBlogTypeList($param)
     {
-        $where[] = ['is_delete','=','0'];
+        $where = 'is_delete = 0';
         if(isset($param['info'])&&$param['info']){
-            $where[]=[$param['query_type'],"=", "'".$param['info']."'"];
+            $where .=" AND ".$param['query_type']." = '".$param['info']."'";
         }
         $order = 'sort_id,id DESC';
-        $data = $this->blogTypesModel->select($where,'*',$order);
+//        $data = $this->blogTypesModel->select($where,'*',$order);
+        $data = BlogTypes::whereRaw($where)->orderByRaw($order)->paginate(10);
         return $data ?? [];
     }
 

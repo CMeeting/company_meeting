@@ -62,15 +62,53 @@
                         <td class="text-center">
                             <div class="btn-group">
                                 <a href="{{route('blogs.typeEdit',$item->id)}}"><button class="btn btn-primary btn-xs" type="button"><i class="fa fa-paste"></i> 修改</button></a>
-                                <a href="{{route('blogs.softDel',['type',$item->id])}}"><button class="btn btn-danger btn-xs" type="button"><i class="fa fa-trash-o"></i> 删除</button></a>
+{{--                                <a href="{{route('blogs.softDel',['type',$item->id])}}"><button class="btn btn-danger btn-xs" type="button"><i class="fa fa-trash-o"></i> 删除</button></a>--}}
+                                <a onclick="del('{{$item->id}}')"><button class="btn btn-danger del btn-xs" type="button"><i class="fa fa-trash-o"></i> 删除</button></a>
                             </div>
                         </td>
                     </tr>
                 @endforeach
                 </tbody>
             </table>
+            {{$data->appends(['info' => isset($query['info'])?$query['info']:'','query_type'=>isset($query['query_type'])?$query['query_type']:''])->links()}}
         </div>
     </div>
     <div class="clearfix"></div>
 </div>
+<script>
+    function del(id){
+        layer.confirm('您确定要删除吗？', {
+            btn: ['确定','取消']
+        }, function(){
+            // layer.close(index);
+            var index = layer.load();
+            $.ajax({
+                url: "{{route('blogs.softDel')}}",
+                data: {table:'type', id: id},
+                type: 'get',
+                // dataType: "json",
+                success: function (resp) {
+                    layer.close(index);
+                    //成功提示
+                    if (resp.code==0) {
+                        layer.msg("删除成功", {
+                            icon: 1,
+                            time: 1000
+                        }, function () {
+                            window.location.reload()
+                        });
+                    } else {
+                        //失败提示
+                        layer.msg(resp.msg, {
+                            icon: 2,
+                            time: 2000
+                        });
+                    }
+                }
+            });
+        }, function(index){
+            layer.close(index);
+        });
+    }
+</script>
 @endsection
