@@ -1553,7 +1553,15 @@ abstract class Model implements ArrayAccess, Arrayable, Jsonable, JsonSerializab
             ->paginate($page);
     }
 
-
+    public function _where($condition, $order = 'id DESC', $field = '*') {
+        $data = Db::table($this->table)
+            ->select(DB::raw($field))
+            ->whereRaw($condition)
+            ->orderByRaw($order)
+            ->get();
+        $data=$this->objToArr($data);
+        return $data;
+    }
 
     public function selectLimit($condition, $field = '*', $order = 'id DESC',$limit = 10)
     {

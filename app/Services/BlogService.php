@@ -75,7 +75,7 @@ class BlogService
 
     public function getBlogTypeAndSlugkv()
     {
-        $arr = BlogTypes::getTypeAndSlugkv();
+        $arr = $this->blogTypesModel->objToArr($this->blogTypesModel->getTypeAndSlugkv());
         foreach ($arr as $v) {
             $data[$v['id']] = ['title' => $v['title'], 'slug' => $v['slug']];
         }
@@ -306,11 +306,11 @@ class BlogService
             }
         }
         if ($category) {
-            $all_data = Blogs::where(['type_id' => $type[$category]], ' is_delete = 0 ', 'sort_id,id DESC', $field);
+            $all_data = $this->blogModel->_where('type_id = '."'".$type[$category]."'".  ' AND is_delete = 0 ', 'sort_id,id DESC', $field);
             $data['data'] = $this->getSendList($all_data, $types);
-            $data['currentCategory'] = BlogTypes::where(['slug' => $category], ' is_delete = 0 ', '', 'title,slug,seo_title,keywords,description')->toArray()[0];
+            $data['currentCategory'] = $this->blogTypesModel->_where('slug = '."'".$category."'".  ' AND is_delete = 0 ', 'id DESC', 'title,slug,seo_title,keywords,description')[0];
         } else {
-            $all_data = Blogs::where('', ' is_delete = 0 ', 'sort_id,id DESC', $field);
+            $all_data = $this->blogModel->_where(' is_delete = 0 ', 'sort_id,id DESC', $field);
             $data['data'] = $this->getSendList($all_data, $types);
         }
         return $data;
@@ -343,11 +343,11 @@ class BlogService
     {
         $field = 'id,title_h1,slug,type_id as category,tag_id as tags,cover,sort_id,created_at';
         $types = $this->getBlogTypeAndSlugkv();
-        $row = Blogs::find(['slug' => $slug]);
+        $row = $this->blogModel->objToArr($this->blogModel->_find('slug = ' ."'". $slug ."'"));
         $row['category'] = $types[$row['type_id']];
         $row['tags'] = $this->tagToArray($row['tag_id']);
         unset($row['tag_id']);
-        $list_data = Blogs::selectLimit([['type_id', '=', $row['type_id']], ['slug', '<>', $slug], ['is_delete', '=', '0']], $field, 'sort_id,id DESC', 3);
+        $list_data = $this->blogModel->objToArr($this->blogModel->selectLimit([['type_id', '=', $row['type_id']], ['slug', '<>', $slug], ['is_delete', '=', '0']], $field, 'sort_id,id DESC', 3));
         $count = count($list_data);
         if (3 <= $count) {
             foreach ($list_data as $v) {
@@ -357,7 +357,7 @@ class BlogService
             }
         } else if ($count > 0 && $count < 3) {
             $limit = 3 - $count;
-            $blist = Blogs::selectLimit([['type_id', '<>', $row['type_id']], ['slug', '<>', $slug], ['is_delete', '=', '0']], $field, 'id DESC', $limit);
+            $blist = $this->blogModel->objToArr($this->blogModel->selectLimit([['type_id', '<>', $row['type_id']], ['slug', '<>', $slug], ['is_delete', '=', '0']], $field, 'id DESC', $limit));
             foreach ($list_data as $v) {
                 $v['category'] = $types[$v['category']]['title'];
                 $v['tags'] = $this->tagToArray($v['tags']);
@@ -369,7 +369,7 @@ class BlogService
                 $list[] = $item;
             }
         } else {
-            $blist = Blogs::selectLimit([['slug', '<>', $slug], ['is_delete', '=', '0']], $field, 'id DESC', 3);
+            $blist = $this->blogModel->objToArr($this->blogModel->selectLimit([['slug', '<>', $slug], ['is_delete', '=', '0']], $field, 'id DESC', 3));
             foreach ($blist as $item) {
                 $item['category'] = $types[$item['category']]['title'];
                 $item['tags'] = $this->tagToArray($item['tags']);
@@ -412,7 +412,7 @@ class BlogService
             }
         }
         $tag_like = '%' . $tag_kv[$tag] . '%';
-        $rows = Blogs::selectLimit([['type_id', '=', $type[$category]], ['tag_id', 'like', $tag_like], ['is_delete', '=', '0']], $field, 'id DESC', 3);
+        $rows = $this->blogModel->objToArr($this->blogModel->selectLimit([['type_id', '=', $type[$category]], ['tag_id', 'like', $tag_like], ['is_delete', '=', '0']], $field, 'id DESC', 3));
         if (3 <= count($rows)) {
             foreach ($rows as $v) {
                 $v['category'] = $types[$v['category']]['title'];
@@ -426,7 +426,7 @@ class BlogService
                 $ids .= $r['id'] . ',';
             }
             $ids = explode(',', rtrim($ids, ','));
-            $blist = Blogs::selectLimit([['type_id', '=', $type[$category]], ['id', 'not in', $ids], ['is_delete', '=', '0']], $field, 'id DESC', $limit);
+            $blist = $this->blogModel->objToArr($this->blogModel->selectLimit([['type_id', '=', $type[$category]], ['id', 'not in', $ids], ['is_delete', '=', '0']], $field, 'id DESC', $limit));
             $arr = array_merge($rows, $blist);
             if (3 == count($arr)) {
                 foreach ($arr as $value) {
@@ -436,7 +436,7 @@ class BlogService
                 }
             } else {
                 $num = 3 - count($arr);
-                $clist = Blogs::selectLimit([['is_delete', '=', '0']], $field, 'id DESC', $num);
+                $clist = $this->blogModel->objToArr($this->blogModel->selectLimit([['is_delete', '=', '0']], $field, 'id DESC', $num));
                 $arrs = array_merge($arr, $clist);
                 foreach ($arrs as $items) {
                     $items['category'] = $types[$items['category']]['title'];
