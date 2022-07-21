@@ -55,7 +55,8 @@ class Apidocumentationservice
         if(!$Platform){
             return json_encode(['data'=>'','code'=>403,'msg'=>"缺少参数"]);
         }
-        $SdKArticle=$SdKArticle_data->_find("deleted=0 and enabled=1 and platformid=".$Platform['id']." and slug='".$param['slugs']."'");
+        $version=$PlatformVersion->finds("name like '".$param['category']."' and pid=".$Platform['id']." and deleted=0 and enabled=1");
+        $SdKArticle=$SdKArticle_data->_find("deleted=0 and enabled=1 and platformid=".$Platform['id']." and version=".$version['id']." and slug='".$param['slugs']."'");
         if($SdKArticle){
             $SdKArticle=$SdKArticle_data->objToArr($SdKArticle);
             $fenlei=$SdkClassification->finds("deleted=0 and enabled=1 and id=".$SdKArticle['classification_ids']);
@@ -82,6 +83,7 @@ class Apidocumentationservice
             $data['name']=$SdKArticle['titel'];
             $data['seo']=$SdKArticle['seotitel'];
             $data['sgluid']=$SdKArticle['slug'];
+            $data['type']=$SdKArticle['type'];
             $data['data']=$SdKArticle['info'];
             $data['created']=$SdKArticle['created_at'];
             $data['updated']=$SdKArticle['updated_at'];
