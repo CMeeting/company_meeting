@@ -18,12 +18,12 @@
     <link rel="stylesheet" href="{{loadEdition('/admin/yanshi/classify.css')}}">
     <link rel="stylesheet" href="{{loadEdition('/admin/yanshi/ladda-themeless.min.css')}}"/>
     <link rel="stylesheet" href="{{loadEdition('/admin/css/hljs.css')}}" />
-    <link rel="stylesheet" href="https://unpkg.com/bytemd@1.11.0/dist/index.min.css" />
-    <link rel="stylesheet" href="https://unpkg.com/github-markdown-css" />
-    <script src="https://unpkg.com/bytemd"></script>
-    <script src="https://unpkg.com/@bytemd/plugin-gfm"></script>
+    <link rel="stylesheet" href="{{loadEdition('/admin/css/index.min.css')}}" />
+    <link rel="stylesheet" href="{{loadEdition('/admin/css/github-markdown.css')}}" />
+    <script src="{{loadEdition('/admin/js/index.umd.js')}}"></script>
+    <script src="{{loadEdition('/admin/js/plugin-gfm.umd.js')}}"></script>
     <script src="{{loadEdition('/admin/js/highlight.js')}}"></script>
-    <script src="https://unpkg.com/@bytemd/plugin-gemoji"></script>
+    <script src="{{loadEdition('/admin/js/plugin-gemoji.umd.js')}}"></script>
     @yield('css')
 </head>
 <body class="gray-bg">
