@@ -234,8 +234,9 @@ class SdKArticleService
            }
            $arrs = array_reverse($arr);
            return $arrs;
+       }else{
+           return [];
        }
-       return [];
     }
 
 
