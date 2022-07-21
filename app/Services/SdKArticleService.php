@@ -223,16 +223,19 @@ class SdKArticleService
     }
 
     function assemblyClassification($id,$data,&$arr = array()){
-        foreach ($data as $k=>$v){
-          if($v['id']==$id){
-              array_push($arr, $v['title']);
-              if($v['pid']!=0){
-                  $this->assemblyClassification($v['pid'],$data,$arr);
-              }
-          }
-        }
-        $arrs=array_reverse($arr);
-        return $arrs;
+       if(count($data)>0) {
+           foreach ($data as $k => $v) {
+               if ($v['id'] == $id) {
+                   array_push($arr, $v['title']);
+                   if ($v['pid'] != 0) {
+                       $this->assemblyClassification($v['pid'], $data, $arr);
+                   }
+               }
+           }
+           $arrs = array_reverse($arr);
+           return $arrs;
+       }
+       return [];
     }
 
 
