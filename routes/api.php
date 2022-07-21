@@ -20,7 +20,7 @@ Route::namespace('Api')
     ->group(function(){
         Route::get('/sdkIndex','DocumentationController@sdkIndex')->name('documentation.sdkIndex');
         Route::get('/sdkInfo','DocumentationController@sdkInfo')->name('documentation.sdkInfo');
-        Route::get('/blogList','BlogsController@blogList')->name('blogs.blogList');
-        Route::get('/blogDetail','BlogsController@blogDetail')->name('blogs.blogDetail');
-        Route::get('/getBlogForTags','BlogsController@getBlogForTags')->name('blogs.getBlogForTags');
+        Route::get('/blogs/bloglist','BlogsController@blogList');
+        Route::get('/blogs/blogdetail','BlogsController@blogDetail');
+        Route::get('/blogs/getBlogForTags','BlogsController@getBlogForTags');
     });
