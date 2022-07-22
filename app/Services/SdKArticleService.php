@@ -32,15 +32,15 @@ class SdKArticleService
         }
 
         $SdKArticle=new SdKArticle();
-        $data=$SdKArticle->whereRaw($where)->orderByRaw('displayorder,id desc')->paginate(10);;
+        $data=$SdKArticle->whereRaw($where)->orderByRaw('displayorder,id desc')->paginate(10);
         $classification=$this->allCategories();
         $banben=$this->allVersion();
+
         if(!empty($data)){
             foreach ($data as $k=>$v){
                 $fenlei=$this->assemblyClassification($v->classification_ids,$classification);
                 $v->classification=$fenlei?implode("--",$fenlei):"";
                 $v->platformversion=$this->assemblyVersion(array($v->platformid,$v->version),$banben);
-
             }
         }
         return $data;
@@ -222,8 +222,7 @@ class SdKArticleService
         return $data;
     }
 
-    function assemblyClassification($id,$data,&$arr = array()){
-       if(count($data)>0) {
+    function assemblyClassification($id,$data,&$arr=array()){
            foreach ($data as $k => $v) {
                if ($v['id'] == $id) {
                    array_push($arr, $v['title']);
@@ -234,15 +233,15 @@ class SdKArticleService
            }
            $arrs = array_reverse($arr);
            return $arrs;
-       }else{
-           return [];
-       }
+
+
     }
 
 
     function assemblyVersion($ids,$data){
         $str="";
         $i=1;
+
         foreach ($ids as $k=>$v){
              foreach ($data as $ks=>$vs){
                  if($v==$vs['id']){
