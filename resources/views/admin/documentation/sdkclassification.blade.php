@@ -104,10 +104,11 @@
                                     });
                                 } else {
                                     //失败提示
-                                    layer.msg(resp.message, {
+                                    layer.msg(resp.msg, {
                                         icon: 2,
-                                        time: 2000
+                                        time: 3000
                                     });
+                                    location.reload();
                                 }
                             }
                         });

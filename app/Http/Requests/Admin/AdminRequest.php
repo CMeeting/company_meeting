@@ -26,7 +26,7 @@ class AdminRequest extends FormRequest
         if(request()->method() == 'POST')
         {
             return [
-                'name'     => 'required|between:3,10',
+                'name'     => 'required',
                 'password' => 'required',
                 //'avatr'    => 'max:128',
                 'role_id'  => 'required:integer',
@@ -34,7 +34,7 @@ class AdminRequest extends FormRequest
             ];
         }else{
             return [
-                'name'     => 'required|between:3,10',
+                'name'     => 'required',
                // 'avatr'    => 'max:128',
                 'role_id'  => 'required:integer',
                 'status'   => 'required:integer',
@@ -50,7 +50,6 @@ class AdminRequest extends FormRequest
     {
         return [
             'name.required'     => '用户名不能为空',
-            'name.between'      => '用户名长度应该在3~10位之间',
             'password.required' => '密码不能为空',
             //'avatr.max'         => '头像不能超过128个字符',
             'role_id.required'  => '用户所属角色不能为空',
