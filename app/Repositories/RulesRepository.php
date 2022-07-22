@@ -18,6 +18,7 @@ namespace App\Repositories;
 
 
 use App\Models\Rule;
+use Illuminate\Support\Facades\DB;
 
 class RulesRepository
 {
@@ -58,6 +59,13 @@ class RulesRepository
     public function getRulesAndPublic()
     {
         return Rule::orderBy('sort','asc')->public()->get();
+    }
+
+    public function del($id){
+        $row = Db::table('roles')
+            ->where('id','=',$id)
+            ->delete();
+        return $row??'';
     }
 
     /**

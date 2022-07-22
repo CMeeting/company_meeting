@@ -77,7 +77,8 @@ Route::group(['namespace' => 'Admin','prefix' => 'admin'], function (){
 
         Route::get('admins/status/{statis}/{admin}','AdminsController@status')->name('admins.status');
 
-        Route::get('admins/delete/{admin}','AdminsController@delete')->name('admins.delete');
+//        Route::get('admins/delete/{admin}','AdminsController@delete')->name('admins.delete');
+        Route::get('admins/delete','AdminsController@del')->name('admins.delete');
 
         Route::resource('admins','AdminsController',['only' => ['index', 'create', 'store', 'update', 'edit']]); //管理员
 
@@ -86,6 +87,8 @@ Route::group(['namespace' => 'Admin','prefix' => 'admin'], function (){
         Route::post('roles/group-access/{role}','RolesController@groupAccess')->name('roles.group-access');
 
         Route::resource('roles','RolesController',['only'=>['index','create','store','update','edit','destroy'] ]);  //角色
+
+        Route::get('roles/delete','RolesController@del')->name('roles.delete');
 
         Route::get('rules/status/{status}/{rules}','RulesController@status')->name('rules.status');
 

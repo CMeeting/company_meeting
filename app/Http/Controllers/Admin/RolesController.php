@@ -87,6 +87,25 @@ class RolesController extends BaseController
         return redirect()->route('roles.index');
     }
 
+    public function del(RulesRepository $rulesRepository){
+        $param = request()->input();
+        if(!empty($param['id'])){
+            $row = $rulesRepository->del($param['id']);
+            if($row){
+                $data['code'] = 0;
+                flash('删除成功')->success()->important();
+            }else{
+                $data['code'] = 1;
+                $data['msg'] = '删除失败';
+                flash('删除失败')->error()->important();
+            }
+        }else{
+            $data['code'] = 1;
+            $data['msg'] = '参数有误，请重试';
+            flash('删除失败')->error()->important();
+        }
+        return $data;
+    }
     /**
      * 展示分配权限页面
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View

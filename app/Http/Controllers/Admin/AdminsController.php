@@ -118,6 +118,25 @@ class AdminsController extends BaseController {
         return redirect()->route('admins.index');
     }
 
+    public function del(){
+        $param = request()->input();
+        if(!empty($param['id'])){
+            $row = $this->adminsService->del($param['id']);
+            if($row){
+                $data['code'] = 0;
+                flash('删除成功')->success()->important();
+            }else{
+                $data['code'] = 1;
+                $data['msg'] = '删除失败';
+                flash('删除失败')->error()->important();
+            }
+        }else{
+            $data['code'] = 1;
+            $data['msg'] = '参数有误，请重试';
+            flash('删除失败')->error()->important();
+        }
+        return $data;
+    }
     /**
      * @param $status
      * @param $id

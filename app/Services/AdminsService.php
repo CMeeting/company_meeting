@@ -105,6 +105,13 @@ class AdminsService
         return $admin;
     }
 
+    public function del($id){
+        $row = Db::table('admins')
+            ->where('id','=',$id)
+            ->delete();
+        return $row??'';
+    }
+
     /**
      * 更新管理员资料
      * @param $request

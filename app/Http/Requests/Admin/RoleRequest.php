@@ -26,7 +26,7 @@ class RoleRequest extends FormRequest
         return [
             'remark' => 'max:300',
             'order'  => 'required:integer',
-            'status' => 'required:integer',
+//            'status' => 'required:integer',
         ];
     }
 
@@ -37,8 +37,8 @@ class RoleRequest extends FormRequest
             'remark.max'      => '角色描述不能超过300个字符',
             'order.required'  => '排序不能为空',
             'order.integer'   => '表单不合法',
-            'status.required' => '状态不能为空',
-            'status.integer'  => '表单不合法',
+//            'status.required' => '状态不能为空',
+//            'status.integer'  => '表单不合法',
         ];
     }
 }

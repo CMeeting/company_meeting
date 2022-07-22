@@ -41,19 +41,19 @@
                         @endif
                     </div>
                 </div>
-                <div class="hr-line-dashed m-t-sm m-b-sm"></div>
-                <div class="form-group">
-                    <label class="col-sm-2 control-label">状态：</label>
-                    <div class="input-group col-sm-1">
-                        <select class="form-control" name="status">
-                            <option value="1" @if($role->status == 1) selected="selected" @endif>启用</option>
-                            <option value="2" @if($role->status == 2) selected="selected" @endif>禁用</option>
-                        </select>
-                        @if ($errors->has('status'))
-                            <span class="help-block m-b-none"><i class="fa fa-info-circle"></i>{{$errors->first('status')}}</span>
-                        @endif
-                    </div>
-                </div>
+{{--                <div class="hr-line-dashed m-t-sm m-b-sm"></div>--}}
+{{--                <div class="form-group">--}}
+{{--                    <label class="col-sm-2 control-label">状态：</label>--}}
+{{--                    <div class="input-group col-sm-1">--}}
+{{--                        <select class="form-control" name="status">--}}
+{{--                            <option value="1" @if($role->status == 1) selected="selected" @endif>启用</option>--}}
+{{--                            <option value="2" @if($role->status == 2) selected="selected" @endif>禁用</option>--}}
+{{--                        </select>--}}
+{{--                        @if ($errors->has('status'))--}}
+{{--                            <span class="help-block m-b-none"><i class="fa fa-info-circle"></i>{{$errors->first('status')}}</span>--}}
+{{--                        @endif--}}
+{{--                    </div>--}}
+{{--                </div>--}}
                 <div class="hr-line-dashed m-t-sm m-b-sm"></div>
                 <div class="form-group">
                     <div class="col-sm-12 col-sm-offset-2">
