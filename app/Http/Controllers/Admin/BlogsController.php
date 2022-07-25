@@ -82,7 +82,9 @@ class BlogsController extends BaseController
     public function tagStore(){
         $param = request();
         $back = $this->blogService->blogTagCreate($param);
-        if(!empty($back)){
+        if('error'==$back){
+            flash('添加失败,Tag的title不能重复')->error()->important();
+        }else if(!empty($back)){
             flash('添加Tag成功')->success()->important();
         }else{
             flash('添加Tag失败')->error()->important();
@@ -98,7 +100,9 @@ class BlogsController extends BaseController
     public function tagUpdate(Request $request,$id){
 //        $param = request();
         $back = $this->blogService->blogTagUpdate($request, $id);
-        if(!empty($back)){
+        if('error'==$back){
+            flash('更新失败,Tag的title不能重复')->error()->important();
+        }else if(!empty($back)){
             flash('更新Tag成功')->success()->important();
         }else{
             flash('更新Tag失败')->error()->important();

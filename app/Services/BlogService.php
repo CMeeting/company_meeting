@@ -232,14 +232,28 @@ class BlogService
     public function blogTagCreate($param)
     {
         $data = $param->request->all()['data'];
-        $row = $this->blogTagsModel->insertGetId($data);
+        if($data['title']){
+            $tag = $this->blogTagsModel->_find(" title = '".$data['title']."'");
+            if($tag){
+                $row = 'error';
+            }else{
+                $row = $this->blogTagsModel->insertGetId($data);
+            }
+        }
         return $row??[];
     }
 
     public function blogTagUpdate($request,$id)
     {
         $data = $request->all()['data'];
-        $row = $this->blogTagsModel->_update($data,'id = ' . $id);
+        if($data['title']){
+            $tag = $this->blogTagsModel->_find("id <> ".$id." AND title = '".$data['title']."'");
+            if($tag){
+                $row = 'error';
+            }else{
+                $row = $this->blogTagsModel->_update($data,'id = ' . $id);
+            }
+        }
         return $row ??'';
     }
 

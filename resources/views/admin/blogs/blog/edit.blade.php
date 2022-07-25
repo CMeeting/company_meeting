@@ -80,7 +80,7 @@
                     <div class="form-group">
                         <label class="col-sm-2 control-label">Sort id(排序 从小到大)：</label>
                         <div class="input-group col-sm-2">
-                            <input type="number" class="form-control" name="data[sort_id]" value="{{$row->sort_id}}" required data-msg-required="请输入Sort id">
+                            <input type="number" class="form-control" name="data[sort_id]" value="{{$row->sort_id}}" required data-msg-required="请输入Sort id" min="0" oninput="if(value.length>9)value=value.slice(0,9)">
                         </div>
                     </div>
                     <div class="hr-line-dashed m-t-sm m-b-sm"></div>
