@@ -64,7 +64,7 @@
                         <td  class="text-center" >{{$item['id']}}</td>
                         <td>{{$item['title_h1']}}</td>
                         <td>{{$item['slug']}}</td>
-                        <td class="text-center">{{$types[$item['type_id']]}}</td>
+                        <td class="text-center">@if(isset($types[$item['type_id']])){{$types[$item['type_id']]}}@endif</td>
                         <td class="text-center">{{$item->tag_id}}</td>
                         <td>{{$item['title']}}</td>
                         <td>{{$item['keywords']}}</td>
