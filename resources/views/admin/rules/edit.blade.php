@@ -14,8 +14,7 @@
         </div>
         <div class="ibox-content">
             <a href="{{route('rules.index')}}">
-                <button class="btn btn-primary btn-sm" type="button"><i class="fa fa-plus-circle"></i> 权限管理
-                </button>
+                <button class="btn btn-primary btn-sm" type="button"><i class="fa fa-chevron-left"></i> 返回列表 </button>
             </a>
             <div class="hr-line-dashed m-t-sm m-b-sm"></div>
             <form class="form-horizontal m-t-md" action="{{route('rules.update',$rule->id)}}" method="POST">

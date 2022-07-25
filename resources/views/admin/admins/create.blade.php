@@ -18,8 +18,8 @@
                 <h5>添加管理员</h5>
             </div>
             <div class="ibox-content">
-                <a class="menuid btn btn-primary btn-sm" href="javascript:history.go(-1)">返回</a>
-                <a href="{{route('admins.index')}}"><button class="btn btn-primary btn-sm" type="button"><i class="fa fa-plus-circle"></i> 管理员管理</button></a>
+{{--                <a class="menuid btn btn-primary btn-sm" href="javascript:history.go(-1)">返回</a>--}}
+                <a href="{{route('admins.index')}}"><button class="btn btn-primary btn-sm" type="button"><i class="fa fa-chevron-left"></i> 返回列表 </button></a>
                 <div class="hr-line-dashed m-t-sm m-b-sm"></div>
                 <teleport id="groupidsjson" style="display: none">{{$groupidsjson}}</teleport>
                 <teleport id="ruleidsjson"  style="display: none">{{$ruleidsjson}}</teleport>

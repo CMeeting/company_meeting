@@ -7,8 +7,8 @@
                 <h5>添加Blog</h5>
             </div>
             <div class="ibox-content">
-                <a class="menuid btn btn-primary btn-sm" href="javascript:history.go(-1)">返回</a>
-                <a href="{{route('blogs.blog')}}"><button class="btn btn-primary btn-sm" type="button"><i class="fa fa-plus-circle"></i> Blog列表</button></a>
+{{--                <a class="menuid btn btn-primary btn-sm" href="javascript:history.go(-1)">返回</a>--}}
+                <a href="{{route('blogs.blog')}}"><button class="btn btn-primary btn-sm" type="button"><i class="fa fa-chevron-left"></i> 返回列表 </button></a>
                 <div class="hr-line-dashed m-t-sm m-b-sm"></div>
                 <form class="form-horizontal m-t-md" action="{{ route('blogs.blogStore') }}" method="post" accept-charset="UTF-8" enctype="multipart/form-data">
                     {!! csrf_field() !!}
