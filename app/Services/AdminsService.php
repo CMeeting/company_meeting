@@ -206,19 +206,24 @@ class AdminsService
      */
     public function login($request)
     {
+
         if(!Auth::guard('admin')->attempt([
             'name'     => $request->name,
             'password' => $request->password,
             'status'   => 1,
         ])){
             //记录登录操作记录
-//            $this->actionLogsService->loginActionLogCreate($request,false);
+            $this->actionLogsService->loginActionLogCreate($request,false);
             return false;
         }
 
         //增加登录次数.
         $admin = Auth::guard('admin')->user();
         $admin->increment('login_count');
+        $name=$request->name;
+         Db::table("admins")
+            ->whereRaw("name='{$name}'")
+            ->update(['logintime'=>date("Y-m-d H:i:s")]);
 
         //记录登录操作记录
         $this->actionLogsService->loginActionLogCreate($request,true);

@@ -61,8 +61,8 @@
                                 @endforeach
                             </td>
                             <td class="text-center">{{$item->last_login_ip}}</td>
-                            <td class="text-center">{{$item->created_at->diffForHumans()}}</td>
-                            <td class="text-center">{{$item->created_at->diffForHumans()}}</td>
+                            <td class="text-center">{{$item->logintime}}</td>
+                            <td class="text-center">{{$item->created_at}}</td>
                             <td class="text-center">{{$item->create_ip}}</td>
                             <td class="text-center">{{$item->login_count}}</td>
                             <td class="text-center">

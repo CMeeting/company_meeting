@@ -71,7 +71,9 @@
                             @endif
                         @endforeach
                         @if ($errors->has('role_id'))
-                            <span class="help-block m-b-none"><i class="fa fa-info-circle"></i>请先添加角色</span>
+                            <div style="width: 100%;height: 30px">
+                                <span class="help-block m-b-none"><i class="fa fa-info-circle"></i>请先添加角色</span>
+                            </div>
                         @endif
 
                     </div>
