@@ -32,7 +32,7 @@ class SdKArticleService
         }
 
         $SdKArticle=new SdKArticle();
-        $data=$SdKArticle->whereRaw($where)->orderByRaw('displayorder,id desc')->paginate(10);
+        $data=$SdKArticle->whereRaw($where)->orderByRaw('displayorder desc,id desc')->paginate(10);
         $classification=$this->allCategories();
         $banben=$this->allVersion();
 
@@ -125,7 +125,7 @@ class SdKArticleService
         $SdkClassification = new SdkClassification();
         $where=array(['deleted','=',0]);
         $field = "id,title,lv,pid,displayorder,enabled,platformid,version";
-        $order = "displayorder";
+        $order = "displayorder desc";
         $material = $SdkClassification->select($where, $field, $order);
         $material = $SdkClassification->objToArr($material);
         $arr_project = $this->menuLeft($material);
@@ -159,7 +159,7 @@ class SdKArticleService
     {
         $PlatformVersion = new PlatformVersion();
         $where=array(['deleted','=',0],['lv','=',1]);
-        $data = $PlatformVersion->select($where,'id,name','displayorder');
+        $data = $PlatformVersion->select($where,'id,name','displayorder desc');
         $data =$PlatformVersion->objToArr($data);
         $arr=[];
         if($data){
@@ -172,7 +172,7 @@ class SdKArticleService
     public function getversion(){
         $PlatformVersion = new PlatformVersion();
         $where=array(['deleted','=',0]);
-        $data = $PlatformVersion->select($where,'id,name,pid,lv','displayorder');
+        $data = $PlatformVersion->select($where,'id,name,pid,lv','displayorder desc');
         $data =$PlatformVersion->objToArr($data);
         $arr=[];
         if($data){

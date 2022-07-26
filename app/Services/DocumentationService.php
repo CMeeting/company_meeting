@@ -25,7 +25,7 @@ class DocumentationService
         $where=array();
         $where[]=["deleted","=",0];
         $field = "id,name,lv,pid,displayorder,enabled";
-        $order = "id desc";
+        $order = "displayorder desc,id desc";
         $list1 = $PlatformVersion->select($where, $field,$order);
         $list1 = $PlatformVersion->objToArr($list1);
         $cateList1 = array();
@@ -142,7 +142,7 @@ class DocumentationService
         $PlatformVersion = new PlatformVersion();
         $where=array(["deleted","=",0],['lv','=',1]);
         $field = "id,name,lv,pid,displayorder,enabled";
-        $order = "displayorder desc";
+        $order = "displayorder desc,id desc";
         $material = $PlatformVersion->select($where, $field, $order);
         $material = $PlatformVersion->objToArr($material);
         $arr_project = $this->menuLeft($material);

@@ -47,7 +47,7 @@
                                 <div class="form-group">
                                     <label class="col-sm-2 control-label no-padding-right" for="form-field-1"> classification(上级分类)：</label>
                                     <div class="col-sm-6 col-xs-12">
-                                        <select name="data[pid]" class="form-control sels"  id="selectid" @if(isset($data['pid']) && $data['pid']) style="pointer-events: none;color: #9f9f9f" @endif>
+                                        <select name="data[pid]" class="form-control sels"  id="selectid"  style="pointer-events: none;color: #9f9f9f">
                                             <option value="0">--默认一级分类--</option>
                                             @foreach($material as $vs)
                                                 <option value="{{$vs['id']}}"
@@ -64,7 +64,7 @@
                                 <div class="form-group">
                                     <label class="col-sm-2 control-label no-padding-right" for="form-field-1"> name(平台或版本名称)：</label>
                                     <div class="col-sm-6 col-xs-12">
-                                        <input id="name"  class="form-control" name="data[name]" value="{{$data['name']}}" required>
+                                        <input id="name"  class="form-control" name="data[name]" value="{{$data['name']}}" required maxlength="25">
                                         <span class="lbl"></span>
                                     </div>
                                 </div>
