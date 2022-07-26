@@ -336,7 +336,7 @@ class BlogService
         if ($all_data) {
             foreach ($all_data as $key => $value) {
 //                print_r($all_data);die;
-                $value['category'] = $types[$value['category']]['title'];
+                $value['category'] = $types[$value['category']]['title'] ?? '';
                 $tag_id = explode(',', $value['tags']);
                 $tags = $this->getBlogTagskv();
                 $tag = '';
