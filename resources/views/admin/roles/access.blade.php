@@ -6,8 +6,8 @@
             <h5>{{$role->name}} - 授权</h5>
         </div>
         <div class="ibox-content">
-            <a href="{{route('roles.index')}}"><button class="btn btn-primary btn-sm" type="button"><i class="fa fa-plus-circle"></i> 角色管理</button></a>
-            <a href="{{route('roles.create')}}" link-url="javascript:void(0)"><button class="btn btn-primary btn-sm" type="button"><i class="fa fa-plus-circle"></i> 添加角色</button></a>
+            <a href="{{route('roles.index')}}"><button class="btn btn-primary btn-sm" type="button"><i class="fa fa-chevron-left"></i> 返回列表 </button></a>
+{{--            <a href="{{route('roles.create')}}" link-url="javascript:void(0)"><button class="btn btn-primary btn-sm" type="button"><i class="fa fa-plus-circle"></i> 添加角色</button></a>--}}
 
             <form class="form-horizontal m-t-md" action="{{route('roles.group-access',$role->id)}}" method="post">
                 {{csrf_field()}}
