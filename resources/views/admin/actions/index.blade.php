@@ -15,7 +15,7 @@
                         <th class="text-center" >操作内容</th>
                         <th class="text-center" width="200">操作地址</th>
                         <th class="text-center" width="150">登录时间</th>
-                        <th class="text-center" width="100">操作</th>
+{{--                        <th class="text-center" width="100">操作</th>--}}
                     </tr>
                     </thead>
                     <tbody>
@@ -33,13 +33,13 @@
                             <td>{{$item->data['action']}}</td>
                             <td class="text-center">{{$item->data['ip']}}<br>来自：{{$item->data['address']}}</td>
                             <td class="text-center">{{$item->created_at->diffForHumans()}}</td>
-                            <td class="text-center">
-                                <form class="form-common" action="{{route('actions.destroy',$item->id)}}" method="post">
-                                    {{ csrf_field() }}
-                                    {{ method_field('DELETE') }}
-                                    <button class="btn btn-danger btn-xs" type="submit"><i class="fa fa-trash-o"></i> 删除</button>
-                                </form>
-                            </td>
+{{--                            <td class="text-center">--}}
+{{--                                <form class="form-common" action="{{route('actions.destroy',$item->id)}}" method="post">--}}
+{{--                                    {{ csrf_field() }}--}}
+{{--                                    {{ method_field('DELETE') }}--}}
+{{--                                    <button class="btn btn-danger btn-xs" type="submit"><i class="fa fa-trash-o"></i> 删除</button>--}}
+{{--                                </form>--}}
+{{--                            </td>--}}
                         </tr>
                         @else
                             <tr>
@@ -57,13 +57,13 @@
                                 <td>{{$item->data['action']}}</td>
                                 <td class="text-center">{{$item->data['ip']}}<br>来自：{{$item->data['address']}}</td>
                                 <td class="text-center">{{$item->created_at->diffForHumans()}}</td>
-                                <td class="text-center">
-                                    <form class="form-common" action="{{route('actions.destroy',$item->id)}}" method="post">
-                                        {{ csrf_field() }}
-                                        {{ method_field('DELETE') }}
-                                        <button class="btn btn-danger btn-xs" type="submit"><i class="fa fa-trash-o"></i> 删除</button>
-                                    </form>
-                                </td>
+{{--                                <td class="text-center">--}}
+{{--                                    <form class="form-common" action="{{route('actions.destroy',$item->id)}}" method="post">--}}
+{{--                                        {{ csrf_field() }}--}}
+{{--                                        {{ method_field('DELETE') }}--}}
+{{--                                        <button class="btn btn-danger btn-xs" type="submit"><i class="fa fa-trash-o"></i> 删除</button>--}}
+{{--                                    </form>--}}
+{{--                                </td>--}}
                             </tr>
                         @endif
                     @endforeach

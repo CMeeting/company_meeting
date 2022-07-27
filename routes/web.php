@@ -94,7 +94,7 @@ Route::group(['namespace' => 'Admin','prefix' => 'admin'], function (){
 
         Route::resource('rules','RulesController',['only'=> ['index','create','store','update','edit','destroy'] ]);  //权限
 
-        Route::resource('actions','ActionLogsController',['only'=> ['index','destroy'] ]);  //日志
+        Route::resource('actions','ActionLogsController',['only'=> ['index'] ]);  //日志
         
         
     });
