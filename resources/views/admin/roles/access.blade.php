@@ -19,7 +19,7 @@
                                     <th width="10%">
                                         <label>
                                             &nbsp;&nbsp;{{$item->name}}&nbsp;
-                                            <input type="checkbox" name="rule_id[]" value="{{$item->id}}" onclick="checkAll(this)" @if(in_array($item->id,$rules)) checked="checked" @endif>
+                                            <input type="checkbox" name="rule_id[]" value="{{$item->id}}" onclick="checkAll(this)" @if(in_array($item->id,$rules)) checked="checked" @endif id="dj_{{$item->id}}" class="dj_{{$item->id}}">
                                         </label>
                                     </th>
                                     <td></td>
@@ -28,7 +28,7 @@
                                 <tr class="b-group">
                                     <th width="10%">
                                         <label>
-                                            &nbsp;&nbsp;{{$item->name}}&nbsp;<input type="checkbox" name="rule_id[]" value="{{$item->id}}" @if(in_array($item->id,$rules)) checked="checked" @endif onclick="checkAll(this)">
+                                            &nbsp;&nbsp;{{$item->name}}&nbsp;<input type="checkbox" name="rule_id[]" value="{{$item->id}}" @if(in_array($item->id,$rules)) checked="checked" @endif onclick="checkAll(this)"id="dj_{{$item->id}}" class="dj_{{$item->id}}">
                                         </label>
                                     </th>
                                     <td class="b-child">
@@ -37,14 +37,14 @@
                                                 <tr class="b-group">
                                                     <th width="10%">
                                                         <label>
-                                                            {{$value->name}}&nbsp;<input type="checkbox" name="rule_id[]" value="{{$value->id}}" @if(in_array($value->id,$rules)) checked="checked" @endif onclick="checkAll(this)">
+                                                            {{$value->name}}&nbsp;<input type="checkbox" name="rule_id[]" value="{{$value->id}}" @if(in_array($value->id,$rules)) checked="checked" @endif onclick="checkAll(this);checkzji(0,'{{$value->id}}','{{$item->id}}')"id="fj_{{$value->id}}" class="dj_{{$item->id}} fj_{{$value->id}}">
                                                         </label>
                                                     </th>
                                                     <td>
                                                         @if(!empty($value->_data))
                                                             @foreach($value->_data as $val)
                                                                 <label>
-                                                                    &emsp;{{$val->name}} <input type="checkbox" name="rule_id[]" value="{{$val->id}}" @if(in_array($val->id,$rules)) checked="checked" @endif>
+                                                                    &emsp;{{$val->name}} <input type="checkbox" name="rule_id[]" value="{{$val->id}}" @if(in_array($val->id,$rules)) checked="checked"  @endif id="zj_{{$val->id}}" class="fj_{{$value->id}} zj_{{$val->id}}" onclick="checkzji('{{$val->id}}','{{$value->id}}','{{$item->id}}')">
                                                                 </label>
                                                             @endforeach
                                                         @endif
@@ -72,6 +72,48 @@
 <script>
     function checkAll(obj){
         $(obj).parents('.b-group').eq(0).find("input[type='checkbox']").prop('checked', $(obj).prop('checked'));
+    }
+    function checkzji(zj,fj,dj){
+        if(zj==0){
+            if($("#fj_"+fj).is(':checked')){
+               $("#dj_"+dj).prop("checked", true);
+            }else{
+                var i=0;
+                $(".dj_"+dj).each(function (){
+                    if($(this).is(':checked')){
+                        i++;
+                    }
+                })
+                if(i==1){
+                    $("#dj_"+dj).attr("checked", false);
+                }
+            }
+        }else{
+            if($("#zj_"+zj).is(':checked')){
+                    $("#fj_"+fj).prop("checked", true);
+                    $("#dj_"+dj).prop("checked", true);
+            }else{
+                var s=0;
+                $(".fj_"+fj).each(function (){
+                    if($(this).is(':checked')){
+                        s++;
+                    }
+                })
+                if(s==1){
+                    $("#fj_"+fj).attr("checked", false);
+
+                    var i=0;
+                    $(".dj_"+dj).each(function (){
+                        if($(this).is(':checked')){
+                            i++;
+                        }
+                    })
+                    if(i==1){
+                        $("#dj_"+dj).attr("checked", false);
+                    }
+                }
+            }
+        }
     }
 </script>
 @endsection
