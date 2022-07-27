@@ -34,16 +34,35 @@ class BlogsController extends BaseController
     }
 
     public function blogStore(){
-        $param = request();
-        $back = $this->blogService->blogCreate($param);
+        $param = request()->all();
+        $request = request();
+        if(!isset($param["data"]['tags']) || empty($param["data"]['tags'])){
+            $result['code'] = 1000;
+            $result['msg'] = '请填写：tags';
+            return $result;
+        }
+        $check = $this->check_param_key_null($param["data"]);
+        if(500==$check['code']){
+            $result['code'] = 1000;
+            $result['msg'] = $check['msg'];
+            return $result;
+        }
+        $back = $this->blogService->blogCreate($request);
         if ("error" == $back){
             flash('slug已存在')->error()->important();
+            $result['code'] = 1000;
+            $result['msg'] = 'slug已存在';
         }else if(!empty($back)){
             flash('添加Blog成功')->success()->important();
+            $result['code'] = 200;
+            return $result;
         }else{
             flash('添加Blog失败')->error()->important();
+            $result['code'] = 1000;
+            $result['msg'] = '添加Blog失败';
         }
-        return redirect()->route('blogs.blog');
+        return $result;
+//        return redirect()->route('blogs.blog');
     }
 
     public function blogEdit($id){
@@ -54,16 +73,45 @@ class BlogsController extends BaseController
     }
 
     public function blogUpdate($id){
-        $param = request();
-        $back = $this->blogService->blogUpdate($param, $id);
+        $param = request()->all();
+        $request = request();
+        if(!isset($param["data"]['tags']) || empty($param["data"]['tags'])){
+            $result['code'] = 1000;
+            $result['msg'] = '请填写：tags';
+            return $result;
+        }
+        $check = $this->check_param_key_null($param["data"]);
+        if(500==$check['code']){
+            $result['code'] = 1000;
+            $result['msg'] = $check['msg'];
+            return $result;
+        }
+        $back = $this->blogService->blogUpdate($request, $id);
         if ("error" == $back){
             flash('slug已存在')->error()->important();
+            $result['code'] = 1000;
+            $result['msg'] = 'slug已存在';
         }else if(!empty($back)){
-            flash('更新Blog成功')->success()->important();
+            flash('修改Blog成功')->success()->important();
+            $result['code'] = 200;
+            return $result;
         }else{
-            flash('更新Blog失败')->error()->important();
+            flash('修改Blog失败')->error()->important();
+            $result['code'] = 1000;
+            $result['msg'] = '修改Blog失败';
         }
-        return redirect()->route('blogs.blog');
+        return $result;
+
+//        $param = request();
+//        $back = $this->blogService->blogUpdate($param, $id);
+//        if ("error" == $back){
+//            flash('slug已存在')->error()->important();
+//        }else if(!empty($back)){
+//            flash('更新Blog成功')->success()->important();
+//        }else{
+//            flash('更新Blog失败')->error()->important();
+//        }
+//        return redirect()->route('blogs.blog');
     }
 
     public function tags()
@@ -184,6 +232,35 @@ class BlogsController extends BaseController
     public function editorUpload(){
         $row['location'] = $this->editor_upload();
         print_r(json_encode($row));die;
+    }
+
+    public function check_param_key_null($param,array $unset=[])
+    {
+        $data['code'] = 200;
+        $data['msg'] = 'success';
+        if ($param) {
+            if (is_array($param)) {
+                if(!empty($unset)){
+                    foreach ($unset as $v){
+                        unset($param[$v]);
+                    }
+                }
+                foreach ($param as $key => $value) {
+                    if (null==$value) {
+                        $data['code'] = 500;
+                        $data['msg'] = '请填写：' . $key;
+                        break;
+                    }
+                }
+            } else {
+                $data['code'] = 500;
+                $data['msg'] = '请传入正确的参数';
+            }
+        } else {
+            $data['code'] = 500;
+            $data['msg'] = '参数不能为空！';
+        }
+        return $data;
     }
 
 }

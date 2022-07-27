@@ -17,6 +17,8 @@ use App\Handlers\ImageUploadHandler;
 use App\Models\Blog;
 use App\Models\BlogTags;
 use App\Models\BlogTypes;
+use http\Env;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Input;
 
 class BlogService
@@ -123,6 +125,7 @@ class BlogService
             $result = $this->uploader->save($file, 'cover');
             if ($result) {
                 $arr['cover'] = $result['path'];
+//                $arr['cover'] = Config::get('ADMIN_HOST').$result['path'];
             }
         }
 //        if (!empty($file)) {
@@ -131,12 +134,16 @@ class BlogService
 //            $url = str_replace('http://', 'https://', $url);
 //            $arr['cover'] = $url;
 //        }
-        if ($data['tags']) {
+        if (is_array($data['data']['tags'])) {
             $tag = '';
-            foreach ($data['tags'] as $v) {
+            foreach ($data['data']['tags'] as $v) {
                 $tag .= $v . ',';
             }
             $arr['tag_id'] = rtrim($tag, ",");
+            unset($arr['tags']);
+        }else{
+            $arr['tag_id'] = $data['data']['tags'];
+            unset($arr['tags']);
         }
 //        print_r($arr);die;
         $row = $this->blogModel->insertGetId($arr);
@@ -160,12 +167,16 @@ class BlogService
                 $arr['cover'] = $result['path'];
             }
         }
-        if ($data['tags']) {
+        if (is_array($data['data']['tags'])) {
             $tag = '';
-            foreach ($data['tags'] as $v) {
+            foreach ($data['data']['tags'] as $v) {
                 $tag .= $v . ',';
             }
             $arr['tag_id'] = rtrim($tag, ",");
+            unset($arr['tags']);
+        }else{
+            $arr['tag_id'] = $data['data']['tags'];
+            unset($arr['tags']);
         }
         $row = $this->blogModel->_update($arr,'id = '.$id);
         return $row ??'';
