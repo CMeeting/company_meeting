@@ -27,7 +27,7 @@ class SdKArticleService
         if(isset($param['version']) &&$param['version']){
             $where.=' AND version = '.$param['version'];
         }
-        if(isset($param['classification']) &&$param['classification']){
+        if(isset($param['classification_ids']) &&$param['classification_ids']){
             $where.=' AND classification_ids = '.$param['classification_ids'];
         }
 

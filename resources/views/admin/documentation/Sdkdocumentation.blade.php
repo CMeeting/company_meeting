@@ -71,10 +71,10 @@
             </div>
                 <div class="col-md-4 col-lg-2 col-sm-6 col-xs-12">
                     <div class="form-group">
-                        <select class="form-control"  name="version" tabindex="1">
+                        <select class="form-control"  name="classification_ids" tabindex="1">
                             <option value="">筛选分类</option>
                             @foreach($classification_ids as $k=>$v)
-                                <option value="{{$k}}" @if(isset($query)&&$query['version']==$k) selected @endif>{{$v}}</option>
+                                <option value="{{$k}}" @if(isset($query)&&$query['classification_ids']==$k) selected @endif>{{$v}}</option>
                             @endforeach
                         </select>
                     </div>
@@ -88,7 +88,7 @@
             </form>
 
 
-            <form method="post" action="{{route('documentation.sdkDocumentation')}}" name="form">
+            <form method="post" action="{{route('documentation.sdkDocumentation')}}" name="form" style="width: 100%;overflow: auto;">
 
                 <table class="table table-striped table-bordered table-hover m-t-md">
                     <thead>

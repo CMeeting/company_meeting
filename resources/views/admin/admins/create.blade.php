@@ -70,10 +70,9 @@
                                     @endif
                                 @endif
                             @endforeach
+
                             @if ($errors->has('role_id'))
-                                <div style="width: 100%;height: 30px">
-                                    <span class="help-block m-b-none"><i class="fa fa-info-circle"></i>请先添加角色</span>
-                                </div>
+                                    <label style="margin-right: 10px;"><span style="color: red;height: 10px;line-height: 10px" class="help-block m-b-none"><i class="fa fa-info-circle"></i>请先选择角色</span></label>
                             @endif
                         </div>
                     </div>
@@ -83,7 +82,7 @@
                             <!-- /.循环一级权限数据 -->
                             @foreach($rolesinfo as $k=>$vo)
                                 <div class="md-checkbox" style="margin-right:10px;">
-                                    <input type="checkbox" id="new_rules_{{$vo['id']}}" name="rules_id[]" value="{{$vo['id']}}"  class="md-check checkbox-parent" dataid="id-{{$vo['id']}}" disabled/>
+                                    <input type="checkbox" id="new_rules_{{$vo['id']}}" name="rules_id[]" value="{{$vo['id']}}"  class="md-check checkbox-parent" dataid="id-{{$vo['id']}}" disabled @if($vo['id']==1) checked @endif/>
                                     <label for="new_rules_{{$vo['id']}}">
                                         <span></span>
                                         <span class="check"></span>
@@ -244,5 +243,7 @@
                 }
             }
         })
+        $("#new_rules_1").prop("checked", true);
+        $("#new_rules_1").attr("disabled", true);
     }
 </script>
