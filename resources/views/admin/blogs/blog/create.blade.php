@@ -14,9 +14,9 @@
                 </a>
                 <div class="hr-line-dashed m-t-sm m-b-sm"></div>
                 <form class="form-horizontal m-t-md" id="form_data" accept-charset="UTF-8"
-                      enctype="multipart/form-data">
+                      enctype="multipart/form-data" style="width: 100%;overflow: auto;">
                     <div class="form-group">
-                        <label class="col-sm-2 control-label">Title H1(文章名称,不允许出现字符)：</label>
+                        <label class="col-sm-2 control-label">Title H1(文章名称,不允许出现特殊字符)：</label>
                         <div class="input-group col-sm-2">
                             <input type="text" class="form-control" name="title_h1" required
                                    data-msg-required="请输入Title H1">
@@ -36,16 +36,15 @@
                     <div class="hr-line-dashed m-t-sm m-b-sm"></div>
                     <div class="form-group">
                         <label class="col-sm-2 control-label">Tags：</label>
-                        <div class="input-group col-sm-2">
+                        <div class="input-group col-sm-6">
                             @foreach ($tags as $k=>$v)
-                                <label><input class="required" type="checkbox" name="tags" value="{{$k}}">{{$v}}
-                                </label><br>
+                                <label style="margin-bottom: 10px;margin-right: 60px;"><input class="required" type="checkbox" name="tags" value="{{$k}}">&nbsp;&nbsp;{{$v}}</label>
                             @endforeach
                         </div>
                     </div>
                     <div class="hr-line-dashed m-t-sm m-b-sm"></div>
                     <div class="form-group">
-                        <label class="col-sm-2 control-label">Seo Title（不允许出现字符）：</label>
+                        <label class="col-sm-2 control-label">Seo Title（不允许出现特殊字符）：</label>
                         <div class="input-group col-sm-2">
                             <input type="text" class="form-control" name="title" required
                                    data-msg-required="请输入Seo Title">
@@ -76,7 +75,7 @@
                     </div>
                     <div class="hr-line-dashed m-t-sm m-b-sm"></div>
                     <div class="form-group">
-                        <label class="col-sm-2 control-label">封面图(封面图(大小不能超过5M,文件名必须是英文))：</label>
+                        <label class="col-sm-2 control-label">cover(封面图(大小不能超过5M,文件名必须是英文))：</label>
                         <div class="input-group col-sm-2">
                             <input type="file" class="form-control" name="cover">
                         </div>

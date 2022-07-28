@@ -175,7 +175,9 @@ class BlogsController extends BaseController
     public function typeStore(){
         $param = request();
         $back = $this->blogService->blogTypeCreate($param);
-        if ("error" == $back){
+        if ("same_title" == $back){
+            flash('title已存在')->error()->important();
+        }else if ("error" == $back){
             flash('slug已存在')->error()->important();
         }else if(!empty($back)){
             flash('添加Category成功')->success()->important();
@@ -193,7 +195,9 @@ class BlogsController extends BaseController
     public function typeUpdate($id){
         $param = request();
         $back = $this->blogService->blogTypeUpdate($param, $id);
-        if ("error" == $back){
+        if ("same_title" == $back){
+            flash('title已存在')->error()->important();
+        }else if ("error" == $back){
             flash('slug已存在')->error()->important();
         }else if(!empty($back)){
             flash('更新Category成功')->success()->important();

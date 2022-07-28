@@ -12,7 +12,7 @@
                 <form class="form-horizontal m-t-md" action="{{ route('blogs.typeStore') }}" method="post" accept-charset="UTF-8" enctype="multipart/form-data">
                     {!! csrf_field() !!}
                     <div class="form-group">
-                        <label class="col-sm-2 control-label">Title（不允许出现字符）</label>
+                        <label class="col-sm-2 control-label">Title（不允许出现特殊字符）</label>
                         <div class="input-group col-sm-2">
                             <input type="text" class="form-control" name="data[title]" value="" required data-msg-required="请输入标题">
                         </div>
@@ -26,7 +26,7 @@
                     </div>
                     <div class="hr-line-dashed m-t-sm m-b-sm"></div>
                     <div class="form-group">
-                        <label class="col-sm-2 control-label">Seo Title（不允许出现字符）：</label>
+                        <label class="col-sm-2 control-label">Seo Title（不允许出现特殊字符）：</label>
                         <div class="input-group col-sm-2">
                             <input type="text" class="form-control" name="data[seo_title]" required data-msg-required="请输入Seo Title">
                         </div>
