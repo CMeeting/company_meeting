@@ -151,7 +151,6 @@ class BlogService
     }
 
     public function blogUpdate($param,$id){
-        dd($param);
         $data = $param->request->all();
         $arr = $data['data'];
         if($arr['slug']){
