@@ -20,7 +20,7 @@ class Apidocumentationservice
         $PlatformVersion = new PlatformVersion();
         $versiondata=$this->getVersion();
         //组装平台版本数据
-        $Platform=$PlatformVersion->finds("name like '".$param['platformname']."' and deleted=0 and enabled=1");
+        $Platform=$PlatformVersion->finds("name like '".$param['platformname']."' and deleted=0 and enabled=1 and lv=1");
         if(!$Platform){
             return json_encode(['data'=>'','code'=>403,'msg'=>"暂无数据"]);
         }
@@ -51,7 +51,7 @@ class Apidocumentationservice
         $SdKArticle_data = new SdKArticle();
         $PlatformVersion = new PlatformVersion();
         $SdkClassification = new SdkClassification();
-        $Platform=$PlatformVersion->finds("name like '".$param['platformname']."' and deleted=0 and enabled=1");
+        $Platform=$PlatformVersion->finds("name like '".$param['platformname']."' and deleted=0 and enabled=1 and lv=1");
         if(!$Platform){
             return json_encode(['data'=>'','code'=>403,'msg'=>"缺少参数"]);
         }
