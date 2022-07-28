@@ -85,7 +85,7 @@ class ActionLogsService
         foreach ($arr as $k=>$v){
             $data[]=$v['rule_id'];
         }
-        $data=array_unique($data);
+        //$data=array_unique($data);
         return $data;
     }
 

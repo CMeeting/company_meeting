@@ -80,15 +80,17 @@ class AdminsService
                 //判断角色ID下标的数组是否存在
                 if(isset($rolesarr[$v])){
                     //第二层循环，循环角色ID下标数组内权限ID是否被勾选
-                    foreach ($rolesarr[$v] as $ks=>$vs){
-                        if(in_array($vs,$datas['rules_id'])){
-                            $arr[]=[
-                                'admin_id'=>$id,
-                                'role_id'=>$v,
-                                'rule_id'=>$vs,
-                                'created_at'=>date("Y-m-d H:i:s"),
-                                'updated_at'=>date("Y-m-d H:i:s")
-                            ];
+                    if(isset($datas['rules_id']) && count($datas['rules_id'])>0) {
+                        foreach ($rolesarr[$v] as $ks => $vs) {
+                            if (in_array($vs, $datas['rules_id'])) {
+                                $arr[] = [
+                                    'admin_id' => $id,
+                                    'role_id' => $v,
+                                    'rule_id' => $vs,
+                                    'created_at' => date("Y-m-d H:i:s"),
+                                    'updated_at' => date("Y-m-d H:i:s")
+                                ];
+                            }
                         }
                     }
                 }
@@ -98,6 +100,13 @@ class AdminsService
             'admin_id'=>$id,
             'role_id'=>$i,
             'rule_id'=>2,
+            'created_at'=>date("Y-m-d H:i:s"),
+            'updated_at'=>date("Y-m-d H:i:s")
+        ];
+        $arr[]=[
+            'admin_id'=>$id,
+            'role_id'=>$i,
+            'rule_id'=>1,
             'created_at'=>date("Y-m-d H:i:s"),
             'updated_at'=>date("Y-m-d H:i:s")
         ];
@@ -137,7 +146,6 @@ class AdminsService
         } else {
             unset($datas['password']);
         }
-
         $admin->update($datas);
 
         //更新关联表数据
@@ -146,24 +154,27 @@ class AdminsService
         $rolesarr = $this->rolesRepository->getrolesarr();
         $arr=array();
         $i=0;
-        if(count($datas['role_id'])>0){
+        if(isset($datas['role_id']) && count($datas['role_id'])>0){
             //第一层循环，循环所勾选了什么角色
             foreach ($datas['role_id'] as $k=>$v){
                 $i=$v;
                 //判断角色ID下标的数组是否存在
                 if(isset($rolesarr[$v])){
                     //第二层循环，循环角色ID下标数组内权限ID是否被勾选
-                    foreach ($rolesarr[$v] as $ks=>$vs){
-                        if(in_array($vs,$datas['rules_id'])){
-                            $arr[]=[
-                                'admin_id'=>$id,
-                                'role_id'=>$v,
-                                'rule_id'=>$vs,
-                                'created_at'=>date("Y-m-d H:i:s"),
-                                'updated_at'=>date("Y-m-d H:i:s")
-                            ];
+                    if(isset($datas['rules_id']) && count($datas['rules_id'])>0){
+                        foreach ($rolesarr[$v] as $ks=>$vs){
+                            if(in_array($vs,$datas['rules_id'])){
+                                $arr[]=[
+                                    'admin_id'=>$id,
+                                    'role_id'=>$v,
+                                    'rule_id'=>$vs,
+                                    'created_at'=>date("Y-m-d H:i:s"),
+                                    'updated_at'=>date("Y-m-d H:i:s")
+                                ];
+                            }
                         }
                     }
+
                 }
             }
         }
@@ -172,6 +183,13 @@ class AdminsService
             'admin_id'=>$id,
             'role_id'=>$i,
             'rule_id'=>2,
+            'created_at'=>date("Y-m-d H:i:s"),
+            'updated_at'=>date("Y-m-d H:i:s")
+        ];
+        $arr[]=[
+            'admin_id'=>$id,
+            'role_id'=>$i,
+            'rule_id'=>1,
             'created_at'=>date("Y-m-d H:i:s"),
             'updated_at'=>date("Y-m-d H:i:s")
         ];
@@ -219,6 +237,7 @@ class AdminsService
 
         //增加登录次数.
         $admin = Auth::guard('admin')->user();
+        session(['id' => $admin->id]);
         $admin->increment('login_count');
         $name=$request->name;
          Db::table("admins")

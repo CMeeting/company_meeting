@@ -72,11 +72,11 @@ class RolesRepository
             $arr[]=$v['rule_id'];
         }
         if(isset($arr)){
-            $arr=array_unique($arr);
+            return $arr;
         }else{
-            $arr=[];
+            return [];
         }
-        return $arr;
+
     }
 
     function assembly_data($id,$data,$arr=array()){

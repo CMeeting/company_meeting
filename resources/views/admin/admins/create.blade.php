@@ -85,7 +85,7 @@
                                     <input type="checkbox" id="new_rules_{{$vo['id']}}" name="rules_id[]" value="{{$vo['id']}}"  class="md-check checkbox-parent" dataid="id-{{$vo['id']}}" disabled @if($vo['id']==1) checked @endif/>
                                     <label for="new_rules_{{$vo['id']}}">
                                         <span></span>
-                                        <span class="check"></span>
+                                        <span ></span>
                                         <span class="box"></span> {{$vo['name']}}</label>
                                 </div>
                                 @if(count($vo['sub'])>1)
@@ -95,7 +95,7 @@
                                         <input type="checkbox" id="new_rules_{{$sub['id']}}" name="rules_id[]" value="{{$sub['id']}}"  class="md-check checkbox-parent checkbox-child" dataid="id-{{$vo['id']}}-{{$sub['id']}}" disabled/>
                                         <label for="new_rules_{{$sub['id']}}">
                                             <span></span>
-                                            <span class="check"></span>
+                                            <span ></span>
                                             <span class="box"></span> {{$sub['name']}}</label>
                                     </div>
                                     @if(count($sub['sub'])>1)
@@ -106,7 +106,7 @@
                                             <input type="checkbox" id="new_rules_{{$subb['id']}}" name="rules_id[]" value="{{$subb['id']}}"  class="md-check checkbox-parent checkbox-child"  dataid="id-{{$vo['id']}}-{{$sub['id']}}-{{$subb['id']}}" disabled/>
                                             <label for="new_rules_{{$subb['id']}}">
                                                 <span></span>
-                                                <span class="check"></span>
+                                                <span ></span>
                                                 <span class="box"></span> {{$subb['name']}}</label>
                                         </div>
                                     @endforeach
@@ -229,15 +229,17 @@
         $(".check").each(function (){
             if($(this).is(':checked')){
                 var id=$(this).attr("id");
-                for (var i=0;i<$categroys[id].length;i++){
-                    if(index>=0){
-                        $("#new_rules_"+$categroys[id][i]).prop("checked", true);
-                        $("#new_rules_"+$categroys[id][i]).attr("disabled", false);
-                    }else{
-                        var pndex=$.inArray($categroys[id][i], $ruleidsjson)
-                        if(pndex>=0){
+                if($categroys[id]){
+                    for (var i=0;i<$categroys[id].length;i++){
+                        if(index>=0){
                             $("#new_rules_"+$categroys[id][i]).prop("checked", true);
                             $("#new_rules_"+$categroys[id][i]).attr("disabled", false);
+                        }else{
+                            var pndex=$.inArray($categroys[id][i], $ruleidsjson)
+                            if(pndex>=0){
+                                $("#new_rules_"+$categroys[id][i]).prop("checked", true);
+                                $("#new_rules_"+$categroys[id][i]).attr("disabled", false);
+                            }
                         }
                     }
                 }

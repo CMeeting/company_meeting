@@ -67,16 +67,17 @@ class AdminsController extends BaseController {
      * @param $id
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function edit($id)
+    public function edit(Request $request,$id)
     {
+        //$dadmin_id = session('id');
         $admin = $this->adminsService->ById($id);
         $groupids=$this->actionLogsService->getadmingroupids();
-        $ruleids=$this->actionLogsService->getadminrousids();
+        $ruleidsc=$this->actionLogsService->getadminrousids();
         $roles = $this->rolesRepository->getRoles();
         $rolesinfo = $this->rolesRepository->getrolesinfo();
         $rolesarr = json_encode($this->rolesRepository->getrolesarr());
         $adminroles = $this->rolesRepository->admingetrolesarr($id);
-        return view('admin.admins.edit', compact('admin', 'roles','rolesinfo','rolesarr','adminroles','groupids','ruleids'));
+        return view('admin.admins.edit', compact('admin', 'roles','rolesinfo','rolesarr','adminroles','groupids','ruleidsc'));
     }
 
     /**
