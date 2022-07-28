@@ -288,7 +288,7 @@ class BlogService
                 $row = $this->blogModel->_update(['is_delete' => 1], 'id = ' . $id);
                 break;
             case 'type':
-                $data = $this->blogModel->objToArr($this->blogModel->select(['type_id' =>$id],'count(*)'))[0];
+                $data = $this->blogModel->objToArr($this->blogModel->select(['type_id' =>$id,'is_delete' => 0],'count(*)'))[0];
                 if (isset($data)&&$data['count(*)']>0) {
                     $row = 'error';
                 } else {
