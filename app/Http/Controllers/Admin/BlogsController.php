@@ -36,12 +36,17 @@ class BlogsController extends BaseController
     public function blogStore(){
         $param = request()->all();
         $request = request();
+        $unset = [];
+        $types = $this->blogService->getBlogTypeskv();
+        if (isset($param["data"]['type_id']) && 'Products' != $types[$param["data"]['type_id']]){
+            $unset = ['abstract'];
+        }
         if(!isset($param["data"]['tags']) || empty($param["data"]['tags'])){
             $result['code'] = 1000;
             $result['msg'] = '请填写：tags';
             return $result;
         }
-        $check = $this->check_param_key_null($param["data"]);
+        $check = $this->check_param_key_null($param["data"],$unset);
         if(500==$check['code']){
             $result['code'] = 1000;
             $result['msg'] = $check['msg'];
@@ -75,12 +80,17 @@ class BlogsController extends BaseController
     public function blogUpdate($id){
         $param = request()->all();
         $request = request();
+        $unset = [];
+        $types = $this->blogService->getBlogTypeskv();
+        if (isset($param["data"]['type_id']) && 'Products' != $types[$param["data"]['type_id']]){
+            $unset = ['abstract'];
+        }
         if(!isset($param["data"]['tags']) || empty($param["data"]['tags'])){
             $result['code'] = 1000;
             $result['msg'] = '请填写：tags';
             return $result;
         }
-        $check = $this->check_param_key_null($param["data"]);
+        $check = $this->check_param_key_null($param["data"],$unset);
         if(500==$check['code']){
             $result['code'] = 1000;
             $result['msg'] = $check['msg'];

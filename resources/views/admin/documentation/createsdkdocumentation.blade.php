@@ -74,14 +74,14 @@
                             </select>
                         </div>
                     </div>
+                    <div class="editor mdeditor hidden"></div>
+                    <input type="hidden" name="data[info]" id="md_editor">
                     <div class="form-group tinyeditor">
                         <label class="col-sm-2 control-label no-padding-right" for="form-field-1"> content：</label>
                         <div class="col-sm-10 col-xs-12">
                             <textarea id="content" name="data[info]" class="form-control" rows="5" cols="20"></textarea>
                         </div>
                     </div>
-                    <div class="editor mdeditor hidden"></div>
-                    <input type="hidden" name="data[info]" id="md_editor">
 
                                 <div class="form-group">
                                     <label class="col-sm-2 control-label no-padding-right" for="form-field-1"> enabled(是否显示)：</label>
@@ -219,10 +219,13 @@
                 $("#md_editor").val("");
                 editor.$set({ value: '' });
                 $("#md_editor").removeAttr("name");
+                $("#content").attr("name","data[info]");
                 $(".tinyeditor").removeClass('hidden');
             }else if(2==v){
                 $(".tinyeditor").addClass('hidden');
                 $("#content").val("");
+                $("#content").removeAttr("name");
+                $("#mdeditor").attr("name","data[info]");
                 tinymce.editors[0].setContent("");
                 $(".mdeditor").removeClass('hidden');
             }else{
