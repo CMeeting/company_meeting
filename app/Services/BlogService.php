@@ -223,7 +223,7 @@ class BlogService
     public function blogTypeUpdate($param,$id){
         $arr = $param->request->all()['data'];
         if($arr['title']){
-            $list = $this->blogTypesModel->_find('title = '."'".$arr['title']."'");
+            $list = $this->blogTypesModel->_find('title = '."'".$arr['title']."' ".'AND id <> '.$id);
             if ($list){
                 return "same_title";
             }

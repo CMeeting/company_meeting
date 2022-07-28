@@ -186,7 +186,7 @@ class BlogsController extends BaseController
         $param = request();
         $back = $this->blogService->blogTypeCreate($param);
         if ("same_title" == $back){
-            flash('title已存在')->error()->important();
+            flash('添加失败,title不能重复')->error()->important();
         }else if ("error" == $back){
             flash('slug已存在')->error()->important();
         }else if(!empty($back)){
@@ -206,7 +206,7 @@ class BlogsController extends BaseController
         $param = request();
         $back = $this->blogService->blogTypeUpdate($param, $id);
         if ("same_title" == $back){
-            flash('title已存在')->error()->important();
+            flash('更新失败,title不能重复')->error()->important();
         }else if ("error" == $back){
             flash('slug已存在')->error()->important();
         }else if(!empty($back)){
