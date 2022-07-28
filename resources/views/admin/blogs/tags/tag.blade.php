@@ -88,10 +88,17 @@
                         });
                     } else {
                         //失败提示
-                        layer.msg(resp.msg, {
-                            icon: 2,
-                            time: 2000
-                        });
+                        if(resp.msg){
+                            layer.msg(resp.msg, {
+                                icon: 2,
+                                time: 2000
+                            });
+                        }else {
+                            layer.msg("请检查网络或权限设置！！！", {
+                                icon: 2,
+                                time: 2000
+                            });
+                        }
                     }
                 }
             });

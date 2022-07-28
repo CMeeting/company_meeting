@@ -52,7 +52,7 @@ Route::group(['namespace' => 'Admin','prefix' => 'admin'], function (){
 
         Route::get('index/main', 'IndexsController@main')->name('index.main'); //首页数据分析
 
-        Route::get('blogs/blog/{slug?}', 'BlogsController@blog')->name('blogs.blog'); //blog首页
+        Route::get('blogs/blog', 'BlogsController@blog')->name('blogs.blog'); //blog首页
         Route::get('blogs/blogCreate', 'BlogsController@blogCreate')->name('blogs.blogCreate');
         Route::post('blogs/blogStore', 'BlogsController@blogStore')->name('blogs.blogStore');
         Route::get('blogs/blogEdit/{id}', 'BlogsController@blogEdit')->name('blogs.blogEdit');
