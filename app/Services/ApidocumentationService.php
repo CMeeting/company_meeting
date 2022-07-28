@@ -20,14 +20,14 @@ class Apidocumentationservice
         $PlatformVersion = new PlatformVersion();
         $versiondata=$this->getVersion();
         //组装平台版本数据
-        $Platform=$PlatformVersion->finds("name like '".$param['platformname']."' and deleted=0 and enabled=1 and lv=1");
+        $Platform=$PlatformVersion->finds("name like '".$param['platformname']."' and deleted=0 and enabled=1 and lv=1","displayorder desc");
         if(!$Platform){
             return json_encode(['data'=>'','code'=>403,'msg'=>"暂无数据"]);
         }
         if(isset($param['versionname']) && $param['versionname']){
-            $newversion=$PlatformVersion->finds("pid=".$Platform['id']." and name like '".$param['versionname']."' and deleted=0 and enabled=1");
+            $newversion=$PlatformVersion->finds("pid=".$Platform['id']." and name like '".$param['versionname']."' and deleted=0 and enabled=1","displayorder desc");
         }else{
-            $newversion=$PlatformVersion->finds("pid=".$Platform['id']." and deleted=0 and enabled=1");
+            $newversion=$PlatformVersion->finds("pid=".$Platform['id']." and deleted=0 and enabled=1","displayorder desc");
         }
         $version=$newversion?$newversion['id']:0;
         $platform=$this->theassembly($versiondata,[$Platform['id'],$version]);
@@ -51,12 +51,12 @@ class Apidocumentationservice
         $SdKArticle_data = new SdKArticle();
         $PlatformVersion = new PlatformVersion();
         $SdkClassification = new SdkClassification();
-        $Platform=$PlatformVersion->finds("name like '".$param['platformname']."' and deleted=0 and enabled=1 and lv=1");
+        $Platform=$PlatformVersion->finds("name like '".$param['platformname']."' and deleted=0 and enabled=1 and lv=1","displayorder desc");
         if(!$Platform){
             return json_encode(['data'=>'','code'=>403,'msg'=>"缺少参数"]);
         }
-        $version=$PlatformVersion->finds("name like '".$param['category']."' and pid=".$Platform['id']." and deleted=0 and enabled=1");
-        $SdKArticle=$SdKArticle_data->_find("deleted=0 and enabled=1 and platformid=".$Platform['id']." and version=".$version['id']." and slug='".$param['slugs']."'");
+        $version=$PlatformVersion->finds("name like '".$param['category']."' and pid=".$Platform['id']." and deleted=0 and enabled=1","displayorder desc");
+        $SdKArticle=$SdKArticle_data->_find("deleted=0 and enabled=1 and platformid=".$Platform['id']." and version=".$version['id']." and slug='".$param['slugs']."'","displayorder desc");
         if($SdKArticle){
             $SdKArticle=$SdKArticle_data->objToArr($SdKArticle);
             $fenlei=$SdkClassification->finds("deleted=0 and enabled=1 and id=".$SdKArticle['classification_ids']);
@@ -68,8 +68,8 @@ class Apidocumentationservice
             $PlatformVersion = new PlatformVersion();
             $versiondata=$this->getVersion();
             //组装平台版本数据
-            $Platform=$PlatformVersion->finds("id =".$SdKArticle['platformid']." and deleted=0 and enabled=1");
-            $newversion=$PlatformVersion->finds("pid=".$SdKArticle['platformid']." and id =".$SdKArticle['version']." and deleted=0 and enabled=1");
+            $Platform=$PlatformVersion->finds("id =".$SdKArticle['platformid']." and deleted=0 and enabled=1","displayorder desc");
+            $newversion=$PlatformVersion->finds("pid=".$SdKArticle['platformid']." and id =".$SdKArticle['version']." and deleted=0 and enabled=1","displayorder desc");
             $version=$newversion['id'];
             $platform=$this->theassembly($versiondata,[$Platform['id'],$version]);
             $data['list']=isset($platform['list'])?$platform['list']:'暂无数据';
@@ -100,16 +100,16 @@ class Apidocumentationservice
     }
     function getClassification($ids){
         $SdkClassification = new SdkClassification();
-        return $SdkClassification->selects("deleted=0 and enabled=1 and platformid=".$ids[0]." and version=".$ids[1],"id,title,lv,pid","lv,displayorder,id desc");
+        return $SdkClassification->selects("deleted=0 and enabled=1 and platformid=".$ids[0]." and version=".$ids[1],"id,title,lv,pid","lv,displayorder desc,id desc");
     }
     function sdKArticle($ids){
         $SdKArticle = new SdKArticle();
-        return $SdKArticle->selects("deleted=0 and enabled=1 and platformid=".$ids[0]." and version=".$ids[1],"id,titel,seotitel,slug,info,classification_ids","displayorder");
+        return $SdKArticle->selects("deleted=0 and enabled=1 and platformid=".$ids[0]." and version=".$ids[1],"id,titel,seotitel,slug,info,classification_ids","displayorder desc");
     }
 
-     function theassembly($data,$ids){
+    function theassembly($data,$ids){
         $i=0;
-         $s=0;
+        $s=0;
         $arr=[];
 
         foreach ($data as $k=>$v){
