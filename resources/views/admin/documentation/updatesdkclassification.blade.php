@@ -49,7 +49,7 @@
                                                         @if(isset($data['pid']) && $data['pid']==$vs['id'])
                                                         selected
                                                         @endif
-                                                >{{$vs['lefthtml']}}{{$vs['title']}}</option>
+                                                >{{$vs['lefthtml']}}{{$vs['title']}} @if($vs['lvl']==1)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{$vs['platforname']}}------------{{$vs['versionname']}}@endif</option>
                                             @endforeach
                                         </select>
                                         @foreach($material as $vs)

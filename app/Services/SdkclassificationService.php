@@ -39,6 +39,11 @@ class SdkclassificationService
     public function getCategorical($data=array())
     {
         $SdkClassification = new SdkClassification();
+        $PlatformVersion = new PlatformVersion();
+        $field = "id,name,pid";
+        $pingt= $PlatformVersion->select(array(["deleted","=",0]), $field, "lv");
+        $pingt= $PlatformVersion->objToArr($pingt);
+
         $where=array(["deleted","=",0]);
         if(count($data)>0){
             $where[]=['platformid','=',$data['platformid']];
@@ -48,7 +53,8 @@ class SdkclassificationService
         $order = "displayorder desc,id desc";
         $material = $SdkClassification->select($where, $field, $order);
         $material = $SdkClassification->objToArr($material);
-        $arr_project = $this->menuLeft($material);
+
+        $arr_project = $this->menuLeft($material,$pingt);
         return $arr_project ?? [];
     }
 
@@ -117,7 +123,7 @@ class SdkclassificationService
     }
 
 
-    function menuLeft($menu, $id_field = 'id', $pid_field = 'pid', $lefthtml = '─', $pid = 0, $lvl = 0, $leftpin = 0)
+    function menuLeft($menu, $banben=array(),$id_field = 'id', $pid_field = 'pid', $lefthtml = '─', $pid = 0, $lvl = 0, $leftpin = 0)
     {
         $arr = array();
         foreach ($menu as $v) {
@@ -125,8 +131,20 @@ class SdkclassificationService
                 $v['lvl'] = $lvl + 1;
                 $v['leftpin'] = $leftpin;
                 $v['lefthtml'] = '├' . str_repeat($lefthtml, $lvl);
+                if($lvl==0 && count($banben)>0){
+                      foreach ($banben as $ks=>$vs){
+                          if($v['platformid']==$vs['id']){
+                              $v['platforname'] = $vs['name'];
+                          }
+                      }
+                    foreach ($banben as $ks=>$vs){
+                        if($v['version']==$vs['id']){
+                            $v['versionname'] = $vs['name'];
+                        }
+                    }
+                }
                 $arr[] = $v;
-                $arr = array_merge($arr, $this->menuLeft($menu, $id_field, $pid_field, $lefthtml, $v[$id_field], $lvl + 1, $leftpin + 20));
+                $arr = array_merge($arr, $this->menuLeft($menu,[], $id_field, $pid_field, $lefthtml, $v[$id_field], $lvl + 1, $leftpin + 20));
             }
         }
         return $arr;
