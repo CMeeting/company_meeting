@@ -1,6 +1,7 @@
 @extends('admin.layouts.layout')
 @section('content')
     <script src="/tinymce/js/tinymce/tinymce.min.js"></script>
+    <script src="{{loadEdition('/js/jquery.min.js')}}"></script>
     <div class="row">
         <div class="col-sm-12">
             <div class="ibox-title">
@@ -15,10 +16,11 @@
                 <div class="hr-line-dashed m-t-sm m-b-sm"></div>
                 <form class="form-horizontal m-t-md" id="form_data" accept-charset="UTF-8"
                       enctype="multipart/form-data" style="width: 100%;overflow: auto;">
+                    {{ csrf_field() }}
                     <div class="form-group">
                         <label class="col-sm-2 control-label">Title H1(文章名称,不允许出现特殊字符)：</label>
                         <div class="input-group col-sm-2">
-                            <input type="text" class="form-control" name="title_h1" required
+                            <input type="text" class="form-control" name="data[title_h1]" required
                                    data-msg-required="请输入Title H1">
                         </div>
                     </div>
@@ -26,7 +28,7 @@
                     <div class="form-group">
                         <label class="col-sm-2 control-label">category：</label>
                         <div class="input-group col-sm-1">
-                            <select class="form-control" name="type_id">
+                            <select class="form-control" name="data[type_id]">
                                 @foreach ($types as $k=>$v)
                                     <option value="{{$k}}">{{$v}}</option>
                                 @endforeach
@@ -38,7 +40,7 @@
                         <label class="col-sm-2 control-label">Tags：</label>
                         <div class="input-group col-sm-6">
                             @foreach ($tags as $k=>$v)
-                                <label style="margin-bottom: 10px;margin-right: 60px;"><input class="required" type="checkbox" name="tags" value="{{$k}}">&nbsp;&nbsp;{{$v}}</label>
+                                <label style="margin-bottom: 10px;margin-right: 60px;"><input class="required" type="checkbox" name="tags[]" value="{{$k}}">&nbsp;&nbsp;{{$v}}</label>
                             @endforeach
                         </div>
                     </div>
@@ -46,7 +48,7 @@
                     <div class="form-group">
                         <label class="col-sm-2 control-label">Seo Title（不允许出现特殊字符）：</label>
                         <div class="input-group col-sm-2">
-                            <input type="text" class="form-control" name="title" required
+                            <input type="text" class="form-control" name="data[title]" required
                                    data-msg-required="请输入Seo Title">
                         </div>
                     </div>
@@ -54,7 +56,7 @@
                     <div class="form-group">
                         <label class="col-sm-2 control-label">Seo Description：</label>
                         <div class="input-group col-sm-2">
-                            <input type="text" class="form-control" name="description" required
+                            <input type="text" class="form-control" name="data[description]" required
                                    data-msg-required="请输入Seo Description">
                         </div>
                     </div>
@@ -62,7 +64,7 @@
                     <div class="form-group">
                         <label class="col-sm-2 control-label">Seo Keywords：</label>
                         <div class="input-group col-sm-2">
-                            <input type="text" class="form-control" name="keywords" required
+                            <input type="text" class="form-control" name="data[keywords]" required
                                    data-msg-required="请输入Seo Keywords">
                         </div>
                     </div>
@@ -70,21 +72,21 @@
                     <div class="form-group">
                         <label class="col-sm-2 control-label">Slug(确保唯一性)：</label>
                         <div class="input-group col-sm-2">
-                            <input type="text" class="form-control" name="slug" required data-msg-required="请输入Slug">
+                            <input type="text" class="form-control" name="data[slug]" required data-msg-required="请输入Slug">
                         </div>
                     </div>
                     <div class="hr-line-dashed m-t-sm m-b-sm"></div>
                     <div class="form-group">
                         <label class="col-sm-2 control-label">cover(封面图(大小不能超过5M,文件名必须是英文))：</label>
                         <div class="input-group col-sm-2">
-                            <input type="file" class="form-control" name="cover">
+                            <input type="file" class="form-control" name="data[cover]">
                         </div>
                     </div>
                     <div class="hr-line-dashed m-t-sm m-b-sm"></div>
                     <div class="form-group">
                         <label class="col-sm-2 control-label">Sort id(排序 从小到大)：</label>
                         <div class="input-group col-sm-2">
-                            <input type="number" class="form-control" name="sort_id" required
+                            <input type="number" class="form-control" name="data[sort_id]" required
                                    data-msg-required="请输入Sort id" min="0"
                                    oninput="if(value.length>9)value=value.slice(0,9)">
                         </div>
@@ -93,14 +95,14 @@
                     <div class="form-group">
                         <label class="col-sm-2 control-label">Abstract(仅Categories选择为products时填写)：</label>
                         <div class="input-group col-sm-2">
-                            <input type="text" class="form-control" name="abstract">
+                            <input type="text" class="form-control" name="data[abstract]">
                         </div>
                     </div>
                     <div class="hr-line-dashed m-t-sm m-b-sm"></div>
                     <div class="form-group">
                         <label class="col-sm-2 control-label">Content：</label>
                         <div class="input-group col-sm-2">
-                            <textarea id="content" name="content" class="form-control" rows="5" cols="20"></textarea>
+                            <textarea id="content" name="data[content]" class="form-control" rows="5" cols="20"></textarea>
                         </div>
                     </div>
                     {{--                    <div class="hr-line-dashed m-t-sm m-b-sm"></div>--}}
@@ -118,11 +120,7 @@
                     <div class="hr-line-dashed m-t-sm m-b-sm"></div>
                     <div class="form-group">
                         <div class="col-sm-12 col-sm-offset-2">
-                            <button class="btn btn-primary" type="button" onclick="add_blog()"><i
-                                        class="fa fa-check"></i>&nbsp;保 存
-                            </button>
-                            　
-                            <button class="btn btn-white reset" type="reset"><i class="fa fa-repeat"></i> 重 置</button>
+                            <button id="add_blog" class="btn btn-primary" type="button"><i class="fa fa-check"></i>&nbsp;保 存</button>　<button class="btn btn-white reset" type="reset"><i class="fa fa-repeat"></i> 重 置</button>
                         </div>
                     </div>
                     <div class="clearfix"></div>
@@ -163,34 +161,73 @@
             autosave_interval: '5s',
         });
 
-        function add_blog(){
-            var serializeObj={};
-            var array=$('#form_data').serializeArray();
-            $(array).each(function(){
-                if(serializeObj[this.name]){
-                    if($.isArray(serializeObj[this.name])){
-                        serializeObj[this.name].push(this.value);
-                    }else{
-                        serializeObj[this.name]=[serializeObj[this.name],this.value];
-                    }
-                }else{
-                    if('content'==this.name){
-                        serializeObj[this.name]=tinymce.editors[0].getContent();
-                    }else {
-                        serializeObj[this.name]=this.value;
-                    }
-                }
-            });
+        {{--function add_blog(){--}}
+        {{--    var serializeObj={};--}}
+        {{--    var array=$('#form_data').serializeArray();--}}
+        {{--    $(array).each(function(){--}}
+        {{--        if(serializeObj[this.name]){--}}
+        {{--            if($.isArray(serializeObj[this.name])){--}}
+        {{--                serializeObj[this.name].push(this.value);--}}
+        {{--            }else{--}}
+        {{--                serializeObj[this.name]=[serializeObj[this.name],this.value];--}}
+        {{--            }--}}
+        {{--        }else{--}}
+        {{--            if('content'==this.name){--}}
+        {{--                serializeObj[this.name]=tinymce.editors[0].getContent();--}}
+        {{--            }else {--}}
+        {{--                serializeObj[this.name]=this.value;--}}
+        {{--            }--}}
+        {{--        }--}}
+        {{--    });--}}
+        {{--    $.ajax({--}}
+        {{--        url: "{{route('blogs.blogStore')}}",--}}
+        {{--        data: {_token: '{{ csrf_token() }}',data:serializeObj},--}}
+        {{--        type: 'post',--}}
+        {{--        // dataType: "json",--}}
+        {{--        success: function (re) {--}}
+        {{--            //成功提示--}}
+        {{--            console.log(re)--}}
+        {{--            if (re.code==200) {--}}
+        {{--                layer.msg("添加blog成功", {--}}
+        {{--                    icon: 1,--}}
+        {{--                    time: 1000--}}
+        {{--                }, function () {--}}
+        {{--                    $(".reset").click();--}}
+        {{--                    $(".back").click();--}}
+        {{--                });--}}
+        {{--            } else {--}}
+        {{--                //失败提示--}}
+        {{--                if(re.msg){--}}
+        {{--                    layer.msg(re.msg, {--}}
+        {{--                        icon: 2,--}}
+        {{--                        time: 2000--}}
+        {{--                    });--}}
+        {{--                }else {--}}
+        {{--                    layer.msg("请检查网络或权限设置！！！", {--}}
+        {{--                        icon: 2,--}}
+        {{--                        time: 2000--}}
+        {{--                    });--}}
+        {{--                }--}}
+        {{--            }--}}
+        {{--        }--}}
+        {{--    });--}}
+        {{--}--}}
+        $("#add_blog").click(function () {
+            var form_data = new FormData($("#form_data")[0]);
+            form_data.append("data[content]",tinymce.editors[0].getContent());
+            // console.log(form_data)
             $.ajax({
                 url: "{{route('blogs.blogStore')}}",
-                data: {_token: '{{ csrf_token() }}',data:serializeObj},
+                data: form_data,
                 type: 'post',
+                processData:false,//需设置为false。因为data值是FormData对象，不需要对数据做处理
+                contentType:false,
                 // dataType: "json",
                 success: function (re) {
                     //成功提示
                     console.log(re)
                     if (re.code==200) {
-                        layer.msg("添加blog成功", {
+                        layer.msg("修改blog成功", {
                             icon: 1,
                             time: 1000
                         }, function () {
@@ -213,6 +250,6 @@
                     }
                 }
             });
-        }
+        })
     </script>
 @endsection

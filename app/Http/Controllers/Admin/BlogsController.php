@@ -41,7 +41,7 @@ class BlogsController extends BaseController
         if (isset($param["data"]['type_id']) && 'Products' != $types[$param["data"]['type_id']]){
             $unset = ['abstract'];
         }
-        if(!isset($param["data"]['tags']) || empty($param["data"]['tags'])){
+        if(!isset($param['tags']) || empty($param['tags'])){
             $result['code'] = 1000;
             $result['msg'] = '请填写：tags';
             return $result;
@@ -54,7 +54,7 @@ class BlogsController extends BaseController
         }
         $back = $this->blogService->blogCreate($request);
         if ("error" == $back){
-            flash('slug已存在')->error()->important();
+//            flash('slug已存在')->error()->important();
             $result['code'] = 1000;
             $result['msg'] = 'slug已存在';
         }else if(!empty($back)){
@@ -85,7 +85,7 @@ class BlogsController extends BaseController
         if (isset($param["data"]['type_id']) && 'Products' != $types[$param["data"]['type_id']]){
             $unset = ['abstract'];
         }
-        if(!isset($param["data"]['tags']) || empty($param["data"]['tags'])){
+        if(!isset($param['tags']) || empty($param['tags'])){
             $result['code'] = 1000;
             $result['msg'] = '请填写：tags';
             return $result;
@@ -98,7 +98,7 @@ class BlogsController extends BaseController
         }
         $back = $this->blogService->blogUpdate($request, $id);
         if ("error" == $back){
-            flash('slug已存在')->error()->important();
+//            flash('slug已存在')->error()->important();
             $result['code'] = 1000;
             $result['msg'] = 'slug已存在';
         }else if(!empty($back)){

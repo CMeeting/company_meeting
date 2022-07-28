@@ -120,12 +120,12 @@ class BlogService
             }
         }
         //上传图片
-        $file = Input::file("cover");
+        $file = $param->file()['data']['cover'] ??'';
         if ($file) {
             $result = $this->uploader->save($file, 'cover');
             if ($result) {
-                $arr['cover'] = $result['path'];
-//                $arr['cover'] = Config::get('ADMIN_HOST').$result['path'];
+//                $arr['cover'] = $result['path'];
+                $arr['cover'] = \env('ADMIN_HOST').$result['path'];
             }
         }
 //        if (!empty($file)) {
@@ -134,15 +134,15 @@ class BlogService
 //            $url = str_replace('http://', 'https://', $url);
 //            $arr['cover'] = $url;
 //        }
-        if (is_array($data['data']['tags'])) {
+        if (is_array($data['tags'])) {
             $tag = '';
-            foreach ($data['data']['tags'] as $v) {
+            foreach ($data['tags'] as $v) {
                 $tag .= $v . ',';
             }
             $arr['tag_id'] = rtrim($tag, ",");
             unset($arr['tags']);
         }else{
-            $arr['tag_id'] = $data['data']['tags'];
+            $arr['tag_id'] = $data['tags'];
             unset($arr['tags']);
         }
 //        print_r($arr);die;
@@ -160,24 +160,26 @@ class BlogService
             }
         }
         //上传图片
-        $file = Input::file("cover");
+        $file = $param->file()['data']['cover'] ??'';
         if ($file) {
             $result = $this->uploader->save($file, 'cover');
+//            $result = OssService::ossUpload($file,[]);
             if ($result) {
-                $arr['cover'] = $result['path'];
+                $arr['cover'] = \env("ADMIN_HOST").$result['path'];
             }
         }
-        if (is_array($data['data']['tags'])) {
+        if (is_array($data['tags'])) {
             $tag = '';
-            foreach ($data['data']['tags'] as $v) {
+            foreach ($data['tags'] as $v) {
                 $tag .= $v . ',';
             }
             $arr['tag_id'] = rtrim($tag, ",");
             unset($arr['tags']);
         }else{
-            $arr['tag_id'] = $data['data']['tags'];
+            $arr['tag_id'] = $data['tags'];
             unset($arr['tags']);
         }
+//        print_r($arr);die;
         $row = $this->blogModel->_update($arr,'id = '.$id);
         return $row ??'';
     }
