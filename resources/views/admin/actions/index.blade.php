@@ -11,7 +11,7 @@
                     <tr>
                         <th class="text-center" width="100">ID</th>
                         <th class="text-center" width="150">用户名</th>
-                        <th class="text-center" width="150">拥有权限</th>
+{{--                        <th class="text-center" width="150">拥有权限</th>--}}
                         <th class="text-center" >操作内容</th>
                         <th class="text-center" width="200">操作地址</th>
                         <th class="text-center" width="150">登录时间</th>
@@ -25,11 +25,11 @@
                             
                             <td class="text-center">{{$item->id}}</td>
                             <td class="text-center">{{$item->admin?$item->admin->name:""}}</td>
-                            <td class="text-center">
-                                @foreach($item->admin->roles as $role)
-                                    {{$role->name}}
-                                @endforeach
-                            </td>
+{{--                            <td class="text-center">--}}
+{{--                                @foreach($item->admin->roles as $role)--}}
+{{--                                    {{$role->name}}--}}
+{{--                                @endforeach--}}
+{{--                            </td>--}}
                             <td>{{$item->data['action']}}</td>
                             <td class="text-center">{{$item->data['ip']}}<br>来自：{{$item->data['address']}}</td>
                             <td class="text-center">{{$item->created_at->diffForHumans()}}</td>
