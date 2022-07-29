@@ -23,10 +23,11 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Input;
 use App\Repositories\RolesRepository;
 use Illuminate\Support\Facades\DB;
+use Cache;
 class AdminsService
 {
     protected $uploader;
-
+    protected $menu_cache = '_menu_cache'; //菜单缓存key
     protected $adminsRepository;
 
     protected $actionLogsService;
@@ -256,6 +257,7 @@ class AdminsService
      */
     public function logout()
     {
+        Cache::tags('rbac')->flush();
         return Auth::guard('admin')->logout();
     }
 }
