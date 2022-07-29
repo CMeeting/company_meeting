@@ -57,8 +57,8 @@
                 </form>
             </div>
         </div>
-        <div class="signup-footer animated fadeInUp">
-            &copy; 2022 All Rights Reserved. {{ config('app.name', 'Laravel') }}
+        <div class="signup-footer animated fadeInUp" style="margin-top: 320px;">
+            © 2014-2022 PDF Technologies, Inc. All Rights Reserved.
         </div>
     </div>
 </body>
