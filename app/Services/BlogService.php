@@ -40,10 +40,13 @@ class BlogService
     }
     public function getBlogList($param)
     {
-        $where="";
+        $where="1=1";
         if(isset($param['info'])&&$param['info']){
 
-            $where=$param['query_type']."= '".$param['info']."'";
+            $where.=" AND ".$param['query_type']." like '%".$param['info']."%'";
+        }
+        if(isset($param['type_id'])&&$param['type_id']){
+            $where.=" AND type_id = '".$param['type_id']."'";
         }
         if ($where){
             $data = blog::whereRaw('is_delete = 0')->whereRaw($where)->orderByRaw('sort_id,id desc')->paginate(10);

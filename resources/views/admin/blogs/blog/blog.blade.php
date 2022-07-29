@@ -13,7 +13,7 @@
                 <form name="admin_list_sea" class="form-search" method="get" action="{{route('blogs.blog')}}">
                     <div class="input-group">
                         <div class="input-group-btn">
-                            <select name="query_type" class="form-control" style="width: 115px;">
+                            <select name="query_type" class="form-control" style="width: 100px;">
                                 <option value="id" @if(isset($query)&&$query['query_type']=='id') selected @endif>ID </option>
                                 <option value="title_h1" @if(isset($query)&&$query['query_type']=='title_h1') selected @endif>title_h1 </option>
                                 <option value="slug" @if(isset($query)&&$query['query_type']=='slug') selected @endif>slug </option>
@@ -21,9 +21,17 @@
                                 <option value="title" @if(isset($query)&&$query['query_type']=='title') selected @endif>seo title </option>
                             </select>
                         </div>
-                        <input type="text" name="info" class="form-control" value="@if(isset($query)){{$query['info']}}@endif" />
+                        <input type="text" name="info" class="form-control" style="width: 150px;" value="@if(isset($query)){{$query['info']}}@endif" />
+                        <div class="input-group-btn">
+                            <select class="form-control"  name="type_id" style="width: 150px;margin-left: 20px;">
+                                <option value="">筛选Category</option>
+                                @foreach($types as $k=>$v)
+                                    <option value="{{$k}}" @if(isset($query)&&$query['type_id']==$k) selected @endif>{{$v}}</option>
+                                @endforeach
+                            </select>
+                        </div>
                         <span class="input-group-btn">
-											<button type="submit" class="btn btn-purple btn-sm">
+											<button type="submit" class="btn btn-purple btn-sm" style="margin-left: 20px;">
 												<span class="ace-icon fa fa-search icon-on-right bigger-110"></span>
 												搜索
 											</button>
@@ -41,7 +49,7 @@
 {{--                    </button>--}}
 {{--                </div>--}}
 {{--            </div>--}}
-            <table class="table table-striped table-bordered table-hover m-t-md">
+            <table class="table table-striped table-bordered table-hover m-t-md" style="margin-top: 50px;">
                 <thead>
                 <tr>
 {{--                    'id','title_h1','slug','categories','tags','seo title','keywords','sort_id','created_at','updated_at'--}}
@@ -95,7 +103,7 @@
                 @endforeach
                 </tbody>
             </table>
-            {{$data->appends(['info' => isset($query['info'])?$query['info']:'','query_type'=>isset($query['query_type'])?$query['query_type']:''])->links()}}
+            {{$data->appends(['info' => isset($query['info'])?$query['info']:'','query_type'=>isset($query['query_type'])?$query['query_type']:'','type_id'=>isset($query['type_id'])?$query['type_id']:''])->links()}}
         </div>
     </div>
     <div class="clearfix"></div>
