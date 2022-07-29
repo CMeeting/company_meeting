@@ -214,7 +214,8 @@
         {{--}--}}
         $("#add_blog").click(function () {
             var form_data = new FormData($("#form_data")[0]);
-            form_data.append("data[content]",tinymce.editors[0].getContent());
+            // form_data.append("data[content]",tinymce.editors[0].getContent());
+            form_data.set("data[content]",tinymce.editors[0].getContent());
             // console.log(form_data)
             $.ajax({
                 url: "{{route('blogs.blogStore')}}",
