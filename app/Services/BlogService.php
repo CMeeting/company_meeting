@@ -125,18 +125,13 @@ class BlogService
         //上传图片
         $file = $param->file()['data']['cover'] ??'';
         if ($file) {
-            $result = $this->uploader->save($file, 'cover');
-            if ($result) {
-//                $arr['cover'] = $result['path'];
-                $arr['cover'] = \env('ADMIN_HOST').$result['path'];
+//            $result = $this->uploader->save($file, 'cover');
+            $result = OssService::uploadFile($file);
+            if (200 == $result['code']) {
+//                $arr['cover'] = \env("ADMIN_HOST").$result['path'];
+                $arr['cover'] = str_replace('http://', 'https://', $result['data']['url']);
             }
         }
-//        if (!empty($file)) {
-//            $path = OssHelper::BLOG_PATH . '/' . rand(0, 99999) . time();
-//            $url = OssHelper::upload('cover', $path)[0];
-//            $url = str_replace('http://', 'https://', $url);
-//            $arr['cover'] = $url;
-//        }
         if (is_array($data['tags'])) {
             $tag = '';
             foreach ($data['tags'] as $v) {
@@ -165,10 +160,11 @@ class BlogService
         //上传图片
         $file = $param->file()['data']['cover'] ??'';
         if ($file) {
-            $result = $this->uploader->save($file, 'cover');
-//            $result = OssService::ossUpload($file,[]);
-            if ($result) {
-                $arr['cover'] = \env("ADMIN_HOST").$result['path'];
+//            $result = $this->uploader->save($file, 'cover');
+            $result = OssService::uploadFile($file);
+            if (200 == $result['code']) {
+//                $arr['cover'] = \env("ADMIN_HOST").$result['path'];
+                $arr['cover'] = str_replace('http://', 'https://', $result['data']['url']);
             }
         }
         if (is_array($data['tags'])) {
@@ -182,7 +178,6 @@ class BlogService
             $arr['tag_id'] = $data['tags'];
             unset($arr['tags']);
         }
-//        print_r($arr);die;
         $row = $this->blogModel->_update($arr,'id = '.$id);
         return $row ??'';
     }

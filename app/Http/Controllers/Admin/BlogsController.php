@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Handlers\ImageUploadHandler;
 use App\Http\Requests\Blog\BlogTagRequest;
 use App\Services\BlogService;
+use App\Services\OssService;
 use Illuminate\Http\Request;
 
 class BlogsController extends BaseController
@@ -245,7 +246,12 @@ class BlogsController extends BaseController
     }
 
     public function editorUpload(){
-        $row['location'] = $this->editor_upload();
+//        $row['location'] = $this->editor_upload();
+        $file = request()->file('file');
+        $res = OssService::uploadFile($file);
+        if(200 == $res['code']){
+            $row['location'] = str_replace('http://', 'https://', $res['data']['url']);
+        }
         print_r(json_encode($row));die;
     }
 
