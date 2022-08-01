@@ -15,8 +15,7 @@ WORKDIR $DIR
 
 COPY . $DIR
 RUN php -r "readfile('http://getcomposer.org/installer');" | php -- --install-dir=/usr/bin/ --filename=composer
-RUN composer self-update 1.10.17
-RUN composer require drupal/video_embed_field:1.5 && composer install
+RUN composer self-update 2.3.10
 # RUN composer install
 
 # 自定义端口号
