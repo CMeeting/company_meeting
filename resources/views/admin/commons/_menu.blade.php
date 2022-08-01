@@ -8,9 +8,9 @@
     <div class="sidebar-collapse">
         <ul class="nav" id="side-menu">
             <li class="nav-header text-center">
-                <div class="dropdown profile-element">
+                <div class="dropdown profile-element" style="margin-top: 15px">
                                 <span>
-                                    <img alt="image" class="img-circle" src="{{$admin->avatr}}" width="64"/>
+                                    <img alt="image" class="img-circle" src="{{$admin->avatr}}" width="64" height="64"/>
                                 </span>
                                 <a data-toggle="dropdown" class="dropdown-toggle" href="#">
                                 <span class="clear">
