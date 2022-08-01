@@ -48,6 +48,13 @@ class BlogService
         if(isset($param['type_id'])&&$param['type_id']){
             $where.=" AND type_id = '".$param['type_id']."'";
         }
+        if(isset($param['start_date'])&&$param['start_date'] && isset($param['end_date'])&&$param['end_date']){
+            $where.=" AND created_at BETWEEN '".$param['start_date']."' AND '".$param['end_date']."'";
+        }elseif (isset($param['start_date'])&&$param['start_date'] && empty($param['end_date'])){
+            $where.=" AND created_at >= '".$param['start_date']."'";
+        }elseif (isset($param['end_date'])&&$param['end_date'] && empty($param['start_date'])){
+            $where.=" AND created_at <= '".$param['end_date']."'";
+        }
         if ($where){
             $data = blog::whereRaw('is_delete = 0')->whereRaw($where)->orderByRaw('sort_id,id desc')->paginate(10);
         }else{

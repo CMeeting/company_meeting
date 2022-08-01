@@ -1,6 +1,8 @@
 @extends('admin.layouts.layout')
 @section('content')
     <script src="{{loadEdition('/js/jquery.min.js')}}"></script>
+    <link rel="stylesheet" href="/layui/css/layui.css" media="all">
+    <script src="{{loadEdition('/layui/layui.js')}}"></script>
     <div class="row">
         <div class="col-sm-12">
             <div class="ibox-title">
@@ -9,7 +11,7 @@
             </div>
             <div class="ibox-content">
 
-                <div class="col-xs-10 col-sm-9 margintop5" style="margin-bottom: 5px">
+                <div class="col-xs-10 col-sm-11 margintop5" style="margin-bottom: 5px">
                     <form name="admin_list_sea" class="form-search" method="get" action="{{route('blogs.blog')}}" style="width: 100%;overflow: auto;">
                         <div class="input-group">
                             <div class="input-group-btn">
@@ -29,6 +31,12 @@
                                         <option value="{{$k}}" @if(isset($query)&&$query['type_id']==$k) selected @endif>{{$v}}</option>
                                     @endforeach
                                 </select>
+                            </div>
+                            <div class="input-group-btn" style="display: inline-block;width: 150px;margin-left:20px;">
+                                <input type="text"  name="start_date" class="form-control" style="display: inline-block;width: 160px;" id="startDate" placeholder="创建时间--开始" value="@if(isset($query)){{$query['start_date']}}@endif" />
+                            </div>
+                            <div class="input-group-btn" style="display: inline-block;width: 150px;margin-left:20px;">
+                                <input type="text"  name="end_date" class="form-control" style="display: inline-block;width: 160px;" id="endDate" placeholder="创建时间--结束" value="@if(isset($query)){{$query['end_date']}}@endif" />
                             </div>
                             <span class="input-group-btn" style="display: inline-block;">
 											<button type="submit" class="btn btn-purple btn-sm" style="margin-left: 20px;">
@@ -104,7 +112,7 @@
                     @endforeach
                     </tbody>
                 </table>
-                {{$data->appends(['info' => isset($query['info'])?$query['info']:'','query_type'=>isset($query['query_type'])?$query['query_type']:'','type_id'=>isset($query['type_id'])?$query['type_id']:''])->links()}}
+                {{$data->appends(['info' => isset($query['info'])?$query['info']:'','query_type'=>isset($query['query_type'])?$query['query_type']:'','type_id'=>isset($query['type_id'])?$query['type_id']:'','start_date'=>isset($query['start_date'])?$query['start_date']:'','end_date'=>isset($query['end_date'])?$query['end_date']:''])->links()}}
             </div>
         </div>
         <div class="clearfix"></div>
@@ -151,5 +159,72 @@
                 layer.close(index);
             });
         }
+
+        layui.use('laydate', function(){
+            var laydate = layui.laydate;
+
+            //执行一个laydate实例
+            var start = laydate.render({
+                elem: '#startDate', //指定元素
+                max:1,//最大值为当前日期
+                trigger: 'click',
+                type: 'datetime',//日期时间选择器
+                // value: getRecentDay(-30),//默认值30天前
+                done:function(value,date){
+                    if(value && (value>$("#endDate").val())){
+                        /*开始时间大于结束时间时，清空结束时间*/
+                        $("#endDate").val("");
+                    }
+                    end.config.min ={
+                        year:date.year,
+                        month:date.month-1,
+                        date: date.date,
+                        hours:date.hours,//可注释
+                        minutes:date.minutes,//可注释
+                        seconds:date.seconds//可注释
+                    };
+                }
+            });
+            var end = laydate.render({
+                elem: '#endDate', //指定元素
+                max : 1,//最大值为当前日期
+                type: 'datetime',//日期时间选择器
+                // value: getRecentDay(-1),//默认值昨天
+                done:function(value,date){
+                    start.config.max={
+                        year:date.year,
+                        month:date.month-1,
+                        date: date.date,
+                        hours:date.hours,//可注释
+                        minutes:date.minutes,//可注释
+                        seconds:date.seconds//可注释
+                    }
+                }
+            });
+        });
+
+        // /**获取近N天*/
+        // function getRecentDay(day){
+        //     var today = new Date();
+        //     var targetday_milliseconds=today.getTime() + 1000*60*60*24*day;
+        //     today.setTime(targetday_milliseconds);
+        //     var tYear = today.getFullYear();
+        //     var tMonth = today.getMonth();
+        //     var tDate = today.getDate();
+        //     var tHours = today.getHours();//可注释
+        //     var tMinutes = today.getMinutes();//可注释
+        //     var tSeconds = today.getSeconds();//可注释
+        //     tMonth = doHandleMonth(tMonth + 1);
+        //     tDate = doHandleMonth(tDate);
+        //     return tYear+"-"+tMonth+"-"+tDate+" "+tHours+":"+tMinutes+":"+tSeconds;
+        // }
+        // /**获取近N月*/
+        // function doHandleMonth(month){
+        //     var m = month;
+        //     if(month.toString().length == 1){
+        //         m = "0" + month;
+        //     }
+        //     return m;
+        // }
     </script>
 @endsection
