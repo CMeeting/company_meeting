@@ -42,7 +42,7 @@
                                 <div class="form-group">
                                     <label class="col-sm-2 control-label no-padding-right" for="form-field-1"> classification(上级分类)：</label>
                                     <div class="col-sm-6 col-xs-12">
-                                        <select name="data[pid]" class="form-control sels"  id="selectid" @if(isset($data['pid']) && $data['pid']=='0') style="pointer-events: none;color: #9f9f9f" @endif>
+                                        <select name="data[pid]" class="form-control sels"  id="selectid" @if(isset($data['id'])) style="pointer-events: none;color: #9f9f9f" @endif>
                                             <option value="0">--默认一级分类--</option>
                                             @foreach($material as $vs)
                                                 <option value="{{$vs['id']}}"
