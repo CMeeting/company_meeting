@@ -47,10 +47,10 @@
                     <div class="hr-line-dashed m-t-sm m-b-sm"></div>
                     <div class="form-group">
                         <label class="col-sm-2 control-label">头像：</label>
-                        <div class="input-group col-sm-2">
-                            <input type="file" class="form-control" name="avatr">
+                        <div class="input-group col-sm-6">
+                            <input type="file" class="form-control" name="avatr" style="width: auto;">
                             @if ($errors->has('avatr'))
-                                <span class="help-block m-b-none"><i class="fa fa-info-circle"></i>{{$errors->first('avatr')}}</span>
+                                <span class="help-block m-b-none" style="float:left;width: auto;margin-top: 40px;"><i class="fa fa-info-circle"></i>{{$errors->first('avatr')}}</span>
                             @endif
                         </div>
                     </div>

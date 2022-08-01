@@ -28,14 +28,14 @@ class AdminRequest extends FormRequest
             return [
                 'name'     => 'required',
                 'password' => 'required',
-                //'avatr'    => 'max:128',
+                'avatr'    => 'max:2048',
                 'role_id'  => 'required:integer',
                 'status'   => 'required:integer',
             ];
         }else{
             return [
                 'name'     => 'required',
-               // 'avatr'    => 'max:128',
+                'avatr'    => 'max:2048',
                 'role_id'  => 'required:integer',
                 'status'   => 'required:integer',
             ];
@@ -51,7 +51,7 @@ class AdminRequest extends FormRequest
         return [
             'name.required'     => '用户名不能为空',
             'password.required' => '密码不能为空',
-            //'avatr.max'         => '头像不能超过128个字符',
+            'avatr.max'         => '头像不能超过2048KB',
             'role_id.required'  => '用户所属角色不能为空',
             'role_id.integer'   => '表单不合法',
             'status.required'   => '状态不能为空',

@@ -45,7 +45,7 @@ class AdminsRepository
      */
     public function getAdminsWithRoles()
     {
-        return Admin::with('roles')->latest('updated_at')->paginate('10');
+        return Admin::with('roles')->latest('logintime')->paginate('10');
     }
 
     /**

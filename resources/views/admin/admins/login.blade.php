@@ -57,7 +57,7 @@
                 </form>
             </div>
         </div>
-        <div class="signup-footer animated fadeInUp" style="margin-top: 320px;">
+        <div class="signup-footer animated fadeInUp" style="width: 100%;text-align: center;position: absolute;left: 0;bottom: 100px;">
             © 2014-2022 PDF Technologies, Inc. All Rights Reserved.
         </div>
     </div>
