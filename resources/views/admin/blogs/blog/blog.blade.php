@@ -58,7 +58,8 @@
                 {{--                    </button>--}}
                 {{--                </div>--}}
                 {{--            </div>--}}
-                <table class="table table-striped table-bordered table-hover m-t-md" style="margin-top: 50px;">
+                <form name="form" style="width: 100%;overflow: auto;margin-top: 10px;">
+                <table class="table table-striped table-bordered table-hover m-t-md">
                     <thead>
                     <tr>
                         {{--                    'id','title_h1','slug','categories','tags','seo title','keywords','sort_id','created_at','updated_at'--}}
@@ -113,6 +114,7 @@
                     </tbody>
                 </table>
                 {{$data->appends(['info' => isset($query['info'])?$query['info']:'','query_type'=>isset($query['query_type'])?$query['query_type']:'','type_id'=>isset($query['type_id'])?$query['type_id']:'','start_date'=>isset($query['start_date'])?$query['start_date']:'','end_date'=>isset($query['end_date'])?$query['end_date']:''])->links()}}
+                </form>
             </div>
         </div>
         <div class="clearfix"></div>

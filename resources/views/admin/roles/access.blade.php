@@ -15,6 +15,7 @@
                     <table class="table table-striped table-bordered table-hover table-condensed">
                         @foreach($datas as $k=>$item)
                             @if(empty($item->_data))
+                                @if(1!=$item->id)
                                 <tr class="b-group">
                                     <th width="10%">
                                         <label>
@@ -24,7 +25,9 @@
                                     </th>
                                     <td></td>
                                 </tr>
+                                @endif
                             @else
+                                @if(1!=$item->id)
                                 <tr class="b-group">
                                     <th width="10%">
                                         <label>
@@ -54,6 +57,7 @@
                                         @endforeach
                                     </td>
                                 </tr>
+                                @endif
                             @endif
                         @endforeach
                         <tr>
