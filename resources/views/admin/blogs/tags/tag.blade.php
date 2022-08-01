@@ -21,7 +21,7 @@
                         </div>
                         <input type="text" name="info" class="form-control" value="@if(isset($query)){{$query['info']}}@endif" />
                         <span class="input-group-btn">
-											<button type="submit" class="btn btn-purple btn-sm">
+											<button type="submit" class="btn btn-purple btn-sm" style="margin-left: 20px;">
 												<span class="ace-icon fa fa-search icon-on-right bigger-110"></span>
 												搜索
 											</button>

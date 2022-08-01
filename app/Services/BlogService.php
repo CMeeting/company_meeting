@@ -104,7 +104,9 @@ class BlogService
             $tags = explode(',', $tags);
             foreach ($tags as $v) {
                 $t = $tags_kv[$v] ?? '';
-                $tag_info .= $t . ' | ';
+                if($t){
+                    $tag_info .= $t . ' | ';
+                }
             }
             $tag_info = rtrim($tag_info, " | ");
         }
@@ -186,7 +188,7 @@ class BlogService
     {
         $where = 'is_delete = 0';
         if(isset($param['info'])&&$param['info']){
-            $where .=" AND ".$param['query_type']." = '".$param['info']."'";
+            $where .=" AND ".$param['query_type']." like '%".$param['info']."%'";
         }
         $order = 'sort_id,id DESC';
 //        $data = $this->blogTypesModel->select($where,'*',$order);
@@ -204,13 +206,13 @@ class BlogService
     {
         $arr = $param->request->all()['data'];
         if($arr['title']){
-            $list = $this->blogTypesModel->_find('title = '."'".$arr['title']."'");
+            $list = $this->blogTypesModel->_find('is_delete = 0 AND binary title = '."'".$arr['title']."'");
             if ($list){
                 return "same_title";
             }
         }
         if($arr['slug']){
-            $list = $this->blogTypesModel->_find('slug = '."'".$arr['slug']."'");
+            $list = $this->blogTypesModel->_find('is_delete = 0 AND slug = '."'".$arr['slug']."'");
             if ($list){
                 return "error";
             }
@@ -222,13 +224,13 @@ class BlogService
     public function blogTypeUpdate($param,$id){
         $arr = $param->request->all()['data'];
         if($arr['title']){
-            $list = $this->blogTypesModel->_find('title = '."'".$arr['title']."' ".'AND id <> '.$id);
+            $list = $this->blogTypesModel->_find('is_delete = 0 AND binary title = '."'".$arr['title']."' ".'AND id <> '.$id);
             if ($list){
                 return "same_title";
             }
         }
         if($arr['slug']){
-            $list = $this->blogTypesModel->_find('slug = '."'".$arr['slug']."' ".'AND id <> '.$id);
+            $list = $this->blogTypesModel->_find('is_delete = 0 AND slug = '."'".$arr['slug']."' ".'AND id <> '.$id);
             if ($list){
                 return "error";
             }
@@ -241,7 +243,7 @@ class BlogService
     {
         $where="is_delete = 0";
         if(isset($param['info'])&&$param['info']){
-            $where.=" and ".$param['query_type']."= '".$param['info']."'";
+            $where.=" AND ".$param['query_type']." like '%".$param['info']."%'";
         }
         return blogTags::whereRaw($where)->orderByRaw('sort_id,id desc')->paginate(10);
     }
@@ -256,7 +258,7 @@ class BlogService
     {
         $data = $param->request->all()['data'];
         if($data['title']){
-            $tag = $this->blogTagsModel->_find(" title = '".$data['title']."'");
+            $tag = $this->blogTagsModel->_find("is_delete = 0 AND binary title = '".$data['title']."'");
             if($tag){
                 $row = 'error';
             }else{
@@ -270,7 +272,7 @@ class BlogService
     {
         $data = $request->all()['data'];
         if($data['title']){
-            $tag = $this->blogTagsModel->_find("id <> ".$id." AND title = '".$data['title']."'");
+            $tag = $this->blogTagsModel->_find("id <> ".$id." AND is_delete = 0 AND binary title = '".$data['title']."'");
             if($tag){
                 $row = 'error';
             }else{

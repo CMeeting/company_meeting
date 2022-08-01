@@ -99,7 +99,7 @@
                         </div>
                     </div>
                     <div class="hr-line-dashed m-t-sm m-b-sm"></div>
-                    <div class="form-group">
+                    <div class="form-group" style="padding-left: 20px;">
                         <label class="col-sm-2 control-label">Content：</label>
                         <div class="input-group col-sm-2">
                             <textarea id="content" name="data[content]" class="form-control" rows="5" cols="20"></textarea>
