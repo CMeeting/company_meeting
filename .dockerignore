@@ -1,0 +1,9 @@
+
+.dockerignore
+.idea
+
+/runtime/*
+/public/uploads/*
+/public/system/*
+/public/templates/*
+/pg_data/*
