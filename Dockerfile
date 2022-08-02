@@ -15,7 +15,7 @@ WORKDIR $DIR
 
 COPY . $DIR
 RUN php -r "readfile('http://getcomposer.org/installer');" | php -- --install-dir=/usr/bin/ --filename=composer
-RUN composer self-update 2.3.10
+RUN composer self-update 1.10.17
 RUN composer install
 
 
