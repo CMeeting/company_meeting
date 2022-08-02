@@ -20,7 +20,7 @@ RUN apk update && apk add curl && \
   && chmod +x composer.phar && mv composer.phar /usr/local/bin/composer
 # RUN composer self-update 1.10.17
 COPY composer.json composer.lock ./
-RUN composer install --no-scripts --no-autoloader
+# RUN composer install --no-scripts --no-autoloader
 # RUN composer install
 
 # 自定义端口号
