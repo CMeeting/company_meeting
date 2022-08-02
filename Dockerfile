@@ -27,6 +27,6 @@ COPY composer.json composer.lock ./
 EXPOSE 3061
 # RUN chmod +x $DIR/start.sh
 # CMD $DIR/start.sh
-CMD php artisan cache:clear
+CMD "/bin/bash"
 
 # docker cp . $(docker inspect -f '{{.Id}}' php_compdf_server):/php_compdf_server
