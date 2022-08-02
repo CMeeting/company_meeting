@@ -83,14 +83,24 @@ trait RbacCheck
                 $rules = (new RulesRepository())->getRulesAndPublic()->toArray();
 
             } else {
-
+                $data=Db::table("admin_auth")->whereRaw("admin_id='{$this->id}'")->selectRaw("rule_id")->get();
+                $data=$this->objToArr($data);
+                $arr=[];
+                foreach ($data as $k=>$v){
+                    $arr[]=$v['rule_id'];
+                }
+                $arr=array_unique($arr);
                 foreach ($this->roles as $role)
                 {
                     $rules = array_merge($rules, $role->rulesPublic()->toArray());
                 }
-
                 if($rules)
                 {
+                    foreach ($rules as $k=>$v){
+                        if(!in_array($v['id'],$arr)){
+                            unset($rules[$k]);
+                        }
+                    }
                     $rules = unique_arr($rules);
                 }
             }
