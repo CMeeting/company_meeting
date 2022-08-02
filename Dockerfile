@@ -18,6 +18,7 @@ RUN php -r "readfile('http://getcomposer.org/installer');" | php -- --install-di
 RUN composer self-update 2.3.10
 RUN composer install
 
+
 # 自定义端口号
 EXPOSE 3061
 RUN chmod +x $DIR/start.sh
