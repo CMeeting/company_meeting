@@ -14,10 +14,14 @@ ENV DIR /php_compdf_server
 WORKDIR $DIR
 
 COPY . $DIR
-RUN php -r "readfile('http://getcomposer.org/installer');" | php -- --install-dir=/usr/bin/ --filename=composer
-RUN composer self-update 1.10.17
-RUN composer install
-
+# RUN php -r "readfile('http://getcomposer.org/installer');" | php -- --install-dir=/usr/bin/ --filename=composer
+RUN apk update && apk add curl && \
+  curl -sS https://getcomposer.org/installer | php \
+  && chmod +x composer.phar && mv composer.phar /usr/local/bin/composer
+# RUN composer self-update 1.10.17
+COPY composer.json composer.lock ./
+RUN composer install --no-scripts --no-autoloader
+# RUN composer install
 
 # 自定义端口号
 EXPOSE 3061
