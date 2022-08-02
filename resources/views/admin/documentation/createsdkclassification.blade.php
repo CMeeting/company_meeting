@@ -157,6 +157,7 @@
             $("#name").attr("placeholder","当前添加的是顶级分类名称");
         }else{
             tishi=tishi.substring(1);
+            tishi = tishi.replace(/\s+/g,'');
             $("#name").attr("placeholder","当前添加的是"+tishi+"分类下级的分类名称");
         }
         $('#selectid').on('change', function () {
@@ -183,6 +184,7 @@
                 selectChilds.css("pointer-events","none");
                 selectThirds.css("color","#9f9f9f");
                 tishi=tishi.substring(1);
+                tishi = tishi.replace(/\s+/g,'');
                 $("#name").attr("placeholder","当前添加的是"+tishi+"分类下级的分类名称");
             }
         })
