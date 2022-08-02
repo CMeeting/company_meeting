@@ -19,5 +19,5 @@ services:
       # 第一次build up时注释掉这行，容器跑起来后，拷贝容器内vendor目录到主机
       # docker cp $(docker inspect -f '{{.Id}}' php_compdf_server):/php_compdf_server/vendor /var/www/php_compdf_server
       - ./.env:/php_compdf_server/.env
-      - ./runtime/log:/php_compdf_server/runtime/log
+      - ./storage/logs:/php_compdf_server/storage/logs
       - ./public:/php_compdf_server/public
