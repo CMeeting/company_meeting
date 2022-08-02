@@ -25,7 +25,8 @@ COPY composer.json composer.lock ./
 
 # 自定义端口号
 EXPOSE 3061
-RUN chmod +x $DIR/start.sh
-CMD $DIR/start.sh
+# RUN chmod +x $DIR/start.sh
+# CMD $DIR/start.sh
+CMD php artisan cache:clear
 
 # docker cp . $(docker inspect -f '{{.Id}}' php_compdf_server):/php_compdf_server
