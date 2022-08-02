@@ -197,17 +197,38 @@
         locale: zhHans
     }), bytemdPluginHighlight(), bytemdPluginGemoji()];
     const $el = document.querySelector('.editor')
-    console.log($el)
     var editor = new bytemd.Editor({
         target: $el,
         props: {
+            uploadImages: function (files) {
+                return Promise.all(
+                    files.map(async (file) => {
+                        let formData = new FormData();
+                        formData.append('file', file)
+                        let img = null
+                        await $.ajax({
+                            type: 'POST',
+                            url: '/admin/blogs/editorUpload',
+                            dataType: 'json',
+                            data: formData,
+                            contentType: false,
+                            processData: false,
+                            success: function (result) {
+                                img = {
+                                    url: result.location
+                                }
+                            }
+                        })
+                        return img
+                    })
+                )
+            },
             plugins: plugins,
             locale: zhHans
         }
     });
     editor.$on('change', function (e) {
         editor.$set({ value: e.detail.value });
-        console.log(e.detail.value)
         $("#md_editor").val(e.detail.value);
     });
     window.onload = function(){
