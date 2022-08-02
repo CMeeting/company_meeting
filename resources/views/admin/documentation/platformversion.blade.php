@@ -204,7 +204,7 @@
                         });
                     }
                 },error:function(response){
-                    layer.msg("网络错误，请联系服务组人员", {
+                    layer.msg("请检查网络或权限设置！", {
                         icon: 2,
                         time: 2000
                     });
@@ -233,6 +233,12 @@
                         time: 2000
                     });
                 }
+            },error:function(response){
+                layer.msg("请检查网络或权限设置！", {
+                    icon: 2,
+                    time: 2000
+                });
+                layer.close(index);
             }
         });
     }

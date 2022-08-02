@@ -42,8 +42,14 @@ class BlogsController extends BaseController
         $request = request();
         $unset = [];
         $types = $this->blogService->getBlogTypeskv();
-        if (isset($param["data"]['type_id']) && 'Products' != $types[$param["data"]['type_id']]){
-            $unset = ['abstract'];
+        if(isset($types[$param["data"]['type_id']])){
+            if (isset($param["data"]['type_id']) && 'Products' != $types[$param["data"]['type_id']]){
+                $unset = ['abstract'];
+            }
+        }else{
+            $result['code'] = 1000;
+            $result['msg'] = 'category状态异常：请检查category是否被删除';
+            return $result;
         }
         if(!isset($param['tags']) || empty($param['tags'])){
             $result['code'] = 1000;
@@ -86,8 +92,14 @@ class BlogsController extends BaseController
         $request = request();
         $unset = [];
         $types = $this->blogService->getBlogTypeskv();
-        if (isset($param["data"]['type_id']) && 'Products' != $types[$param["data"]['type_id']]){
-            $unset = ['abstract'];
+        if(isset($types[$param["data"]['type_id']])){
+            if (isset($param["data"]['type_id']) && 'Products' != $types[$param["data"]['type_id']]){
+                $unset = ['abstract'];
+            }
+        }else{
+            $result['code'] = 1000;
+            $result['msg'] = 'category状态异常：请检查category是否被删除';
+            return $result;
         }
         if(!isset($param['tags']) || empty($param['tags'])){
             $result['code'] = 1000;
