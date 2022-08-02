@@ -11,8 +11,7 @@ services:
     container_name: php_compdf_server
     networks:
       - kdancn
-    tty: true
-    #restart: always
+    restart: always
     # ports:
     #   - "3020:3020"
     volumes:
