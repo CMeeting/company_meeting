@@ -155,15 +155,29 @@ class BlogsController extends BaseController
 
     public function tagStore(){
         $param = request();
+        $unset = [];
+        $check = $this->check_param_key_null($param["data"],$unset);
+        if(500==$check['code']){
+            $result['code'] = 1000;
+            $result['msg'] = $check['msg'];
+            return $result;
+        }
         $back = $this->blogService->blogTagCreate($param);
         if('error'==$back){
-            flash('添加失败,Tag的title不能重复')->error()->important();
+//            flash('添加失败,Tag的title不能重复')->error()->important();
+            $result['code'] = 1000;
+            $result['msg'] = '添加失败,Tag的title不能重复';
         }else if(!empty($back)){
             flash('添加Tag成功')->success()->important();
+            $result['code'] = 200;
+            return $result;
         }else{
             flash('添加Tag失败')->error()->important();
+            $result['code'] = 1000;
+            $result['msg'] = '添加Tag失败';
         }
-        return redirect()->route('blogs.tags');
+//        return redirect()->route('blogs.tags');
+        return $result;
     }
 
     public function tagEdit($id){
@@ -172,16 +186,29 @@ class BlogsController extends BaseController
     }
 
     public function tagUpdate(Request $request,$id){
-//        $param = request();
+        $param = request();
+        $unset = [];
+        $check = $this->check_param_key_null($param["data"],$unset);
+        if(500==$check['code']){
+            $result['code'] = 1000;
+            $result['msg'] = $check['msg'];
+            return $result;
+        }
         $back = $this->blogService->blogTagUpdate($request, $id);
         if('error'==$back){
-            flash('更新失败,Tag的title不能重复')->error()->important();
+//            flash('更新失败,Tag的title不能重复')->error()->important();
+            $result['code'] = 1000;
+            $result['msg'] = '更新失败,Tag的title不能重复';
         }else if(!empty($back)){
             flash('更新Tag成功')->success()->important();
+            $result['code'] = 200;
         }else{
             flash('更新Tag失败')->error()->important();
+            $result['code'] = 1000;
+            $result['msg'] = '更新Tag失败';
         }
-        return redirect()->route('blogs.tags');
+//        return redirect()->route('blogs.tags');
+        return $result;
     }
 
     public function types()
@@ -200,17 +227,32 @@ class BlogsController extends BaseController
 
     public function typeStore(){
         $param = request();
+        $unset = [];
+        $check = $this->check_param_key_null($param["data"],$unset);
+        if(500==$check['code']){
+            $result['code'] = 1000;
+            $result['msg'] = $check['msg'];
+            return $result;
+        }
         $back = $this->blogService->blogTypeCreate($param);
         if ("same_title" == $back){
-            flash('添加失败,title不能重复')->error()->important();
+//            flash('添加失败,title不能重复')->error()->important();
+            $result['code'] = 1000;
+            $result['msg'] = '添加失败,title不能重复';
         }else if ("error" == $back){
-            flash('slug已存在')->error()->important();
+//            flash('slug已存在')->error()->important();
+            $result['code'] = 1000;
+            $result['msg'] = 'slug已存在';
         }else if(!empty($back)){
             flash('添加Category成功')->success()->important();
+            $result['code'] = 200;
         }else{
             flash('添加Category失败')->error()->important();
+            $result['code'] = 1000;
+            $result['msg'] = '添加Category失败';
         }
-        return redirect()->route('blogs.types');
+//        return redirect()->route('blogs.types');
+        return $result;
     }
 
     public function typeEdit($id){
@@ -220,17 +262,32 @@ class BlogsController extends BaseController
 
     public function typeUpdate($id){
         $param = request();
+        $unset = [];
+        $check = $this->check_param_key_null($param["data"],$unset);
+        if(500==$check['code']){
+            $result['code'] = 1000;
+            $result['msg'] = $check['msg'];
+            return $result;
+        }
         $back = $this->blogService->blogTypeUpdate($param, $id);
         if ("same_title" == $back){
-            flash('更新失败,title不能重复')->error()->important();
+//            flash('更新失败,title不能重复')->error()->important();
+            $result['code'] = 1000;
+            $result['msg'] = '更新失败,title不能重复';
         }else if ("error" == $back){
-            flash('slug已存在')->error()->important();
+//            flash('slug已存在')->error()->important();
+            $result['code'] = 1000;
+            $result['msg'] = 'slug已存在';
         }else if(!empty($back)){
             flash('更新Category成功')->success()->important();
+            $result['code'] = 200;
         }else{
             flash('更新Category失败')->error()->important();
+            $result['code'] = 1000;
+            $result['msg'] = '更新Category失败';
         }
-        return redirect()->route('blogs.types');
+//        return redirect()->route('blogs.types');
+        return $result;
     }
 
     public function softDel(){

@@ -228,7 +228,7 @@
                     //成功提示
                     console.log(re)
                     if (re.code==200) {
-                        layer.msg("修改blog成功", {
+                        layer.msg("添加blog成功", {
                             icon: 1,
                             time: 1000
                         }, function () {
