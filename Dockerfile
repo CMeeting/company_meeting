@@ -15,7 +15,7 @@ WORKDIR $DIR
 
 COPY . $DIR
 # RUN php -r "readfile('http://getcomposer.org/installer');" | php -- --install-dir=/usr/bin/ --filename=composer
-RUN apk update && apk add curl && \
+RUN apt-get update && apt-get install curl && \
   curl -sS https://getcomposer.org/installer | php \
   && chmod +x composer.phar && mv composer.phar /usr/local/bin/composer
 # RUN composer self-update 1.10.17

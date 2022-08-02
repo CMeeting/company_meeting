@@ -3,7 +3,7 @@
 <div class="row">
     <div class="col-sm-12">
         <div class="ibox-title">
-            <h5>添加管理员</h5>
+            <h5>编辑管理员</h5>
         </div>
         <div class="ibox-content">
             <?php
@@ -83,7 +83,7 @@
                         <!-- /.循环一级权限数据 -->
                         @foreach($rolesinfo as $k=>$vo)
                             <div class="md-checkbox" style="margin-right:10px;">
-                                <input type="checkbox" id="new_rules_{{$vo['id']}}" name="rules_id[]" value="{{$vo['id']}}"  class="md-check checkbox-parent" dataid="id-{{$vo['id']}}" @if(in_array($vo['id'],$adminroles)) checked @else disabled @endif/>
+                                <input type="checkbox" id="new_rules_{{$vo['id']}}" name="rules_id[]" value="{{$vo['id']}}"  class="md-check checkbox-parent" dataid="id-{{$vo['id']}}" @if(in_array($vo['id'],$adminroles) && $vo['id']==1) checked disabled @elseif($vo['id']==1) checked disabled @elseif(in_array($vo['id'],$adminroles)) checked @else disabled @endif/>
                                 <label for="new_rules_{{$vo['id']}}">
                                     <span></span>
                                     <span class="check"></span>
