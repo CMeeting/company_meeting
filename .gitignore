@@ -2,6 +2,7 @@
 /public/hot
 /public/storage
 storage/*
+vendor/*
 /.idea
 /.vagrant
 Homestead.json

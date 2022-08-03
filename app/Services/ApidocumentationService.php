@@ -22,7 +22,7 @@ class Apidocumentationservice
         //组装平台版本数据
         $Platform=$PlatformVersion->finds("name like '".$param['platformname']."' and deleted=0 and enabled=1 and lv=1","displayorder");
         if(!$Platform){
-            return json_encode(['data'=>'','code'=>403,'msg'=>"暂无数据"]);
+            return ['data'=>'','code'=>403,'msg'=>"暂无数据"];
         }
         if(isset($param['versionname']) && $param['versionname']){
             $newversion=$PlatformVersion->finds("pid=".$Platform['id']." and name like '".$param['versionname']."' and deleted=0 and enabled=1","displayorder");
@@ -53,14 +53,17 @@ class Apidocumentationservice
         $SdkClassification = new SdkClassification();
         $Platform=$PlatformVersion->finds("name like '".$param['platformname']."' and deleted=0 and enabled=1 and lv=1","displayorder");
         if(!$Platform){
-            return json_encode(['data'=>'','code'=>403,'msg'=>"缺少参数"]);
+            return ['data'=>'','code'=>403,'msg'=>"缺少参数"];
         }
         $version=$PlatformVersion->finds("name like '".$param['category']."' and pid=".$Platform['id']." and deleted=0 and enabled=1","displayorder");
+        if(!$version){
+            return ['data'=>'','code'=>403,'msg'=>"没有找到该产品"];
+        }
         $SdKArticle=$SdKArticle_data->_find("deleted=0 and enabled=1 and platformid=".$Platform['id']." and version=".$version['id']." and slug='".$param['slugs']."'","displayorder");
         if($SdKArticle){
             $SdKArticle=$SdKArticle_data->objToArr($SdKArticle);
             $fenlei=$SdkClassification->finds("deleted=0 and enabled=1 and id=".$SdKArticle['classification_ids']);
-            if(!$fenlei)return json_encode(['data'=>'','code'=>403,'msg'=>"分类属于隐藏状态"]);
+            if(!$fenlei)return ['data'=>'','code'=>403,'msg'=>"分类属于隐藏状态"];
             $Classification=$this->getClassification([$SdKArticle['platformid'],$SdKArticle['version']]);
             $articledata=$this->sdKArticle([$SdKArticle['platformid'],$SdKArticle['version']]);
             $classificationids=$this->sele_classificationid($SdKArticle['classification_ids'],$Classification);
@@ -89,7 +92,7 @@ class Apidocumentationservice
             $data['updated']=$SdKArticle['updated_at'];
             return $data;
         }else{
-            return json_encode(['data'=>'','code'=>403,'msg'=>"缺少参数"]);
+            return ['data'=>'','code'=>403,'msg'=>"缺少参数"];
         }
     }
 

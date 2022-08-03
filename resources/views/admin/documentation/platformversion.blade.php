@@ -66,7 +66,7 @@
                 <div class="portlet-title tabbable-line">
                     <div class="actions">
                         <a id="cc" class="addClassify btn btn-md  blue  dropdown-toggle mt-ladda-btn ladda-button" data-style="zoom-in"  type="button" href="{{route('documentation.createPlatformVersion')}}">
-                            <i class="fa fa-plus-circle"></i> New Platform&Version
+                            <i class="fa fa-plus-circle"></i> New Platform&Product
                         </a>
                     </div>
 

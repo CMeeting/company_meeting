@@ -32,7 +32,7 @@ class SdKArticleService
         }
 
         $SdKArticle=new SdKArticle();
-        $data=$SdKArticle->whereRaw($where)->orderByRaw('displayorder desc,id desc')->paginate(10);
+        $data=$SdKArticle->whereRaw($where)->orderByRaw('displayorder,id desc')->paginate(10);
         $classification=$this->allCategories();
         $banben=$this->allVersion();
 
@@ -83,11 +83,11 @@ class SdKArticleService
                     $is_titel=$SdKArticle->_find("classification_ids='".$classification_ids."' and id!={$data['id']}  and (titel='".$data['titel']."' or seotitel='".$data['seotitel']."')  and deleted=0");
                 }
                 if($data['slug']!=$is_edit['slug']){
-                    $slug=$SdKArticle->_find("slug='".$data['slug']."'  and deleted=0 and platformid=".$classification_data['platformid']);
+                    $slug=$SdKArticle->_find("slug='".$data['slug']."'  and deleted=0 and version=".$classification_data['version']);
                 }
             }else{
                 $is_titel=$SdKArticle->_find("classification_ids='".$classification_ids."' and (titel='".$data['titel']."' or seotitel='".$data['seotitel']."')  and deleted=0");
-                $slug=$SdKArticle->_find("slug='".$data['slug']."'  and deleted=0 and platformid=".$classification_data['platformid']);
+                $slug=$SdKArticle->_find("slug='".$data['slug']."'  and deleted=0 and version=".$classification_data['version']);
             }
         }
         if(isset($is_titel) && $is_titel){
@@ -125,7 +125,7 @@ class SdKArticleService
         $SdkClassification = new SdkClassification();
         $where=array(['deleted','=',0]);
         $field = "id,title,lv,pid,displayorder,enabled,platformid,version";
-        $order = "displayorder desc";
+        $order = "displayorder";
         $material = $SdkClassification->select($where, $field, $order);
         $material = $SdkClassification->objToArr($material);
         $arr_project = $this->menuLeft($material);
@@ -159,7 +159,7 @@ class SdKArticleService
     {
         $PlatformVersion = new PlatformVersion();
         $where=array(['deleted','=',0],['lv','=',1]);
-        $data = $PlatformVersion->select($where,'id,name','displayorder desc');
+        $data = $PlatformVersion->select($where,'id,name','displayorder');
         $data =$PlatformVersion->objToArr($data);
         $arr=[];
         if($data){
@@ -172,7 +172,7 @@ class SdKArticleService
     public function getversion(){
         $PlatformVersion = new PlatformVersion();
         $where=array(['deleted','=',0]);
-        $data = $PlatformVersion->select($where,'id,name,pid,lv','displayorder desc');
+        $data = $PlatformVersion->select($where,'id,name,pid,lv','displayorder');
         $data =$PlatformVersion->objToArr($data);
         $arr=[];
         if($data){

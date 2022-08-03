@@ -22,7 +22,7 @@
                     {{ csrf_field() }}
 
                                 <div class="form-group">
-                                    <label class="col-sm-2 control-label no-padding-right" for="form-field-1"> order_num(排序 从大到小)：</label>
+                                    <label class="col-sm-2 control-label no-padding-right" for="form-field-1"> order_num(排序 从小到大)：</label>
                                     <div class="col-sm-6 col-xs-12">
                                         <input id="displayorder"  type="number" class="form-control" name="data[displayorder]" min="1" max="99999999" oninput="if(value.length>8)value=value.slice(0,8)" value="999" required>
                                         <span class="lbl"></span>
@@ -62,7 +62,7 @@
                                 </div>
 
                     <div class="form-group">
-                        <label class="col-sm-2 control-label no-padding-right" for="form-field-1"> 平台/版本：</label>
+                        <label class="col-sm-2 control-label no-padding-right" for="form-field-1"> 平台/产品：</label>
                         <div class="col-sm-6 col-xs-12">
                             @if(isset($data['pid']) && $data['pid'])
                             <select autocomplete="off" class="fenlei form-control ccs" id="category_parent" name="data[platformid]" onchange="renderCategoryThirdbypcate(this.value)" onclick="renderCategoryThirdbypcate(this.value)" style="pointer-events: none;color: #9f9f9f">
@@ -74,7 +74,7 @@
                                 <option value="0">请选择平台</option>
                             </select>
                             <select autocomplete="off" class="fenlei form-control ccs" id="category_child" name="data[version]"  style="display: none;margin-left: 5px">
-                                <option value="0">请选择版本</option>
+                                <option value="0">请选择产品</option>
                             </select>
                             @endif
                         </div>
@@ -118,7 +118,7 @@
         $selectChild = $('#category_parent');
         $selectThird = $('#category_child');
         var html = '<option value="0">请选择平台</option>';
-        var html1 = '<option value="0">请选择版本</option>';
+        var html1 = '<option value="0">请选择产品</option>';
         for(var i=0; i<$categroys.length; i++){
             if($categroys[i].pid==0){
                 var s = ' ';
@@ -137,7 +137,7 @@
     }
     function renderCategoryThirdbypcate(pcate){
         console.log($categroys);
-        var html1 = '<option value="0">请选择版本</option>';
+        var html1 = '<option value="0">请选择产品</option>';
         for(var i=0; i<$categroys.length; i++){
             if(pcate ==$categroys[i].pid){
                 var s="";
@@ -176,7 +176,7 @@
                 selectChilds = $('#category_parent');
                 selectThirds = $('#category_child');
                 var html = '<option value="'+platformid+'">已绑定上级分类平台数据</option>';
-                var html1 = '<option value="'+version+'">已绑定上级分类版本数据</option>';
+                var html1 = '<option value="'+version+'">已绑定上级分类产品数据</option>';
                 selectChilds.html(html);
                 selectThirds.html(html1);
                 selectThirds.css("pointer-events","none");
@@ -198,7 +198,7 @@
 
         $("form").submit(function(e){
             if(($("#category_parent").val()==0 || $("#category_child").val()==0) && $("#selectid").val()==0){
-                layer.msg("请选择平台/版本", {
+                layer.msg("请选择平台/产品", {
                     icon: 2,
                     time: 2000
                 });

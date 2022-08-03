@@ -19,7 +19,7 @@ class SdkclassificationService
         $SdkClassification = new SdkClassification();
         $where=array(["deleted","=",0]);
         $field = "id,title,lv,pid,displayorder,enabled,platformid,version";
-        $order = "displayorder desc,id desc";
+        $order = "displayorder,id desc";
         $list1 = $SdkClassification->select($where, $field, $order);
         $list1 = $SdkClassification->objToArr($list1);
         $banben = $this->allVersion();
@@ -50,7 +50,7 @@ class SdkclassificationService
             $where[]=['version','=',$data['version']];
         }
         $field = "id,title,lv,pid,displayorder,enabled,platformid,version";
-        $order = "displayorder desc,id desc";
+        $order = "displayorder,id desc";
         $material = $SdkClassification->select($where, $field, $order);
         $material = $SdkClassification->objToArr($material);
 

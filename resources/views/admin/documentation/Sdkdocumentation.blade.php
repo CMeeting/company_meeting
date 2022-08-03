@@ -62,7 +62,7 @@
             <div class="col-md-4 col-lg-2 col-sm-6 col-xs-12">
                 <div class="form-group">
                     <select class="form-control"  name="version" tabindex="1">
-                        <option value="">筛选版本</option>
+                        <option value="">筛选产品</option>
                         @foreach($version as $k=>$v)
                             <option value="{{$k}}" @if(isset($query)&&$query['version']==$k) selected @endif>{{$v}}</option>
                         @endforeach
@@ -97,7 +97,7 @@
                         <th>Title H1</th>
                         <th>SEO Title</th>
                         <th class="text-center">Slug</th>
-                        <th class="text-center" width="150">platformversion</th>
+                        <th class="text-center" width="150">platformProduct</th>
                         <th class="text-center" width="150">classification</th>
                         <th class="text-center" width="150">created_at</th>
                         <th class="text-center" width="80">updated_at</th>
