@@ -24,7 +24,7 @@ COPY composer.json composer.lock ./
 # RUN composer install
 
 # 自定义端口号
-EXPOSE 3061
+EXPOSE 3011
 # RUN chmod +x $DIR/start.sh
 # CMD $DIR/start.sh
 CMD php artisan serve
