@@ -39,11 +39,19 @@ class RolesController extends BaseController
      */
     public function store(RoleRequest $request, Role $role)
     {
-        $role->fill($request->all());
+        if (isset($request->all()['name']) && $request->all()['name']){
+            $row = $role->_find("name = '".$request->all()['name']."'");
+            if($row){
+                flash('角色名称已存在，请检查！')->error()->important();
+            }else{
+                $role->fill($request->all());
+                $role->save();
 
-        $role->save();
-
-        flash('添加角色成功')->success()->important();
+                flash('添加角色成功')->success()->important();
+            }
+        }else{
+            flash('请填写角色名称')->error()->important();
+        }
 
         return redirect()->route('roles.index');
     }
@@ -65,9 +73,20 @@ class RolesController extends BaseController
      */
     public function update(RoleRequest $request, Role $role)
     {
-        $role->update($request->all());
+        $arr = explode('/',$request->all()['s']);
+        $id = $arr[count($arr)-1];
+        if (isset($request->all()['name']) && $request->all()['name']){
+            $row = $role->_find("id != ".$id." AND name = '".$request->all()['name']."'");
+            if($row){
+                flash('角色名称已存在，请检查！')->error()->important();
+            }else{
+                $role->update($request->all());
 
-        flash('修改成功')->success()->important();
+                flash('修改成功')->success()->important();
+            }
+        }else{
+            flash('请填写角色名称')->error()->important();
+        }
 
         return redirect()->route('roles.index');
     }

@@ -53,7 +53,7 @@ class BlogsController extends BaseController
         }
         if(!isset($param['tags']) || empty($param['tags'])){
             $result['code'] = 1000;
-            $result['msg'] = '请填写：tags';
+            $result['msg'] = '请选择：Tags';
             return $result;
         }
         $check = $this->check_param_key_null($param["data"],$unset);
@@ -103,7 +103,7 @@ class BlogsController extends BaseController
         }
         if(!isset($param['tags']) || empty($param['tags'])){
             $result['code'] = 1000;
-            $result['msg'] = '请填写：tags';
+            $result['msg'] = '请选择：Tags';
             return $result;
         }
         $check = $this->check_param_key_null($param["data"],$unset);

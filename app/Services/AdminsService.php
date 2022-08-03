@@ -207,6 +207,20 @@ class AdminsService
     {
         return $this->adminsRepository->ById($id);
     }
+    /**
+     * 根据name获取管理员的详细资料
+     * @param $name
+     * @return mixed
+     */
+    public function ByName($name)
+    {
+        return $this->adminsRepository->ByName($name);
+    }
+
+    public function exceptIdAndName($id,$name)
+    {
+        return $this->adminsRepository->exceptIdAndName($id,$name);
+    }
 
     /**
      * 获取管理员列表 with ('roles')

@@ -64,7 +64,7 @@
                     <div class="form-group">
                         <label class="col-sm-2 control-label">Slug(确保唯一性)：</label>
                         <div class="input-group col-sm-2">
-                            <input type="text" class="form-control" name="data[slug]" value="{{$row->slug}}" required data-msg-required="请输入Slug">
+                            <input type="text" class="form-control" name="data[slug]" value="{{$row->slug}}" onKeyUp="value=value.replace(/[^\w\.\/-]/ig,'')" required data-msg-required="请输入Slug">
                         </div>
                     </div>
                     <div class="hr-line-dashed m-t-sm m-b-sm"></div>

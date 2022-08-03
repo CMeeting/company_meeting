@@ -17,7 +17,7 @@ use Illuminate\Database\Eloquent\Model;
 class Role extends Model
 {
     protected $fillable = ['name', 'remark', 'order', 'status'];
-
+    protected $table = 'roles';
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
