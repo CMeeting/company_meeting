@@ -55,9 +55,18 @@ class AdminsController extends BaseController {
      */
     public function store(AdminRequest $request)
     {
-        $this->adminsService->create($request);
+        if (isset($request->all()['name']) && $request->all()['name']){
+            $row = $this->adminsService->ByName($request->all()['name']);
+            if($row){
+                flash('用户名已存在，请检查！')->error()->important();
+            }else{
+                $this->adminsService->create($request);
 
-        flash('添加管理员成功')->success()->important();
+                flash('添加管理员成功')->success()->important();
+            }
+        }else{
+            flash('请填写用户名')->error()->important();
+        }
 
         return redirect()->route('admins.index');
     }
@@ -87,9 +96,17 @@ class AdminsController extends BaseController {
      */
     public function update(Request $request, $id)
     {
-        $this->adminsService->update($request, $id);
-
-        flash('更新资料成功')->success()->important();
+        if (isset($request->all()['name']) && $request->all()['name']){
+            $row = $this->adminsService->exceptIdAndName($id,$request->all()['name']);
+            if($row){
+                flash('用户名已存在，请检查！')->error()->important();
+            }else{
+                $this->adminsService->update($request, $id);
+                flash('更新资料成功')->success()->important();
+            }
+        }else{
+            flash('请填写用户名')->error()->important();
+        }
 
         return redirect()->route('admins.index');
     }

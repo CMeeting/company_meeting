@@ -39,6 +39,11 @@ class AdminsRepository
         return Admin::find($id);
     }
 
+    public function exceptIdAndName($id,$name)
+    {
+        return Admin::where('id','!=',$id)->where('name',$name)->first()->toArray();
+    }
+
     /**
      * 获取管理员列表 with ('roles')
      * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator
