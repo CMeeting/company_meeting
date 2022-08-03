@@ -31,7 +31,7 @@ class DocumentationController
     public function sdkInfo(Request $request){
         $Apidocumentationservice= new ApidocumentationService();
         $param = $request->all();
-        if(!$param || !isset($param['slugs']) || !isset($param['platformname'])){
+        if(!$param || !isset($param['slugs']) || !isset($param['platformname']) || !isset($param['category'])){
             return json_encode(['data'=>'','code'=>403,'msg'=>"缺少参数"]);
         }
         $data=$Apidocumentationservice->getInfo($param);
