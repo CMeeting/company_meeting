@@ -22,7 +22,7 @@
                     <div class="form-group">
                         <label class="col-sm-2 control-label">Slug(确保唯一性)：</label>
                         <div class="input-group col-sm-2">
-                            <input type="text" class="form-control" name="data[slug]" value="" required data-msg-required="请输入slug">
+                            <input type="text" class="form-control" name="data[slug]" value="" onKeyUp="value=value.replace(/[^\w\.\/-]/ig,'')" required data-msg-required="请输入slug">
                         </div>
                     </div>
                     <div class="hr-line-dashed m-t-sm m-b-sm"></div>
