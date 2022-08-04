@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Notifications\Notifiable;
 use App\Models\Base;
 
-class Mailmagicboard extends Base {
+class Mailmagicboard extends Model {
 
-    public static $table = 'mail_magic_board';
+    protected $table = 'mail_magic_board';
 }

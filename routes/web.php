@@ -19,6 +19,8 @@ Route::group(['namespace' => 'Admin','prefix' => 'admin'], function (){
         Route::resource('index', 'IndexsController', ['only' => ['index']]);  //首页
 
        // Route::resource('documentation','DocumentationController',['only'=>['index','create','store','update','edit','destroy','platformVersion'] ]);
+        //邮件模板
+        Route::get('mailmagic_list', 'MailmagicboardController@mailmagic_list')->name('mailmagicboard.mailmagic_list');
 
         Route::get('platformVersion', 'DocumentationController@platformVersion')->name('documentation.platformVersion');
         Route::get('sdkClassification', 'DocumentationController@sdkClassification')->name('documentation.sdkClassification');

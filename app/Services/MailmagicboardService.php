@@ -12,14 +12,11 @@ class MailmagicboardService
 
     }
 
-    public function data_list(){
-
-            $where='deleted = 0';
-
-            $email=new mail();
-            $data=$email->select();
+    public function data_list($param){
+            $where = "deleted=0";
+            $email = new mail();
+            $data = $email->whereRaw($where)->orderByRaw('id desc')->paginate(10);
             return $data;
-
     }
 
 
