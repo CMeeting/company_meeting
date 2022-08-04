@@ -10,13 +10,13 @@ RUN curl -L -o /tmp/redis.tar.gz https://github.com/phpredis/phpredis/archive/re
 RUN tar -zxvf /tmp/redis.tar.gz -C /usr/src/php/ext && mv /usr/src/php/ext/phpredis-* /usr/src/php/ext/phpredis
 RUN docker-php-ext-install phpredis && docker-php-source delete
 
-ENV DIR /faq_blog_server
+ENV DIR /php_compdf_server
 WORKDIR $DIR
 
 COPY . $DIR
 RUN php -r "readfile('http://getcomposer.org/installer');" | php -- --install-dir=/usr/bin/ --filename=composer
 RUN composer self-update 1.10.26
-RUN composer install
+RUN composer update
 
 EXPOSE 3011
 #RUN chmod +x $DIR/start.sh
