@@ -17,17 +17,7 @@ class MailmagicboardService
             $where='deleted = 0';
 
             $email=new mail();
-            $data=$email->whereRaw($where)->orderByRaw('displayorder,id desc')->paginate(10);
-            $classification=$this->allCategories();
-            $banben=$this->allVersion();
-
-            if(!empty($data)){
-                foreach ($data as $k=>$v){
-                    $fenlei=$this->assemblyClassification($v->classification_ids,$classification);
-                    $v->classification=$fenlei?implode("--",$fenlei):"";
-                    $v->platformversion=$this->assemblyVersion(array($v->platformid,$v->version),$banben);
-                }
-            }
+            $data=$email->select();
             return $data;
 
     }

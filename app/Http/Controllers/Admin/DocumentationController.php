@@ -56,7 +56,7 @@ class DocumentationController extends BaseController {
         if (!empty($param)) {
                 $bool = $documentation->addEditcaregorical($param);
             if ($bool == "repeat") {
-                flash('平台/版本号名称/seotitle/H1title在相同分类下已存在')->error()->important();
+                flash('平台/产品名称/seotitle/H1title在相同分类下已存在')->error()->important();
                 return redirect()->route('documentation.createPlatformVersion');
             } else {
                 if ($bool) {
@@ -100,7 +100,7 @@ class DocumentationController extends BaseController {
         if (!empty($param)) {
             $bool = $documentation->addEditcaregorical($param);
             if ($bool == "repeat") {
-                flash('平台/版本号名称/seotitle/H1title在相同分类下已存在')->error()->important();
+                flash('平台/产品名称/seotitle/H1title在相同分类下已存在')->error()->important();
                 return redirect()->route('documentation.createPlatformVersion');
             } else {
                 if ($bool==1) {

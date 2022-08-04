@@ -258,7 +258,7 @@ class SdkclassificationService
         $data = $SdkClassification->objToArr($data);
         $wheres = "deleted=0 and pid='{$data['platformid']}' and name='{$data['title']}'";
         $banben = $PlatformVersion->find($wheres);
-        if(!$banben)return ['code'=>0,'msg'=>'相同平台下没有对应版本信息'];
+        if(!$banben)return ['code'=>0,'msg'=>'相同平台下没有对应产品信息'];
         $banben =$PlatformVersion->objToArr($banben);
         $ids=$this->getIds($id,'sdk_classification');
         if($ids){
