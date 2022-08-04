@@ -14,16 +14,12 @@ use App\Services\AdminsService;
 
 class MailmagicboardController extends BaseController {
 
-
-    /**
-     * 平台/版本主页
-     * @return mixed
-     */
-    public function platformVersion()
+    /*
+     * 邮件模板列表
+     * */
+    public function mailmagic_list()
     {
-        $documentation = new DocumentationService();
-        $data = $documentation->getCategoricalData();
-        return $this->view('platformversion',['cateList'=>$data['cateList'],'childCateList'=>$data['childCateList']]);
+
     }
 
 

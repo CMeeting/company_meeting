@@ -23,7 +23,7 @@
     <div class="row">
         <div class="col-sm-12">
             <div class="ibox-title">
-                <h5>New Platform&Version</h5>
+                <h5>New Platform&Product</h5>
             </div>
             <div class="ibox-content">
                 <form class="form-horizontal" name="form"  method="post" action="{{route('documentation.createRunPlatformVersion')}}" >
@@ -32,7 +32,7 @@
                                 <div class="form-group">
                                     <label class="col-sm-2 control-label no-padding-right" for="form-field-1"> order_num(排序 从小到大)：</label>
                                     <div class="col-sm-6 col-xs-12">
-                                        <input id="displayorder"  type="number" class="form-control" name="data[displayorder]" min="1" max="99999999" oninput="if(value.length>8)value=value.slice(0,8)" value="999" required>
+                                        <input id="displayorder"  type="number" class="form-control" name="data[displayorder]" min="1" max="99999999" oninput="if(value.length>8)value=value.slice(0,8)" value="1" required>
                                         <span class="lbl"></span>
                                     </div>
                                 </div>

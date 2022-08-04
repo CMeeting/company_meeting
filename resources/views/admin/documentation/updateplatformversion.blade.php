@@ -30,7 +30,7 @@
     <div class="row">
         <div class="col-sm-12">
             <div class="ibox-title">
-                <h5>Edit Platform&Version</h5>
+                <h5>Edit Platform&Product</h5>
             </div>
             <div class="ibox-content">
                 <form class="form-horizontal" name="form"  method="post" action="{{route('documentation.updateRunPlatformVersion')}}" >
