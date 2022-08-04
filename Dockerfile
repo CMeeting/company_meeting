@@ -16,8 +16,6 @@ WORKDIR $DIR
 COPY . $DIR
 RUN php -r "readfile('http://getcomposer.org/installer');" | php -- --install-dir=/usr/bin/ --filename=composer
 RUN composer self-update 1.10.26
-RUN php -d memory_limit=-1
-RUN composer update
 
 EXPOSE 3011
 #RUN chmod +x $DIR/start.sh
