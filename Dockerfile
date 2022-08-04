@@ -1,8 +1,8 @@
 FROM php:7.3-cli
 
-MAINTAINER Seren_shuwei <shuwei@kdanmobile.com>
+MAINTAINER shuwei
 RUN apt-get update && apt-get install -y vim libzip-dev zip libpq-dev libpng-dev wget
-#RUN docker-php-ext-install pgsql pdo_pgsql pcntl gd zip
+RUN docker-php-ext-install pgsql pdo_pgsql pcntl gd zip
 
 # Install redis extension
 RUN docker-php-source extract
@@ -10,26 +10,15 @@ RUN curl -L -o /tmp/redis.tar.gz https://github.com/phpredis/phpredis/archive/re
 RUN tar -zxvf /tmp/redis.tar.gz -C /usr/src/php/ext && mv /usr/src/php/ext/phpredis-* /usr/src/php/ext/phpredis
 RUN docker-php-ext-install phpredis && docker-php-source delete
 
-ENV DIR /php_compdf_server
+ENV DIR /faq_blog_server
 WORKDIR $DIR
 
 COPY . $DIR
-# RUN php -r "readfile('http://getcomposer.org/installer');" | php -- --install-dir=/usr/bin/ --filename=composer
-RUN apt-get update && apt-get install curl && \
-  curl -sS https://getcomposer.org/installer | php \
-  && chmod +x composer.phar && mv composer.phar /usr/local/bin/composer
- RUN composer self-update 1.10.26
-COPY composer.json composer.lock ./
-RUN composer install --no-scripts --no-autoloader
-COPY . .
-RUN chmod +x artisan
-# RUN composer dump-autoload --optimize && composer run-script post-install-cmd
-# RUN composer install
+RUN php -r "readfile('http://getcomposer.org/installer');" | php -- --install-dir=/usr/bin/ --filename=composer
+RUN composer self-update 1.10.26
+RUN composer install
 
-# 自定义端口号
 EXPOSE 3011
-# RUN chmod +x $DIR/start.sh
-# CMD $DIR/start.sh
+#RUN chmod +x $DIR/start.sh
+#CMD $DIR/start.sh
 CMD php artisan serve
-
-# docker cp . $(docker inspect -f '{{.Id}}' php_compdf_server):/php_compdf_server
