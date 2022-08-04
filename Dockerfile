@@ -2,7 +2,7 @@ FROM php:7.3-cli
 
 MAINTAINER shuwei
 RUN apt-get update && apt-get install -y vim libzip-dev zip libpq-dev libpng-dev wget
-RUN docker-php-ext-install pgsql pdo_pgsql pcntl gd zip
+RUN docker-php-ext-install pdo pdo_mysql
 
 # Install redis extension
 RUN docker-php-source extract
