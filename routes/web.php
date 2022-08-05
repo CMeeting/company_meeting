@@ -97,7 +97,14 @@ Route::group(['namespace' => 'Admin','prefix' => 'admin'], function (){
         Route::resource('rules','RulesController',['only'=> ['index','create','store','update','edit','destroy'] ]);  //权限
 
         Route::resource('actions','ActionLogsController',['only'=> ['index'] ]);  //日志
-        
+
+        Route::get('changelogs/list', 'ChangeLogsController@list')->name('changelogs.list'); //changelogs首页
+        Route::get('changelogs/create', 'ChangeLogsController@create')->name('changelogs.create');
+        Route::post('changelogs/store', 'ChangeLogsController@store')->name('changelogs.store');
+        Route::get('changelogs/edit/{id}', 'ChangeLogsController@edit')->name('changelogs.edit');
+        Route::post('changelogs/update/{id}', 'ChangeLogsController@update')->name('changelogs.update');
+        Route::get('changelogs/softDel/{id?}', 'ChangeLogsController@softDel')->name('changelogs.softDel');
+
         
     });
     
