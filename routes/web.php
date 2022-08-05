@@ -26,6 +26,14 @@ Route::group(['namespace' => 'Admin','prefix' => 'admin'], function (){
        // Route::resource('documentation','DocumentationController',['only'=>['index','create','store','update','edit','destroy','platformVersion'] ]);
         //邮件模板
         Route::get('mailmagic_list', 'MailmagicboardController@mailmagic_list')->name('mailmagicboard.mailmagic_list');
+        Route::get('createmailmagiclist', 'MailmagicboardController@createmailmagiclist')->name('mailmagicboard.createmailmagiclist');
+        Route::post('createrunmailmagic', 'MailmagicboardController@createrunmailmagic')->name('mailmagicboard.createrunmailmagic');
+        Route::post('delmailmagic', 'MailmagicboardController@delmailmagic')->name('mailmagicboard.delmailmagic');
+        Route::get('updatemailmagiclist/{id}', 'MailmagicboardController@updatemailmagiclist')->name('mailmagicboard.updatemailmagiclist');
+        Route::post('updaterunmailmagiclist', 'MailmagicboardController@updaterunmailmagiclist')->name('mailmagicboard.updaterunmailmagiclist');
+        Route::get('mailmagiclist_info/{id}', 'MailmagicboardController@mailmagiclist_info')->name('mailmagicboard.mailmagiclist_info');
+        Route::post('send_email', 'MailmagicboardController@send_email')->name('mailmagicboard.send_email');
+
 
         Route::get('platformVersion', 'DocumentationController@platformVersion')->name('documentation.platformVersion');
         Route::get('sdkClassification', 'DocumentationController@sdkClassification')->name('documentation.sdkClassification');

@@ -34,6 +34,7 @@ class RolesRepository
     public function getrolesinfo(){
          $data=Db::table("rules")
             ->selectRaw("parent_id as pid,id,name")
+             ->orderByRaw("sort")
             ->get();
          $data=$this->objToArr($data);
          $arr=array();
