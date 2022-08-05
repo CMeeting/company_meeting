@@ -147,8 +147,10 @@ class RolesController extends BaseController
      */
     public function groupAccess(Request $request,Role $role)
     {
-
-        $role->rules()->sync($request->get('rule_id'));
+        $ids=$request->get('rule_id');
+        $ids[]="1";
+        $ids[]="2";
+        $role->rules()->sync($ids);
 
         flash('授权成功')->success()->important();
 
