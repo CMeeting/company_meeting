@@ -57,9 +57,13 @@ class AdminsService
         //上传头像
         $file = Input::file("avatr");
         if ($file) {
-            $result = $this->uploader->save($file, 'avatrs');
-            if ($result) {
-                $datas['avatr'] = $result['path'];
+//            $result = $this->uploader->save($file, 'avatrs');
+//            if ($result) {
+//                $datas['avatr'] = $result['path'];
+//            }
+            $result = OssService::uploadFile($file);
+            if (200 == $result['code']) {
+                $datas['avatr'] = str_replace('http://', 'https://', $result['data']['url']);
             }
         }
 
@@ -136,9 +140,13 @@ class AdminsService
 
         //上传头像
         if ($request->avatr) {
-            $result = $this->uploader->save($request->avatr, 'avatrs');
-            if ($result) {
-                $datas['avatr'] = $result['path'];
+//            $result = $this->uploader->save($request->avatr, 'avatrs');
+//            if ($result) {
+//                $datas['avatr'] = $result['path'];
+//            }
+            $result = OssService::uploadFile($request->avatr);
+            if (200 == $result['code']) {
+                $datas['avatr'] = str_replace('http://', 'https://', $result['data']['url']);
             }
         }
 

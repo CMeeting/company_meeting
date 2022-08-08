@@ -41,7 +41,7 @@ class AdminsRepository
 
     public function exceptIdAndName($id,$name)
     {
-        return Admin::where('id','!=',$id)->where('name',$name)->first()->toArray();
+        return Admin::where('id','!=',$id)->where('name',$name)->first() ?? [];
     }
 
     /**
