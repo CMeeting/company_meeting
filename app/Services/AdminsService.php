@@ -206,6 +206,42 @@ class AdminsService
         return $admin;
     }
 
+    public function updatePassword($data,$admin){
+        $result = [];
+        switch ($data){
+            case empty($data):
+                $result['code'] = 500;
+                $result['msg'] = '参数错误，请重试';
+                break;
+            case empty($data['old_password']):
+                $result['code'] = 500;
+                $result['msg'] = '请填写：原始密码';
+                break;
+            case empty($data['new_password']):
+                $result['code'] = 500;
+                $result['msg'] = '请填写：新密码';
+                break;
+            case empty($data['check_password']):
+                $result['code'] = 500;
+                $result['msg'] = '请填写：确认新密码';
+                break;
+            case 1 != Hash::check($data['old_password'],$admin->password):
+                $result['code'] = 500;
+                $result['msg'] = '原始密码错误，请检查';
+                break;
+            case $data['check_password'] != $data['new_password']:
+                $result['code'] = 500;
+                $result['msg'] = '新密码与确认新密码不一致，请检查';
+                break;
+            default:
+                $admin->update(['password'=>Hash::make($data['new_password'])]);
+                $result['code'] = 200;
+                $result['msg'] = '修改密码成功，请重新登录';
+                break;
+        }
+        return $result;
+    }
+
     /**
      * 获取管理员的详细资料
      * @param $id

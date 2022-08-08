@@ -13,6 +13,11 @@ Route::group(['namespace' => 'Admin','prefix' => 'admin'], function (){
 
     Route::get('logout','AdminsController@logout')->name('admin.logout'); //退出登录
 
+    Route::get('editAvatar/{id}','AdminsController@editAvatar')->name('admin.editAvatar'); //修改头像页面
+    Route::post('updateAvatar/{id}','AdminsController@updateAvatar')->name('admin.updateAvatar'); //修改头像
+    Route::get('editPassword/{id}','AdminsController@editPassword')->name('admin.editPassword'); //修改密码页面
+    Route::post('updatePassword/{id}','AdminsController@updatePassword')->name('admin.updatePassword'); //修改密码
+
     /**需要登录认证模块**/
     Route::middleware(['auth:admin','rbac'])->group(function (){
 

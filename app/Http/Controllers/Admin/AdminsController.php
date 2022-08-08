@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Requests\Admin\AdminRequest;
+use App\Services\OssService;
 use Illuminate\Http\Request;
 use App\Services\AdminsService;
 use App\Services\ActionLogsService;
@@ -155,6 +156,54 @@ class AdminsController extends BaseController {
         }
         return $data;
     }
+
+    public function editAvatar($id){
+        $admin = $this->adminsService->ById($id);
+        return view('admin.admins.edit_avatar',compact('admin'));
+    }
+
+    public function updateAvatar(Request $request,$id){
+        $admin = $this->adminsService->ById($id);
+        if (empty($admin)) {
+            return viewError('操作失败', 'index.index');
+        }
+        if($request->avatr){
+            $result = OssService::uploadFile($request->avatr);
+            if (200 == $result['code']) {
+                $avatr = str_replace('http://', 'https://', $result['data']['url']);
+                $admin->update(['avatr' => $avatr]);
+                return viewError('头像修改成功!', 'index.index', 'success');
+            }else{
+                return viewError('图片上传OSS失败', 'index.index');
+            }
+        }else{
+            return viewError('修改失败，请检查图片是否正确上传', 'index.index');
+        }
+    }
+
+    public function editPassword($id){
+        $admin = ['id'=>$id];
+        return view('admin.admins.edit_password',compact('admin'));
+    }
+
+    public function updatePassword(Request $request,$id){
+        $admin = $this->adminsService->ById($id);
+        if (empty($admin)) {
+            return viewError('操作失败', 'index.index');
+        }
+        $data = $request->all();
+        $back = $this->adminsService->updatePassword($data,$admin);
+        if($back){
+            if (500 == $back['code']) {
+                return ['code'=>1000,'msg'=>$back['msg']];
+            }else{
+                return ['code'=>200,'msg'=>$back['msg']];
+            }
+        }else{
+            return viewError('操作失败', 'index.index');
+        }
+    }
+
     /**
      * @param $status
      * @param $id
