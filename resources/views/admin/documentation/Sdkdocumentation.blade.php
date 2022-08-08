@@ -119,7 +119,7 @@
                             <td class="text-center">
                                 <div class="btn-group">
                                     <font class="open_{{$value->id}}">
-                                        @if($value->enabled == 1)
+                                        @if($value->enabled == 0)
                                         <a type="button" style="text-decoration: none;color: #f6fff8"   data-id="{$v.id}"  class="openBtn_{{$value->id}} abutton cloros" data-style="zoom-out" onclick="show({{$value->id}});">
                                             <span class="ladda-label">show</span>
                                         </a>
@@ -200,7 +200,7 @@
             dataType: "json",
             success: function (resp) {
                 if (resp.code==0) {
-                    if(resp.status==1){
+                    if(resp.status==0){
                         var htmls='<a type="button" style="text-decoration: none;color: #f6fff8"   data-id="{$v.id}"  class="openBtn_'+id+' abutton cloros" data-style="zoom-out" onclick="show('+id+');"> <span class="ladda-label">show</span></a>';
                     }else{
                         var htmls='<a type="button" style="text-decoration: none;color: #f6fff8"  data-id="{$v.id}"  class="openBtn_'+id+' abutton cloros1" data-style="zoom-out" onclick="show('+id+');"> <span class="ladda-label">hide</span></a>';

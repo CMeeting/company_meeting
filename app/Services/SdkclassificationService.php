@@ -157,7 +157,7 @@ class SdkclassificationService
             if ($v['lv'] == 1) {
                 $str=$this->assemblyVersion(array($v['platformid'],$v['version']),$banben);
                 $html .= '<li class="dd-item dd3-item item_' . $v['id'] . '" data-id="' . $v['id'] . '" id="classSecond_' . $v['id'] . '"><div class="dd-handle dd3-handle"></div><div class="dd3-content">' . $v['title'] . '<span class=" numbid_' . $v['id'] . '">&nbsp;&nbsp;<font  style="font-size: 1em">排序</font>:[' . $v['displayorder'] . ']</span><span class="banben">'.$str.'</span><div class="item_edt_del"><font class="open_' . $v['id'] . '">';
-                if ($v['enabled'] == 1) {
+                if ($v['enabled'] == 0) {
                     $html .= '<a style="text-decoration: none" type="button"  data-id="' . $v['id'] . '"  class="openBtn_' . $v['id'] . ' abutton cloros" data-style="zoom-out" onclick="show(' . $v['id'] . ');"><span class="ladda-label">show</span></a>';
                 } else {
                     $html .= '<a style="text-decoration: none" type="button"  data-id="' . $v['id'] . '"  class="openBtn_' . $v['id'] . ' abutton cloros1" data-style="zoom-out" onclick="show(' . $v['id'] . ');"><span class="ladda-label">hide</span></a>';
@@ -178,7 +178,7 @@ class SdkclassificationService
         foreach ($data as $k => $v) {
             if ($v['pid'] == $pid && $v['pid'] != 0) {
                 $html .= '<li class="dd-item dd3-item" data-id="' . $v['id'] . '" parentid="' . $v['pid'] . '" id="classSecond_' . $v['id'] . '"><div class="dd-handle dd3-handle"></div><div class="dd-handle dd3-handle"></div><div class="dd3-content">' . $v['title'] . '<span class=" numbid_' . $v['id'] . '">&nbsp;&nbsp;排序:[' . $v['displayorder'] . ']</span><div class="item_edt_del"><font class="open_' . $v['id'] . '">';
-                if ($v['enabled'] == 1) {
+                if ($v['enabled'] == 0) {
                     $html .= '<a style="text-decoration: none" type="button"  data-id="' . $v['id'] . '"  class="openBtn_' . $v['id'] . ' abutton cloros" data-style="zoom-out" onclick="show(' . $v['id'] . ');"><span class="ladda-label">show</span></a>';
                 } else {
                     $html .= '<a style="text-decoration: none" type="button"  data-id="' . $v['id'] . '"  class="openBtn_' . $v['id'] . ' abutton cloros1" data-style="zoom-out" onclick="show(' . $v['id'] . ');"><span class="ladda-label">hide</span></a>';

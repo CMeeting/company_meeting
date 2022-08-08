@@ -93,7 +93,7 @@
 
                                                                 <div class="item_edt_del">
                                                                     <font class="open_{$v.id}">
-                                                                        @if($v['enabled'] == 1)
+                                                                        @if($v['enabled'] == 0)
                                                                         <a  data-id="{$v.id}" style="text-decoration: none"  class="openBtn_{$v.id} abutton cloros" data-style="zoom-out" onclick="show({{$v['id']}});">
                                                                             <span class="ladda-label">show</span>
                                                                         </a>
@@ -126,7 +126,7 @@
 
                                                                         <div class="item_edt_del">
                                                                             <font class="open_{{$vv['id']}}">
-                                                                                @if($vv['enabled'] == 1)
+                                                                                @if($vv['enabled'] == 0)
                                                                                 <a  data-id="{{$vv['id']}}"  class="openBtn_{{$vv['id']}} abutton cloros" data-style="zoom-out" onclick="show({{$vv['id']}});">
                                                                                     <span class="ladda-label">show</span>
                                                                                 </a>

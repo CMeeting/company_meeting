@@ -57,7 +57,7 @@
                                 <div class="form-group">
                                     <label class="col-sm-2 control-label no-padding-right" for="form-field-1"> name(平台或产品名称)：</label>
                                     <div class="col-sm-6 col-xs-12">
-                                        <input id="name"  class="form-control" name="data[name]" required maxlength="25">
+                                        <input id="name"  class="form-control" name="data[name]" required maxlength="25" onkeyup="this.value=this.value.replace(/[^\w\u4E00-\u9FA5\s]/g,'');">
                                         <span class="lbl"></span>
                                     </div>
                                 </div>
@@ -68,14 +68,14 @@
                                     <div class="form-group h1title">
                                         <label class="col-sm-2 control-label no-padding-right" for="form-field-1"> SEO title：</label>
                                         <div class="col-sm-6 col-xs-12">
-                                            <input id="seotitel"  class="form-control  seotitel" name="data[seotitel]" required placeholder="SEO title只会绑定在平台数据">
+                                            <input id="seotitel"  class="form-control  seotitel" name="data[seotitel]" required placeholder="SEO title只会绑定在平台数据" onkeyup="this.value=this.value.replace(/[^\w\u4E00-\u9FA5\s]/g,'');">
                                             <span class="lbl"></span>
                                         </div>
                                     </div>
                                     <div class="form-group h1title">
                                         <label class="col-sm-2 control-label no-padding-right" for="form-field-1"> H1 title：</label>
                                         <div class="col-sm-6 col-xs-12">
-                                            <input id="h1title"  class="form-control " name="data[h1title]" required placeholder="H1 title只会绑定在平台数据">
+                                            <input id="h1title"  class="form-control " name="data[h1title]" required placeholder="H1 title只会绑定在平台数据" onkeyup="this.value=this.value.replace(/[^\w\u4E00-\u9FA5\s]/g,'');">
                                             <span class="lbl"></span>
                                         </div>
                                     </div>
