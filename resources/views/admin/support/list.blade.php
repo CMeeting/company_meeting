@@ -6,13 +6,13 @@
 <div class="row">
     <div class="col-sm-12">
         <div class="ibox-title">
-            <h5>Changelogs</h5>
-            <a style="float: right" href="{{route('changelogs.create')}}" link-url="javascript:void(0)"><button class="btn btn-primary btn-sm" type="button"><i class="fa fa-plus-circle"></i> 添加 Changelogs</button></a>
+            <h5>Support</h5>
+            <a style="float: right" href="{{route('support.create')}}" link-url="javascript:void(0)"><button class="btn btn-primary btn-sm" type="button"><i class="fa fa-plus-circle"></i> 添加 Support</button></a>
         </div>
         <div class="ibox-content">
 
             <div class="col-xs-10 col-sm-11 margintop5" style="margin-bottom: 5px">
-                <form name="admin_list_sea" class="form-search" method="get" action="{{route('changelogs.list')}}">
+                <form name="admin_list_sea" class="form-search" method="get" action="{{route('support.list')}}">
                     <div class="input-group">
                         <div class="input-group-btn">
                             <select name="query_type" class="form-control" style="display: inline-block;width: 100px;">
@@ -22,14 +22,14 @@
                             </select>
                         </div>
                         <input type="text" name="info" class="form-control" style="display: inline-block;width: 150px;" value="@if(isset($query)){{$query['info']}}@endif" />
-                        <div class="input-group-btn" style="display: inline-block;width: 150px;margin-left:20px;">
-                            <select class="form-control"  name="platform">
-                                <option value="-1">筛选 Platform</option>
-                                @foreach($platform as $k=>$v)
-                                    <option value="{{$k}}" @if(isset($query)&&$query['platform']==$k) selected @endif>{{$v}}</option>
-                                @endforeach
-                            </select>
-                        </div>
+{{--                        <div class="input-group-btn" style="display: inline-block;width: 150px;margin-left:20px;">--}}
+{{--                            <select class="form-control"  name="platform">--}}
+{{--                                <option value="-1">筛选 Platform</option>--}}
+{{--                                @foreach($platform as $k=>$v)--}}
+{{--                                    <option value="{{$k}}" @if(isset($query)&&$query['platform']==$k) selected @endif>{{$v}}</option>--}}
+{{--                                @endforeach--}}
+{{--                            </select>--}}
+{{--                        </div>--}}
                         <div class="input-group-btn" style="display: inline-block;width: 150px;margin-left:20px;">
                             <input type="text"  name="start_date" class="form-control" style="display: inline-block;width: 160px;" id="startDate" placeholder="创建时间--开始" value="@if(isset($query)){{$query['start_date']}}@endif" />
                         </div>
@@ -49,41 +49,47 @@
             <table class="table table-striped table-bordered table-hover m-t-md" style="word-wrap:break-word; word-break:break-all;">
                 <thead>
                 <tr>
-                    <th class="text-center" style="width: 4%">ID</th>
-                    <th class="text-center" style="width: 5%">version_no</th>
-                    <th class="text-center" style="width: 10%">slug</th>
-                    <th class="text-center" style="width: 10%">seo title</th>
+                    <th class="text-center" style="width: 2%">ID</th>
+                    <th class="text-center" style="width: 9%">Order_no</th>
+                    <th class="text-center" style="width: 4%">version</th>
                     <th class="text-center" style="width: 5%">platform</th>
                     <th class="text-center" style="width: 10%">product</th>
-                    <th class="text-center" style="width: 6%">development_language</th>
-                    <th class="text-center" style="width: 10%">description</th>
-                    <th class="text-center" style="width: 3%">order_num</th>
-                    <th class="text-center" style="width: 6%">change_date</th>
-                    <th class="text-center" style="width: 8%">created_at</th>
-                    <th class="text-center" style="width: 8%">updated_at</th>
-                    <th class="text-center" style="width: 10%">操作</th>
+                    <th class="text-center" style="width: 11%">development_language</th>
+                    <th class="text-center" style="width: 4%">type</th>
+{{--                    <th class="text-center" style="width: 4%">source</th>--}}
+{{--                    <th class="text-center" style="width: 10%">用户邮箱</th>--}}
+                    <th class="text-center" style="width: 4%">创建人</th>
+                    <th class="text-center" style="width: 4%">处理人</th>
+                    <th class="text-center" style="width: 6%">status</th>
+                    <th class="text-center" style="width: 9%">created_at</th>
+                    <th class="text-center" style="width: 9%">updated_at</th>
+                    <th class="text-center" style="width: 15%">操作</th>
                 </tr>
                 </thead>
                 <tbody>
                 @foreach($data as $key => $item)
                     <tr>
                         <td  class="text-center" >{{$item['id']}}</td>
-                        <td>{{$item['version_no']}}</td>
-                        <td class="text-center">{{$item['slug']}}</td>
-                        <td>{{$item['seo_title']}}</td>
-                        <td>{{$platform[$item['platform']]}}</td>
-                        <td>{{$product[$item['product']]}}</td>
-                        <td>{{$development_language[$item['development_language']]}}</td>
-                        <td>{{$item['seo_description']}}</td>
-                        <td>{{$item['order_num']}}</td>
-                        <td>{{$item['change_date']}}</td>
+                        <td  class="text-center" >{{$item['order_no']}}</td>
+                        <td>{{$item['version']}}</td>
+                        <td>{{$platform[$item['platform']]['title']}}</td>
+                        <td class="text-center">{{$product[$item['product']]['title']}}</td>
+                        <td>{{$development_language[$item['development_language']]['title']}}</td>
+                        <td>{{$type[$item['type']]}}</td>
+{{--                        <td>{{$item['source']}}</td>--}}
+{{--                        <td>{{$item['e_mail']}}</td>--}}
+                        <td>{{$admins[$item['create_user']]}}</td>
+                        <td>{{$admins[$item['handler']]??''}}</td>
+                        <td style="color: red;">{{$status[$item['status']]}}</td>
                         <td>{{$item['created_at']}}</td>
                         <td>{{$item['updated_at']}}</td>
 
                         <td class="text-center">
                             <div class="btn-group">
-                                <a href="{{route('changelogs.edit',$item['id'])}}"><button class="btn btn-primary btn-xs" type="button"><i class="fa fa-paste"></i> 修改</button></a>
-{{--                                <a href="{{route('blogs.softDel',['type',$item->id])}}"><button class="btn btn-danger btn-xs" type="button"><i class="fa fa-trash-o"></i> 删除</button></a>--}}
+                                @if(1 == $item['status'])
+                                <a href="{{route('support.edit',$item['id'])}}"><button class="btn btn-primary btn-xs" type="button"><i class="fa fa-paste"></i> 修改</button></a>
+                                @endif
+                                    <a onclick="change_status('{{$item['id']}}')"><button class="btn btn-primary btn-xs" type="button"><i class="fa fa-chain"></i> 更改状态</button></a>
                                 <a onclick="del('{{$item['id']}}')"><button class="btn btn-danger del btn-xs" type="button"><i class="fa fa-trash-o"></i> 删除</button></a>
                             </div>
                         </td>
@@ -96,6 +102,50 @@
     </div>
     <div class="clearfix"></div>
 </div>
+<div id="change_status_html" class="row" style="display: none;">
+    <div class="col-sm-12">
+        <div class="ibox-title">
+            <h5>更改状态</h5>
+        </div>
+        <div class="ibox-content">
+            <form class="form-horizontal m-t-md" id="form_data" accept-charset="UTF-8" enctype="multipart/form-data" method="post" action="{{route('support.changeStatus')}}">
+                {!! csrf_field() !!}
+                <input id="change_status_id" type="hidden" class="form-control" name="data[id]" value="">
+                <div class="form-group">
+                    <label class="col-sm-3 control-label">状态：</label>
+                    <div class="input-group col-sm-8">
+                        <select class="form-control" name="data[status]">
+                            @foreach ($status as $k=>$v)
+                                @if(4 != $k)
+                                <option value="{{$k}}">{{$v}}</option>
+                                @endif
+                            @endforeach
+                        </select>
+                    </div>
+                </div>
+                <div class="hr-line-dashed m-t-sm m-b-sm"></div>
+                <div class="form-group">
+                    <label class="col-sm-3 control-label">邮件模板：</label>
+                    <div class="input-group col-sm-8">
+                        <select class="form-control" name="data[demo]">
+                            <option value="">请选择需要发送的邮件模板</option>
+{{--                            @foreach ($product as $k=>$v)--}}
+{{--                                <option value="{{$k}}" @if($k==$row->product) selected @endif>{{$v['title']}}</option>--}}
+{{--                            @endforeach--}}
+                        </select>
+                    </div>
+                </div>
+                <div class="hr-line-dashed m-t-sm m-b-sm"></div>
+                <div class="form-group">
+                    <div class="col-sm-10 col-sm-offset-2">
+                        <button class="btn btn-primary" type="submit"><i class="fa fa-check"></i>&nbsp;保 存</button>　<button class="btn btn-white reset" type="reset"><i class="fa fa-repeat"></i> 重 置</button>
+                    </div>
+                </div>
+                <div class="clearfix"></div>
+            </form>
+        </div>
+    </div>
+</div>
 <script>
     function del(id){
         layer.confirm('您确定要删除吗？', {
@@ -104,7 +154,7 @@
             // layer.close(index);
             var index = layer.load();
             $.ajax({
-                url: "{{route('changelogs.softDel')}}",
+                url: "{{route('support.softDel')}}",
                 data: {id: id},
                 type: 'get',
                 // dataType: "json",
@@ -181,5 +231,19 @@
             }
         });
     });
+
+    function change_status(id){
+        $("#change_status_id").val(id);
+        layer.open({
+            type: 1,
+            title: false,
+            closeBtn: 1, //不显示关闭按钮
+            shade: [0],
+            area: ['35%', '50%'],
+            anim: 2,
+            content: $("#change_status_html").html()
+        });
+    }
+
 </script>
 @endsection

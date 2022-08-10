@@ -2,22 +2,21 @@
 /**
  * @Created by PhpStorm 2021
  * @Author: Rengar
- * @Date: 2022/8/3
- * @Time: 15:34
+ * @Date: 2022/8/10
+ * @Time: 15:49
  * @By The Way: Everyone here is talented and speaks well. I love being here!!!
  */
 
 namespace App\Http\Controllers\Admin;
+use App\Services\SupportService;
 
-use App\Services\ChangeLogsService;
-
-class ChangeLogsController extends BaseController
+class SupportController extends BaseController
 {
-    protected $changeLogsService;
+    protected $supportService;
 
-    public function __construct(ChangeLogsService $changeLogsService)
+    public function __construct(SupportService $supportService)
     {
-        $this->changeLogsService = $changeLogsService;
+        $this->supportService = $supportService;
     }
 
     public function list(){
@@ -27,53 +26,57 @@ class ChangeLogsController extends BaseController
         $query["platform"] = isset($param['platform']) ? $param['platform'] : "-1";
         $query["start_date"] = isset($param['start_date']) ? $param['start_date'] : "";
         $query["end_date"] = isset($param['end_date']) ? $param['end_date'] : "";
-        $platform = $this->changeLogsService->getPlatformKv();
-        $product = $this->changeLogsService->getProductKv();
-        $development_language = $this->changeLogsService->getDevelopmentLanguageKv();
-        $data = $this->changeLogsService->getList($param);
-        return $this->view('list',compact('data','platform','product','development_language','query'));
+        $data = $this->supportService->getList($param);
+        $platform = $this->supportService->getPlatformKv();
+        $product = $this->supportService->getProductKv();
+        $type = $this->supportService->getTypeKv();
+        $status = $this->supportService->getStatusKv();
+        $development_language = $this->supportService->getDevelopmentLanguageKv();
+        $admins = $this->supportService->getAdminsKv();
+        return $this->view('list',compact('data','query','platform','product','type','status','admins','development_language'));
     }
 
     public function create(){
-        $platform = $this->changeLogsService->getPlatformKv();
-        $product = $this->changeLogsService->getProductKv();
-        $development_language = $this->changeLogsService->getDevelopmentLanguageKv();
-        return $this->view('create',compact('platform','product','development_language'));
+        $platform = $this->supportService->getPlatformKv();
+        $product = $this->supportService->getProductKv();
+        $type = $this->supportService->getTypeKv();
+        $development_language = $this->supportService->getDevelopmentLanguageKv();
+        $admins = $this->supportService->getAdminsKv();
+        return $this->view('create',compact('platform','type','admins','development_language','product'));
     }
 
     public function store(){
         $param = request()->all()['data'];
-        $unset = [];
+        $unset = ['handler'];
         $check = $this->check_param_key_null($param,$unset);
         if(500==$check['code']){
             $result['code'] = 1000;
             $result['msg'] = $check['msg'];
             return $result;
         }
-        $back = $this->changeLogsService->store($param);
-        if ("same_version_no" == $back){
+        $back = $this->supportService->store($param);
+        if ("same_version" == $back){
             $result['code'] = 1000;
             $result['msg'] = '添加失败，存在相同数据，请重试';
-        }else if ("same_slug" == $back){
-            $result['code'] = 1000;
-            $result['msg'] = 'slug已存在';
         }else if(!empty($back)){
-            flash('添加Changelogs成功')->success()->important();
+            flash('添加support成功')->success()->important();
             $result['code'] = 200;
         }else{
-            flash('添加Changelogs失败')->error()->important();
+            flash('添加support失败')->error()->important();
             $result['code'] = 1000;
-            $result['msg'] = '添加Changelogs失败';
+            $result['msg'] = '添加support失败';
         }
         return $result;
     }
 
     public function edit($id){
-        $row = $this->changeLogsService->getRow($id);
-        $platform = $this->changeLogsService->getPlatformKv();
-        $product = $this->changeLogsService->getProductKv();
-        $development_language = $this->changeLogsService->getDevelopmentLanguageKv();
-        return $this->view('edit',compact('row','platform','product','development_language'));
+        $row = $this->supportService->getRow($id);
+        $platform = $this->supportService->getPlatformKv();
+        $product = $this->supportService->getProductKv();
+        $type = $this->supportService->getTypeKv();
+        $development_language = $this->supportService->getDevelopmentLanguageKv();
+        $admins = $this->supportService->getAdminsKv();
+        return $this->view('edit',compact('row','platform','type','admins','development_language','product'));
     }
 
     public function update($id){
@@ -85,7 +88,7 @@ class ChangeLogsController extends BaseController
             $result['msg'] = $check['msg'];
             return $result;
         }
-        $back = $this->changeLogsService->update($param,$id);
+        $back = $this->supportService->update($param,$id);
         if ("same_version_no" == $back){
             $result['code'] = 1000;
             $result['msg'] = '修改失败，存在相同数据，请重试';
@@ -93,21 +96,26 @@ class ChangeLogsController extends BaseController
             $result['code'] = 1000;
             $result['msg'] = 'slug已存在';
         }else if(!empty($back)){
-            flash('修改Changelogs成功')->success()->important();
+            flash('修改support成功')->success()->important();
             $result['code'] = 200;
         }else{
-            flash('修改Changelogs失败')->error()->important();
+            flash('修改support失败')->error()->important();
             $result['code'] = 1000;
-            $result['msg'] = '修改Changelogs失败';
+            $result['msg'] = '修改support失败';
         }
         return $result;
+    }
+
+    public function changeStatus(){
+        $param = request()->all()['data'];
+        dd($param);
     }
 
     public function softDel(){
         $param = request()->input();
         $id = $param['id'];
         if(!empty($id)){
-            $row = $this->changeLogsService->softDel($id);
+            $row = $this->supportService->softDel($id);
             if(1==$row){
                 $data['code'] = 0;
                 flash('删除成功')->success()->important();
@@ -151,4 +159,5 @@ class ChangeLogsController extends BaseController
         }
         return $data;
     }
+
 }

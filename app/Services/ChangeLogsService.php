@@ -6,6 +6,7 @@
  * @Time: 15:36
  * @By The Way: Everyone here is talented and speaks well. I love being here!!!
  */
+
 declare (strict_types=1);
 
 namespace App\Services;
@@ -56,7 +57,7 @@ class ChangeLogsService
     {
         $arr = $param;
         if($arr['version_no']){
-            $list = $this->changeLogs->_find('is_delete = 0 AND version_no = '."'".$arr['version_no']."' AND platform = '".$arr['platform']."'");
+            $list = $this->changeLogs->_find('is_delete = 0 AND version_no = '."'".$arr['version_no']."' AND platform = '".$arr['platform']."'"." AND product = '".$arr['product']."'"." AND development_language = '".$arr['development_language']."'");
             if ($list){
                 return "same_version_no";
             }
@@ -74,7 +75,7 @@ class ChangeLogsService
     public function update($param,$id){
         $arr = $param;
         if($arr['version_no']){
-            $list = $this->changeLogs->_find('is_delete = 0 AND version_no = '."'".$arr['version_no']."' AND platform = '".$arr['platform']."' ".'AND id <> '.$id);
+            $list = $this->changeLogs->_find('is_delete = 0 AND version_no = '."'".$arr['version_no']."' AND platform = '".$arr['platform']."'"." AND product = '".$arr['product']."'"." AND development_language = '".$arr['development_language']."' ".'AND id <> '.$id);
             if ($list){
                 return "same_version_no";
             }
@@ -99,6 +100,18 @@ class ChangeLogsService
     public function getPlatformKv()
     {
         $platform = $this->changeLogs->platform;
+        return $platform ?? [];
+    }
+
+    public function getProductKv()
+    {
+        $platform = $this->changeLogs->product;
+        return $platform ?? [];
+    }
+
+    public function getDevelopmentLanguageKv()
+    {
+        $platform = $this->changeLogs->development_language;
         return $platform ?? [];
     }
 

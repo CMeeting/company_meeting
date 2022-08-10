@@ -27,9 +27,38 @@
                         <div class="input-group col-sm-2">
                             <select class="form-control" name="data[platform]">
                                 @foreach ($platform as $k=>$v)
-                                    <option value="{{$v}}" @if($v==$row->platform) selected @endif>{{$k}}</option>
+                                    <option value="{{$k}}" @if($k==$row->platform) selected @endif>{{$v}}</option>
                                 @endforeach
                             </select>
+                        </div>
+                    </div>
+                    <div class="hr-line-dashed m-t-sm m-b-sm"></div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">Products：</label>
+                        <div class="input-group col-sm-2">
+                            <select class="form-control" name="data[product]">
+                                @foreach ($product as $k=>$v)
+                                    <option value="{{$k}}" @if($k==$row->product) selected @endif>{{$v}}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
+                    <div class="hr-line-dashed m-t-sm m-b-sm"></div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">Development Language：</label>
+                        <div class="input-group col-sm-2">
+                            <select class="form-control" name="data[development_language]">
+                                @foreach ($development_language as $k=>$v)
+                                    <option value="{{$k}}" @if($k==$row->development_language) selected @endif>{{$v}}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
+                    <div class="hr-line-dashed m-t-sm m-b-sm"></div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">Release：</label>
+                        <div class="input-group col-sm-2">
+                            <a id="release"><i class="fa fa-plus-circle"></i></a>
                         </div>
                     </div>
                     <div class="hr-line-dashed m-t-sm m-b-sm"></div>
@@ -167,6 +196,19 @@
                         }
                     }
                 }
+            });
+        })
+
+        $("#release").click(function () {
+            layer.open({
+                type: 1,
+                title: false,
+                closeBtn: 1, //不显示关闭按钮
+                shade: [0],
+                area: ['90%', '70%'],
+                anim: 2,
+                // content: "<pre>"+data+"</pre>"
+                content: "<p style='font-size: 30px;font-style: normal;position: absolute;left: 40%;top: 40%;'>暂无相关数据！</p>"
             });
         })
     </script>

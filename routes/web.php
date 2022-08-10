@@ -118,6 +118,14 @@ Route::group(['namespace' => 'Admin','prefix' => 'admin'], function (){
         Route::post('changelogs/update/{id}', 'ChangeLogsController@update')->name('changelogs.update');
         Route::get('changelogs/softDel/{id?}', 'ChangeLogsController@softDel')->name('changelogs.softDel');
 
+        Route::get('support/list', 'SupportController@list')->name('support.list'); //support首页
+        Route::get('support/create', 'SupportController@create')->name('support.create');
+        Route::post('support/store', 'SupportController@store')->name('support.store');
+        Route::get('support/edit/{id}', 'SupportController@edit')->name('support.edit');
+        Route::post('support/update/{id}', 'SupportController@update')->name('support.update');
+        Route::post('support/changeStatus', 'SupportController@changeStatus')->name('support.changeStatus');
+        Route::get('support/softDel/{id?}', 'SupportController@softDel')->name('support.softDel');
+
         
     });
     

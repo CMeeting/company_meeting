@@ -52,4 +52,5 @@ class Admin extends Authenticatable
 
         return in_array($route, $rules);
     }
+
 }
