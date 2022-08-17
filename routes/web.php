@@ -23,7 +23,27 @@ Route::group(['namespace' => 'Admin','prefix' => 'admin'], function (){
 
         Route::resource('index', 'IndexsController', ['only' => ['index']]);  //首页
 
-       // Route::resource('documentation','DocumentationController',['only'=>['index','create','store','update','edit','destroy','platformVersion'] ]);
+        //电子报
+        Route::get('subscription_list', 'NewsletterController@subscription_list')->name('newsletter.subscription_list');
+        Route::get('createsubscription', 'NewsletterController@createsubscription')->name('newsletter.createsubscription');
+        Route::post('createrunsubscription', 'NewsletterController@createrunsubscription')->name('newsletter.createrunsubscription');
+        Route::post('toggle_status', 'NewsletterController@toggle_status')->name('newsletter.toggle_status');
+        Route::get('updatesubscription/{id}', 'NewsletterController@updatesubscription')->name('newsletter.updatesubscription');
+        Route::post('updaterunsubscription', 'NewsletterController@updaterunsubscription')->name('newsletter.updaterunsubscription');
+
+        Route::get('newsletter_list', 'NewsletterController@newsletter_list')->name('newsletter.newsletter_list');
+        Route::get('createnewsletter', 'NewsletterController@createnewsletter')->name('newsletter.createnewsletter');
+        Route::post('createrunnewsletter', 'NewsletterController@createrunnewsletter')->name('newsletter.createrunnewsletter');
+        Route::get('updatenewsletter/{id}', 'NewsletterController@updatenewsletter')->name('newsletter.updatenewsletter');
+        Route::post('updaterunnewsletter', 'NewsletterController@updaterunnewsletter')->name('newsletter.updaterunnewsletter');
+        Route::get('newsletter_info/{id}', 'NewsletterController@newsletter_info')->name('newsletter.newsletter_info');
+        Route::post('delnewsletter', 'NewsletterController@delnewsletter')->name('newsletter.delnewsletter');
+        Route::post('newsletterlog', 'NewsletterController@newsletterlog')->name('newsletter.newsletterlog');
+        Route::get('ajaxsend/{id}', 'NewsletterController@ajaxsend')->name('newsletter.ajaxsend');
+        Route::get('newsletterloglist', 'NewsletterController@newsletterloglist')->name('newsletter.newsletterloglist');
+        Route::get('newsletterloginfo/{id}', 'NewsletterController@newsletterloginfo')->name('newsletter.newsletterloginfo');
+        Route::post('again_sendfind', 'NewsletterController@again_sendfind')->name('newsletter.again_sendfind');
+
         //邮件模板
         Route::get('mailmagic_list', 'MailmagicboardController@mailmagic_list')->name('mailmagicboard.mailmagic_list');
         Route::get('createmailmagiclist', 'MailmagicboardController@createmailmagiclist')->name('mailmagicboard.createmailmagiclist');
@@ -118,6 +138,7 @@ Route::group(['namespace' => 'Admin','prefix' => 'admin'], function (){
         Route::post('changelogs/update/{id}', 'ChangeLogsController@update')->name('changelogs.update');
         Route::get('changelogs/softDel/{id?}', 'ChangeLogsController@softDel')->name('changelogs.softDel');
 
+
         Route::get('support/list', 'SupportController@list')->name('support.list'); //support首页
         Route::get('support/create', 'SupportController@create')->name('support.create');
         Route::post('support/store', 'SupportController@store')->name('support.store');
@@ -127,6 +148,7 @@ Route::group(['namespace' => 'Admin','prefix' => 'admin'], function (){
         Route::get('support/softDel/{id?}', 'SupportController@softDel')->name('support.softDel');
 
         
+
     });
     
     Route::group( ['namespace' => "Count", 'middleware' => ['auth:admin','rbac']],function (){

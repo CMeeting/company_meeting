@@ -1608,6 +1608,11 @@ abstract class Model implements ArrayAccess, Arrayable, Jsonable, JsonSerializab
             ->where($where)
             ->delete();
     }
+    public function _insert($data)
+    {
+        return Db::table($this->table)
+            ->insert($data);
+    }
 
     public function objToArr($object) {
 

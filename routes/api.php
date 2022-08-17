@@ -23,4 +23,5 @@ Route::namespace('Api')
         Route::get('/blogs/bloglist','BlogsController@blogList');
         Route::get('/blogs/blogdetail','BlogsController@blogDetail');
         Route::get('/blogs/getBlogForTags','BlogsController@getBlogForTags');
+        Route::get('/subscription','SubscriptionController@subscription_status');
     });
