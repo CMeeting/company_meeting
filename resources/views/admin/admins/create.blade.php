@@ -88,7 +88,7 @@
                                         <span ></span>
                                         <span class="box"></span> {{$vo['name']}}</label>
                                 </div>
-                                @if(count($vo['sub'])>1)
+                                @if(count($vo['sub'])>=1)
                                 <!-- /.循环二级权限数据 -->
                                 @foreach($vo['sub'] as $ks=>$sub)
                                     <div class="md-checkbox" style="padding-left:30px; color:#333333">
@@ -98,7 +98,7 @@
                                             <span ></span>
                                             <span class="box"></span> {{$sub['name']}}</label>
                                     </div>
-                                    @if(count($sub['sub'])>1)
+                                    @if(count($sub['sub'])>=1)
                                 <!-- /.循环三级权限数据 -->
                                     <div style="display: flex; flex-wrap: wrap; padding-left:60px;">
                                     @foreach($sub['sub'] as $kss=>$subb)
