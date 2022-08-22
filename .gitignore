@@ -1,8 +1,8 @@
 /node_modules
 /public/hot
 /public/storage
-storage/*
-vendor/*
+/storage/*
+/vendor/*
 /.idea
 /.vagrant
 Homestead.json
@@ -11,3 +11,4 @@ npm-debug.log
 yarn-error.log
 .env
 /nbproject/private/
+/public/uploads
