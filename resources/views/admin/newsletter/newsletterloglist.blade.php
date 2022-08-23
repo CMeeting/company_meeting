@@ -4,6 +4,7 @@
         .abutton{
             display: inline-block;
             border-radius: 10px;
+            text-align: center;
             border: 1px solid lavenderblush;
             margin-right: 3px;
             width: 100px;
@@ -60,17 +61,17 @@
                                 <td style="word-break: break-word;">{{$value->mail}}</td>
                                 <td class="text-center" id="dy_{{$value->id}}">
                                     @if($value->status==1)
-                                        <button class="edit_3 abutton cloros2" style="text-decoration: none;color: #f6fff8;background: green" >
+                                        <a class="abutton cloros2" style="text-decoration: none;color: #f6fff8;background: green" >
                                             发送成功
-                                        </button>
+                                        </a>
                                     @elseif($value->status==2)
-                                        <button class="edit_3 abutton cloros2" style="text-decoration: none;color: #f6fff8;background: red" >
+                                        <a class="abutton cloros2" style="text-decoration: none;color: #f6fff8;background: red" >
                                             发送失败
-                                        </button>
+                                        </a>
                                     @else
-                                        <button class="edit_3 abutton cloros2" style="text-decoration: none;color: #f6fff8;background: blue" >
+                                        <a class="abutton cloros2" style="text-decoration: none;color: #f6fff8;background: blue" >
                                             待发送
-                                        </button>
+                                        </a>
                                     @endif
                                 </td>
                                 <td class="text-center">{{$value->created_at}}</td>
@@ -121,7 +122,7 @@
                             icon: 1,
                             time: 1000
                         });
-                     $("#dy_"+id).html('<button class="edit_3 abutton cloros2" style="text-decoration: none;color: #f6fff8;background: green" >发送成功 </button>');
+                     $("#dy_"+id).html('<a class="abutton cloros2" style="text-decoration: none;color: #f6fff8;background: green" >发送成功 </a>');
 
                     } else {
                         //失败提示
