@@ -11,7 +11,9 @@ declare (strict_types=1);
 
 namespace App\Services;
 
+use App\Models\base\PlatformVersion;
 use App\Models\ChangeLogs;
+use Illuminate\Support\Facades\DB;
 
 class ChangeLogsService
 {
@@ -105,14 +107,24 @@ class ChangeLogsService
 
     public function getPlatformKv()
     {
-        $platform = $this->changeLogs->platform;
-        return $platform ?? [];
+        $platform = DB::table("platform_version")
+            ->where("lv", 1)
+            ->where("deleted", 0)
+            ->select("id", "name")
+            ->get();
+        return $platform ? two_to_one(obj_to_arr($platform), 'id', 'name') : [];
     }
 
     public function getProductKv()
     {
-        $platform = $this->changeLogs->product;
-        return $platform ?? [];
+        $platform = DB::table("platform_version")
+            ->where("lv", 2)
+            ->where("deleted", 0)
+            ->select("id", "name")
+            ->get();
+        return $platform ? two_to_one(obj_to_arr($platform), 'id', 'name') : [];
+//        $platform = $this->changeLogs->product;
+//        return $platform ?? [];
     }
 
     public function getDevelopmentLanguageKv()

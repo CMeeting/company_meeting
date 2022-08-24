@@ -1,6 +1,28 @@
 <?php
 
 /**
+ * 二维数组转一维数组（键值对）
+ * @return mixed
+ */
+if (!function_exists('obj_to_arr')) {
+    function two_to_one($array, $key, $value)
+    {
+        return array_combine(array_column($array,$key),array_column($array,$value));
+    }
+}
+
+/**
+ * 字符串转数组
+ * @return mixed
+ */
+if (!function_exists('obj_to_arr')) {
+    function obj_to_arr($string)
+    {
+        return json_decode(json_encode($string), TRUE);
+    }
+}
+
+/**
  * @return mixed
  */
 if (!function_exists('route_class')) {
