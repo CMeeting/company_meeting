@@ -28,13 +28,14 @@
                             <span class="lbl"></span>
                         </div>
                     </div>
-                    <div class="form-group">
-                        <label class="col-sm-2 control-label no-padding-right" for="form-field-1"> status(是否订阅)：</label>
-                        <div class="col-sm-6 col-xs-12">
-                            <input type="radio" name="data[status]" value="1" checked >订阅状态
-                            <input type="radio" name="data[status]" value="0">取消订阅
-                        </div>
-                    </div>
+                    <input type="hidden" name="data[status]" value="1">
+{{--                    <div class="form-group">--}}
+{{--                        <label class="col-sm-2 control-label no-padding-right" for="form-field-1"> status(是否订阅)：</label>--}}
+{{--                        <div class="col-sm-6 col-xs-12">--}}
+{{--                            <input type="radio" name="data[status]" value="1" checked >订阅状态--}}
+{{--                            <input type="radio" name="data[status]" value="0">取消订阅--}}
+{{--                        </div>--}}
+{{--                    </div>--}}
 
 
                             <div class="clearfix form-actions">
