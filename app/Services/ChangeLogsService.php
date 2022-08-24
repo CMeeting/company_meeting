@@ -24,24 +24,30 @@ class ChangeLogsService
 
     public function getList($param)
     {
-        $where="1=1";
-        if(isset($param['info'])&&$param['info']){
+        $where = "1=1";
+        if (isset($param['info']) && $param['info']) {
 
-            $where.=" AND ".$param['query_type']." like '%".$param['info']."%'";
+            $where .= " AND " . $param['query_type'] . " like '%" . $param['info'] . "%'";
         }
-        if(isset($param['platform'])&&'-1'!=$param['platform']){
-            $where.=" AND platform = '".$param['platform']."'";
+        if (isset($param['platform']) && '-1' != $param['platform']) {
+            $where .= " AND platform = '" . $param['platform'] . "'";
         }
-        if(isset($param['start_date'])&&$param['start_date'] && isset($param['end_date'])&&$param['end_date']){
-            $where.=" AND created_at BETWEEN '".$param['start_date']."' AND '".$param['end_date']."'";
-        }elseif (isset($param['start_date'])&&$param['start_date'] && empty($param['end_date'])){
-            $where.=" AND created_at >= '".$param['start_date']."'";
-        }elseif (isset($param['end_date'])&&$param['end_date'] && empty($param['start_date'])){
-            $where.=" AND created_at <= '".$param['end_date']."'";
+        if (isset($param['product']) && '-1' != $param['product']) {
+            $where .= " AND product = '" . $param['product'] . "'";
         }
-        if ($where){
+        if (isset($param['development_language']) && '-1' != $param['development_language']) {
+            $where .= " AND development_language = '" . $param['development_language'] . "'";
+        }
+        if (isset($param['start_date']) && $param['start_date'] && isset($param['end_date']) && $param['end_date']) {
+            $where .= " AND updated_at BETWEEN '" . $param['start_date'] . "' AND '" . $param['end_date'] . "'";
+        } elseif (isset($param['start_date']) && $param['start_date'] && empty($param['end_date'])) {
+            $where .= " AND updated_at >= '" . $param['start_date'] . "'";
+        } elseif (isset($param['end_date']) && $param['end_date'] && empty($param['start_date'])) {
+            $where .= " AND updated_at <= '" . $param['end_date'] . "'";
+        }
+        if ($where) {
             $data = changeLogs::whereRaw('is_delete = 0')->whereRaw($where)->orderByRaw('order_num,id desc')->paginate(10);
-        }else{
+        } else {
             $data = changeLogs::whereRaw('is_delete = 0')->orderByRaw('order_num,id desc')->paginate(10);
         }
         return $data ?? [];

@@ -25,6 +25,8 @@ class ChangeLogsController extends BaseController
         $query["query_type"] = isset($param['query_type']) ? $param['query_type'] : "";
         $query["info"] = isset($param['info']) ? $param['info'] : "";
         $query["platform"] = isset($param['platform']) ? $param['platform'] : "-1";
+        $query["product"] = isset($param['product']) ? $param['product'] : "-1";
+        $query["development_language"] = isset($param['development_language']) ? $param['development_language'] : "-1";
         $query["start_date"] = isset($param['start_date']) ? $param['start_date'] : "";
         $query["end_date"] = isset($param['end_date']) ? $param['end_date'] : "";
         $platform = $this->changeLogsService->getPlatformKv();

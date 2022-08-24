@@ -11,18 +11,17 @@
         </div>
         <div class="ibox-content">
 
-            <div class="col-xs-10 col-sm-11 margintop5" style="margin-bottom: 5px">
+            <div class="col-xs-10 col-sm-11 margintop5" style="margin-bottom: 5px;padding-left: 0">
                 <form name="admin_list_sea" class="form-search" method="get" action="{{route('changelogs.list')}}">
-                    <div class="input-group">
-                        <div class="input-group-btn">
-                            <select name="query_type" class="form-control" style="display: inline-block;width: 100px;">
-                                <option value="id" @if(isset($query)&&$query['query_type']=='id') selected @endif>ID </option>
+                    <div class="input-group" style="margin-left: 0 auto">
+                        <div class="input-group-btn" style="vertical-align: top;">
+                            <select name="query_type" class="form-control" style="display: inline-block;width: 120px;">
                                 <option value="version_no" @if(isset($query)&&$query['query_type']=='version_no') selected @endif>version_no </option>
                                 <option value="slug" @if(isset($query)&&$query['query_type']=='slug') selected @endif>slug </option>
                             </select>
                         </div>
-                        <input type="text" name="info" class="form-control" style="display: inline-block;width: 150px;" value="@if(isset($query)){{$query['info']}}@endif" />
-                        <div class="input-group-btn" style="display: inline-block;width: 150px;margin-left:20px;">
+                        <input type="text" name="info" class="form-control" style="display: inline-block;width: 200px;" value="@if(isset($query)){{$query['info']}}@endif" />
+                        <div class="input-group-btn" style="display: inline-block;width: 120px;margin-left:10px;">
                             <select class="form-control"  name="platform">
                                 <option value="-1">筛选 Platform</option>
                                 @foreach($platform as $k=>$v)
@@ -30,18 +29,34 @@
                                 @endforeach
                             </select>
                         </div>
-                        <div class="input-group-btn" style="display: inline-block;width: 150px;margin-left:20px;">
-                            <input type="text"  name="start_date" class="form-control" style="display: inline-block;width: 160px;" id="startDate" placeholder="创建时间--开始" value="@if(isset($query)){{$query['start_date']}}@endif" />
+                        <div class="input-group-btn" style="display: inline-block;width: 230px;margin-left:10px;">
+                            <select class="form-control"  name="product">
+                                <option value="-1">筛选 product</option>
+                                @foreach($product as $k=>$v)
+                                    <option value="{{$k}}" @if(isset($query)&&$query['product']==$k) selected @endif>{{$v}}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="input-group-btn" style="display: inline-block;width: 150px;margin-left:10px;">
+                            <select class="form-control"  name="development_language">
+                                <option value="-1">筛选 language</option>
+                                @foreach($development_language as $k=>$v)
+                                    <option value="{{$k}}" @if(isset($query)&&$query['development_language']==$k) selected @endif>{{$v}}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="input-group-btn" style="display: inline-block;width: 150px;margin-left:10px;">
+                            <input type="text"  name="start_date" class="form-control" style="display: inline-block;width: 160px;" id="startDate" placeholder="更新时间-开始" value="@if(isset($query)){{$query['start_date']}}@endif" />
                         </div>
                         <div class="input-group-btn" style="display: inline-block;width: 150px;margin-left:20px;">
-                            <input type="text"  name="end_date" class="form-control" style="display: inline-block;width: 160px;" id="endDate" placeholder="创建时间--结束" value="@if(isset($query)){{$query['end_date']}}@endif" />
+                            <input type="text"  name="end_date" class="form-control" style="display: inline-block;width: 160px;" id="endDate" placeholder="更新时间-结束" value="@if(isset($query)){{$query['end_date']}}@endif" />
                         </div>
                         <span class="input-group-btn" style="display: inline-block;">
-											<button type="submit" class="btn btn-purple btn-sm" style="margin-left: 20px;">
-												<span class="ace-icon fa fa-search icon-on-right bigger-110"></span>
-												搜索
-											</button>
-										</span>
+                            <button type="submit" class="btn btn-purple btn-sm" style="margin-left: 20px;">
+                                <span class="ace-icon fa fa-search icon-on-right bigger-110"></span>
+                                搜索
+                            </button>
+                        </span>
                     </div>
                 </form>
             </div>
@@ -49,41 +64,35 @@
             <table class="table table-striped table-bordered table-hover m-t-md" style="word-wrap:break-word; word-break:break-all;">
                 <thead>
                 <tr>
-                    <th class="text-center" style="width: 4%">ID</th>
-                    <th class="text-center" style="width: 5%">version_no</th>
+                    <th class="text-center" style="width: 2%">ID</th>
+                    <th class="text-center" style="width: 5%" title="platform">platform</th>
+                    <th class="text-center" style="width: 10%" title="product">product</th>
+                    <th class="text-center" style="width: 5%" title="language">language</th>
+                    <th class="text-center" style="width: 5%">version</th>
                     <th class="text-center" style="width: 10%">slug</th>
                     <th class="text-center" style="width: 10%">seo title</th>
-                    <th class="text-center" style="width: 5%">platform</th>
-                    <th class="text-center" style="width: 10%">product</th>
-                    <th class="text-center" style="width: 6%">development_language</th>
-                    <th class="text-center" style="width: 10%">description</th>
-                    <th class="text-center" style="width: 3%">order_num</th>
-                    <th class="text-center" style="width: 6%">change_date</th>
-                    <th class="text-center" style="width: 8%">created_at</th>
+                    <th class="text-center" style="width: 3%">order</th>
+                    <th class="text-center" style="width: 8%">change_date</th>
                     <th class="text-center" style="width: 8%">updated_at</th>
-                    <th class="text-center" style="width: 10%">操作</th>
+                    <th class="text-center" style="width: 8%">操作</th>
                 </tr>
                 </thead>
                 <tbody>
                 @foreach($data as $key => $item)
                     <tr>
                         <td  class="text-center" >{{$item['id']}}</td>
-                        <td>{{$item['version_no']}}</td>
-                        <td class="text-center">{{$item['slug']}}</td>
-                        <td>{{$item['seo_title']}}</td>
-                        <td>{{$platform[$item['platform']]}}</td>
-                        <td>{{$product[$item['product']]}}</td>
-                        <td>{{$development_language[$item['development_language']]}}</td>
-                        <td>{{$item['seo_description']}}</td>
-                        <td>{{$item['order_num']}}</td>
-                        <td>{{$item['change_date']}}</td>
-                        <td>{{$item['created_at']}}</td>
-                        <td>{{$item['updated_at']}}</td>
-
+                        <td  class="text-center" >{{$platform[$item['platform']]}}</td>
+                        <td  class="text-center" >{{$product[$item['product']]}}</td>
+                        <td  class="text-center" >{{$development_language[$item['development_language']]}}</td>
+                        <td  class="text-center" >{{$item['version_no']}}</td>
+                        <td  class="text-center" >{{$item['slug']}}</td>
+                        <td  class="text-center" >{{$item['seo_title']}}</td>
+                        <td  class="text-center" >{{$item['order_num']}}</td>
+                        <td  class="text-center" >{{$item['change_date']}}</td>
+                        <td  class="text-center" >{{$item['updated_at']}}</td>
                         <td class="text-center">
                             <div class="btn-group">
                                 <a href="{{route('changelogs.edit',$item['id'])}}"><button class="btn btn-primary btn-xs" type="button"><i class="fa fa-paste"></i> 修改</button></a>
-{{--                                <a href="{{route('blogs.softDel',['type',$item->id])}}"><button class="btn btn-danger btn-xs" type="button"><i class="fa fa-trash-o"></i> 删除</button></a>--}}
                                 <a onclick="del('{{$item['id']}}')"><button class="btn btn-danger del btn-xs" type="button"><i class="fa fa-trash-o"></i> 删除</button></a>
                             </div>
                         </td>

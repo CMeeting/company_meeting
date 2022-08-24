@@ -10,20 +10,12 @@
                 <h5>添加 Changelogs</h5>
             </div>
             <div class="ibox-content">
-{{--                <a class="menuid btn btn-primary btn-sm" href="javascript:history.go(-1)">返回</a>--}}
                 <a href="{{route('changelogs.list')}}"><button class="btn btn-primary btn-sm back" type="button"><i class="fa fa-chevron-left"></i> 返回列表 </button></a>
                 <div class="hr-line-dashed m-t-sm m-b-sm"></div>
                 <form class="form-horizontal m-t-md" id="form_data" accept-charset="UTF-8" enctype="multipart/form-data" style="width: 100%;overflow: auto;">
                     {!! csrf_field() !!}
-                    <div class="form-group">
-                        <label class="col-sm-2 control-label">Version_No（版本号，例如：1.1.1）</label>
-                        <div class="input-group col-sm-2">
-                            <input type="text" class="form-control" name="data[version_no]" value="" required data-msg-required="请输入标题">
-                        </div>
-                    </div>
-                    <div class="hr-line-dashed m-t-sm m-b-sm"></div>
-                    <div class="form-group">
-                        <label class="col-sm-2 control-label">Platform：</label>
+                    <div class="hr-line-dashed m-t-sm m-b-sm" style="position: relative;margin-bottom: 20px;"><span style="font-weight:bold;top: -12px;position: absolute;color:black">Platform：</span>></div>
+                    <div class="form-group" style="padding-left: 18px;">
                         <div class="input-group col-sm-2">
                             <select class="form-control" name="data[platform]">
                                 @foreach ($platform as $k=>$v)
@@ -32,9 +24,8 @@
                             </select>
                         </div>
                     </div>
-                    <div class="hr-line-dashed m-t-sm m-b-sm"></div>
-                    <div class="form-group">
-                        <label class="col-sm-2 control-label">Products：</label>
+                    <div class="hr-line-dashed m-t-sm m-b-sm" style="position: relative;margin-bottom: 20px;"><span style="font-weight:bold;top: -12px;position: absolute;color:black">Products：</span>></div>
+                    <div class="form-group" style="padding-left: 18px;">
                         <div class="input-group col-sm-2">
                             <select class="form-control" name="data[product]">
                                 @foreach ($product as $k=>$v)
@@ -43,9 +34,8 @@
                             </select>
                         </div>
                     </div>
-                    <div class="hr-line-dashed m-t-sm m-b-sm"></div>
-                    <div class="form-group">
-                        <label class="col-sm-2 control-label">Development Language：</label>
+                    <div class="hr-line-dashed m-t-sm m-b-sm" style="position: relative;margin-bottom: 20px;"><span style="font-weight:bold;top: -12px;position: absolute;color:black">Development Language：</span>></div>
+                    <div class="form-group" style="padding-left: 18px;">
                         <div class="input-group col-sm-2">
                             <select class="form-control" name="data[development_language]">
                                 @foreach ($development_language as $k=>$v)
@@ -54,54 +44,52 @@
                             </select>
                         </div>
                     </div>
-                    <div class="hr-line-dashed m-t-sm m-b-sm"></div>
-                    <div class="form-group">
-                        <label class="col-sm-2 control-label">Release：</label>
+                    <div class="hr-line-dashed m-t-sm m-b-sm" style="position: relative;margin-bottom: 20px;"><span style="font-weight:bold;top: -12px;position: absolute;color:black">Version_No（版本号，例如：1.1.1）</span>></div>
+                    <div class="form-group" style="padding-left: 18px;">
+                        <div class="input-group col-sm-2">
+                            <input type="text" class="form-control" name="data[version_no]" value="" required data-msg-required="请输入标题">
+                        </div>
+                    </div>
+                    <div class="hr-line-dashed m-t-sm m-b-sm" style="position: relative;margin-bottom: 20px;"><span style="font-weight:bold;top: -12px;position: absolute;color:black">Release：</span>></div>
+                    <div class="form-group" style="padding-left: 18px;">
                         <div class="input-group col-sm-2">
                             <a id="release"><i class="fa fa-plus-circle"></i></a>
                         </div>
                     </div>
-                    <div class="hr-line-dashed m-t-sm m-b-sm"></div>
-                    <div class="form-group">
-                        <label class="col-sm-2 control-label">Slug(确保唯一性)：</label>
+                    <div class="hr-line-dashed m-t-sm m-b-sm" style="position: relative;margin-bottom: 20px;"><span style="font-weight:bold;top: -12px;position: absolute;color:black">Slug(确保唯一性)：</span>></div>
+                    <div class="form-group" style="padding-left: 18px;">
                         <div class="input-group col-sm-2">
                             <input type="text" class="form-control" name="data[slug]" value="" onKeyUp="value=value.replace(/[^\w\.\/-]/ig,'')" required data-msg-required="请输入slug">
                         </div>
                     </div>
-                    <div class="hr-line-dashed m-t-sm m-b-sm"></div>
-                    <div class="form-group">
-                        <label class="col-sm-2 control-label">Seo Title（不允许出现特殊字符）：</label>
+                    <div class="hr-line-dashed m-t-sm m-b-sm" style="position: relative;margin-bottom: 20px;"><span style="font-weight:bold;top: -12px;position: absolute;color:black">Seo Title（不允许出现特殊字符）：</span>></div>
+                    <div class="form-group" style="padding-left: 18px;">
                         <div class="input-group col-sm-2">
                             <input type="text" class="form-control" name="data[seo_title]" required data-msg-required="请输入Seo Title">
                         </div>
                     </div>
-                    <div class="hr-line-dashed m-t-sm m-b-sm"></div>
-                    <div class="form-group">
-                        <label class="col-sm-2 control-label">Seo Description：</label>
+                    <div class="hr-line-dashed m-t-sm m-b-sm" style="position: relative;margin-bottom: 20px;"><span style="font-weight:bold;top: -12px;position: absolute;color:black">Seo Description：</span>></div>
+                    <div class="form-group" style="padding-left: 18px;">
                         <div class="input-group col-sm-2">
-{{--                            <input type="text" class="form-control" name="data[seo_description]" required data-msg-required="请输入Seo Description">--}}
                             <textarea class="form-control" name="data[seo_description]"></textarea>
                         </div>
                     </div>
-                    <div class="hr-line-dashed m-t-sm m-b-sm"></div>
-                    <div class="form-group">
-                        <label class="col-sm-2 control-label">Change Date：</label>
+                    <div class="hr-line-dashed m-t-sm m-b-sm" style="position: relative;margin-bottom: 20px;"><span style="font-weight:bold;top: -12px;position: absolute;color:black">Change Date：</span>></div>
+                    <div class="form-group" style="padding-left: 18px;">
                         <div class="input-group col-sm-2">
                             <input id="change_date" type="text" class="form-control" name="data[change_date]" required data-msg-required="请输入Seo Keywords">
                         </div>
                     </div>
-                    <div class="hr-line-dashed m-t-sm m-b-sm"></div>
-                    <div class="form-group">
-                        <label class="col-sm-2 control-label">order_num(排序 从小到大)：</label>
+                    <div class="hr-line-dashed m-t-sm m-b-sm" style="position: relative;margin-bottom: 20px;"><span style="font-weight:bold;top: -12px;position: absolute;color:black">order_num(排序 从小到大)：</span></div>
+                    <div class="form-group" style="padding-left: 18px;">
                         <div class="input-group col-sm-2">
                             <input type="number" class="form-control" name="data[order_num]" value="" required data-msg-required="请输入Sort id" min="0" oninput="if(value.length>9)value=value.slice(0,9)">
                         </div>
                     </div>
-                    <div class="hr-line-dashed m-t-sm m-b-sm"></div>
-                    <div class="form-group" style="padding-left: 20px;">
-                        <label class="col-sm-2 control-label">Content：</label>
+                    <div class="hr-line-dashed m-t-sm m-b-sm" style="position: relative;margin-bottom: 20px;"><span style="font-weight:bold;top: -10px;position: absolute;color:black">Content:</span></div>
+                    <div class="form-group" style="padding-left: 18px;">
                         <div class="input-group col-sm-2">
-                            <textarea id="content" name="data[content]" class="form-control" rows="5" cols="20"></textarea>
+                            <textarea id="content" name="data[content]" class="form-control" rows="5" cols="10"></textarea>
                         </div>
                     </div>
                     <div class="hr-line-dashed m-t-sm m-b-sm"></div>
@@ -156,7 +144,7 @@
                 elem: '#change_date', //指定元素
                 max:30,//日期最大值
                 trigger: 'click',
-                type: 'date',//日期时间选择器
+                type: 'datetime',//日期时间选择器
             });
         });
 
