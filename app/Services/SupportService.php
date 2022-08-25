@@ -13,6 +13,7 @@ namespace App\Services;
 
 use Auth;
 use App\Models\Support;
+use App\Models\Mailmagicboard;
 use Illuminate\Support\Facades\DB;
 
 class SupportService
@@ -97,6 +98,12 @@ class SupportService
 
     }
 
+    public function update_status($data)
+    {
+        $row = $this->support->_update(['status' => $data['status'],'handler'=>Auth::guard('admin')->user()->id,'updated_at'=>date("Y-m-d H:i:s")], 'id = ' . $data['id']);
+        return $row ?? '';
+    }
+
     public function getPlatformKv()
     {
         $platform = $this->support->platform;
@@ -154,6 +161,14 @@ class SupportService
                 $html .= '<option value="'.$v->id.'">'.$v->title.'</option>';
         }
         echo $html;
+    }
+
+
+
+    public function get_email(){
+        $email=new Mailmagicboard();
+        $data=$email->_where("deleted=0","id DESC","id,name");
+        return $data;
     }
 
 

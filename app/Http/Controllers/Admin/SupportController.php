@@ -29,11 +29,12 @@ class SupportController extends BaseController
         $data = $this->supportService->getList($param);
         $platform = $this->supportService->getPlatformKv();
         $product = $this->supportService->getProductKv();
+        $email = $this->supportService->get_email();
         $type = $this->supportService->getTypeKv();
         $status = $this->supportService->getStatusKv();
         $development_language = $this->supportService->getDevelopmentLanguageKv();
         $admins = $this->supportService->getAdminsKv();
-        return $this->view('list',compact('data','query','platform','product','type','status','admins','development_language'));
+        return $this->view('list',compact('data','query','platform','product','type','status','admins','development_language','email'));
     }
 
     public function create(){
@@ -107,8 +108,18 @@ class SupportController extends BaseController
     }
 
     public function changeStatus(){
-        $param = request()->all()['data'];
-        dd($param);
+        $param = request()->all();
+        if($param['demo']==""||$param['demo']==0){
+            return ['code'=>0,'msg'=>"请选择邮件发送模板"];
+        }
+        $id = $param['id'];
+        $res = $this->supportService->update_status($param);
+        if($res){
+            return ['code'=>1,'msg'=>"状态更新成功",'id'=>$id,'status'=>$param['status']];
+        }else{
+            return ['code'=>0,'msg'=>"状态更新失败"];
+        }
+
     }
 
     public function softDel(){

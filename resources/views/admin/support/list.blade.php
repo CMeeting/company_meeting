@@ -80,7 +80,7 @@
 {{--                        <td>{{$item['e_mail']}}</td>--}}
                         <td>{{$admins[$item['create_user']]}}</td>
                         <td>{{$admins[$item['handler']]??''}}</td>
-                        <td style="color: red;">{{$status[$item['status']]}}</td>
+                        <td style="color: red;" id="status_{{$item['id']}}">{{$status[$item['status']]}}</td>
                         <td>{{$item['created_at']}}</td>
                         <td>{{$item['updated_at']}}</td>
 
@@ -102,51 +102,10 @@
     </div>
     <div class="clearfix"></div>
 </div>
-<div id="change_status_html" class="row" style="display: none;">
-    <div class="col-sm-12">
-        <div class="ibox-title">
-            <h5>更改状态</h5>
-        </div>
-        <div class="ibox-content">
-            <form class="form-horizontal m-t-md" id="form_data" accept-charset="UTF-8" enctype="multipart/form-data" method="post" action="{{route('support.changeStatus')}}">
-                {!! csrf_field() !!}
-                <input id="change_status_id" type="hidden" class="form-control" name="data[id]" value="">
-                <div class="form-group">
-                    <label class="col-sm-3 control-label">状态：</label>
-                    <div class="input-group col-sm-8">
-                        <select class="form-control" name="data[status]">
-                            @foreach ($status as $k=>$v)
-                                @if(4 != $k)
-                                <option value="{{$k}}">{{$v}}</option>
-                                @endif
-                            @endforeach
-                        </select>
-                    </div>
-                </div>
-                <div class="hr-line-dashed m-t-sm m-b-sm"></div>
-                <div class="form-group">
-                    <label class="col-sm-3 control-label">邮件模板：</label>
-                    <div class="input-group col-sm-8">
-                        <select class="form-control" name="data[demo]">
-                            <option value="">请选择需要发送的邮件模板</option>
-{{--                            @foreach ($product as $k=>$v)--}}
-{{--                                <option value="{{$k}}" @if($k==$row->product) selected @endif>{{$v['title']}}</option>--}}
-{{--                            @endforeach--}}
-                        </select>
-                    </div>
-                </div>
-                <div class="hr-line-dashed m-t-sm m-b-sm"></div>
-                <div class="form-group">
-                    <div class="col-sm-10 col-sm-offset-2">
-                        <button class="btn btn-primary" type="submit"><i class="fa fa-check"></i>&nbsp;保 存</button>　<button class="btn btn-white reset" type="reset"><i class="fa fa-repeat"></i> 重 置</button>
-                    </div>
-                </div>
-                <div class="clearfix"></div>
-            </form>
-        </div>
-    </div>
-</div>
+
 <script>
+    var id=0;
+    var indexs;
     function del(id){
         layer.confirm('您确定要删除吗？', {
             btn: ['确定','取消']
@@ -233,17 +192,49 @@
     });
 
     function change_status(id){
-        $("#change_status_id").val(id);
-        layer.open({
+        id=id
+        indexs=layer.open({
             type: 1,
             title: false,
             closeBtn: 1, //不显示关闭按钮
             shade: [0],
             area: ['35%', '50%'],
             anim: 2,
-            content: $("#change_status_html").html()
+            content: '{!! csrf_field() !!}<div id="change_status_html" class="row"> <div class="col-sm-12"> <div class="ibox-title"> <h5>更改状态</h5> </div> <div class="ibox-content"> <form class="m-t-md" id="form_data" accept-charset="UTF-8" enctype="multipart/form-data" method="post"><input id="change_status_id" type="hidden" class="form-control" name="id" value="'+id+'"> <div class="form-group"><label class="col-sm-3 control-label">状态：</label> <div class="input-group col-sm-8"> <select class="form-control" name="status">@foreach ($status as $k=>$v) @if(4 != $k && 1!=$k)<option value="{{$k}}">{{$v}}</option>@endif @endforeach</select> </div> </div> <div class="hr-line-dashed m-t-sm m-b-sm"></div> <div class="form-group"> <label class="col-sm-3 control-label">邮件模板：</label> <div class="input-group col-sm-8"> <select class="form-control" name="demo" class="select"> <option value="0">请选择需要发送的邮件模板</option>@foreach ($email as $k=>$vs)<option value="{{$vs['id']}}">{{$vs['name']}}</option>@endforeach</select> </div> </div> <div class="hr-line-dashed m-t-sm m-b-sm"></div> <div class="form-group"> <div class="col-sm-10 col-sm-offset-2"> <a class="btn btn-primary" onclick="sub()"><i class="fa fa-check"></i>&nbsp;保 存</a>　<button class="btn btn-white reset" type="reset"><i class="fa fa-repeat"></i> 重 置</button> </div> </div> <div class="clearfix"></div></form> </div> </div> </div>'
         });
     }
 
+    function sub(){
+        var form_data = new FormData($("#form_data")[0]);
+        form_data.set("_token",'{{ csrf_token() }}');
+        layer.close(index);
+        var index = layer.load();
+        $.ajax({
+            url:"{{route('support.changeStatus')}}",
+            processData:false,//需设置为false。因为data值是FormData对象，不需要对数据做处理
+            contentType:false,
+            type:"post",
+            data: form_data,
+            success:function(data){
+                if(data.code==1){
+                    layer.close(index);
+                    layer.close(indexs);
+                    layer.msg("更新成功", {time: 1500, anim: 1});
+                    if(data.status==2){
+                        $("#status_"+data.id).html("已接收");
+                    }else if(data.status==3){
+                        $("#status_"+data.id).html("已解决");
+                    }
+                }else{
+                    layer.close(index);
+                    layer.msg(data.msg, {time: 1500, anim: 6});
+                    return false;
+                }
+            }, error:function(ret){
+
+            }
+        })
+
+    }
 </script>
 @endsection
