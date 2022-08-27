@@ -44,7 +44,7 @@
                     <table class="table table-striped table-bordered table-hover m-t-md">
                         <thead>
                         <tr>
-                            <th class="text-center" width="100">ID</th>
+                            <th class="text-center" width="50">ID</th>
                             <th>电子报模板名称</th>
                             <th>电子报标题</th>
                             <th>创建人</th>
@@ -173,7 +173,7 @@
                     layer.close(index);
                     //成功提示
                     if (resp.code==0) {
-                        layer.msg("发送成功！程序进入异步发送邮件流程", {
+                        layer.msg("发送成功!", {
                             icon: 1,
                             time: 1000
                         });

@@ -94,7 +94,7 @@
                                             <i class="fa fa-chain fa-delete"></i>取消订阅
                                         </a>
                                         @else
-                                        <a class="abutton clorosx" style="text-decoration: none;color: #f6fff8" title="当前取消订阅状态" onclick="del('{{$value->id}}',{{$value->status}})">
+                                        <a class="abutton clorosx" style="text-decoration: none;color: #f6fff8;background: green" title="当前取消订阅状态" onclick="del('{{$value->id}}',{{$value->status}})">
                                             <i class="fa fa-chain fa-delete"></i>订阅状态
                                         </a>
                                         @endif
@@ -139,11 +139,11 @@
                             time: 1000
                         }, function () {
                             if(resp.status==0){
-                                $("#deleted_"+id).html('<a class="abutton clorosx" style="text-decoration: none;color: #f6fff8" title="当前取消订阅状态" onclick="del('+id+','+resp.status+')"><i class="fa fa-chain fa-delete"></i>订阅状态 </a>');
+                                $("#deleted_"+id).html('<a class="abutton clorosx" style="text-decoration: none;color: #f6fff8;background: green" title="当前取消订阅状态" onclick="del('+id+','+resp.status+')"><i class="fa fa-chain fa-delete"></i>订阅状态 </a>');
                                 $("#dy_"+id).html('<a class="abutton cloros2" style="text-decoration: none;color:#f6fff8;background: red" >取消订阅 </a>');
                             }else{
                                 $("#deleted_"+id).html('<a class="abutton cloros4" style="text-decoration: none;color: #f6fff8" title="当前订阅状态" onclick="del('+id+','+resp.status+')"><i class="fa fa-chain fa-delete"></i>取消订阅</a>');
-                                $("#dy_"+id).html('<a class="abutton cloros2" style="text-decoration: none;color: #f6fff8;background: green" >订阅状态 </a>');
+                                $("#dy_"+id).html('<a class="abutton cloros2" style="text-decoration: none;color: #f6fff8;background: green">订阅状态 </a>');
                             }
                         });
 
