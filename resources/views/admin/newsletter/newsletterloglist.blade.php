@@ -44,7 +44,7 @@
                     <table class="table table-striped table-bordered table-hover m-t-md">
                         <thead>
                         <tr>
-                            <th class="text-center" width="100">ID</th>
+                            <th class="text-center" width="50">ID</th>
                             <th>电子报模板ID</th>
                             <th>接收人邮箱</th>
                             <th>发送状态</th>

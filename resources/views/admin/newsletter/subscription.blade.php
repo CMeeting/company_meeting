@@ -45,7 +45,7 @@
                     <table class="table table-striped table-bordered table-hover m-t-md">
                         <thead>
                         <tr>
-                            <th class="text-center" width="100">ID</th>
+                            <th class="text-center" width="50">ID</th>
                             <th>邮件地址</th>
                             <th>订阅类型</th>
                             <th>订阅状态</th>
