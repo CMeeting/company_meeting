@@ -1,5 +1,14 @@
 @extends('admin.layouts.layout')
 @section('content')
+    <style>
+        dl.layui-anim.layui-anim-upbit {
+            z-index: 1000;
+        }
+        .ccs{
+            width: calc(49.5%);
+            float: left;
+        }
+    </style>
     <script src="{{loadEdition('/js/jquery.min.js')}}"></script>
     <script src="/tinymce/js/tinymce/tinymce.min.js"></script>
     <link rel="stylesheet" href="/layui/css/layui.css" media="all">
@@ -14,26 +23,19 @@
                 <div class="hr-line-dashed m-t-sm m-b-sm"></div>
                 <form class="form-horizontal m-t-md" id="form_data" accept-charset="UTF-8" enctype="multipart/form-data" style="width: 100%;overflow: auto;">
                     {!! csrf_field() !!}
-                    <div class="hr-line-dashed m-t-sm m-b-sm" style="position: relative;margin-bottom: 20px;"><span style="font-weight:bold;top: -12px;position: absolute;color:black">Platform：</span>></div>
+                    <textarea id="testt123" style="display: none">{{$parent}}</textarea>
+                    <div class="hr-line-dashed m-t-sm m-b-sm" style="position: relative;margin-bottom: 20px;"><span style="font-weight:bold;top: -12px;position: absolute;color:black">Platform/Products：</span>></div>
                     <div class="form-group" style="padding-left: 18px;">
                         <div class="input-group col-sm-2">
-                            <select class="form-control" name="data[platform]">
-                                @foreach ($platform as $k=>$v)
-                                    <option value="{{$k}}" @if($k==$row->platform) selected @endif>{{$v}}</option>
-                                @endforeach
+                            <select autocomplete="off" class="fenlei form-control ccs" id="category_parent" name="data[platform]" onchange="renderCategoryThirdbypcate(this.value)" onclick="renderCategoryThirdbypcate(this.value)">
+                                <option value="0">请选择平台</option>
+                            </select>
+                            <select autocomplete="off" class="fenlei form-control ccs" id="category_child" name="data[product]"  style="margin-left: 5px">
+                                <option value="0">请选择产品</option>
                             </select>
                         </div>
                     </div>
-                    <div class="hr-line-dashed m-t-sm m-b-sm" style="position: relative;margin-bottom: 20px;"><span style="font-weight:bold;top: -12px;position: absolute;color:black">Products：</span>></div>
-                    <div class="form-group" style="padding-left: 18px;">
-                        <div class="input-group col-sm-2">
-                            <select class="form-control" name="data[product]">
-                                @foreach ($product as $k=>$v)
-                                    <option value="{{$k}}" @if($k==$row->product) selected @endif>{{$v}}</option>
-                                @endforeach
-                            </select>
-                        </div>
-                    </div>
+
                     <div class="hr-line-dashed m-t-sm m-b-sm" style="position: relative;margin-bottom: 20px;"><span style="font-weight:bold;top: -12px;position: absolute;color:black">Development Language：</span>></div>
                     <div class="form-group" style="padding-left: 18px;">
                         <div class="input-group col-sm-2">
@@ -200,5 +202,60 @@
                 content: "<p style='font-size: 30px;font-style: normal;position: absolute;left: 40%;top: 40%;'>暂无相关数据！</p>"
             });
         })
+
+
+
+        var c='';
+        var $categroys = '';
+        var defaultpcate = '';
+        var defaultccate = '';
+        function chage_specialbysid(){
+            $selectChild = $('#category_parent');
+            $selectThird = $('#category_child');
+            var html = '<option value="0">请选择平台</option>';
+            var html1 = '<option value="0">请选择产品</option>';
+            for(var i=0; i<$categroys.length; i++){
+                if($categroys[i].pid==0){
+                    var s = ' ';
+                    if($categroys[i].id == defaultpcate) s = 'selected="selected"';
+                    html += '<option value="'+$categroys[i].id+'"'+s+'>';
+                    // console.log($categroys[i].jid == '0');
+                    html +=$categroys[i].name
+                    html +='</option>';
+                }
+            }
+            $('#category_parent').html(html);
+            $('#category_child').html(html1);
+            if(defaultpcate){
+                renderCategoryThirdbypcate(defaultpcate)
+            }
+        }
+        function renderCategoryThirdbypcate(pcate){
+            console.log($categroys);
+            var html1 = '<option value="0">请选择产品</option>';
+            for(var i=0; i<$categroys.length; i++){
+                if(pcate ==$categroys[i].pid){
+                    var s="";
+                    if($categroys[i].id == defaultccate) s = 'selected="selected"';
+                    html1 += '<option value="'+$categroys[i].id+'"'+s+'>'+$categroys[i].name+'</option>';
+                }
+            }
+            $selectThird.show();
+            $selectThird.html(html1);
+        }
+
+        $(function (){
+            var  selectChilds = $('#category_parent');
+            var  selectThirds = $('#category_child');
+
+            c=$("#testt123").text();
+            $categroys = JSON.parse(c);
+            defaultpcate = parseInt("{{$row->platform}}");
+            defaultccate = parseInt("{{$row->product}}");
+            $selectChild = $('#category_parent');
+            chage_specialbysid();
+
+        })
+
     </script>
 @endsection

@@ -32,12 +32,12 @@
                     <textarea id="testt123" style="display: none">{{$parent}}</textarea>
                     <div class="hr-line-dashed m-t-sm m-b-sm"></div>
                     <div class="form-group">
-                        <label class="col-sm-2 control-label no-padding-right" for="form-field-1"> 平台/产品：</label>
+                        <label class="col-sm-2 control-label no-padding-right" for="form-field-1"> Platform/Products：</label>
                         <div class="col-sm-6 col-xs-12">
                                 <select autocomplete="off" class="fenlei form-control ccs" id="category_parent" name="data[platform]" onchange="renderCategoryThirdbypcate(this.value)" onclick="renderCategoryThirdbypcate(this.value)">
                                     <option value="0">请选择平台</option>
                                 </select>
-                                <select autocomplete="off" class="fenlei form-control ccs" id="category_child" name="data[product]"  style="display: none;margin-left: 5px">
+                                <select autocomplete="off" class="fenlei form-control ccs" id="category_child" name="data[product]"  style="margin-left: 5px">
                                     <option value="0">请选择产品</option>
                                 </select>
                         </div>

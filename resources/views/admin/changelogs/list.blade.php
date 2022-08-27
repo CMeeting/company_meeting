@@ -24,7 +24,7 @@
                         <div class="input-group-btn" style="display: inline-block;width: 120px;margin-left:10px;">
                             <select class="form-control"  name="platform">
                                 <option value="-1">筛选 Platform</option>
-                                @foreach($platform as $k=>$v)
+                                @foreach($platformid as $k=>$v)
                                     <option value="{{$k}}" @if(isset($query)&&$query['platform']==$k) selected @endif>{{$v}}</option>
                                 @endforeach
                             </select>
@@ -32,7 +32,7 @@
                         <div class="input-group-btn" style="display: inline-block;width: 230px;margin-left:10px;">
                             <select class="form-control"  name="product">
                                 <option value="-1">筛选 product</option>
-                                @foreach($product as $k=>$v)
+                                @foreach($version as $k=>$v)
                                     <option value="{{$k}}" @if(isset($query)&&$query['product']==$k) selected @endif>{{$v}}</option>
                                 @endforeach
                             </select>
@@ -81,8 +81,8 @@
                 @foreach($data as $key => $item)
                     <tr>
                         <td  class="text-center" >{{$item['id']}}</td>
-                        <td  class="text-center" >{{$platform[$item['platform']]}}</td>
-                        <td  class="text-center" >{{$product[$item['product']]}}</td>
+                        <td  class="text-center" >{{$platform[$item['platform']]['name']}}</td>
+                        <td  class="text-center" >{{$platform[$item['product']]['name']}}</td>
                         <td  class="text-center" >{{$development_language[$item['development_language']]}}</td>
                         <td  class="text-center" >{{$item['version_no']}}</td>
                         <td  class="text-center" >{{$item['slug']}}</td>

@@ -10,6 +10,8 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Services\ChangeLogsService;
+use App\Services\DocumentationService;
+use App\Services\SdKArticleService;
 
 class ChangeLogsController extends BaseController
 {
@@ -22,6 +24,7 @@ class ChangeLogsController extends BaseController
 
     public function list(){
         $param = request()->input();
+        $sdksrvice = new SdKArticleService();
         $query["query_type"] = isset($param['query_type']) ? $param['query_type'] : "";
         $query["info"] = isset($param['info']) ? $param['info'] : "";
         $query["platform"] = isset($param['platform']) ? $param['platform'] : "-1";
@@ -29,18 +32,20 @@ class ChangeLogsController extends BaseController
         $query["development_language"] = isset($param['development_language']) ? $param['development_language'] : "-1";
         $query["start_date"] = isset($param['start_date']) ? $param['start_date'] : "";
         $query["end_date"] = isset($param['end_date']) ? $param['end_date'] : "";
-        $platform = $this->changeLogsService->getPlatformKv();
-        $product = $this->changeLogsService->getProductKv();
+        $platform = $this->changeLogsService->getPlatformdata();
+        $platformid = $sdksrvice->getplatform();
+        $version = $sdksrvice->getversion();
         $development_language = $this->changeLogsService->getDevelopmentLanguageKv();
         $data = $this->changeLogsService->getList($param);
-        return $this->view('list',compact('data','platform','product','development_language','query'));
+        return $this->view('list',compact('data','platform','development_language','query','platformid','version'));
     }
 
     public function create(){
-        $platform = $this->changeLogsService->getPlatformKv();
-        $product = $this->changeLogsService->getProductKv();
+        $documentation = new DocumentationService();
+        $fenlei = $documentation->getCategoricalData();
+        $parent = json_encode($fenlei['parent']);
         $development_language = $this->changeLogsService->getDevelopmentLanguageKv();
-        return $this->view('create',compact('platform','product','development_language'));
+        return $this->view('create',compact('parent','development_language'));
     }
 
     public function store(){
@@ -71,11 +76,12 @@ class ChangeLogsController extends BaseController
     }
 
     public function edit($id){
+        $documentation = new DocumentationService();
+        $fenlei = $documentation->getCategoricalData();
+        $parent = json_encode($fenlei['parent']);
         $row = $this->changeLogsService->getRow($id);
-        $platform = $this->changeLogsService->getPlatformKv();
-        $product = $this->changeLogsService->getProductKv();
         $development_language = $this->changeLogsService->getDevelopmentLanguageKv();
-        return $this->view('edit',compact('row','platform','product','development_language'));
+        return $this->view('edit',compact('row','parent','development_language'));
     }
 
     public function update($id){

@@ -104,7 +104,17 @@ class ChangeLogsService
         return $row ?? '';
 
     }
-
+    public function getPlatformdata()
+    {
+        $PlatformVersion = new \App\Models\DocumentationModel();
+        $where = "deleted=0";
+        $Versiondata = $PlatformVersion->selects($where);
+        $arr=[];
+        foreach ($Versiondata as $k=>$v){
+            $arr[$v['id']]=$v;
+        }
+        return $arr;
+    }
     public function getPlatformKv()
     {
         $platform = DB::table("platform_version")
