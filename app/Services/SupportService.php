@@ -14,6 +14,7 @@ namespace App\Services;
 use Auth;
 use App\Models\Support;
 use App\Models\Mailmagicboard;
+use App\Models\DocumentationModel as PlatformVersion;
 use Illuminate\Support\Facades\DB;
 
 class SupportService
@@ -55,6 +56,12 @@ class SupportService
         $data = $this->support->_find('id = '.$id);
         return $data ?? [];
     }
+    public function getfind($id)
+    {
+        $data = $this->support->_find('id = '.$id);
+        $data = $this->support->objToArr($data);
+        return $data ?? [];
+    }
 
     function getRandStr($length){
         $str = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890';
@@ -66,6 +73,20 @@ class SupportService
     public function store($param)
     {
         $arr = $param;
+        $PlatformVersion = new PlatformVersion();
+        $where = "deleted=0";
+        $Versiondata = $PlatformVersion->selects($where);
+        $product_name='';
+        $version_name='';
+        foreach ($Versiondata as $k=>$v){
+            if($v['id']==$arr['platform']){
+                $product_name=$v['name'];
+            }
+            if($v['id']==$arr['product']){
+                $version_name=$v['name'];
+            }
+        }
+
         if($arr['version']){
             $list = $this->support->_find('is_delete = 0 AND version = '."'".$arr['version']."' AND platform = '".$arr['platform']."'"." AND product = '".$arr['product']."'"." AND development_language = '".$arr['development_language']."'"." AND type = '".$arr['type']."'");
             if ($list){
@@ -73,20 +94,33 @@ class SupportService
             }
         }
         $arr['create_user'] = Auth::guard('admin')->user()->id;
-        $arr['order_no'] = self::getProductKv()[$arr['product']]['code'].self::getPlatformKv()[$arr['platform']]['code'].self::getDevelopmentLanguageKv()[$arr['development_language']]['code'].'0-'.self::getRandStr(4);
+        $arr['order_no'] = self::getProductKv2()[$version_name]['code'].self::getPlatformKv2()[$product_name]['code'].self::getDevelopmentLanguageKv()[$arr['development_language']]['code'].'0-'.self::getRandStr(4);
         $row = $this->support->insertGetId($arr);
         return $row ?? '';
     }
 
     public function update($param,$id){
         $arr = $param;
+        $PlatformVersion = new PlatformVersion();
+        $where = "deleted=0";
+        $Versiondata = $PlatformVersion->selects($where);
+        $product_name='';
+        $version_name='';
+        foreach ($Versiondata as $k=>$v){
+            if($v['id']==$arr['platform']){
+                $product_name=$v['name'];
+            }
+            if($v['id']==$arr['product']){
+                $version_name=$v['name'];
+            }
+        }
         if($arr['version']){
             $list = $this->support->_find('is_delete = 0 AND version = '."'".$arr['version']."' AND platform = '".$arr['platform']."' ".'AND id <> '.$id);
             if ($list){
                 return "same_version_no";
             }
         }
-        $arr['order_no'] = self::getProductKv()[$arr['product']]['code'].self::getPlatformKv()[$arr['platform']]['code'].self::getDevelopmentLanguageKv()[$arr['development_language']]['code'].'0-'.self::getRandStr(4);
+        $arr['order_no'] = self::getProductKv2()[$version_name]['code'].self::getPlatformKv2()[$product_name]['code'].self::getDevelopmentLanguageKv()[$arr['development_language']]['code'].'0-'.self::getRandStr(4);
         $row = $this->support->_update($arr,'id = '.$id);
         return $row ?? '';
     }
@@ -104,15 +138,37 @@ class SupportService
         return $row ?? '';
     }
 
+    public function getPlatformdata()
+    {
+        $PlatformVersion = new PlatformVersion();
+        $where = "deleted=0";
+        $Versiondata = $PlatformVersion->selects($where);
+        $arr=[];
+        foreach ($Versiondata as $k=>$v){
+            $arr[$v['id']]=$v;
+        }
+        return $arr;
+    }
+
     public function getPlatformKv()
     {
         $platform = $this->support->platform;
+        return $platform ?? [];
+    }
+    public function getPlatformKv2()
+    {
+        $platform = $this->support->platformarr;
         return $platform ?? [];
     }
 
     public function getProductKv()
     {
         $platform = $this->support->product;
+        return $platform ?? [];
+    }
+    public function getProductKv2()
+    {
+        $platform = $this->support->productarr;
         return $platform ?? [];
     }
 

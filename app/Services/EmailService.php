@@ -8,19 +8,19 @@ use App\Models\NewsletterlogModel;
 class EmailService
 {
 
-    public function sendDiyContactEmail($data,$type=1,$email='')
+    public function sendDiyContactEmail($data,$type=1,$email='',$arrs=array())
     {
-        $subject = $data['title'];//邮件标题
+        $subject = isset($data['title'])?$data['title']:$arrs['title'];//邮件标题
+        $arr=explode(',',$email);
         if($type==1){
-            $arr=explode(',',$email);
             $data['info'] = str_replace("#@username","长沙凯钿测试客户名称",$data['info']);
             $data['info'] = str_replace("#@phone","0731-8422****",$data['info']);
             $data['info'] = str_replace("#@code","xxxx-xxxx-xxxx",$data['info']);
             $data['info'] = str_replace("#@paytime","测试时间".date("Y-m-d H:i:s"),$data['info']);
             $data['info'] = str_replace("#@mail","1322061784@qq.com",$data['info']);
             $data['info'] = str_replace("#@product","ComPDF产品名称测试",$data['info']);
-        }elseif ($type==2){
-            $arr=explode(',',$email);
+        }elseif ($type==3){
+            $data['info'] = $arrs['info'];
         }
         $res=$this->send_email($data,$arr,$subject,$type);
 

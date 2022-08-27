@@ -9,6 +9,9 @@
 
 namespace App\Http\Controllers\Admin;
 use App\Services\SupportService;
+use App\Services\DocumentationService;
+use App\Services\MailmagicboardService;
+use App\Services\EmailService;
 
 class SupportController extends BaseController
 {
@@ -27,23 +30,25 @@ class SupportController extends BaseController
         $query["start_date"] = isset($param['start_date']) ? $param['start_date'] : "";
         $query["end_date"] = isset($param['end_date']) ? $param['end_date'] : "";
         $data = $this->supportService->getList($param);
-        $platform = $this->supportService->getPlatformKv();
-        $product = $this->supportService->getProductKv();
+        $platform = $this->supportService->getPlatformdata();
         $email = $this->supportService->get_email();
         $type = $this->supportService->getTypeKv();
         $status = $this->supportService->getStatusKv();
         $development_language = $this->supportService->getDevelopmentLanguageKv();
         $admins = $this->supportService->getAdminsKv();
-        return $this->view('list',compact('data','query','platform','product','type','status','admins','development_language','email'));
+        return $this->view('list',compact('data','query','platform','type','status','admins','development_language','email'));
     }
 
     public function create(){
+        $documentation = new DocumentationService();
         $platform = $this->supportService->getPlatformKv();
         $product = $this->supportService->getProductKv();
         $type = $this->supportService->getTypeKv();
+        $fenlei = $documentation->getCategoricalData();
         $development_language = $this->supportService->getDevelopmentLanguageKv();
         $admins = $this->supportService->getAdminsKv();
-        return $this->view('create',compact('platform','type','admins','development_language','product'));
+        $parent = json_encode($fenlei['parent']);
+        return $this->view('create',compact('platform','type','admins','parent','development_language','product')) ;
     }
 
     public function store(){
@@ -71,13 +76,16 @@ class SupportController extends BaseController
     }
 
     public function edit($id){
+        $documentation = new DocumentationService();
+        $fenlei = $documentation->getCategoricalData();
+        $parent = json_encode($fenlei['parent']);
         $row = $this->supportService->getRow($id);
         $platform = $this->supportService->getPlatformKv();
         $product = $this->supportService->getProductKv();
         $type = $this->supportService->getTypeKv();
         $development_language = $this->supportService->getDevelopmentLanguageKv();
         $admins = $this->supportService->getAdminsKv();
-        return $this->view('edit',compact('row','platform','type','admins','development_language','product'));
+        return $this->view('edit',compact('row','platform','type','admins','development_language','product','parent'));
     }
 
     public function update($id){
@@ -108,6 +116,8 @@ class SupportController extends BaseController
     }
 
     public function changeStatus(){
+        $email = new EmailService();
+        $maile = new MailmagicboardService();
         $param = request()->all();
         if($param['demo']==""||$param['demo']==0){
             return ['code'=>0,'msg'=>"请选择邮件发送模板"];
@@ -115,11 +125,13 @@ class SupportController extends BaseController
         $id = $param['id'];
         $res = $this->supportService->update_status($param);
         if($res){
+            $datas = $maile->getFindcategorical($param['demo']);
+            $data = $this->supportService->getfind($param['id']);
+            $email->sendDiyContactEmail($data,3,$data['e_mail'],$datas);
             return ['code'=>1,'msg'=>"状态更新成功",'id'=>$id,'status'=>$param['status']];
         }else{
             return ['code'=>0,'msg'=>"状态更新失败"];
         }
-
     }
 
     public function softDel(){

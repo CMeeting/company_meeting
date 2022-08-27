@@ -72,8 +72,8 @@
                         <td  class="text-center" >{{$item['id']}}</td>
                         <td  class="text-center" >{{$item['order_no']}}</td>
                         <td>{{$item['version']}}</td>
-                        <td>{{$platform[$item['platform']]['title']}}</td>
-                        <td class="text-center">{{$product[$item['product']]['title']}}</td>
+                        <td>{{$platform[$item['platform']]['name']}}</td>
+                        <td class="text-center">{{$platform[$item['product']]['name']}}</td>
                         <td>{{$development_language[$item['development_language']]['title']}}</td>
                         <td>{{$type[$item['type']]}}</td>
 {{--                        <td>{{$item['source']}}</td>--}}
