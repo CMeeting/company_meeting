@@ -137,6 +137,7 @@ Route::group(['namespace' => 'Admin','prefix' => 'admin'], function (){
         Route::get('changelogs/edit/{id}', 'ChangeLogsController@edit')->name('changelogs.edit');
         Route::post('changelogs/update/{id}', 'ChangeLogsController@update')->name('changelogs.update');
         Route::get('changelogs/softDel/{id?}', 'ChangeLogsController@softDel')->name('changelogs.softDel');
+        Route::post('changelogs/getsupport', 'ChangeLogsController@getsupport')->name('changelogs.getsupport');
 
 
         Route::get('support/list', 'SupportController@list')->name('support.list'); //support首页

@@ -13,6 +13,8 @@ namespace App\Services;
 
 use App\Models\base\PlatformVersion;
 use App\Models\ChangeLogs;
+use App\Models\Support;
+use App\Models\SupportLog;
 use Illuminate\Support\Facades\DB;
 
 class ChangeLogsService
@@ -63,7 +65,7 @@ class ChangeLogsService
 
     public function store($param)
     {
-        $arr = $param;
+        $arr = $param['data'];
         if($arr['version_no']){
             $list = $this->changeLogs->_find('is_delete = 0 AND version_no = '."'".$arr['version_no']."' AND platform = '".$arr['platform']."'"." AND product = '".$arr['product']."'"." AND development_language = '".$arr['development_language']."'");
             if ($list){
@@ -77,6 +79,26 @@ class ChangeLogsService
             }
         }
         $row = $this->changeLogs->insertGetId($arr);
+        if($param['support']){
+            $support=new Support();
+            $email = new EmailService();
+            $maile = new MailmagicboardService();
+            $mailedatas = $maile->getFindcategorical(28);
+            $supportlog=new SupportLog();
+            $support->_update(['status'=>4,'updated_at'=>date("Y-m-d H:i:s")],"id in({$param['support']})");
+            $datas=[];
+            $ids=explode(',',$param['support']);
+            $supportdata=$support->_where("is_delete=0 and product='{$arr['product']}' and platform='{$arr['platform']}' and development_language='{$arr['development_language']}'");
+            $supportdataarr=[];
+            foreach ($supportdata as $k=>$v){
+                $supportdataarr[$v['id']]=$v;
+            }
+            foreach ($ids as $k=>$v){
+                $datas[]=['order_no'=>$supportdataarr[$v]['order_no'],'status'=>4,'info'=>'状态更新为已发布','created_at'=>date("Y-m-d H:i:s"),'updated_at'=>date("Y-m-d H:i:s")];
+               // $email->sendDiyContactEmail($supportdataarr[$v],3,$supportdataarr[$v]['e_mail'],$mailedatas);
+            }
+            $supportlog->_insert($datas);
+        }
         return $row ?? '';
     }
 
@@ -141,6 +163,40 @@ class ChangeLogsService
     {
         $platform = $this->changeLogs->development_language;
         return $platform ?? [];
+    }
+
+
+    public function getsupport($data){
+        $support=new Support();
+        $admin=$this->getAdminsKv();
+        $where="is_delete =0 and platform='{$data['platform']}' and product='{$data['product']}' and development_language='{$data['development_language']}' and status=3";
+        $info=$support->_where($where,"updated_at desc");
+        $html='';
+        if(!$info){
+            $html.='<p style="font-size: 30px;font-style: normal;position: absolute;left: 40%;top: 40%;">暂无相关数据！</p>';
+        }else{
+            $html.='<div class="form-group" style="padding-left: 18px;"><table class="table table-striped table-bordered table-hover m-t-md" style="word-wrap:break-word; word-break:break-all;"><thead><tr><th style="width: 30px">选择</th><th>order_no</th><th>e_mail</th><th>create_user</th><th>handler</th><th>updated_at</th></tr></thead><tbody>';
+          foreach ($info as $k=>$v){
+              $html.='<tr><td><label style="margin-bottom: 10px;margin-right: 5px"><input class="required class" type="checkbox" name="support[id]" value="'.$v['id'].'"></label></td><td id="td1_'.$v['id'].'">'.$v['order_no'].'</td><td id="td2_'.$v['id'].'">'.$v['e_mail'].'</td><td id="td3_'.$v['id'].'">'.$admin[$v['create_user']].'</td><td id="td4_'.$v['id'].'">'.$admin[$v['handler']].'</td><td id="td5_'.$v['id'].'">'.$v['updated_at'].'</td></tr>';
+          }
+          $html.='</tbody></table></div>';
+        }
+        return $html;
+    }
+
+
+    public function getAdminsKv()
+    {
+        $data = [];
+        $admins = Db::table('admins')
+            ->select(DB::raw('id,name'))
+            ->orderByRaw('id DESC')
+            ->get()
+            ->toArray();
+        foreach ($admins as $v) {
+            $data[$v->id] = $v->name;
+        }
+        return $data ?? [];
     }
 
 }

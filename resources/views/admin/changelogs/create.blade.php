@@ -40,7 +40,7 @@
                     <div class="hr-line-dashed m-t-sm m-b-sm" style="position: relative;margin-bottom: 20px;"><span style="font-weight:bold;top: -12px;position: absolute;color:black">Development Language：</span>></div>
                     <div class="form-group" style="padding-left: 18px;">
                         <div class="input-group col-sm-2">
-                            <select class="form-control" name="data[development_language]">
+                            <select class="form-control" name="data[development_language]" id="development_language">
                                 @foreach ($development_language as $k=>$v)
                                     <option value="{{$k}}">{{$v}}</option>
                                 @endforeach
@@ -59,6 +59,7 @@
                             <a id="release"><i class="fa fa-plus-circle"></i></a>
                         </div>
                     </div>
+                    <div id="tables"></div>
                     <div class="hr-line-dashed m-t-sm m-b-sm" style="position: relative;margin-bottom: 20px;"><span style="font-weight:bold;top: -12px;position: absolute;color:black">Slug(确保唯一性)：</span>></div>
                     <div class="form-group" style="padding-left: 18px;">
                         <div class="input-group col-sm-2">
@@ -83,6 +84,7 @@
                             <input id="change_date" type="text" class="form-control" name="data[change_date]" required data-msg-required="请输入Seo Keywords">
                         </div>
                     </div>
+
                     <div class="hr-line-dashed m-t-sm m-b-sm" style="position: relative;margin-bottom: 20px;"><span style="font-weight:bold;top: -12px;position: absolute;color:black">order_num(排序 从小到大)：</span></div>
                     <div class="form-group" style="padding-left: 18px;">
                         <div class="input-group col-sm-2">
@@ -107,6 +109,7 @@
         </div>
     </div>
     <script>
+        var arr=[];
         tinymce.init({
             selector: '#content',
             // skin:'oxide-dark',
@@ -154,6 +157,7 @@
         $("#add_changelogs").click(function () {
             var form_data = new FormData($("#form_data")[0]);
             form_data.set("data[content]",tinymce.editors[0].getContent());
+            form_data.set("support",arr);
             $.ajax({
                 url: "{{route('changelogs.store')}}",
                 data: form_data,
@@ -191,15 +195,70 @@
         })
 
         $("#release").click(function () {
-            layer.open({
-                type: 1,
-                title: false,
-                closeBtn: 1, //不显示关闭按钮
-                shade: [0],
-                area: ['90%', '70%'],
-                anim: 2,
-                // content: "<pre>"+data+"</pre>"
-                content: "<p style='font-size: 30px;font-style: normal;position: absolute;left: 40%;top: 40%;'>暂无相关数据！</p>"
+            var platform=$("#category_parent").val();
+            var product=$("#category_child").val();
+            var development_language=$("#development_language").val();
+            if(platform==0 || product==0){
+                layer.msg("请选择Platform/Products后添加Release", {
+                    icon: 2,
+                    time: 2000
+                });
+                return false;
+            }
+            $.ajax({
+                url: "{{route('changelogs.getsupport')}}",
+                data: {
+                    'platform':platform,
+                    'product':product,
+                    'development_language':development_language,
+                    _token: '{{ csrf_token() }}'
+                },
+                type: 'post',
+                dataType: "json",
+                success: function (re) {
+                   html='<div class="form-group" style="padding-left: 18px;"><table class="table table-striped table-bordered table-hover m-t-md" style="word-wrap:break-word; word-break:break-all;"><thead></thead><tbody>';
+                    if (re.code==1) {
+                        layer.open({
+                            type: 1,
+                            title: false,
+                            closeBtn: 1, //不显示关闭按钮
+                            shade: [0],
+                            area: ['95%', '70%'],
+                            anim: 2,
+                            content: re.data,
+                            // content: "<pre>"+data+"</pre>"
+                            btn:['确定'],
+                            btn1: function (index,layero) {
+                                  $(".class").each(function (){
+
+                                     arr.push($(this).val());
+                                     html+="<tr>";
+                                     html+='<td>'+$("#td1_"+$(this).val()).text()+'</td>';
+                                     html+='<td>'+$("#td2_"+$(this).val()).text()+'</td>';
+                                     html+='<td>'+$("#td3_"+$(this).val()).text()+'</td>';
+                                     html+='<td>'+$("#td4_"+$(this).val()).text()+'</td>';
+                                     html+='<td>'+$("#td5_"+$(this).val()).text()+'</td>';
+                                     html+="</tr>";
+                                  })
+                                html+='</tbody></table></div>';
+                                  $("#tables").html(html);
+                            }
+                        });
+                    } else {
+                        //失败提示
+                        if(re.msg){
+                            layer.msg(re.msg, {
+                                icon: 2,
+                                time: 2000
+                            });
+                        }else {
+                            layer.msg("请检查网络或权限设置！！！", {
+                                icon: 2,
+                                time: 2000
+                            });
+                        }
+                    }
+                }
             });
         })
 
@@ -244,40 +303,7 @@
         $("#add_support").click(function () {
             var form_data = new FormData($("#form_data")[0]);
             // form_data.set("data[content]",tinymce.editors[0].getContent());
-            $.ajax({
-                url: "{{route('support.store')}}",
-                data: form_data,
-                type: 'post',
-                processData:false,//需设置为false。因为data值是FormData对象，不需要对数据做处理
-                contentType:false,
-                // dataType: "json",
-                success: function (re) {
-                    //成功提示
-                    console.log(re)
-                    if (re.code==200) {
-                        layer.msg("添加support成功", {
-                            icon: 1,
-                            time: 1000
-                        }, function () {
-                            $(".reset").click();
-                            $(".back").click();
-                        });
-                    } else {
-                        //失败提示
-                        if(re.msg){
-                            layer.msg(re.msg, {
-                                icon: 2,
-                                time: 2000
-                            });
-                        }else {
-                            layer.msg("请检查网络或权限设置！！！", {
-                                icon: 2,
-                                time: 2000
-                            });
-                        }
-                    }
-                }
-            });
+
         })
 
         $(function (){
@@ -288,6 +314,18 @@
             $selectChild = $('#category_parent');
             chage_specialbysid();
 
+            $("#category_parent").change(function (){
+                arr=[];
+                $("#tables").html('');
+            })
+            $("#category_child").change(function (){
+                arr=[];
+                $("#tables").html('');
+            })
+            $("#development_language").change(function (){
+                arr=[];
+                $("#tables").html('');
+            })
         })
     </script>
 @endsection

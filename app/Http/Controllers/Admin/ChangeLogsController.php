@@ -49,9 +49,9 @@ class ChangeLogsController extends BaseController
     }
 
     public function store(){
-        $param = request()->all()['data'];
+        $param = request()->all();
         $unset = [];
-        $check = $this->check_param_key_null($param,$unset);
+        $check = $this->check_param_key_null($param['data'],$unset);
         if(500==$check['code']){
             $result['code'] = 1000;
             $result['msg'] = $check['msg'];
@@ -158,5 +158,11 @@ class ChangeLogsController extends BaseController
             $data['msg'] = '参数不能为空！';
         }
         return $data;
+    }
+
+    public function getsupport(){
+        $param = request()->all();
+        $check = $this->changeLogsService->getsupport($param);
+        return ['code'=>1,'msg'=>'ok','data'=>$check];
     }
 }

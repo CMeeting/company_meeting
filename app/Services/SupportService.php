@@ -11,6 +11,7 @@ declare (strict_types=1);
 
 namespace App\Services;
 
+use App\Models\SupportLog;
 use Auth;
 use App\Models\Support;
 use App\Models\Mailmagicboard;
@@ -134,6 +135,11 @@ class SupportService
 
     public function update_status($data)
     {
+        $supportlog=new SupportLog();
+        $supportdataarr=$this->getfind($data['id']);
+        $datas=['order_no'=>$supportdataarr['order_no'],'status'=>$data['status'],'info'=>'状态更新','created_at'=>date("Y-m-d H:i:s"),'updated_at'=>date("Y-m-d H:i:s")];
+        $supportlog->_insert($datas);
+
         $row = $this->support->_update(['status' => $data['status'],'handler'=>Auth::guard('admin')->user()->id,'updated_at'=>date("Y-m-d H:i:s")], 'id = ' . $data['id']);
         return $row ?? '';
     }
@@ -227,6 +233,17 @@ class SupportService
         return $data;
     }
 
-
+   public function get_data($data){
+        $supprot=new Support();
+        $supportlog=new SupportLog();
+        $info=$supprot->objToArr($supprot->_find("order_no='{$data['order_no']}' and is_delete=0"));
+        if(!$info){
+            return ['code'=>'403','msg'=>"没有找到该数据"];
+        }
+        $list=$supportlog->_where("order_no='{$data['order_no']}","created_at desc");
+        $arr['info']=$info;
+        $arr['list']=$list;
+       return ['code'=>'200','msg'=>"ok",'data'=>$arr];
+   }
 
 }
