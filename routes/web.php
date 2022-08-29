@@ -141,14 +141,12 @@ Route::group(['namespace' => 'Admin','prefix' => 'admin'], function (){
 
 
         Route::get('support/list', 'SupportController@list')->name('support.list'); //support首页
-        Route::get('support/create', 'SupportController@create')->name('support.create');
-        Route::post('support/store', 'SupportController@store')->name('support.store');
-        Route::get('support/edit/{id}', 'SupportController@edit')->name('support.edit');
-        Route::post('support/update/{id}', 'SupportController@update')->name('support.update');
-        Route::post('support/changeStatus', 'SupportController@changeStatus')->name('support.changeStatus');
-        Route::get('support/softDel/{id?}', 'SupportController@softDel')->name('support.softDel');
-
-        
+        Route::get('support/create', 'SupportController@create')->name('support.create');//support新增页面
+        Route::post('support/store', 'SupportController@store')->name('support.store');//support保存功能
+        Route::get('support/edit/{id}', 'SupportController@edit')->name('support.edit');//support编辑页面
+        Route::post('support/update/{id}', 'SupportController@update')->name('support.update');//support编辑功能
+        Route::post('support/changeStatus', 'SupportController@changeStatus')->name('support.changeStatus');//support改变状态
+        Route::get('support/softDel/{id?}', 'SupportController@softDel')->name('support.softDel');//support删除
 
     });
     
