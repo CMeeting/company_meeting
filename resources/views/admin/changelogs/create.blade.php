@@ -158,6 +158,7 @@
             var form_data = new FormData($("#form_data")[0]);
             form_data.set("data[content]",tinymce.editors[0].getContent());
             form_data.set("support",arr);
+            var index = layer.load();
             $.ajax({
                 url: "{{route('changelogs.store')}}",
                 data: form_data,
@@ -169,6 +170,7 @@
                     //成功提示
                     console.log(re)
                     if (re.code==200) {
+                        layer.close(index);
                         layer.msg("添加Changelogs成功", {
                             icon: 1,
                             time: 1000
@@ -177,6 +179,7 @@
                             $(".back").click();
                         });
                     } else {
+                        layer.close(index);
                         //失败提示
                         if(re.msg){
                             layer.msg(re.msg, {
@@ -184,6 +187,7 @@
                                 time: 2000
                             });
                         }else {
+                            layer.close(index);
                             layer.msg("请检查网络或权限设置！！！", {
                                 icon: 2,
                                 time: 2000

@@ -95,7 +95,7 @@ class ChangeLogsService
             }
             foreach ($ids as $k=>$v){
                 $datas[]=['order_no'=>$supportdataarr[$v]['order_no'],'status'=>4,'info'=>'状态更新为已发布','created_at'=>date("Y-m-d H:i:s"),'updated_at'=>date("Y-m-d H:i:s")];
-               // $email->sendDiyContactEmail($supportdataarr[$v],3,$supportdataarr[$v]['e_mail'],$mailedatas);
+                $email->sendDiyContactEmail($supportdataarr[$v],3,$supportdataarr[$v]['e_mail'],$mailedatas);
             }
             $supportlog->_insert($datas);
         }
@@ -103,7 +103,7 @@ class ChangeLogsService
     }
 
     public function update($param,$id){
-        $arr = $param;
+        $arr = $param['data'];
         if($arr['version_no']){
             $list = $this->changeLogs->_find('is_delete = 0 AND version_no = '."'".$arr['version_no']."' AND platform = '".$arr['platform']."'"." AND product = '".$arr['product']."'"." AND development_language = '".$arr['development_language']."' ".'AND id <> '.$id);
             if ($list){
@@ -117,6 +117,26 @@ class ChangeLogsService
             }
         }
         $row = $this->changeLogs->_update($arr,'id = '.$id);
+        if($param['support']){
+            $support=new Support();
+            $email = new EmailService();
+            $maile = new MailmagicboardService();
+            $mailedatas = $maile->getFindcategorical(28);
+            $supportlog=new SupportLog();
+            $support->_update(['status'=>4,'updated_at'=>date("Y-m-d H:i:s")],"id in({$param['support']})");
+            $datas=[];
+            $ids=explode(',',$param['support']);
+            $supportdata=$support->_where("is_delete=0 and product='{$arr['product']}' and platform='{$arr['platform']}' and development_language='{$arr['development_language']}'");
+            $supportdataarr=[];
+            foreach ($supportdata as $k=>$v){
+                $supportdataarr[$v['id']]=$v;
+            }
+            foreach ($ids as $k=>$v){
+                $datas[]=['order_no'=>$supportdataarr[$v]['order_no'],'status'=>4,'info'=>'状态更新为已发布','created_at'=>date("Y-m-d H:i:s"),'updated_at'=>date("Y-m-d H:i:s")];
+                 $email->sendDiyContactEmail($supportdataarr[$v],3,$supportdataarr[$v]['e_mail'],$mailedatas);
+            }
+            $supportlog->_insert($datas);
+        }
         return $row ?? '';
     }
 

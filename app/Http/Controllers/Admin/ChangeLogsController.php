@@ -85,9 +85,9 @@ class ChangeLogsController extends BaseController
     }
 
     public function update($id){
-        $param = request()->all()['data'];
+        $param = request()->all();
         $unset = [];
-        $check = $this->check_param_key_null($param,$unset);
+        $check = $this->check_param_key_null($param['data'],$unset);
         if(500==$check['code']){
             $result['code'] = 1000;
             $result['msg'] = $check['msg'];

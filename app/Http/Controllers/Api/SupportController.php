@@ -7,6 +7,7 @@
  */
 
 namespace App\Http\Controllers\Api;
+use App\Services\SupportapiService;
 use App\Services\SupportService;
 use Illuminate\Http\Request;
 
@@ -14,7 +15,7 @@ class SupportController
 {
 
     public function getsupport(Request $request){
-        $SubscriptionService= new SupportService();
+        $SubscriptionService= new SupportapiService();
         $param = $request->all();
         if(!isset($param['order_no'])){
             return json_encode(['data'=>'','code'=>403,'msg'=>"缺少参数"]);

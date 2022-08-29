@@ -67,6 +67,7 @@
                             </select>
                         </div>
                     </div>
+
                     <div class="hr-line-dashed m-t-sm m-b-sm"></div>
                     <div class="form-group">
                         <label class="col-sm-2 control-label">来源：</label>
@@ -85,21 +86,10 @@
                     <div class="form-group">
                         <label class="col-sm-2 control-label">用户邮箱：</label>
                         <div class="input-group col-sm-2">
-                            <input type="text" class="form-control" name="data[e_mail]" value="" required data-msg-required="请输入标题">
+                            <input type="text" class="form-control" id="e_mail" name="data[e_mail]" value="" required data-msg-required="请输入邮箱">
                         </div>
                     </div>
                     <div class="hr-line-dashed m-t-sm m-b-sm"></div>
-                    <div class="form-group">
-                        <label class="col-sm-2 control-label">处理人：</label>
-                        <div class="input-group col-sm-2">
-                            <select class="form-control" name="data[handler]">
-                                <option value="">请选择处理人</option>
-                                @foreach ($admins as $k=>$v)--}}
-                                    <option value="{{$k}}">{{$v}}</option>
-                                @endforeach
-                            </select>
-                        </div>
-                    </div>
                     <div class="hr-line-dashed m-t-sm m-b-sm"></div>
                     <div class="form-group">
                         <div class="col-sm-10 col-sm-offset-2">
@@ -151,6 +141,12 @@
             $selectThird.html(html1);
         }
         $("#add_support").click(function () {
+            var e= /^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
+            if(!e.test($("#e_mail").val())){
+                layer.close(index);
+                layer.msg('邮件地址不合法', {time: 1500, anim: 6});
+                return false;
+            }
             var form_data = new FormData($("#form_data")[0]);
             // form_data.set("data[content]",tinymce.editors[0].getContent());
             $.ajax({
