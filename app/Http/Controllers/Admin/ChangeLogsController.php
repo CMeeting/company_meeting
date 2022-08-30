@@ -60,7 +60,7 @@ class ChangeLogsController extends BaseController
         $back = $this->changeLogsService->store($param);
         if ("same_version_no" == $back){
             $result['code'] = 1000;
-            $result['msg'] = '添加失败，存在相同数据，请重试';
+            $result['msg'] = '版本号在当前平台、产品、语言、分类下重复';
         }else if ("same_slug" == $back){
             $result['code'] = 1000;
             $result['msg'] = 'slug已存在';
@@ -96,7 +96,7 @@ class ChangeLogsController extends BaseController
         $back = $this->changeLogsService->update($param,$id);
         if ("same_version_no" == $back){
             $result['code'] = 1000;
-            $result['msg'] = '修改失败，存在相同数据，请重试';
+            $result['msg'] = '版本号在当前平台、产品、语言、分类下重复';
         }else if ("same_slug" == $back){
             $result['code'] = 1000;
             $result['msg'] = 'slug已存在';
