@@ -86,7 +86,7 @@
                                         </a>
                                         @else
                                         <a class="abutton clorosx" style="text-decoration: none;color: #f6fff8" title="当前禁用状态" onclick="del('{{$value->id}}',{{$value->deleted}})">
-                                            <i class="fa fa-trash-o fa-delete"></i>启用
+                                            <i class="fa fa-newspaper-o fa-delete"></i>启用
                                         </a>
                                         @endif
                                           </span>
@@ -131,7 +131,7 @@
                         }, function () {
                             if(resp.status==1){
                                 $("#span_"+id).html("");
-                                $("#deleted_"+id).html('<a class="abutton clorosx" style="text-decoration: none;color: #f6fff8" title="当前禁用状态" onclick="del('+id+','+resp.status+')"><i class="fa fa-trash-o fa-delete"></i>启用 </a>');
+                                $("#deleted_"+id).html('<a class="abutton clorosx" style="text-decoration: none;color: #f6fff8" title="当前禁用状态" onclick="del('+id+','+resp.status+')"><i class="fa fa-newspaper-o fa-delete"></i>启用 </a>');
                             }else{
                                 $("#span_"+id).html('<a class="edit_3 abutton cloros2" style="text-decoration: none;color: #f6fff8" title="发送电子报" onclick="dd('+id+')"><i class="fa fa-newspaper-o"></i> 发送 </a>');
                                 $("#deleted_"+id).html('<a class="abutton cloros4" style="text-decoration: none;color: #f6fff8" title="当前启用状态" onclick="del('+id+','+resp.status+')"><i class="fa fa-trash-o fa-delete"></i>禁用</a>');

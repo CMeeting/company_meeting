@@ -143,6 +143,16 @@ class ChangeLogsController extends BaseController
                     }
                 }
                 foreach ($param as $key => $value) {
+                    if($key=="platform" && $value==0){
+                        $data['code'] = 500;
+                        $data['msg'] = '请选择：' . $key;
+                        break;
+                    }
+                    if($key=="product" && $value==0){
+                        $data['code'] = 500;
+                        $data['msg'] = '请选择：' . $key;
+                        break;
+                    }
                     if (null==$value) {
                         $data['code'] = 500;
                         $data['msg'] = '请填写：' . $key;

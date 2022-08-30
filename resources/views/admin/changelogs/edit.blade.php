@@ -24,7 +24,7 @@
                 <form class="form-horizontal m-t-md" id="form_data" accept-charset="UTF-8" enctype="multipart/form-data" style="width: 100%;overflow: auto;">
                     {!! csrf_field() !!}
                     <textarea id="testt123" style="display: none">{{$parent}}</textarea>
-                    <div class="hr-line-dashed m-t-sm m-b-sm" style="position: relative;margin-bottom: 20px;"><span style="font-weight:bold;top: -12px;position: absolute;color:black">Platform/Products：</span>></div>
+                    <div class="hr-line-dashed m-t-sm m-b-sm" style="position: relative;margin-bottom: 20px;"><span style="font-weight:bold;top: -12px;position: absolute;color:black">Platform/Products：<span style="color: red;font-size: 14px">*</span></span>></div>
                     <div class="form-group" style="padding-left: 18px;">
                         <div class="input-group col-sm-2">
                             <select autocomplete="off" class="fenlei form-control ccs" id="category_parent" name="data[platform]" onchange="renderCategoryThirdbypcate(this.value)" onclick="renderCategoryThirdbypcate(this.value)" style="pointer-events: none;color: #9f9f9f;">
@@ -47,7 +47,7 @@
                             </select>
                         </div>
                     </div>
-                    <div class="hr-line-dashed m-t-sm m-b-sm" style="position: relative;margin-bottom: 20px;"><span style="font-weight:bold;top: -12px;position: absolute;color:black">Version_No（版本号，例如：1.1.1）</span>></div>
+                    <div class="hr-line-dashed m-t-sm m-b-sm" style="position: relative;margin-bottom: 20px;"><span style="font-weight:bold;top: -12px;position: absolute;color:black">Version_No（版本号，例如：1.1.1）<span style="color: red;font-size: 14px">*</span></span>></div>
                     <div class="form-group" style="padding-left: 18px;">
                         <div class="input-group col-sm-2">
                             <input type="text" class="form-control" name="data[version_no]" value="{{$row->version_no}}" required data-msg-required="请输入标题">
@@ -60,38 +60,38 @@
                         </div>
                     </div>
                     <div id="tables"></div>
-                    <div class="hr-line-dashed m-t-sm m-b-sm" style="position: relative;margin-bottom: 20px;"><span style="font-weight:bold;top: -12px;position: absolute;color:black">Slug(确保唯一性)：</span>></div>
+                    <div class="hr-line-dashed m-t-sm m-b-sm" style="position: relative;margin-bottom: 20px;"><span style="font-weight:bold;top: -12px;position: absolute;color:black">Slug(确保唯一性)：<span style="color: red;font-size: 14px">*</span></span>></div>
                     <div class="form-group" style="padding-left: 18px;">
                         <div class="input-group col-sm-2">
                             <input type="text" class="form-control" name="data[slug]" value="{{$row->slug}}" onKeyUp="value=value.replace(/[^\w\.\/-]/ig,'')" required data-msg-required="请输入slug">
                         </div>
                     </div>
-                    <div class="hr-line-dashed m-t-sm m-b-sm" style="position: relative;margin-bottom: 20px;"><span style="font-weight:bold;top: -12px;position: absolute;color:black">Seo Title（不允许出现特殊字符）：</span>></div>
+                    <div class="hr-line-dashed m-t-sm m-b-sm" style="position: relative;margin-bottom: 20px;"><span style="font-weight:bold;top: -12px;position: absolute;color:black">Seo Title（不允许出现特殊字符）：<span style="color: red;font-size: 14px">*</span></span>></div>
                     <div class="form-group" style="padding-left: 18px;">
                         <div class="input-group col-sm-2">
                             <input type="text" class="form-control" name="data[seo_title]" value="{{$row->seo_title}}" required data-msg-required="请输入Seo Title">
                         </div>
                     </div>
-                    <div class="hr-line-dashed m-t-sm m-b-sm" style="position: relative;margin-bottom: 20px;"><span style="font-weight:bold;top: -12px;position: absolute;color:black">Seo Description：</span>></div>
+                    <div class="hr-line-dashed m-t-sm m-b-sm" style="position: relative;margin-bottom: 20px;"><span style="font-weight:bold;top: -12px;position: absolute;color:black">Seo Description：<span style="color: red;font-size: 14px">*</span></span>></div>
                     <div class="form-group" style="padding-left: 18px;">
                         <div class="input-group col-sm-2">
                             {{--                            <input type="text" class="form-control" name="data[seo_description]" required data-msg-required="请输入Seo Description">--}}
                             <textarea class="form-control" name="data[seo_description]">{{$row->seo_description}}</textarea>
                         </div>
                     </div>
-                    <div class="hr-line-dashed m-t-sm m-b-sm" style="position: relative;margin-bottom: 20px;"><span style="font-weight:bold;top: -12px;position: absolute;color:black">Change Date：</span>></div>
+                    <div class="hr-line-dashed m-t-sm m-b-sm" style="position: relative;margin-bottom: 20px;"><span style="font-weight:bold;top: -12px;position: absolute;color:black">Change Date：<span style="color: red;font-size: 14px">*</span></span>></div>
                     <div class="form-group" style="padding-left: 18px;">
                         <div class="input-group col-sm-2">
                             <input id="change_date" type="text" class="form-control" name="data[change_date]" value="{{$row->change_date}}" required data-msg-required="请输入Seo Keywords">
                         </div>
                     </div>
-                    <div class="hr-line-dashed m-t-sm m-b-sm" style="position: relative;margin-bottom: 20px;"><span style="font-weight:bold;top: -12px;position: absolute;color:black">order_num(排序 从小到大)：</span></div>
+                    <div class="hr-line-dashed m-t-sm m-b-sm" style="position: relative;margin-bottom: 20px;"><span style="font-weight:bold;top: -12px;position: absolute;color:black">order_num(排序 从小到大)：<span style="color: red;font-size: 14px">*</span></span></div>
                     <div class="form-group" style="padding-left: 18px;">
                         <div class="input-group col-sm-2">
                             <input type="number" class="form-control" name="data[order_num]" value="{{$row->order_num}}" required data-msg-required="请输入Sort id" min="0" oninput="if(value.length>9)value=value.slice(0,9)">
                         </div>
                     </div>
-                    <div class="hr-line-dashed m-t-sm m-b-sm" style="position: relative;margin-bottom: 20px;"><span style="font-weight:bold;top: -10px;position: absolute;color:black">Content:</span></div>
+                    <div class="hr-line-dashed m-t-sm m-b-sm" style="position: relative;margin-bottom: 20px;"><span style="font-weight:bold;top: -10px;position: absolute;color:black">Content:<span style="color: red;font-size: 14px">*</span></span></div>
                     <div class="form-group" style="padding-left: 18px;">
                         <div class="input-group col-sm-2">
                             <textarea id="content" name="data[content]" class="form-control" rows="5" cols="20">{{$row->content}}</textarea>

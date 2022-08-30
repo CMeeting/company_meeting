@@ -94,7 +94,7 @@
               <td></td>
             </tr>
             <tr>
-              <td><strong>程序名称</strong>: ComPDF后台系统 </td>
+              <td><strong>程序名称</strong>: ComPDFKit后台系统 </td>
               <td></td>
             </tr>
             <tr>

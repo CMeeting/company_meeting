@@ -102,26 +102,26 @@ class SupportService
 
     public function update($param,$id){
         $arr = $param;
-        $PlatformVersion = new PlatformVersion();
+//        $PlatformVersion = new PlatformVersion();
         $where = "deleted=0";
-        $Versiondata = $PlatformVersion->selects($where);
+        //$Versiondata = $PlatformVersion->selects($where);
         $product_name='';
         $version_name='';
-        foreach ($Versiondata as $k=>$v){
-            if($v['id']==$arr['platform']){
-                $product_name=$v['name'];
-            }
-            if($v['id']==$arr['product']){
-                $version_name=$v['name'];
-            }
-        }
-        if($arr['version']){
-            $list = $this->support->_find('is_delete = 0 AND version = '."'".$arr['version']."' AND platform = '".$arr['platform']."' ".'AND id <> '.$id);
-            if ($list){
-                return "same_version_no";
-            }
-        }
-        $arr['order_no'] = self::getProductKv2()[$version_name]['code'].self::getPlatformKv2()[$product_name]['code'].self::getDevelopmentLanguageKv()[$arr['development_language']]['code'].'0-'.self::getRandStr(4);
+//        foreach ($Versiondata as $k=>$v){
+//            if($v['id']==$arr['platform']){
+//                $product_name=$v['name'];
+//            }
+//            if($v['id']==$arr['product']){
+//                $version_name=$v['name'];
+//            }
+//        }
+//        if($arr['version']){
+//            $list = $this->support->_find('is_delete = 0 AND version = '."'".$arr['version']."' AND platform = '".$arr['platform']."' ".'AND id <> '.$id);
+//            if ($list){
+//                return "same_version_no";
+//            }
+//        }
+//        $arr['order_no'] = self::getProductKv2()[$version_name]['code'].self::getPlatformKv2()[$product_name]['code'].self::getDevelopmentLanguageKv()[$arr['development_language']]['code'].'0-'.self::getRandStr(4);
         $row = $this->support->_update($arr,'id = '.$id);
         return $row ?? '';
     }

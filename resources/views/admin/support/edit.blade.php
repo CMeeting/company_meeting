@@ -24,7 +24,7 @@
                 <form class="form-horizontal m-t-md" id="form_data" accept-charset="UTF-8" enctype="multipart/form-data" style="width: 100%;overflow: auto;">
                     {!! csrf_field() !!}
                     <div class="form-group">
-                        <label class="col-sm-2 control-label">Version：</label>
+                        <label class="col-sm-2 control-label">Version：<span style="color: red;font-size: 14px">*</span></label>
                         <div class="input-group col-sm-2">
                             <input type="text" class="form-control" name="data[version]" value="{{$row->version}}" required disabled="disabled">
                         </div>
@@ -32,7 +32,7 @@
                     <textarea id="testt123" style="display: none">{{$parent}}</textarea>
                     <div class="hr-line-dashed m-t-sm m-b-sm"></div>
                     <div class="form-group">
-                        <label class="col-sm-2 control-label no-padding-right" for="form-field-1"> Platform/Products：</label>
+                        <label class="col-sm-2 control-label no-padding-right" for="form-field-1"> Platform/Products：<span style="color: red;font-size: 14px">*</span></label>
                         <div class="col-sm-6 col-xs-12">
                                 <select autocomplete="off" class="fenlei form-control ccs" id="category_parent" name="data[platform]" disabled="disabled" onchange="renderCategoryThirdbypcate(this.value)" onclick="renderCategoryThirdbypcate(this.value)">
                                     <option value="0">请选择平台</option>
@@ -68,21 +68,21 @@
                     </div>
                     <div class="hr-line-dashed m-t-sm m-b-sm"></div>
                     <div class="form-group">
-                        <label class="col-sm-2 control-label">来源：</label>
+                        <label class="col-sm-2 control-label">来源：<span style="color: red;font-size: 14px">*</span></label>
                         <div class="input-group col-sm-2">
                             <input type="text" class="form-control" name="data[source]" value="{{$row->source}}" required data-msg-required="请输入标题">
                         </div>
                     </div>
                     <div class="hr-line-dashed m-t-sm m-b-sm"></div>
                     <div class="form-group">
-                        <label class="col-sm-2 control-label">描述：</label>
+                        <label class="col-sm-2 control-label">描述：<span style="color: red;font-size: 14px">*</span></label>
                         <div class="input-group col-sm-2">
                             <textarea class="form-control" name="data[describe]">{{$row->describe}}</textarea>
                         </div>
                     </div>
                     <div class="hr-line-dashed m-t-sm m-b-sm"></div>
                     <div class="form-group">
-                        <label class="col-sm-2 control-label">用户邮箱：</label>
+                        <label class="col-sm-2 control-label">用户邮箱：<span style="color: red;font-size: 14px">*</span></label>
                         <div class="input-group col-sm-2">
                             <input type="text" class="form-control" id="e_mail" name="data[e_mail]" value="{{$row->e_mail}}" required data-msg-required="请输入标题">
                         </div>
