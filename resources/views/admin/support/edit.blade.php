@@ -155,7 +155,6 @@
         $("#add_support").click(function () {
             var e= /^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
             if(!e.test($("#e_mail").val())){
-                layer.close(index);
                 layer.msg('邮件地址不合法', {time: 1500, anim: 6});
                 return false;
             }
