@@ -60,7 +60,12 @@ class SupportapiService
         }
         $list=$supportlog->_where("order_no='{$data['order_no']}'","created_at desc");
         foreach ($list as $k=>$v){
-            $list[$k]['info']=explode('&;',$v['info']);
+            if($v['info']){
+                $list[$k]['info']=explode('&;',$v['info']);
+            }else{
+                $list[$k]['info']=$v['info'];
+            }
+
         }
         $arr['info']=$info;
         $arr['list']=$list;
