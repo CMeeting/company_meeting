@@ -27,8 +27,11 @@ class ChangeLogsService
 
     public function getChangeLogs($platform)
     {
-        $platform_array = self::getPlatformKv();
-        $where['platform'] = array_keys($platform_array, $platform);
+        $platform_ojb = new PlatformVersion();
+        $platform_array = $platform_ojb->_find("name like '{$platform}' and lv=1 and deleted=0");
+        $platform_array = $platform_ojb->objToArr($platform_array);
+        if(!$platform_array)return['code'=>'403','msg'=>'没有找到该数据'];
+        $where['platform'] = $platform_array['id'];
         $list = DB::table('change_logs')
             ->where($where)
             ->select("version_no","content","platform","change_date")
