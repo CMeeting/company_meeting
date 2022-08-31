@@ -21,9 +21,38 @@ class ChangeLogsService
 {
     protected $changeLogs;
 
-    public function __construct(ChangeLogs $changeLogs)
+    public function __construct()
     {
-        $this->changeLogs = $changeLogs;
+    }
+
+    public function getChangeLogs($platform)
+    {
+        $platform_array = self::getPlatformKv();
+        $where['platform'] = array_keys($platform_array, $platform);
+        $list = DB::table('change_logs')
+            ->where($where)
+            ->select("version_no","content","platform","change_date")
+            ->orderBy("change_date","desc")
+            ->get();
+        $data = [];
+        if($list){
+            //构建栅格版本信息
+            foreach (obj_to_arr($list) as $v_key => $val) {
+                $data['Version ' . explode('.', $val['version_no'])[0]]['v' . $val['version_no']] = $val;
+            }
+            foreach ($data as $k => $v) {
+
+                foreach ($v as $k1 => $v2) {
+                    $ver = $k1;
+                    break;
+                }
+                $result['new_version']['version'] = $k;
+                $result['new_version']['version_to_v'] = $ver;
+                break;
+            }
+        }
+        $result['data'] = $data;
+        return $result;
     }
 
     public function getList($param)
