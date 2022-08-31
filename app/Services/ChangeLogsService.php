@@ -31,7 +31,17 @@ class ChangeLogsService
         $where = "1=1";
         if (isset($param['info']) && $param['info']) {
 
-            $where .= " AND " . $param['query_type'] . " like '%" . $param['info'] . "%'";
+            switch ($param['query_type']){
+                case 'id':
+                    $where.=" AND ".$param['query_type']." = ".$param['info'];
+                    break;
+                case 'version_no':
+                    $where.=" AND ".$param['query_type']." like '%".$param['info']."%'";
+                    break;
+                case 'slug':
+                    $where.=" AND ".$param['query_type']." like '%".$param['info']."%'";
+                    break;
+            }
         }
         if (isset($param['platform']) && '-1' != $param['platform']) {
             $where .= " AND platform = '" . $param['platform'] . "'";

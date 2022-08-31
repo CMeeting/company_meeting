@@ -16,6 +16,7 @@
                     <div class="input-group" style="margin-left: 0 auto">
                         <div class="input-group-btn" style="vertical-align: top;">
                             <select name="query_type" class="form-control" style="display: inline-block;width: 120px;">
+                                <option value="id" @if(isset($query)&&$query['query_type']=='id') selected @endif>ID </option>
                                 <option value="version_no" @if(isset($query)&&$query['query_type']=='version_no') selected @endif>version_no </option>
                                 <option value="slug" @if(isset($query)&&$query['query_type']=='slug') selected @endif>slug </option>
                             </select>

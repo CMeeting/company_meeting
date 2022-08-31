@@ -178,7 +178,7 @@ class SupportController extends BaseController
                     }
                     if (null==$value) {
                         $data['code'] = 500;
-                        $data['msg'] = '请选择：' . $key;
+                        $data['msg'] = '请填写：' . $key;
                         break;
                     }
                 }
