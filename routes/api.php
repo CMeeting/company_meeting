@@ -25,5 +25,5 @@ Route::namespace('Api')
         Route::get('/blogs/getBlogForTags','BlogsController@getBlogForTags');
         Route::post('/subscription','SubscriptionController@subscription_status');
         Route::any('/support','SupportController@getsupport');
-        Route::get('/changelogs','ChangeLogsController@changelogs');
+        Route::get('/changelogs','ChangelogsController@changelogs');
     });
