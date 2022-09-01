@@ -150,7 +150,7 @@
                 elem: '#change_date', //指定元素
                 max:30,//日期最大值
                 trigger: 'click',
-                type: 'datetime',//日期时间选择器
+                type: 'day',//日期时间选择器
             });
         });
 
