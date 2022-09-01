@@ -124,11 +124,11 @@ class SupportController extends BaseController
         }
         $id = $param['id'];
         $res = $this->supportService->update_status($param);
-        if($res){
+        if($res['code']==1){
             $datas = $maile->getFindcategorical($param['demo']);
             $data = $this->supportService->getfind($param['id']);
             $email->sendDiyContactEmail($data,3,$data['e_mail'],$datas);
-            return ['code'=>1,'msg'=>"状态更新成功",'id'=>$id,'status'=>$param['status']];
+            return ['code'=>1,'msg'=>"状态更新成功",'id'=>$id,'status'=>$res['status']];
         }else{
             return ['code'=>0,'msg'=>"状态更新失败"];
         }

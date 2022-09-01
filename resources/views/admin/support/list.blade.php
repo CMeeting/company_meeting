@@ -87,10 +87,10 @@
                         <td class="text-center">
                             <div class="btn-group">
                                 @if(1 == $item['status'])
-                                <a href="{{route('support.edit',$item['id'])}}"><button class="btn btn-primary btn-xs" type="button"><i class="fa fa-paste"></i> 修改</button></a>
+                                <a id="update_{{$item['id']}}" href="{{route('support.edit',$item['id'])}}"><button class="btn btn-primary btn-xs" type="button"><i class="fa fa-paste"></i> 修改</button></a>
                                 @endif
                                 @if($item['status']<3)
-                                    <a onclick="change_status('{{$item['id']}}','{{$item['status']}}')"><button class="btn btn-primary btn-xs" type="button"><i class="fa fa-chain"></i> 更改状态</button></a>
+                                    <a id="status2_{{$item['id']}}" onclick="change_status('{{$item['id']}}','{{$item['status']}}')"><button class="btn btn-primary btn-xs" type="button"><i class="fa fa-chain"></i> 更改状态</button></a>
                                     @endif
                                 <a onclick="del('{{$item['id']}}')"><button class="btn btn-danger del btn-xs" type="button"><i class="fa fa-trash-o"></i> 删除</button></a>
                             </div>
@@ -202,7 +202,7 @@
             shade: [0],
             area: ['35%', '50%'],
             anim: 2,
-            content: '{!! csrf_field() !!}<div id="change_status_html" class="row"> <div class="col-sm-12"> <div class="ibox-title"> <h5>更改状态</h5> </div> <div class="ibox-content"> <form class="m-t-md" id="form_data" accept-charset="UTF-8" enctype="multipart/form-data" method="post"><input id="change_status_id" type="hidden" class="form-control" name="id" value="'+id+'"> <div class="form-group"><label class="col-sm-3 control-label">状态：</label> <div class="input-group col-sm-8"> <select class="form-control" name="status">@foreach ($status as $k=>$v) @if(4 != $k && 1!=$k)<option value="{{$k}}">{{$v}}</option>@endif @endforeach</select> </div> </div> <div class="hr-line-dashed m-t-sm m-b-sm"></div> <div class="form-group"> <label class="col-sm-3 control-label">邮件模板：</label> <div class="input-group col-sm-8"> <select class="form-control" name="demo" class="select"> <option value="0">请选择需要发送的邮件模板</option>@foreach ($email as $k=>$vs)<option value="{{$vs['id']}}">{{$vs['name']}}</option>@endforeach</select> </div> </div><div class="form-group"><label class="col-sm-3 control-label">备注：</label><div class="input-group col-sm-8"><textarea rows=5 cols=40 name="info"></textarea></div></div> <div class="hr-line-dashed m-t-sm m-b-sm"></div> <div class="form-group"> <div class="col-sm-10 col-sm-offset-2"> <a class="btn btn-primary" onclick="sub()"><i class="fa fa-check"></i>&nbsp;保 存</a>　<button class="btn btn-white reset" type="reset"><i class="fa fa-repeat"></i> 重 置</button> </div> </div> <div class="clearfix"></div></form> </div> </div> </div>'
+            content: '{!! csrf_field() !!}<div id="change_status_html" class="row"> <div class="col-sm-12"> <div class="ibox-title"> <h5>更改状态</h5> </div> <div class="ibox-content"> <form class="m-t-md" id="form_data" accept-charset="UTF-8" enctype="multipart/form-data" method="post"><input id="change_status_id" type="hidden" class="form-control" name="id" value="'+id+'">  <div class="hr-line-dashed m-t-sm m-b-sm"></div> <div class="form-group"> <label class="col-sm-3 control-label">邮件模板：</label> <div class="input-group col-sm-8"> <select class="form-control" name="demo" class="select"> <option value="0">请选择需要发送的邮件模板</option>@foreach ($email as $k=>$vs)<option value="{{$vs['id']}}">{{$vs['name']}}</option>@endforeach</select> </div> </div><div class="form-group"><label class="col-sm-3 control-label">备注：</label><div class="input-group col-sm-8"><textarea rows=6 cols=40 name="info"></textarea></div></div> <div class="hr-line-dashed m-t-sm m-b-sm"></div> <div class="form-group"> <div class="col-sm-10 col-sm-offset-2"> <a class="btn btn-primary" onclick="sub()"><i class="fa fa-check"></i>&nbsp;保 存</a>　<button class="btn btn-white reset" type="reset"><i class="fa fa-repeat"></i> 重 置</button> </div> </div> <div class="clearfix"></div></form> </div> </div> </div>'
         });
     }
 
@@ -224,8 +224,10 @@
                     layer.msg("更新成功", {time: 1500, anim: 1});
                     if(data.status==2){
                         $("#status_"+data.id).html("已接收");
+                        $("#update_"+data.id).remove();
                     }else if(data.status==3){
                         $("#status_"+data.id).html("已解决");
+                        $("#status2_"+data.id).remove();
                     }
                 }else{
                     layer.close(index);

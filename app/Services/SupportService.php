@@ -146,11 +146,16 @@ class SupportService
     {
         $supportlog=new SupportLog();
         $supportdataarr=$this->getfind($data['id']);
-        $datas=['order_no'=>$supportdataarr['order_no'],'status'=>$data['status'],'info'=>$data['info'],'created_at'=>date("Y-m-d H:i:s"),'updated_at'=>date("Y-m-d H:i:s")];
+        $status=$supportdataarr['status']+1;
+        $datas=['order_no'=>$supportdataarr['order_no'],'status'=>$status,'info'=>$data['info'],'created_at'=>date("Y-m-d H:i:s"),'updated_at'=>date("Y-m-d H:i:s")];
         $supportlog->_insert($datas);
 
-        $row = $this->support->_update(['status' => $data['status'],'handler'=>Auth::guard('admin')->user()->id,'updated_at'=>date("Y-m-d H:i:s")], 'id = ' . $data['id']);
-        return $row ?? '';
+        $row = $this->support->_update(['status' => $status,'handler'=>Auth::guard('admin')->user()->id,'updated_at'=>date("Y-m-d H:i:s")], 'id = ' . $data['id']);
+        if($row){
+            return ['code'=>1,'status'=>$status];
+        }else{
+            return ['code'=>0,'msg'=>"更新失败"];
+        }
     }
 
     public function getPlatformdata()
