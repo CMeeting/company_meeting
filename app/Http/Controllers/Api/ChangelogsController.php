@@ -7,7 +7,7 @@
  */
 
 namespace App\Http\Controllers\Api;
-use App\Services\ChangeLogsService;
+use App\Services\ApiChangeLogsService;
 use Illuminate\Http\Request;
 
 class ChangelogsController
@@ -15,7 +15,7 @@ class ChangelogsController
 
     public function changelogs(Request $request)
     {
-        $changeLogService = new ChangeLogsService();
+        $changeLogService = new ApiChangeLogsService();
         $param = $request->all();
         $platform = isset($param['platform']) && $param['platform'] != '' ? $param['platform'] : "iOS";
         $data = $changeLogService->getChangeLogs($platform);
