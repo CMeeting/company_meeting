@@ -26,7 +26,7 @@
                     <div class="form-group">
                         <label class="col-sm-2 control-label">Version：<span style="color: red;font-size: 14px">*</span></label>
                         <div class="input-group col-sm-2">
-                            <input type="text" class="form-control" name="data[version]" value="{{$row->version}}" required disabled="disabled">
+                            <input type="text" class="form-control" name="data[version]" value="{{$row->version}}" required>
                         </div>
                     </div>
                     <textarea id="testt123" style="display: none">{{$parent}}</textarea>
@@ -34,10 +34,10 @@
                     <div class="form-group">
                         <label class="col-sm-2 control-label no-padding-right" for="form-field-1"> Platform/Products：<span style="color: red;font-size: 14px">*</span></label>
                         <div class="col-sm-6 col-xs-12">
-                                <select autocomplete="off" class="fenlei form-control ccs" id="category_parent" name="data[platform]" disabled="disabled" onchange="renderCategoryThirdbypcate(this.value)" onclick="renderCategoryThirdbypcate(this.value)">
+                                <select autocomplete="off" class="fenlei form-control ccs" id="category_parent" name="data[platform]" onchange="renderCategoryThirdbypcate(this.value)" onclick="renderCategoryThirdbypcate(this.value)">
                                     <option value="0">请选择平台</option>
                                 </select>
-                                <select autocomplete="off" class="fenlei form-control ccs" id="category_child" name="data[product]"  disabled="disabled" style="margin-left: 5px">
+                                <select autocomplete="off" class="fenlei form-control ccs" id="category_child" name="data[product]"   style="margin-left: 5px;">
                                     <option value="0">请选择产品</option>
                                 </select>
                         </div>
@@ -47,7 +47,7 @@
                     <div class="form-group">
                         <label class="col-sm-2 control-label">Development Language：</label>
                         <div class="input-group col-sm-2">
-                            <select class="form-control" name="data[development_language]" disabled="disabled">
+                            <select class="form-control" name="data[development_language]">
                                     @foreach ($development_language as $k=>$v)
                                         <option value="{{$k}}" @if($k==$row->development_language) selected @endif>{{$v['title']}}</option>
                                     @endforeach
