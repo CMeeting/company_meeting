@@ -21,8 +21,9 @@ class ChangeLogsService
 {
     protected $changeLogs;
 
-    public function __construct()
+    public function __construct(ChangeLogs $changeLogs)
     {
+        $this->changeLogs = $changeLogs;
     }
 
     public function getChangeLogs($platform)
