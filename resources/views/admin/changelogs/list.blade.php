@@ -157,7 +157,7 @@
             elem: '#startDate', //指定元素
             max:1,//最大值为当前日期
             trigger: 'click',
-            type: 'datetime',//日期时间选择器
+            type: 'day',//日期时间选择器
             // value: getRecentDay(-30),//默认值30天前
             done:function(value,date){
                 if(value && (value>$("#endDate").val())){
@@ -176,18 +176,11 @@
         });
         var end = laydate.render({
             elem: '#endDate', //指定元素
-            max : 1,//最大值为当前日期
+            max : 30,//最大值为当前日期
             type: 'datetime',//日期时间选择器
             // value: getRecentDay(-1),//默认值昨天
-            done:function(value,date){
-                start.config.max={
-                    year:date.year,
-                    month:date.month-1,
-                    date: date.date,
-                    hours:date.hours,//可注释
-                    minutes:date.minutes,//可注释
-                    seconds:date.seconds//可注释
-                }
+            choose: function (datas) {
+                start.max = datas; //结束日选好后，重置开始日的最大日期
             }
         });
     });
