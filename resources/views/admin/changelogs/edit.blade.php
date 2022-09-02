@@ -232,15 +232,16 @@
                             btn:['确定'],
                             btn1: function (index,layero) {
                                 $(".class").each(function (){
-
-                                    arr.push($(this).val());
-                                    html+="<tr>";
-                                    html+='<td>'+$("#td1_"+$(this).val()).text()+'</td>';
-                                    html+='<td>'+$("#td2_"+$(this).val()).text()+'</td>';
-                                    html+='<td>'+$("#td3_"+$(this).val()).text()+'</td>';
-                                    html+='<td>'+$("#td4_"+$(this).val()).text()+'</td>';
-                                    html+='<td>'+$("#td5_"+$(this).val()).text()+'</td>';
-                                    html+="</tr>";
+                                    if($(this).is(':checked')) {
+                                        arr.push($(this).val());
+                                        html += "<tr>";
+                                        html += '<td>' + $("#td1_" + $(this).val()).text() + '</td>';
+                                        html += '<td>' + $("#td2_" + $(this).val()).text() + '</td>';
+                                        html += '<td>' + $("#td3_" + $(this).val()).text() + '</td>';
+                                        html += '<td>' + $("#td4_" + $(this).val()).text() + '</td>';
+                                        html += '<td>' + $("#td5_" + $(this).val()).text() + '</td>';
+                                        html += "</tr>";
+                                    }
                                 })
                                 html+='</tbody></table></div>';
                                 $("#tables").html(html);
