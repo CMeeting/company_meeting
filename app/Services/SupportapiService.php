@@ -41,7 +41,7 @@ class SupportapiService
                 $info['status']="已接收";
                 break;
             case 3:
-                $info['status']="已接收";
+                $info['status']="已解决";
                 break;
             case 4:
                 $info['status']="已发布";
