@@ -45,9 +45,9 @@
                         <thead>
                         <tr>
                             <th class="text-center" width="50">ID</th>
-                            <th>电子报模板名称</th>
-                            <th>电子报标题</th>
-                            <th>创建人</th>
+                            <th class="text-center">电子报模板名称</th>
+                            <th class="text-center">电子报标题</th>
+                            <th class="text-center">创建人</th>
                             <th class="text-center">创建时间</th>
                             <th class="text-center">编辑时间</th>
                             <th class="text-center">操作</th>
@@ -57,8 +57,8 @@
                         @foreach($data as $key => $value)
                             <tr id="han_{{$value->id}}">
                                 <td class="text-center">{{$value->id}}</td>
-                                <td style="word-break: break-word;">{{$value->name}}</td>
-                                <td style="word-break: break-word;">{{$value->title}}</td>
+                                <td style="word-break: break-word;" title="{{$value->name}}">{{$value->new_name}}</td>
+                                <td style="word-break: break-word;" title="{{$value->title}}">{{$value->new_title}}</td>
                                 <td class="text-center">{{$value->admin_name}}</td>
                                 <td class="text-center">{{$value->created_at}}</td>
                                 <td class="text-center">{{$value->updated_at}}</td>

@@ -18,18 +18,9 @@
                             <select name="query_type" class="form-control" style="display: inline-block;width: 100px;">
                                 <option value="id" @if(isset($query)&&$query['query_type']=='id') selected @endif>ID </option>
                                 <option value="version" @if(isset($query)&&$query['query_type']=='version') selected @endif>version_no </option>
-{{--                                <option value="slug" @if(isset($query)&&$query['query_type']=='slug') selected @endif>slug </option>--}}
                             </select>
                         </div>
                         <input type="text" name="info" class="form-control" style="display: inline-block;width: 150px;" value="@if(isset($query)){{$query['info']}}@endif" />
-{{--                        <div class="input-group-btn" style="display: inline-block;width: 150px;margin-left:20px;">--}}
-{{--                            <select class="form-control"  name="platform">--}}
-{{--                                <option value="-1">筛选 Platform</option>--}}
-{{--                                @foreach($platform as $k=>$v)--}}
-{{--                                    <option value="{{$k}}" @if(isset($query)&&$query['platform']==$k) selected @endif>{{$v}}</option>--}}
-{{--                                @endforeach--}}
-{{--                            </select>--}}
-{{--                        </div>--}}
                         <div class="input-group-btn" style="display: inline-block;width: 150px;margin-left:20px;">
                             <input type="text"  name="start_date" class="form-control" style="display: inline-block;width: 160px;" id="startDate" placeholder="创建时间--开始" value="@if(isset($query)){{$query['start_date']}}@endif" />
                         </div>
@@ -37,11 +28,11 @@
                             <input type="text"  name="end_date" class="form-control" style="display: inline-block;width: 160px;" id="endDate" placeholder="创建时间--结束" value="@if(isset($query)){{$query['end_date']}}@endif" />
                         </div>
                         <span class="input-group-btn" style="display: inline-block;">
-											<button type="submit" class="btn btn-purple btn-sm" style="margin-left: 20px;">
-												<span class="ace-icon fa fa-search icon-on-right bigger-110"></span>
-												搜索
-											</button>
-										</span>
+                            <button type="submit" class="btn btn-purple btn-sm" style="margin-left: 20px;">
+                                <span class="ace-icon fa fa-search icon-on-right bigger-110"></span>
+                                搜索
+                            </button>
+                        </span>
                     </div>
                 </form>
             </div>
@@ -56,8 +47,6 @@
                     <th class="text-center" style="width: 10%">product</th>
                     <th class="text-center" style="width: 11%">development_language</th>
                     <th class="text-center" style="width: 4%">type</th>
-{{--                    <th class="text-center" style="width: 4%">source</th>--}}
-{{--                    <th class="text-center" style="width: 10%">用户邮箱</th>--}}
                     <th class="text-center" style="width: 4%">创建人</th>
                     <th class="text-center" style="width: 4%">处理人</th>
                     <th class="text-center" style="width: 6%">status</th>

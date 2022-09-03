@@ -13,10 +13,15 @@ class NewsletterService
 
     }
 
-    public function data_list($param){
+    public function data_list($param = [])
+    {
         $where = "1=1";
         $email = new mail();
         $data = $email->whereRaw($where)->orderByRaw('id desc')->paginate(10);
+        foreach ($data as $key => $value) {
+            $data[$key]['new_name'] = strlen($value['name']) > 15 ? mb_substr($value['name'], 0, 15, 'utf-8') . "..." : $value['name'];
+            $data[$key]['new_title'] = strlen($value['title']) > 15 ? mb_substr($value['title'], 0, 15, 'utf-8') . "..." : $value['title'];
+        }
         return $data;
     }
 
