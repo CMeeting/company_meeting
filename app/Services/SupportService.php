@@ -87,12 +87,12 @@ class SupportService
             }
         }
 
-        if($arr['version']){
-            $list = $this->support->_find('is_delete = 0 AND version = '."'".$arr['version']."' AND platform = '".$arr['platform']."'"." AND product = '".$arr['product']."'"." AND development_language = '".$arr['development_language']."'"." AND type = '".$arr['type']."'");
-            if ($list){
-                return "same_version";
-            }
-        }
+//        if($arr['version']){
+//            $list = $this->support->_find('is_delete = 0 AND version = '."'".$arr['version']."' AND platform = '".$arr['platform']."'"." AND product = '".$arr['product']."'"." AND development_language = '".$arr['development_language']."'"." AND type = '".$arr['type']."'");
+//            if ($list){
+//                return "same_version";
+//            }
+//        }
         $arr['create_user'] = Auth::guard('admin')->user()->id;
         $arr['order_no'] = self::getProductKv2()[$version_name]['code'].self::getPlatformKv2()[$product_name]['code'].self::getDevelopmentLanguageKv()[$arr['development_language']]['code'].'0-'.self::getRandStr(4);
         $row = $this->support->insertGetId($arr);
@@ -114,12 +114,12 @@ class SupportService
                 $version_name=$v['name'];
             }
         }
-        if($arr['version']){
-            $list = $this->support->_find('is_delete = 0 AND version = '."'".$arr['version']."' AND platform = '".$arr['platform']."' ".'AND id <> '.$id);
-            if ($list){
-                return "same_version_no";
-            }
-        }
+//        if($arr['version']){
+//            $list = $this->support->_find('is_delete = 0 AND version = '."'".$arr['version']."' AND platform = '".$arr['platform']."' ".'AND id <> '.$id);
+//            if ($list){
+//                return "same_version_no";
+//            }
+//        }
         $arr['order_no'] = self::getProductKv2()[$version_name]['code'].self::getPlatformKv2()[$product_name]['code'].self::getDevelopmentLanguageKv()[$arr['development_language']]['code'].'0-'.self::getRandStr(4);
         $row = $this->support->_update($arr,'id = '.$id);
         return $row ?? '';
