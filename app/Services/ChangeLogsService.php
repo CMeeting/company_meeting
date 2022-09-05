@@ -99,12 +99,12 @@ class ChangeLogsService
     public function store($param)
     {
         $arr = $param['data'];
-        if($arr['version_no']){
-            $list = $this->changeLogs->_find('is_delete = 0 AND version_no = '."'".$arr['version_no']."' AND platform = '".$arr['platform']."'"." AND product = '".$arr['product']."'"." AND development_language = '".$arr['development_language']."'");
-            if ($list){
-                return "same_version_no";
-            }
-        }
+//        if($arr['version_no']){
+//            $list = $this->changeLogs->_find('is_delete = 0 AND version_no = '."'".$arr['version_no']."' AND platform = '".$arr['platform']."'"." AND product = '".$arr['product']."'"." AND development_language = '".$arr['development_language']."'");
+//            if ($list){
+//                return "same_version_no";
+//            }
+//        }
         if($arr['slug']){
             $list = $this->changeLogs->_find('is_delete = 0 AND slug = '."'".$arr['slug']."'");
             if ($list){
@@ -137,12 +137,12 @@ class ChangeLogsService
 
     public function update($param,$id){
         $arr = $param['data'];
-        if($arr['version_no']){
-            $list = $this->changeLogs->_find('is_delete = 0 AND version_no = '."'".$arr['version_no']."' AND platform = '".$arr['platform']."'"." AND product = '".$arr['product']."'"." AND development_language = '".$arr['development_language']."' ".'AND id <> '.$id);
-            if ($list){
-                return "same_version_no";
-            }
-        }
+//        if($arr['version_no']){
+//            $list = $this->changeLogs->_find('is_delete = 0 AND version_no = '."'".$arr['version_no']."' AND platform = '".$arr['platform']."'"." AND product = '".$arr['product']."'"." AND development_language = '".$arr['development_language']."' ".'AND id <> '.$id);
+//            if ($list){
+//                return "same_version_no";
+//            }
+//        }
         if($arr['slug']){
             $list = $this->changeLogs->_find('is_delete = 0 AND slug = '."'".$arr['slug']."' ".'AND id <> '.$id);
             if ($list){
