@@ -18,6 +18,7 @@
                             <select name="query_type" class="form-control" style="display: inline-block;width: 100px;">
                                 <option value="id" @if(isset($query)&&$query['query_type']=='id') selected @endif>ID </option>
                                 <option value="version" @if(isset($query)&&$query['query_type']=='version') selected @endif>version_no </option>
+                                <option value="order_no" @if(isset($query)&&$query['query_type']=='order_no') selected @endif>order_no </option>
                             </select>
                         </div>
                         <input type="text" name="info" class="form-control" style="display: inline-block;width: 150px;" value="@if(isset($query)){{$query['info']}}@endif" />
