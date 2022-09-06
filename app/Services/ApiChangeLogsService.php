@@ -25,6 +25,7 @@ class ApiChangeLogsService
         if($list){
             //构建栅格版本信息
             foreach (obj_to_arr($list) as $v_key => $val) {
+                $val['change_date']=date("Y-m-d",strtotime($val['change_date']));
                 $data['Version ' . explode('.', $val['version_no'])[0]]['v' . $val['version_no']] = $val;
             }
             foreach ($data as $k => $v) {
