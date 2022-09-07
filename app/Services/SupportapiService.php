@@ -38,13 +38,13 @@ class SupportapiService
                 $info['status']="待接收";
                 break;
             case 2:
-                $info['status']="已接收";
+                $info['status']="Received";
                 break;
             case 3:
-                $info['status']="已解决";
+                $info['status']="Recovered";
                 break;
             case 4:
-                $info['status']="已发布";
+                $info['status']="Published";
                 break;
         }
         switch ($info['type']){
