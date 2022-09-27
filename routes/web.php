@@ -148,8 +148,18 @@ Route::group(['namespace' => 'Admin','prefix' => 'admin'], function (){
         Route::post('support/changeStatus', 'SupportController@changeStatus')->name('support.changeStatus');//support改变状态
         Route::get('support/softDel/{id?}', 'SupportController@softDel')->name('support.softDel');//support删除
 
+        //用户管理
+        Route::get('user/list', 'UserController@list')->name('user.list'); //用户列表
+        Route::get('user/create', 'UserController@create')->name('user.create'); //添加用户页面
+        Route::post('user/store', 'UserController@store')->name('user.store'); //添加用户接口
+        Route::get('user/edit/{id}', 'UserController@edit')->name('user.edit'); //编辑资料页面
+        Route::post('user/update/{id}', 'UserController@update')->name('user.update'); //更新资料
+        Route::get('user/detail/{id}', 'UserController@detail')->name('user.detail'); //详情
+        Route::post('user/export', 'UserController@export')->name('user.export'); //导出
+        Route::get('user/resetPassword/{id}', 'UserController@resetPassword')->name('user.resetPassword');//重置密码
+        Route::get('user/logout-list', 'UserController@logoutList')->name('user.logoutList'); //注销用户列表
     });
-    
+
     Route::group( ['namespace' => "Count", 'middleware' => ['auth:admin','rbac']],function (){
         Route::resource('dayCount','DayCountController',['only'=> ['index'] ]);  //用户总览
         Route::resource('keepCount','KeepCountController',['only'=> ['index'] ]);  //留存 
@@ -184,5 +194,10 @@ Route::group(['namespace' => 'Admin','prefix' => 'admin'], function (){
         Route::get('config/delete/{id}','ConfigController@delete')->name('config.delete');//配置
         Route::post('config/opeary/{id}','ConfigController@opeary')->name('config.opeary');//配置
     });
+});
+
+/**下载文件**/
+Route::group(['namespace'=>'Common', 'middleware' => ['auth:admin','rbac']], function(){
+    Route::get('download/{file_name}', 'DownloadController@download')->name('download'); //下载文件
 });
 

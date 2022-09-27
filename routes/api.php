@@ -27,3 +27,34 @@ Route::namespace('Api')
         Route::any('/support','SupportController@getsupport');
         Route::get('/changelogs','ChangelogsController@changelogs');
     });
+
+//用户管理
+Route::group(['prefix'=>'user', 'namespace'=>'Api'], function (){
+    //注册
+    Route::post('register', 'UserController@register');
+    //登录
+    Route::post('login', 'UserController@login');
+    //忘记密码
+    Route::post('forget-password', 'UserController@forgetPassword');
+    //修改密码 - 通过邮箱修改
+    Route::post('change-password-by-email', 'UserController@changePasswordByEmail');
+
+    Route::group(['middleware'=>'jwt.auth'], function (){
+        //修改密码 - 用户中心修改
+        Route::post('change-password', 'UserController@changePassword');
+        //修改邮箱
+        Route::post('change-email', 'UserController@changeEmail');
+        //获取用户基本信息
+        Route::get('get-user-info', 'UserController@getUserInfo');
+        //修改Full Name
+        Route::post('change-fullName', 'UserController@changeFullName');
+        //获取账单信息
+        Route::get('get-billing-info', 'UserController@getBillingInfo');
+        //修改账单信息
+        Route::post('edit-billing-info', 'UserController@editBillingInfo');
+        //注销账号
+        Route::get('logout', 'UserController@logout');
+        //退出登录
+        Route::get('sign-out', 'UserController@signOut');
+    });
+});

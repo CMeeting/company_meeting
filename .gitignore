@@ -12,3 +12,5 @@ yarn-error.log
 .env
 /nbproject/private/
 /public/uploads
+composer.lock
+.phpstorm.meta.php
