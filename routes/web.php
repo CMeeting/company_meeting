@@ -148,6 +148,7 @@ Route::group(['namespace' => 'Admin','prefix' => 'admin'], function (){
         Route::post('support/changeStatus', 'SupportController@changeStatus')->name('support.changeStatus');//support改变状态
         Route::get('support/softDel/{id?}', 'SupportController@softDel')->name('support.softDel');//support删除
 
+
         //用户管理
         Route::get('user/list', 'UserController@list')->name('user.list'); //用户列表
         Route::get('user/create', 'UserController@create')->name('user.create'); //添加用户页面
@@ -158,6 +159,23 @@ Route::group(['namespace' => 'Admin','prefix' => 'admin'], function (){
         Route::post('user/export', 'UserController@export')->name('user.export'); //导出
         Route::get('user/resetPassword/{id}', 'UserController@resetPassword')->name('user.resetPassword');//重置密码
         Route::get('user/logout-list', 'UserController@logoutList')->name('user.logoutList'); //注销用户列表
+
+        Route::get('goodsclassification/index', 'GoodsclassificationController@index')->name('goodsclassification.index');
+        Route::get('goodsclassification/creategoodsClassification/{pid?}', 'GoodsclassificationController@creategoodsClassification')->name('goodsclassification.creategoodsClassification');
+        Route::post('goodsclassification/createRungoodsclassification', 'GoodsclassificationController@createRungoodsclassification')->name('goodsclassification.createRungoodsclassification');
+
+        Route::get('goodsclassification/updategoodsClassification/{pid}', 'GoodsclassificationController@updategoodsClassification')->name('goodsclassification.updategoodsClassification');
+        Route::post('goodsclassification/updateRungoodsclassification', 'GoodsclassificationController@updateRungoodsclassification')->name('goodsclassification.updateRungoodsclassification');
+        Route::post('goodsclassification/delgoodsclassification', 'GoodsclassificationController@delgoodsclassification')->name('goodsclassification.delgoodsclassification');
+
+        Route::get('goods/index', 'GoodsController@index')->name('goods.index');
+        Route::get('goods/creategoods', 'GoodsController@creategoods')->name('goods.creategoods');
+        Route::post('goods/createrungoods', 'GoodsController@createrungoods')->name('goods.createrungoods');
+        Route::get('goods/updategoods/{id}', 'GoodsController@updategoods')->name('goods.updategoods');
+        Route::post('goods/updaterungoods', 'GoodsController@updaterungoods')->name('goods.updaterungoods');
+        Route::post('goods/delgoods', 'GoodsController@delgoods')->name('goods.delgoods');
+        Route::post('goods/show', 'GoodsController@show')->name('goods.show');
+
     });
 
     Route::group( ['namespace' => "Count", 'middleware' => ['auth:admin','rbac']],function (){
