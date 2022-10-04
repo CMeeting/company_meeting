@@ -192,7 +192,7 @@ class UserService
         }
 
         $userExport = new UserExport($result);
-        $fileName = 'export\用户列表' . time() . '.xlsx';
+        $fileName = 'export'. DIRECTORY_SEPARATOR .'用户列表' . time() . '.xlsx';
         \Excel::store($userExport, $fileName);
 
         //ajax请求 需要返回下载地址，在使用location.href请求下载地址
