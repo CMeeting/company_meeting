@@ -30,12 +30,12 @@ class UserController extends Controller
 
         $result_full_name = $userService->validateFullName($full_name, 'en');
         if ($result_full_name['code'] != 200) {
-            return $result_full_name;
+            return \Response::json(['code'=>500, 'message'=>$result_full_name['msg']]);
         }
 
         $result_email = $userService->validateEmail($email, 'en');
         if ($result_email['code'] != 200) {
-            return $result_email;
+            return \Response::json(['code'=>500, 'message'=>$result_email['msg']]);
         }
 
         $result_password = $userService->validatePassword($password, 'en');

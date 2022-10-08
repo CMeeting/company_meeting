@@ -1,12 +1,17 @@
 @extends('admin.layouts.layout')
 @section('content')
     <link rel="stylesheet" href="/layui/css/layui.css" media="all">
+    <link rel="stylesheet" href="/css/bootstrap/bootstrap.min.css"/>
+    <link rel="stylesheet" href="/css/bootstrap/bootstrap-select.css"/>
+
     <script src="{{loadEdition('/js/jquery.min.js')}}"></script>
     <script src="{{loadEdition('/layui/layui.js')}}"></script>
-    <link href="/css/bootstrap/bootstrap.min.css" type="text/css">
-    <link href="/css/bootstrap/flag.css">
     <script src="/js/bootstrap/bootstrap.min.js"></script>
-    <script src="/js/bootstrap/jquery.flagstrap.js"></script>
+    <script src="/js/bootstrap/countrypicker.min.js"></script>
+    <script src="/js/bootstrap/bootstrap-select.min.js"></script>
+
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
+
 
     <div class="row">
         <div class="col-sm-12">
@@ -29,14 +34,12 @@
                                 <div class="input-group-btn" style="display: inline-block;width: 200px;">
                                     <input id="keyword" type="text" name="keyword" class="form-control" style="display: inline-block;width: 240px;" value="@if(isset($query['keyword'])){{$query['keyword']}}@endif" placeholder="用户ID/邮箱/Full Name/Company"/>
                                 </div>
-
-
                             </div>
 
                             <div class="layui-form-item" style="display: inline-block; margin-left: 50px">
                                 <div class="form-group">
                                     <label class="layui-form-label" style="width: 70px">Country</label>
-                                    <div class="flagstrap" data-input-name="country"></div>
+                                    <select name="country" class="selectpicker countrypicker" data-live-search="true" data-default="{{array_get($query, 'country', 'United States')}}" data-flag="true"></select>
                                 </div>
                             </div>
 
@@ -115,9 +118,8 @@
         </div>
         <div class="clearfix"></div>
     </div>
-    <script>
-        $('.flagstrap').flagStrap();
 
+    <script>
         layui.use('laydate', function(){
             let laydate = layui.laydate;
 
