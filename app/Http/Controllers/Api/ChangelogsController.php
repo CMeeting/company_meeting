@@ -7,6 +7,7 @@
  */
 
 namespace App\Http\Controllers\Api;
+
 use App\Services\ApiChangeLogsService;
 use Illuminate\Http\Request;
 
@@ -18,7 +19,8 @@ class ChangelogsController
         $changeLogService = new ApiChangeLogsService();
         $param = $request->all();
         $platform = isset($param['platform']) && $param['platform'] != '' ? $param['platform'] : "iOS";
-        $data = $changeLogService->getChangeLogs($platform);
+        $product = isset($param['product']) && $param['product'] != '' ? $param['product'] : "ComPDFKit PDF SDK";
+        $data = $changeLogService->getChangeLogs($platform, $product);
         return json_encode(['data' => $data, 'code' => 200, 'msg' => "success"]);
     }
 
