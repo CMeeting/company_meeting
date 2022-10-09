@@ -7,6 +7,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\LogoutUser;
 use App\Models\User;
+use App\Services\EmailService;
 use App\Services\JWTService;
 use App\Services\UserBillingInfoService;
 use App\Services\UserService;
@@ -46,6 +47,10 @@ class UserController extends Controller
         $user_id = $userService->add($email, $full_name, $password);
 
         //TODO 发送注册成功邮件
+//        $emailService = new EmailService();
+//        $data['title'] = '注册成功';
+//        $data['info'] = '感谢注册，账号' . $email;
+//        $emailService->sendDiyContactEmail($data,1, $email);
 
         //['email'=>'test@gmail.com', 'iat'=>'签发时间', 'jti'=>'token唯一标识']
         $jti = JWTService::getJTI();
@@ -78,10 +83,14 @@ class UserController extends Controller
         $jti = JWTService::getJTI();
 
         //缓存token
-        UserService::saveToken($email, $jti);
+        JWTService::saveToken($email, $jti);
 
         $payload = ['email' => $email, 'iat' => time(), 'jti'=>$jti];
         $token = JWTService::getToken($payload);
+
+        //记录登录次数
+        $userService = new UserService();
+        $userService->addLoginTime($user->id);
 
         return \Response::json(['code'=>200, 'message'=>'success', 'data'=>['token'=>$token]]);
     }
@@ -126,7 +135,7 @@ class UserController extends Controller
         $userService->changePassword($current_user, $password_confirm);
 
         //删除用户token
-        UserService::forgetToken($current_user->email);
+        JWTService::forgetToken($current_user->email);
 
         return \Response::json(['code'=>200, 'message'=>'success']);
     }
@@ -157,7 +166,13 @@ class UserController extends Controller
         $userService->changeEmail($current_user, $email);
 
         //删除token
-        UserService::forgetToken($old_email);
+        JWTService::forgetToken($old_email);
+
+        //TODO 发送邮件
+//        $emailService = new EmailService();
+//        $data['title'] = '注册成功';
+//        $data['info'] = '您的账号正在修改邮箱，请注意';
+//        $emailService->sendDiyContactEmail($data, 1, $old_email);
 
         return \Response::json(['code'=>200, 'message'=>'success']);
     }
@@ -272,7 +287,6 @@ class UserController extends Controller
             return ['code'=>500, 'message'=>'Please enter a valid email address.'];
         }
 
-        //TODO 发送邮件
         $userService = new UserService();
         $userService->sendChangePasswordEmail($email);
 
@@ -320,7 +334,7 @@ class UserController extends Controller
         $userService->changePassword($user, $new_password);
 
         //删除用户token
-        UserService::forgetToken($email);
+        JWTService::forgetToken($email);
 
         return \Response::json(['code'=>200, 'message'=>'success']);
     }
@@ -344,7 +358,7 @@ class UserController extends Controller
             }
 
             //删除用户token
-            UserService::forgetToken($current_user->email);
+            JWTService::forgetToken($current_user->email);
         }
 
         return \Response::json(['code'=>200, 'message'=>'success']);
@@ -358,7 +372,7 @@ class UserController extends Controller
     public function signOut(Request $request){
         $current_user = UserService::getCurrentUser($request);
 
-        UserService::forgetToken($current_user->email);
+        JWTService::forgetToken($current_user->email);
 
         return \Response::json(['code'=>200, 'message'=>'success']);
     }

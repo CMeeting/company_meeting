@@ -37,6 +37,7 @@ class UserBillingInfoService
             $model = new UserBillingInformation();
         }
 
+        $model->user_id = $user_id;
         $model->first_name = $first_name;
         $model->last_name = $last_name;
         $model->email = $email;

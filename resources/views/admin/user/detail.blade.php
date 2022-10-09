@@ -18,7 +18,7 @@
     <div class="row">
         <div class="ibox-title" style="margin-bottom:20px">
             <span style="display: inline-block; width: 200px; font-size: 20px">用户详情</span>
-            <a href="{{route('user.list')}}"><button class="btn btn-primary btn-sm back" type="button" style="float: right"><i class="fa fa-chevron-left"></i> 返回列表 </button></a>
+            <a href="javascript:history.back(-1)"><button class="btn btn-primary btn-sm back" type="button" style="float: right"><i class="fa fa-chevron-left"></i> 返回列表 </button></a>
         </div>
         <fieldset class="layui-elem-field">
             <legend>基本信息</legend>
@@ -47,15 +47,15 @@
                     <tr>
                         <td>{{$user->order_price}}</td>
                         <td>{{$user->order_number}}</td>
-                        <td>###</td>
-                        <td>###</td>
+{{--                        <td>###</td>--}}
+{{--                        <td>###</td>--}}
                         <td>{{$user->login_times}}</td>
                     </tr>
                     <tr>
                         <td style="background: #e2e2e2">消费金额</td>
                         <td style="background: #e2e2e2">订单数量</td>
-                        <td style="background: #e2e2e2">优惠券（张）</td>
-                        <td style="background: #e2e2e2">退款记录</td>
+{{--                        <td style="background: #e2e2e2">优惠券（张）</td>--}}
+{{--                        <td style="background: #e2e2e2">退款记录</td>--}}
                         <td style="background: #e2e2e2">登录次数</td>
                     </tr>
                 </table>
@@ -177,7 +177,7 @@
                             <th>{{array_get($status_arr, $order->status)}}</th>
                             <th>
                                 <div class="btn-group">
-                                    <a href="{{route('user.detail', $order->id)}}"><button class="btn btn-primary btn-xs" type="button"><i class="fa fa-paste"></i> 查看订单</button></a>
+                                    <a href=""><button class="btn btn-primary btn-xs" type="button"><i class="fa fa-paste"></i> 查看订单</button></a>
                                 </div>
                             </th>
                         </tr>

@@ -157,4 +157,27 @@ class JWTService
     public static function getJTI(){
         return md5(uniqid('jwt') . time());
     }
+
+    /**
+     * 删除token
+     * @param $email
+     */
+    public static function forgetToken($email){
+        $key = 'jwt' . $email;
+        if(\Cache::has($key)){
+            \Cache::forget($key);
+        }
+    }
+
+    /**
+     * 缓存token
+     * @param $email
+     * @param $jti
+     */
+    public static function saveToken($email, $jti)
+    {
+        $key = 'jwt' . $email;
+        self::forgetToken($email);
+        \Cache::add($key, $jti, 60 * 24 * 14);
+    }
 }

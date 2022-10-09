@@ -39,7 +39,7 @@
                             <div class="layui-form-item" style="display: inline-block; margin-left: 50px">
                                 <div class="form-group">
                                     <label class="layui-form-label" style="width: 70px">Country</label>
-                                    <select name="country" class="selectpicker countrypicker" data-live-search="true" data-default="{{array_get($query, 'country', 'United States')}}" data-flag="true"></select>
+                                    <select id="country" name="country" class="selectpicker countrypicker" data-live-search="true" data-default="{{array_get($query, 'country', 'All')}}" data-flag="true"></select>
                                 </div>
                             </div>
 
@@ -47,7 +47,7 @@
                                 <label class="layui-form-label" style="width: 90px">用户类型</label>
                                 <div class="input-group-btn" style="display: inline-block;width: 120px;">
                                     <select id="type" class="form-control"  name="type">
-                                        <option value="-1">全部</option>
+                                        <option value="-1">用户类型</option>
                                         @foreach($type_arr as $key=>$type)
                                             <option value={{$key}} @if(isset($query['type'])&&$query['type']==$key) selected @endif>{{$type}}</option>
                                         @endforeach
@@ -96,15 +96,15 @@
                             <td  class="text-center" >{{$item->uid}}</td>
                             <td  class="text-center" >{{$item->u_email}}</td>
                             <td  class="text-center" >{{$item->full_name}}</td>
-                            <td  class="text-center" >{{$item->company}}</td>
-                            <td  class="text-center" >{{$item->country}}</td>
+                            <td  class="text-center" >{{$item->company ?? '-'}}</td>
+                            <td  class="text-center" >{{$item->country ?? '-'}}</td>
                             <td  class="text-center" >{{$type_arr[$item->type]}}</td>
-                            <td  class="text-center" >{{$item->order_price}}</td>
+                            <td  class="text-center" >{{$item->order_price ?? '-'}}</td>
                             <td  class="text-center" >{{$item->order_number}}</td>
                             <td  class="text-center" >{{$item->register_time}}</td>
                             <td class="text-center">
                                 <div class="btn-group">
-                                    <a href="{{route('user.detail', $item->uid)}}"><button class="btn btn-primary btn-xs" type="button"><i class="fa fa-paste"></i> 详情</button></a>
+                                    <a href="{{route('user.detail', $item->uid)}}"><button class="btn btn-primary btn-xs" type="button"><i class="fa fa-paste"></i> 查看</button></a>
                                     <a href="{{route('user.edit', $item->uid)}}"><button class="btn layui-btn-normal btn-xs" type="button"><i class="fa fa-paste"></i> 编辑</button></a>
                                 </div>
                             </td>

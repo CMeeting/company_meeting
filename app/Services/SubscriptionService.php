@@ -40,4 +40,28 @@ class SubscriptionService
            }
         }
     }
+
+    /**
+     * 新增
+     * @param $email
+     */
+    public function add($email){
+        $model = new Subscription();
+        $model->email = $email;
+        $model->status = 1;
+        $model->save();
+    }
+
+    /**
+     * 取消订阅
+     * @param $id
+     */
+    public function delete($id){
+        $model = Subscription::find($id);
+
+        if($model instanceof Subscription){
+            $model->deleted = 1;
+            $model->save();
+        }
+    }
 }

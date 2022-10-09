@@ -23,7 +23,6 @@ class EmailService
             $data['info'] = $arrs['info'];
         }
         $res=$this->send_email($data,$arr,$subject,$type);
-
     }
 
      function send_email($data,$arr,$subject,$type=1){

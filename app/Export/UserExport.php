@@ -43,8 +43,8 @@ class UserExport implements FromArray, WithStyles, ShouldAutoSize, WithColumnWid
      */
     public function styles(Worksheet $sheet)
     {
-        //设置标题水平居中
-        $sheet->getStyle('A1:I1')->applyFromArray(['alignment' => ['horizontal' => 'center']]);
+        //设置标题左对齐
+        $sheet->getStyle('A1:I1')->applyFromArray(['alignment' => ['horizontal' => 'left']]);
         //设置标题加粗
         $sheet->getStyle('A1:I1')->applyFromArray(['font' => ['bold' => true]]);
         //设置内容左对齐
