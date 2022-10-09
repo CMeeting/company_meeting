@@ -197,7 +197,7 @@ class UserService
         \Excel::store($userExport, $fileName);
 
         //ajax请求 需要返回下载地址，在使用location.href请求下载地址
-        return ['url'=>route('download', $fileName)];
+        return ['url'=>route('download', ['file_name'=>$fileName])];
     }
 
     /**
