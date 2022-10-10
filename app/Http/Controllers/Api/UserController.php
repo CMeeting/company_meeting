@@ -47,14 +47,15 @@ class UserController extends Controller
         $user_id = $userService->add($email, $full_name, $password);
 
         //TODO 发送注册成功邮件
-//        $emailService = new EmailService();
-//        $data['title'] = '注册成功';
-//        $data['info'] = '感谢注册，账号' . $email;
-//        $emailService->sendDiyContactEmail($data,1, $email);
+        $emailService = new EmailService();
+        $data['title'] = '注册成功';
+        $data['info'] = '感谢注册，账号' . $email;
+        $emailService->sendDiyContactEmail($data,1, $email);
 
         //['email'=>'test@gmail.com', 'iat'=>'签发时间', 'jti'=>'token唯一标识']
         $jti = JWTService::getJTI();
-        \Cache::add($jti, 1, 60*24);
+        //缓存token
+        JWTService::saveToken($email, $jti);
 
         $payload = ['email' => $email, 'iat' => time(), 'jti'=>$jti, 'id'=>$user_id];
         $token = JWTService::getToken($payload);
