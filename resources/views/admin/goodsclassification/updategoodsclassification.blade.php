@@ -60,7 +60,7 @@
                                         保&nbsp;&nbsp;存
                                     </button>
                                     &nbsp;&nbsp;&nbsp;&nbsp;
-                                    <a class="menuid btn btn-primary btn-sm" href="javascript:history.go(-1)">返回</a>
+                                    <a class="menuid btn btn-primary btn-sm" href="{{route('goodsclassification.index')}}">返回</a>
                                 </div>
                             </div>
                     </form>

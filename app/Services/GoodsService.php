@@ -27,6 +27,15 @@ class GoodsService
         if($param['info']){
              $where.=" and {$param['query_type']}={$param['info']}";
         }
+        if($param['level1']){
+            $where.=" and level1={$param['level1']}";
+        }
+        if($param['level2']){
+            $where.=" and level2={$param['level2']}";
+        }
+        if($param['level3']){
+            $where.=" and level3={$param['level3']}";
+        }
         if($param['status']){
             $param['status']=$param['status']-1;
             $where.=" and status={$param['status']}";

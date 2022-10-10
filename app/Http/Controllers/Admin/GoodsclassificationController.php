@@ -79,7 +79,9 @@ class GoodsclassificationController extends BaseController {
         $param = $request->input();
         $sdkclassification = new GoodsclassificationService();
         $bool = $sdkclassification->addEditcaregorical($param);
-        if ($bool) {
+        if ($bool=="isdata") {
+            return ['code'=>1,'msg'=>"该分类或子分类下有商品存在，不允许删除！"];
+        }elseif($bool){
             return ['code'=>0];
         } else {
             return ['code'=>1,'msg'=>"更新失败"];

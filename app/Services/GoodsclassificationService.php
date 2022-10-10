@@ -12,6 +12,7 @@ declare (strict_types=1);
 namespace App\Services;
 
 use App\Models\Goodsclassification;
+use App\Models\Goods;
 use Auth;
 
 class GoodsclassificationService
@@ -141,6 +142,12 @@ class GoodsclassificationService
             }
             $bool = $Goodsclassification->_update($data, $where);
         } elseif (isset($param['delid'])) {
+            $ids = $this->getIds($param['delid']);
+            $ids = implode(',', $ids);
+            $goods=new goods();
+            $is_find=$goods->_find("(level1 in('{$ids}') or level2 in('{$ids}') or level3 in('{$ids}')) and deleted=0");
+            $is_find=$goods->objToArr($is_find);
+            if($is_find)return 'isdata';
             $bool = $Goodsclassification->_update(['deleted' => 1], "id=" . $param['delid']);
             if ($bool) {
                 $Goodsclassification->_update(['deleted' => 1], "pid=" . $param['delid']);
@@ -163,6 +170,21 @@ class GoodsclassificationService
     {
         $http_type = ((isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on') || (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] == 'https')) ? 'https://' : 'http://';
         return $http_type . $_SERVER['HTTP_HOST'];
+    }
+
+
+    function getIds($id, &$arr = array())
+    {
+        array_push($arr, $id);
+        $operate = new Goodsclassification();
+        $where="deleted=0 and pid=".$id;
+        $lower_ids = $operate->_where($where,"lv", "id");
+        if ($lower_ids) {
+            foreach ($lower_ids as $key => $val) {
+                $this->getIds($val['id'], $arr);
+            }
+        }
+        return $arr;
     }
 
 }

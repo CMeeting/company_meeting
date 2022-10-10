@@ -175,6 +175,7 @@ Route::group(['namespace' => 'Admin','prefix' => 'admin'], function (){
         Route::post('goods/updaterungoods', 'GoodsController@updaterungoods')->name('goods.updaterungoods');
         Route::post('goods/delgoods', 'GoodsController@delgoods')->name('goods.delgoods');
         Route::post('goods/show', 'GoodsController@show')->name('goods.show');
+        Route::get('goods/info/{id}', 'GoodsController@info')->name('goods.info');
 
     });
 

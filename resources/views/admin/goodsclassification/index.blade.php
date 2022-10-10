@@ -93,7 +93,7 @@
                             type: 'post',
                             dataType: "json",
                             success: function (resp) {
-                                // layer.close(index);
+                                 layer.close(index);
                                 //成功提示
                                 if (resp.code==0) {
                                     layer.msg("删除成功", {
@@ -104,7 +104,7 @@
                                     });
                                 } else {
                                     //失败提示
-                                    layer.msg(resp.message, {
+                                    layer.msg(resp.msg, {
                                         icon: 2,
                                         time: 2000
                                     });

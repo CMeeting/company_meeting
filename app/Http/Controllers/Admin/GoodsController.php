@@ -115,6 +115,12 @@ class GoodsController extends BaseController {
     }
 
 
+    public function info($id)
+    {
+        $GoodsService = new GoodsService();
+        $data = $GoodsService->getFindcategorical($id);
+        return $this->view('info',['data'=>$data]);
+    }
 
 
 }
