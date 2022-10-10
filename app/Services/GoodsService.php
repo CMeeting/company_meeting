@@ -154,7 +154,7 @@ class GoodsService
         $status= $Goods->objToArr($status);
         $enabled = ($status['status'] == 1) ? 0 : 1;
         if($enabled==1){
-            $bool = $Goods->_update(['status' => $enabled,'shelf_at'=>date("Y-m-d")], "id=" . $param['id']);
+            $bool = $Goods->_update(['status' => $enabled,'shelf_at'=>date("Y-m-d H:i:s")], "id=" . $param['id']);
         }else{
             $bool = $Goods->_update(['status' => $enabled], "id=" . $param['id']);
         }
