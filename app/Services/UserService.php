@@ -239,17 +239,17 @@ class UserService
     public function validateFullName($full_name, $lang = 'zn'){
         $message = [
             'required' => ['zn'=>'Full Name不能为空', 'en'=>'Full Name is required.'],
-            'format' => ['zn'=>'Full Name长度需在1-24之间', 'en'=>'Full Name must between 1-24 characters.']
+//            'format' => ['zn'=>'Full Name长度需在1-24之间', 'en'=>'Full Name must between 1-24 characters.']
         ];
 
         if(!$full_name){
             return ['code'=>500, 'msg'=>array_get($message, "required.$lang")];
         }
 
-        $len = strlen($full_name);
-        if($len < 1 || $len > 24){
-            return ['code'=>500, 'msg'=>array_get($message, "format.$lang")];
-        }
+//        $len = strlen($full_name);
+//        if($len < 1 || $len > 24){
+//            return ['code'=>500, 'msg'=>array_get($message, "format.$lang")];
+//        }
 
         return ['code'=>200, 'msg'=>'success'];
     }
