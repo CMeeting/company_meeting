@@ -61,13 +61,13 @@
                                    value="@if(isset($query)){{$query['info']}}@endif"/>
 
                             <div class="col-md-4 col-lg-2 col-sm-6 col-xs-12">
-                                    <select name="level1" id="province" class="form-control"></select>
+                                <select name="level1" id="province" class="form-control"></select>
                             </div>
                             <div class="col-md-4 col-lg-2 col-sm-6 col-xs-12">
-                                    <select name="level2" id="city" class="form-control"></select>
+                                <select name="level2" id="city" class="form-control"></select>
                             </div>
                             <div class="col-md-4 col-lg-2 col-sm-6 col-xs-12">
-                                    <select name="level3" id="town" class="form-control"></select>
+                                <select name="level3" id="town" class="form-control"></select>
                             </div>
                             <div class="col-md-4 col-lg-2 col-sm-6 col-xs-12">
                                 <div class="form-group">
@@ -127,12 +127,12 @@
                                 <font class="open_{{$item['id']}}">
                                     @if($item['status'] == 1)
                                         <a data-id="{{$item['id']}}" class="openBtn_{{$item['id']}} abutton cloros1"
-                                           data-style="zoom-out" onclick="show({{$item['id']}});" title="当前上架状态">
+                                           data-style="zoom-out" onclick="show({{$item['id']}},{{$item['status']}});" title="当前上架状态">
                                             <span class="ladda-label">下架</span>
                                         </a>
                                     @else
                                         <a data-id="{{$item['id']}}" class="openBtn_{{$item['id']}} abutton cloros"
-                                           data-style="zoom-out" onclick="show({{$item['id']}});" title="当前下架状态">
+                                           data-style="zoom-out" onclick="show({{$item['id']}},{{$item['status']}});" title="当前下架状态">
                                             <span class="ladda-label">上架</span>
                                         </a>
                                     @endif
@@ -177,7 +177,7 @@
                 btn: ['确定', '取消']
             }, function () {
                 // layer.close(index);
-                var index = layer.load();
+                let index = layer.load();
                 $.ajax({
                     url: "{{route('goods.delgoods')}}",
                     data: {delid: id, _token: '{{ csrf_token() }}'},
@@ -251,37 +251,52 @@
         });
 
 
-        function show(id) {
-            var index = layer.load();
-            $.ajax({
-                url: "{{route('goods.show')}}",
-                data: {id: id, _token: '{{ csrf_token() }}'},
-                type: 'post',
-                dataType: "json",
-                success: function (resp) {
-                    if (resp.code == 0) {
-                        if (resp.status == 0) {
-                            var htmls = '<a type="button" style="text-decoration: none;color: #f6fff8"   data-id="{$v.id}"  class="openBtn_' + id + ' abutton cloros" data-style="zoom-out" onclick="show(' + id + ');" title="当前下架状态"> <span class="ladda-label">上架</span></a>';
-                        } else {
-                            var htmls = '<a type="button" style="text-decoration: none;color: #f6fff8"  data-id="{$v.id}"  class="openBtn_' + id + ' abutton cloros1" data-style="zoom-out" onclick="show(' + id + ');" title="当前上架状态"> <span class="ladda-label">下架</span></a>';
-                        }
-                        $(".open_" + id).html(htmls);
+        function show(id,status) {
+
+            if(status==1){
+                var ale="你确定下架此商品吗？"
+            }else{
+                var ale="你确定上架此商品吗？"
+            }
+            layer.confirm(ale, {
+                btn: ['确定', '取消']
+            },function () {
+                let index = layer.index;
+                $.ajax({
+                    url: "{{route('goods.show')}}",
+                    data: {id: id, _token: '{{ csrf_token() }}'},
+                    type: 'post',
+                    //dataType: "json",
+                    success: function (resp) {
                         layer.close(index);
-                    } else {
-                        //失败提示
-                        layer.msg(resp.msg, {
+                        layer.close(index);
+                        if (resp.code == 0) {
+                            if (resp.status == 0) {
+                                var htmls = '<a type="button" style="text-decoration: none;color: #f6fff8"   data-id="{$v.id}"  class="openBtn_' + id + ' abutton cloros" data-style="zoom-out" onclick="show(' + id + ','+resp.status+');" title="当前下架状态"> <span class="ladda-label">上架</span></a>';
+                            } else {
+                                var htmls = '<a type="button" style="text-decoration: none;color: #f6fff8"  data-id="{$v.id}"  class="openBtn_' + id + ' abutton cloros1" data-style="zoom-out" onclick="show(' + id + ','+resp.status+');" title="当前上架状态"> <span class="ladda-label">下架</span></a>';
+                            }
+                            $(".open_" + id).html(htmls);
+
+                        } else {
+                            //失败提示
+                            layer.msg(resp.msg, {
+                                icon: 2,
+                                time: 2000
+                            });
+                        }
+                    }, error: function (response) {
+                        layer.msg("请检查网络或权限设置！", {
                             icon: 2,
                             time: 2000
                         });
+                        layer.close(index);
                     }
-                }, error: function (response) {
-                    layer.msg("请检查网络或权限设置！", {
-                        icon: 2,
-                        time: 2000
-                    });
-                    layer.close(index);
-                }
+                });
+            }, function (index) {
+                layer.close(index);
             });
+
         }
 
 
