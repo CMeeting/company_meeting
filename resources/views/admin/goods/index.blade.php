@@ -399,6 +399,7 @@
 
                         if(field.length == 0){
                             alert("至少需要一列导出字段")
+                            return false;
                         }
 
                         let query_type =  $('#query_type').find("option:selected").val()
