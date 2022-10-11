@@ -38,8 +38,8 @@
         <div class="col-sm-12">
             <div class="ibox-title">
                 <h5>Goods</h5>
-                <button id="export" class="btn layui-btn-primary btn-sm" type="button" style="float: right"><i class="fa fa-paste"></i>导出数据</button>
-                <a style="float: right" href="{{route('goods.creategoods')}}" link-url="javascript:void(0)">
+                <button id="export" class="btn layui-btn-primary btn-sm" type="button" style="float: right;margin-left: 5px"><i class="fa fa-paste"></i>导出数据</button>
+                <a style="float: right;margin-left: 5px" href="{{route('goods.creategoods')}}" link-url="javascript:void(0)">
                     <button class="btn btn-primary btn-sm" type="button"><i class="fa fa-plus-circle"></i> 添加 Goods</button>
                 </a>
             </div>
@@ -49,7 +49,7 @@
                     <form name="admin_list_sea" class="form-search" method="get" action="{{route('goods.index')}}">
                         <div class="input-group">
 
-                            <div class="input-group-btn" >
+                            <div class="input-group-btn" style="display: block;">
                                 <select id="query_type" name="query_type" class="form-control"
                                         style="display: inline-block;width: 100px;">
                                     <option value="id" @if(isset($query)&&$query['query_type']=='id') selected @endif>
@@ -79,7 +79,7 @@
                                 </div>
                             </div>
 
-                            <div class="input-group-btn" style="display: inline-block;width: 150px;margin-left:20px;">
+                            <div class="input-group-btn" style="display: inline-block;width: 150px;">
                                 <input type="text" name="start_date" class="form-control"
                                        style="display: inline-block;width: 160px;" id="startDate" placeholder="创建时间--开始"
                                        value="@if(isset($query)){{$query['start_date']}}@endif"/>
