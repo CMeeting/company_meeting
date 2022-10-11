@@ -34,33 +34,33 @@
                 </a>
                 <form class="form-horizontal" id="forms" name="form"  method="post" action="{{route('goods.createrungoods')}}" >
                     {{ csrf_field() }}
-                <div class="layui-form-item">
-                    <label class="layui-form-label" style="width: 120px">Products</label>
-                    <div class="layui-input-inline">
-                        <select name="data[level1]" id="province" class="cc"></select>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label no-padding-right" for="form-field-1">Products：</label>
+                        <div class="col-sm-6 col-xs-12">
+                        <select name="data[level1]" id="province" class="form-control"></select>
                     </div>
                 </div>
 
-                <div class="layui-form-item">
-                    <label class="layui-form-label" style="width: 120px">Platform</label>
-                    <div class="layui-input-inline">
-                        <select name="data[level2]" id="city" class="cc"></select>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label no-padding-right" for="form-field-1">Platform：</label>
+                        <div class="col-sm-6 col-xs-12">
+                        <select name="data[level2]" id="city" class="form-control"></select>
                     </div>
                 </div>
 
-                <div class="layui-form-item">
-                    <label class="layui-form-label" style="width: 120px">License Type</label>
-                    <div class="layui-input-inline">
-                        <select name="data[level3]" id="town" class="cc"></select>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label no-padding-right" for="form-field-1">License Type：</label>
+                        <div class="col-sm-6 col-xs-12">
+                        <select name="data[level3]" id="town" class="form-control"></select>
                     </div>
                 </div>
 
                     <div class="form-group">
                         <label class="col-sm-2 control-label no-padding-right" for="form-field-1"> Pricing(USD)：</label>
                         <div class="col-sm-6 col-xs-12">
-                            <input id="price"  type="number" class="form-control" name="data[price]" min="0.01" max="99999999" step="0.01" oninput="if(value.length>8)value=value.slice(0,8)" value="0.00" required>
-                            <span class="lbl" style="float: left">/year</span>
+                            <input style="float: left" id="price"  type="number" class="form-control" name="data[price]" min="0.01" max="99999999" step="0.01" oninput="if(value.length>8)value=value.slice(0,8)" value="0.00" required>
                         </div>
+                        <span class="lbl" style="float: left;margin-top: 0.5%">/year</span>
                     </div>
 
                     <div class="form-group">
