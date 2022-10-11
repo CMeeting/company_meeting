@@ -11,6 +11,8 @@ declare (strict_types=1);
 
 namespace App\Services;
 
+use App\Export\GoodsExport;
+use App\Export\UserExport;
 use App\Models\Goods;
 use App\Models\Goodsclassification;
 use Auth;
@@ -48,7 +50,14 @@ class GoodsService
             $where.=" AND created_at <= '".$param['end_date']."'";
         }
         $goods = new Goods();
-        $data = $goods->whereRaw($where)->orderByRaw('id desc')->paginate(10);
+
+
+        if($param['export'] == 1){
+            return $goods->whereRaw($where)->orderByRaw('id desc')->get()->toArray();
+        }else{
+            $data = $goods->whereRaw($where)->orderByRaw('id desc')->paginate(10);
+        }
+
         if(!empty($data)){
             $classification=$this->assembly_classification();
             foreach ($data as $k=>$v){
@@ -169,6 +178,52 @@ class GoodsService
         }
 
         return array('code'=>$bool,"status"=>$enabled);
+    }
+
+    public function export($list, $field){
+        $title_arr = [
+            'id'=>'ID',
+            'level1'=>'Products',
+            'level2'=>'Platform',
+            'level3'=>'Licensie Type',
+            'price'=>'Pricing(USD)',
+            'status'=>'状态',
+            'created_at'=>'创建时间',
+            'updated_at'=>'更新时间',
+            'shelf_at'=>'上架时间',
+        ];
+
+        $classification = $this->assembly_classification();
+
+        $field = explode(',', $field);
+
+        $header = [];
+        foreach ($field as $title){
+            $header[] = array_get($title_arr, $title);
+        }
+        $rows[] = $header;
+
+        foreach ($list as $data){
+            $row = [];
+            foreach ($field as $key){
+                $value = array_get($data, $key);
+                if(in_array($key, ['level1', 'level2', 'level3'])){
+                    $value = $classification[$value]['title'];
+                }elseif($key == 'status'){
+                    $value = $value == 1 ? '下架' : '上架';
+                }
+                $row[] = $value;
+            }
+
+            $rows[] = $row;
+        }
+
+        $userExport = new GoodsExport($rows);
+        $fileName = 'export'. DIRECTORY_SEPARATOR .'商品列表' . time() . '.xlsx';
+        \Excel::store($userExport, $fileName);
+
+        //ajax请求 需要返回下载地址，在使用location.href请求下载地址
+        return ['url'=>route('download', ['file_name'=>$fileName])];
     }
 
 }

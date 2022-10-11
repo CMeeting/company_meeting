@@ -38,9 +38,9 @@
         <div class="col-sm-12">
             <div class="ibox-title">
                 <h5>Goods</h5>
+                <button id="export" class="btn layui-btn-primary btn-sm" type="button" style="float: right"><i class="fa fa-paste"></i>导出数据</button>
                 <a style="float: right" href="{{route('goods.creategoods')}}" link-url="javascript:void(0)">
-                    <button class="btn btn-primary btn-sm" type="button"><i class="fa fa-plus-circle"></i> 添加 Goods
-                    </button>
+                    <button class="btn btn-primary btn-sm" type="button"><i class="fa fa-plus-circle"></i> 添加 Goods</button>
                 </a>
             </div>
             <div class="ibox-content">
@@ -50,14 +50,14 @@
                         <div class="input-group">
 
                             <div class="input-group-btn" >
-                                <select name="query_type" class="form-control"
+                                <select id="query_type" name="query_type" class="form-control"
                                         style="display: inline-block;width: 100px;">
                                     <option value="id" @if(isset($query)&&$query['query_type']=='id') selected @endif>
                                         ID
                                     </option>
                                 </select>
                             </div>
-                            <input type="text" name="info" class="form-control" style="display: inline-block;width: 150px;
+                            <input id="info" type="text" name="info" class="form-control" style="display: inline-block;width: 150px;
                                    value="@if(isset($query)){{$query['info']}}@endif"/>
 
                             <div class="col-md-4 col-lg-2 col-sm-6 col-xs-12">
@@ -71,7 +71,7 @@
                             </div>
                             <div class="col-md-4 col-lg-2 col-sm-6 col-xs-12">
                                 <div class="form-group">
-                                    <select class="form-control"  name="status" tabindex="1">
+                                    <select id="status" class="form-control"  name="status" tabindex="1">
                                         <option value="">筛选状态</option>
                                         <option value="2" @if(isset($query)&&$query['status']==2) selected @endif>上架</option>
                                         <option value="1" @if(isset($query)&&$query['status']==1) selected @endif>下架</option>
@@ -366,7 +366,67 @@
                 })
             })
 
+            //导出
+            $("#export").click(function () {
+                html =  '<div style="display: flex; justify-content: left;flex-wrap: wrap; padding: 10px">' +
+                    '<div style="margin-bottom: 20px"><label style="margin-right: 10px; width: 50px"><input name="id"  type="checkbox"  value="id" checked="checked"/>ID</label>' +
+                    '<label style="margin-right: 10px; width: 100px"><input name="products"  type="checkbox"  value="level1" checked="checked"/>Products</label>' +
+                    '<label style="margin-right: 10px; width: 100px"><input name="platform"  type="checkbox"  value="level2" checked="checked"/>Platform</label>' +
+                    '<label style="margin-right: 10px; width: 120px"><input name="licensie"  type="checkbox"  value="level3" checked="checked"/>Licensie Type</label>' +
+                    '<label style="margin-right: 10px; width: 120px"><input name="price"  type="checkbox"  value="price" checked="checked"/>Pricing(USD)</label></div>' +
+                    '<div><label style="margin-right: 10px; width: 50px"><input name="status"  type="checkbox"  value="status" checked="checked"/>状态</label>' +
+                    '<label style="margin-right: 10px; width: 100px"><input name="created_at"  type="checkbox"  value="created_at" checked="checked"/>创建时间</label>' +
+                    '<label style="margin-right: 10px; width: 100px"><input name="updated_at"  type="checkbox"  value="updated_at" checked="checked"/>更新时间</label>' +
+                    '<label style="margin-right: 10px; width: 100px"><input name="shelf_at"  type="checkbox"  value="shelf_at" checked="checked"/>上架时间</label></div></div>';
 
+                layer.open({
+                    type: 1,
+                    title: false,
+                    closeBtn: 1, //不显示关闭按钮
+                    shade: [0],
+                    anim: 2,
+                    content: html,
+                    // content: "<pre>"+data+"</pre>"
+                    btn:['确定'],
+                    area: ['600px', '150px'],
+                    btn1: function () {
+                        let field = [];
+                        $("input").each(function (){
+                            if($(this).is(':checked')){
+                                field.push($(this).val())
+                            }
+                        })
+
+                        if(field.length == 0){
+                            alert("至少需要一列导出字段")
+                        }
+
+                        let query_type =  $('#query_type').find("option:selected").val()
+                        let info = $('#info').val()
+                        let level1 = $('#province').val()
+                        let level2 = $('#city').val()
+                        let level3 = $('#town').val()
+
+                        let status = $('#status').find("option:selected").val()
+                        let startDate = $('#startDate').val()
+                        let endDate = $('#endDate').val()
+
+                        $.ajax({
+                            url: "{{route('goods.index')}}",
+                            header: {
+                                contentType: "application/octet-stream"
+                            },
+                            data: "query_type="+ query_type + "info=" + info + "&level1=" + level1 + "&level2=" + level2 + "&level3=" + level3 + "&status=" + status + "&start_date=" + startDate + "&end_date=" + endDate
+                                + "&field=" + field.join(',') + "&export=1",
+                            type: 'get',
+                            success: function (res) {
+                                //导出
+                                location.href = res.url;
+                            }
+                        });
+                    }
+                });
+            });
         })
     </script>
 @endsection

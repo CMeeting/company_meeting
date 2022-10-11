@@ -18,8 +18,14 @@ class GoodsController extends BaseController {
         $query["status"] = isset($param['status']) ? $param['status'] : "";
         $query["start_date"] = isset($param['start_date']) ? $param['start_date'] : "";
         $query["end_date"] = isset($param['end_date']) ? $param['end_date'] : "";
+        $query['export'] = array_get($param, 'export', 0);
+        $query['field'] = array_get($param, 'field', '');
         $categorical_data = $GoodsService->threelevellinkage();
         $data = $GoodsService->data_list($query);
+        if($query['export'] == 1){
+            return $GoodsService->export($data, $query['field']);
+        }
+
         return $this->view('index',['data'=>$data,'query'=>$query,'lv1'=>json_encode($categorical_data['arr1']),'lv2'=>json_encode($categorical_data['arr2']),'lv3'=>json_encode($categorical_data['arr3'])]);
     }
 
