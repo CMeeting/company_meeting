@@ -109,7 +109,9 @@ class GoodsService
 
                     }
                 }
-                $lv3[$vs['id']] = array_merge($lv3[$vs['id']]);
+                if(isset($lv3[$vs['id']])){
+                    $lv3[$vs['id']] = array_merge($lv3[$vs['id']]);
+                }
             }
             $lv2 = array_values($lv2);
             $lv3 = array_merge($lv3);
