@@ -97,21 +97,29 @@ class GoodsService
                 }
             }
             foreach ($lv1 as $ks => $vs) {  //循环一级数组数据
+                $i = 0;
                 foreach ($data as $kb => $vb) {         //循环二级数组数据
+                    $s = 0;
                     if ($vb['lv'] == 2 && $vb['pid'] == $vs['id']) {
+                        $i++;
                         $lv2[$vs['title']][] = $vb;
-
                         foreach ($data as $kc => $vc) {  //循环组装三级级数组数据
                             if ($vc['lv'] == 3 && $vc['pid'] == $vb['id']) {
                                 $lv3[$vs['id']][$vb['id']][] = $vc;
+                                $s++;
                             }
                         }
-
+                     //判断二级分类下是否存在三级分类数据，如果没有就添加一层空数据正确组装数据
+                        if ($s == 0) {
+                            $lv3[$vs['id']][$vb['id']][] = [];
+                        }
                     }
                 }
-                if(isset($lv3[$vs['id']])){
-                    $lv3[$vs['id']] = array_merge($lv3[$vs['id']]);
+                //判断一级分类下是否存在二级分类数据，如果没有就添加一层空数据正确组装数据
+                if ($i == 0) {
+                    $lv2[$vs['title']][] = [];
                 }
+                $lv3[$vs['id']] = array_merge($lv3[$vs['id']]);
             }
             $lv2 = array_values($lv2);
             $lv3 = array_merge($lv3);

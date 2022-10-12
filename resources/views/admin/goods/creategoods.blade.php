@@ -148,18 +148,24 @@
             console.log(toarr);
             //遍历省份数组，将省份添加到省份下拉列表中
             $.each(proarr, function () {
-                $("#province").append("<option value='"+this.id+"'>" + this.title + "</option>>")
+                if(this.id>0) {
+                    $("#province").append("<option value='" + this.id + "'>" + this.title + "</option>>")
+                }
             })
             var index = $("#province option:checked").index();
             $.each(ciarr[index], function () {
-                $("#city").append("<option value='"+this.id+"'>" + this.title + "</option>>")
-            })
+                if(this.id>0) {
+                    $("#city").append("<option value='" + this.id + "'>" + this.title + "</option>>")
+                }
+                })
 
             var index1 = $("#province option:checked").index();
             //获取被点击的城市的索引
             var index2 = $("#city option:checked").index();
             $.each(toarr[index1][index2], function () {
-                $("#town").append("<option value='"+this.id+"'>" + this.title + "</option>>");
+                if(this.id>0){
+                    $("#town").append("<option value='"+this.id+"'>" + this.title + "</option>>");
+                }
             })
 
             //创建一个用户改变域的内容的事件：改变省份下拉列表中的内容
@@ -174,7 +180,24 @@
                 //根据获得的省份索引，遍历城市数组中对应的索引中的内容，将内容添加到城市下拉列表中
 
                 $.each(ciarr[index], function () {
-                    $("#city").append("<option value='"+this.id+"'>" + this.title + "</option>>")
+                    if(this.id>0){
+                        $("#city").append("<option value='"+this.id+"'>" + this.title + "</option>>")
+                    }
+                })
+
+                //获得被点击的省份的索引
+                var index1 = $("#province option:checked").index();
+                //获取被点击的城市的索引
+                var index2 = $("#city option:checked").index();
+
+                //清空县区下拉列表中的内容
+                $("#town").empty();
+
+                //根据被点击的省份和城市索引，遍历县区数组中对应的索引中的内容，将内容添加到县区下拉列表中去
+                $.each(toarr[index1][index2], function () {
+                    if(this.id>0) {
+                        $("#town").append("<option value='" + this.id + "'>" + this.title + "</option>>");
+                    }
                 })
             })
 
@@ -191,7 +214,9 @@
 
                 //根据被点击的省份和城市索引，遍历县区数组中对应的索引中的内容，将内容添加到县区下拉列表中去
                 $.each(toarr[index1][index2], function () {
-                    $("#town").append("<option value='"+this.id+"'>" + this.title + "</option>>");
+                    if(this.id>0){
+                        $("#town").append("<option value='"+this.id+"'>" + this.title + "</option>>");
+                    }
                 })
             })
 
