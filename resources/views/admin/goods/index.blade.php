@@ -312,9 +312,7 @@
                 if(this.id==level1){
                     $("#province").append("<option value='"+this.id+"' selected>" + this.title + "</option>>")
                 }else{
-                    if(this.id>0){
                         $("#province").append("<option value='"+this.id+"'>" + this.title + "</option>>")
-                    }
                 }
 
             })
@@ -337,9 +335,7 @@
                 if(this.id==level3){
                     $("#town").append("<option value='"+this.id+"' selected>" + this.title + "</option>>");
                 }else{
-                    if(this.id>0){
                         $("#town").append("<option value='"+this.id+"'>" + this.title + "</option>>");
-                    }
                 }
             })
 
@@ -355,9 +351,7 @@
                 //根据获得的省份索引，遍历城市数组中对应的索引中的内容，将内容添加到城市下拉列表中
 
                 $.each(ciarr[index], function () {
-                    if(this.id>0){
                         $("#city").append("<option value='"+this.id+"'>" + this.title + "</option>>")
-                    }
                 })
                 var index1 = $("#province option:checked").index();
                 //获取被点击的城市的索引
@@ -368,9 +362,7 @@
 
                 //根据被点击的省份和城市索引，遍历县区数组中对应的索引中的内容，将内容添加到县区下拉列表中去
                 $.each(toarr[index1][index2], function () {
-                    if(this.id>0){
                         $("#town").append("<option value='"+this.id+"'>" + this.title + "</option>>");
-                    }
                 })
             })
 
@@ -387,9 +379,7 @@
 
                 //根据被点击的省份和城市索引，遍历县区数组中对应的索引中的内容，将内容添加到县区下拉列表中去
                 $.each(toarr[index1][index2], function () {
-                    if(this.id>0){
                         $("#town").append("<option value='"+this.id+"'>" + this.title + "</option>>");
-                    }
                 })
             })
 
