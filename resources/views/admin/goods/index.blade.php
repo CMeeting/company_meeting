@@ -143,13 +143,13 @@
                             <td>{{$item['shelf_at']}}</td>
                             <td class="text-center">
                                 <div class="btn-group">
+                                    <a class="btn  btn-xs" style="text-decoration: none;color: #f6fff8;background: #0b94ea" title="预览 " href="{{route('goods.info',$item['id'])}}">
+                                        <i class="fa fa-users"></i> 预览
+                                    </a>
                                     <a id="update_{{$item['id']}}" href="{{route('goods.updategoods',$item['id'])}}">
                                         <button class="btn btn-primary btn-xs" type="button"><i class="fa fa-paste"></i>
                                             修改
                                         </button>
-                                    </a>
-                                    <a class="btn  btn-xs" style="text-decoration: none;color: #f6fff8;background: #0b94ea" title="预览 " href="{{route('goods.info',$item['id'])}}">
-                                        <i class="fa fa-users"></i> 预览
                                     </a>
                                     <a onclick="del('{{$item['id']}}')">
                                         <button class="btn btn-danger del btn-xs" type="button"><i

@@ -38,21 +38,21 @@
                     <div class="form-group">
                         <label class="col-sm-2 control-label no-padding-right" for="form-field-1">Products：</label>
                         <div class="col-sm-6 col-xs-12">
-                            <select name="data[level1]" id="province" class="form-control"></select>
+                            <select name="data[level1]" id="province" class="form-control" style="pointer-events: none;color: #9f9f9f"></select>
                         </div>
                     </div>
 
                     <div class="form-group">
                         <label class="col-sm-2 control-label no-padding-right" for="form-field-1">Platform：</label>
                         <div class="col-sm-6 col-xs-12">
-                            <select name="data[level2]" id="city" class="form-control"></select>
+                            <select name="data[level2]" id="city" class="form-control" style="pointer-events: none;color: #9f9f9f"></select>
                         </div>
                     </div>
 
                     <div class="form-group">
                         <label class="col-sm-2 control-label no-padding-right" for="form-field-1">License Type：</label>
                         <div class="col-sm-6 col-xs-12">
-                            <select name="data[level3]" id="town" class="form-control"></select>
+                            <select name="data[level3]" id="town" class="form-control" style="pointer-events: none;color: #9f9f9f"></select>
                         </div>
                     </div>
 
