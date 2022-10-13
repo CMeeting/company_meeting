@@ -50,6 +50,24 @@ class GoodsService
         } elseif (isset($param['end_date']) && $param['end_date'] && empty($param['start_date'])) {
             $where .= " AND created_at <= '" . $param['end_date'] . "'";
         }
+
+        if (isset($param['updated_at']) && $param['updated_at'] && isset($param['endupdated_at']) && $param['endupdated_at']) {
+            $where .= " AND updated_at BETWEEN '" . $param['updated_at'] . "' AND '" . $param['endupdated_at'] . "'";
+        } elseif (isset($param['updated_at']) && $param['updated_at'] && empty($param['endupdated_at'])) {
+            $where .= " AND updated_at >= '" . $param['updated_at'] . "'";
+        } elseif (isset($param['endupdated_at']) && $param['endupdated_at'] && empty($param['updated_at'])) {
+            $where .= " AND updated_at <= '" . $param['endupdated_at'] . "'";
+        }
+
+        if (isset($param['shelf_at']) && $param['shelf_at'] && isset($param['endshelf_at']) && $param['endshelf_at']) {
+            $where .= " AND shelf_at BETWEEN '" . $param['shelf_at'] . "' AND '" . $param['endshelf_at'] . "'";
+        } elseif (isset($param['shelf_at']) && $param['shelf_at'] && empty($param['endshelf_at'])) {
+            $where .= " AND shelf_at >= '" . $param['shelf_at'] . "'";
+        } elseif (isset($param['endshelf_at']) && $param['endshelf_at'] && empty($param['shelf_at'])) {
+            $where .= " AND shelf_at <= '" . $param['endshelf_at'] . "'";
+        }
+
+
         $goods = new Goods();
 
 

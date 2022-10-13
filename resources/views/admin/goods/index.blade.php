@@ -89,6 +89,30 @@
                                        style="display: inline-block;width: 160px;" id="endDate" placeholder="创建时间--结束"
                                        value="@if(isset($query)){{$query['end_date']}}@endif"/>
                             </div>
+
+
+                            <div class="input-group-btn" style="display: inline-block;width: 150px;">
+                                <input type="text" name="updated_at" class="form-control"
+                                       style="display: inline-block;width: 160px;" id="updated_at" placeholder="更新时间--开始"
+                                       value="@if(isset($query)){{$query['updated_at']}}@endif"/>
+                            </div>
+                            <div class="input-group-btn" style="display: inline-block;width: 150px;margin-left:20px;">
+                                <input type="text" name="endupdated_at" class="form-control"
+                                       style="display: inline-block;width: 160px;" id="endupdated_at" placeholder="更新时间--结束"
+                                       value="@if(isset($query)){{$query['endupdated_at']}}@endif"/>
+                            </div>
+
+                            <div class="input-group-btn" style="display: inline-block;width: 150px;">
+                                <input type="text" name="shelf_at" class="form-control"
+                                       style="display: inline-block;width: 160px;" id="shelf_at" placeholder="上架时间--开始"
+                                       value="@if(isset($query)){{$query['shelf_at']}}@endif"/>
+                            </div>
+                            <div class="input-group-btn" style="display: inline-block;width: 150px;margin-left:20px;">
+                                <input type="text" name="endshelf_at" class="form-control"
+                                       style="display: inline-block;width: 160px;" id="endshelf_at" placeholder="上架时间--结束"
+                                       value="@if(isset($query)){{$query['endshelf_at']}}@endif"/>
+                            </div>
+
                             <span class="input-group-btn" style="display: inline-block;">
                                                     <button type="submit" class="btn btn-purple btn-sm"
                                                             style="margin-left: 20px;">
@@ -241,6 +265,81 @@
             });
             var end = laydate.render({
                 elem: '#endDate', //指定元素
+                max: 1,//最大值为当前日期
+                type: 'datetime',//日期时间选择器
+                // value: getRecentDay(-1),//默认值昨天
+                choose: function (datas) {
+                    start.max = datas; //结束日选好后，重置开始日的最大日期
+                }
+            });
+        });
+
+
+
+        layui.use('laydate', function () {
+            var laydate = layui.laydate;
+
+            //执行一个laydate实例
+            var start = laydate.render({
+                elem: '#updated_at', //指定元素
+                max: 1,//最大值为当前日期
+                trigger: 'click',
+                type: 'datetime',//日期时间选择器
+                // value: getRecentDay(-30),//默认值30天前
+                done: function (value, date) {
+                    if (value && (value > $("#endupdated_at").val())) {
+                        /*开始时间大于结束时间时，清空结束时间*/
+                        $("#endupdated_at").val("");
+                    }
+                    end.config.min = {
+                        year: date.year,
+                        month: date.month - 1,
+                        date: date.date,
+                        hours: date.hours,//可注释
+                        minutes: date.minutes,//可注释
+                        seconds: date.seconds//可注释
+                    };
+                }
+            });
+            var end = laydate.render({
+                elem: '#endupdated_at', //指定元素
+                max: 1,//最大值为当前日期
+                type: 'datetime',//日期时间选择器
+                // value: getRecentDay(-1),//默认值昨天
+                choose: function (datas) {
+                    start.max = datas; //结束日选好后，重置开始日的最大日期
+                }
+            });
+        });
+
+
+        layui.use('laydate', function () {
+            var laydate = layui.laydate;
+
+            //执行一个laydate实例
+            var start = laydate.render({
+                elem: '#shelf_at', //指定元素
+                max: 1,//最大值为当前日期
+                trigger: 'click',
+                type: 'datetime',//日期时间选择器
+                // value: getRecentDay(-30),//默认值30天前
+                done: function (value, date) {
+                    if (value && (value > $("#endshelf_at").val())) {
+                        /*开始时间大于结束时间时，清空结束时间*/
+                        $("#endshelf_at").val("");
+                    }
+                    end.config.min = {
+                        year: date.year,
+                        month: date.month - 1,
+                        date: date.date,
+                        hours: date.hours,//可注释
+                        minutes: date.minutes,//可注释
+                        seconds: date.seconds//可注释
+                    };
+                }
+            });
+            var end = laydate.render({
+                elem: '#endshelf_at', //指定元素
                 max: 1,//最大值为当前日期
                 type: 'datetime',//日期时间选择器
                 // value: getRecentDay(-1),//默认值昨天
