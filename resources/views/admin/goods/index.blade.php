@@ -57,7 +57,7 @@
                                     </option>
                                 </select>
                             </div>
-                            <input id="info" type="text" name="info" class="form-control" style="display: inline-block;width: 150px;
+                            <input id="info" type="text" name="info" placeholder="请输入ID" class="form-control" style="display: inline-block;width: 150px;
                                    value="@if(isset($query)){{$query['info']}}@endif"/>
 
                             <div class="col-md-4 col-lg-2 col-sm-6 col-xs-12">
