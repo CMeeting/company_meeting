@@ -308,6 +308,7 @@
             var level2 = $("#ls2").val();
             var level3 = $("#ls3").val();
             //遍历省份数组，将省份添加到省份下拉列表中
+            console.log(toarr)
             $.each(proarr, function () {
                 if(this.id==level1){
                     $("#province").append("<option value='"+this.id+"' selected>" + this.title + "</option>>")
@@ -322,9 +323,7 @@
                 if(this.id==level2){
                     $("#city").append("<option value='"+this.id+"' selected>" + this.title + "</option>>")
                 }else {
-                    if (this.id > 0) {
                         $("#city").append("<option value='" + this.id + "'>" + this.title + "</option>>")
-                    }
                 }
             })
 
