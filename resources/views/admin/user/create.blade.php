@@ -27,13 +27,13 @@
                         <div class="hr-line-dashed m-t-sm m-b-sm" style="position: relative;margin-bottom: 20px;"><span style="font-weight:bold;top: -12px;position: absolute;color:black">Email：</span></div>
                         <div class="form-group" style="padding-left: 18px;">
                             <div class="input-group col-sm-2">
-                                <input type="text" class="form-control" name="email" value="" required data-msg-required="邮箱必填" style="width: 500px"/>
+                                <input id="email_input" type="text" placeholder="*Email" class="form-control" name="email" value="" required data-msg-required="邮箱必填" style="width: 500px"/>
                             </div>
                         </div>
                         <span style="color: red;font-size: 14px">*</span>
                         <div class="hr-line-dashed m-t-sm m-b-sm" style="position: relative;margin-bottom: 20px;"><span style="font-weight:bold;top: -12px;position: absolute;color:black">Full Name：</span>></div>
                         <div class="input-group col-sm-2">
-                            <input type="text" class="form-control" name="full_name" value="" required data-msg-required="Full Name必填" style="width: 500px"/>
+                            <input type="text" placeholder="*Full Name" class="form-control" name="full_name" value="" required data-msg-required="Full Name必填" style="width: 500px"/>
                         </div>
 
                         <div class="form-group" style="margin-top: 20px;">
@@ -63,6 +63,7 @@
             if(!e.test(email)){
                 layer.close(index);
                 layer.msg('邮箱地址不合法', {icon: 2, time: 1000});
+                $("#email_input").css('border', '1px solid red')
                 return false;
             }
 
@@ -85,21 +86,23 @@
                     console.log(re)
                     if (re.code==200) {
                         layer.close(index);
-                        layer.msg("添加用户成功", {
-                            icon: 1,
-                            time: 1000
-                        }, function () {
-                            $(".reset").click();
-                            $(".back").click();
-                        });
+                        layer.open({
+                            content:'用户添加成功',
+                            btn: ['确认'],
+                            title:'提交成功',
+                            yes: function (index, layero) {
+                                location.href = "{{route('user.list')}}"
+                            }
+                        })
                     } else {
                         layer.close(index);
                         //失败提示
                         if(re.msg){
-                            layer.msg(re.msg, {
-                                icon: 2,
-                                time: 2000
-                            });
+                            layer.open({
+                                content:re.msg,
+                                btn: ['确认'],
+                                title:'提交失败',
+                            })
                         }else {
                             layer.close(index);
                             layer.msg("请检查网络或权限设置！！！", {

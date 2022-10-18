@@ -7,6 +7,7 @@ namespace App\Services;
 use App\Export\UserExport;
 use App\Models\LogoutUser;
 use App\Models\User;
+use App\Models\UserLoginLog;
 use Carbon\Carbon;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Http\Request;
@@ -47,7 +48,7 @@ class UserService
             });
         }
 
-        if ($country) {
+        if ($country && $country != 'All') {
             $query->where('b.country', $country);
         }
 
@@ -192,11 +193,11 @@ class UserService
         }
 
         $userExport = new UserExport($result);
-        $fileName = 'export\用户列表' . time() . '.xlsx';
+        $fileName = 'export'. DIRECTORY_SEPARATOR .'用户列表' . time() . '.xlsx';
         \Excel::store($userExport, $fileName);
 
         //ajax请求 需要返回下载地址，在使用location.href请求下载地址
-        return ['url'=>route('download', $fileName)];
+        return ['url'=>route('download', ['file_name'=>$fileName])];
     }
 
     /**
@@ -336,6 +337,10 @@ class UserService
         $payload = ['email' => $email, 'alt'=>time(), 'expire_time' => 24];
         $token = encrypt(json_encode($payload));
         //TODO 发送邮件
+//        $emailService = new EmailService();
+//        $data['title'] = '注册成功';
+//        $data['info'] = '<a href="">点击这个链接修改密码</a>';
+//        $emailService->sendDiyContactEmail($data, 1, $email);
     }
 
     /**
@@ -347,25 +352,12 @@ class UserService
     }
 
     /**
-     * 删除token
-     * @param $email
+     * 增加登录次数
+     * @param $user_id
      */
-    public static function forgetToken($email){
-        $key = 'jwt' . $email;
-        if(\Cache::has($key)){
-            \Cache::forget($key);
-        }
-    }
-
-    /**
-     * 缓存token
-     * @param $email
-     * @param $jti
-     */
-    public static function saveToken($email, $jti)
-    {
-        $key = 'jwt' . $email;
-        self::forgetToken($email);
-        \Cache::add($key, $jti, 60 * 24 * 14);
+    public function addLoginTime($user_id){
+        $login_model = new UserLoginLog();
+        $login_model->user_id = $user_id;
+        $login_model->save();
     }
 }

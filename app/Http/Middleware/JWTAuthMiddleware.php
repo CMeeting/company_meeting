@@ -29,7 +29,7 @@ class JWTAuthMiddleware
         request()->offsetSet('login_user_email', $payload->email);
 
         //先更新token 如果是退出登录，注销账号，修改密码等操作后面会删除token
-        UserService::saveToken($payload->email, $payload->jti);
+        JWTService::saveToken($payload->email, $payload->jti);
 
         return $next($request);
     }

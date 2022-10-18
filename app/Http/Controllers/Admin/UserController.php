@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Admin;
 
 
 use App\Models\User;
+use App\Services\EmailService;
+use App\Services\JWTService;
 use App\Services\UserBillingInfoService;
 use App\Services\UserService;
 use Illuminate\Http\Request;
@@ -80,8 +82,11 @@ class UserController extends BaseController
         $userService = new UserService();
         $userService->add($email, $full_name, $password);
 
-        //TODO 发送邮件 等模板
-
+        //TODO 发送邮件
+        $emailService = new EmailService();
+        $data['title'] = 'ComPDFKit添加成功';
+        $data['info'] = '您的密码为' . $password . '请及时修改';
+        $emailService->sendDiyContactEmail($data, 1, $email);
 
         return ['code' => 200, 'msg' => 'success'];
     }
@@ -129,8 +134,16 @@ class UserController extends BaseController
 
         $userService->update($id, $email, $full_name);
 
-        //删除token缓存
-        UserService::forgetToken($old_email);
+        if($old_email != $email){
+            //删除token缓存
+            JWTService::forgetToken($old_email);
+
+            //TODO 发送邮件提醒
+            $emailService = new EmailService();
+            $data['title'] = 'ComPDFKit邮箱修改';
+            $data['info'] = '请注意邮箱已修改';
+            $emailService->sendDiyContactEmail($data, 1, $email);
+        }
 
         return ['code' => 200, 'msg' => 'success'];
     }
@@ -164,6 +177,7 @@ class UserController extends BaseController
     /**
      * 重置密码 -发送邮件
      * @param $id
+     * @return array
      */
     public function resetPassword($id){
         $userService = new UserService();
@@ -171,8 +185,9 @@ class UserController extends BaseController
 
         $email = $user->email;
 
-        //TODO 发送重置密码邮件
         $userService->sendChangePasswordEmail($email);
+
+        return ['code' => 200, 'msg' => 'success'];
     }
 
     /**

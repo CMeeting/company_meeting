@@ -4,15 +4,18 @@
 namespace App\Http\Controllers\Common;
 
 
+use Illuminate\Http\Request;
+
 class DownloadController
 {
     /**
      * 下载文件
-     * @param $file_name
+     * @param Request $request
      * @return \Symfony\Component\HttpFoundation\StreamedResponse
      */
-    public function download($file_name)
+    public function download(Request $request)
     {
+        $file_name = $request->input('file_name');
         return \Storage::download($file_name);
     }
 }
