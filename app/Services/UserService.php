@@ -9,8 +9,11 @@ use App\Models\LogoutUser;
 use App\Models\User;
 use App\Models\UserLoginLog;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Query\Builder;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Response;
 
 class UserService
 {
@@ -110,7 +113,7 @@ class UserService
     /**
      * 根据id返回用户详情
      * @param $id
-     * @return User|User[]|\Illuminate\Database\Eloquent\Collection|\Illuminate\Database\Eloquent\Model|null
+     * @return User|User[]|\Illuminate\Database\Eloquent\Collection|Model|null
      */
     public function getById($id)
     {
@@ -120,7 +123,7 @@ class UserService
     /**
      * 用户汇总信息
      * @param $user_id
-     * @return \Illuminate\Database\Eloquent\Model|Builder|object|null
+     * @return Model|Builder|object|null
      */
     public function getUserStatistics($user_id)
     {
@@ -158,6 +161,8 @@ class UserService
      * @param $fields
      * @param $data
      * @return array
+     * @throws \PhpOffice\PhpSpreadsheet\Exception
+     * @throws \PhpOffice\PhpSpreadsheet\Writer\Exception
      */
     public function exportList($fields, $data){
         $map = [
@@ -246,10 +251,10 @@ class UserService
             return ['code'=>500, 'msg'=>array_get($message, "required.$lang")];
         }
 
-        $len = strlen($full_name);
-        if($len < 1 || $len > 24){
-            return ['code'=>500, 'msg'=>array_get($message, "format.$lang")];
-        }
+//        $len = strlen($full_name);
+//        if($len < 1 || $len > 24){
+//            return ['code'=>500, 'msg'=>array_get($message, "format.$lang")];
+//        }
 
         return ['code'=>200, 'msg'=>'success'];
     }
@@ -281,21 +286,26 @@ class UserService
     /**
      * 根据邮箱获取用户
      * @param $email
-     * @return \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Model|object
+     * @return \Illuminate\Database\Eloquent\Builder|Model|object
      */
     public static function getByEmail($email){
         return User::where('email', $email)->first();
     }
 
     /**
-     * 获取登录用户
+     * 获取当前用户
      * @param Request $request
-     * @return \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Model|object
+     * @return \Illuminate\Database\Eloquent\Builder|Model|JsonResponse|object
      */
     public static function getCurrentUser(Request $request){
         $email = $request->input('login_user_email');
+        $user = self::getByEmail($email);
 
-        return self::getByEmail($email);
+        if(!$user instanceof User){
+            return Response::json(['code'=>500, 'message'=>'System Error']);
+        }
+        return $user;
+
     }
 
     /**

@@ -59,10 +59,7 @@ class UserController extends BaseController
     public function store(Request $request)
     {
         $email = trim($request->input('email'));
-        $full_name = $request->input('full_name');
-
-        $full_name = ltrim($full_name);
-        $full_name = rtrim($full_name);
+        $full_name = trim($request->input('full_name'));
 
         $userService = new UserService();
 

@@ -30,7 +30,7 @@ class JWTService
     private static $method = 'DES-EDE-CFB';
 
     //token加密key
-    private static $token_key = '123456';
+    private static $token_key = 'wwwcompdfkitsaascom-wwwcompdfkitsaascom';
 
     /**
      * payload 格式 ['email'=>'test@gmail.com', 'iat'=>'签发时间', 'jti'=>'token唯一标识']
