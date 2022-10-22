@@ -53,7 +53,7 @@ Route::group(['prefix'=>'user', 'namespace'=>'Api'], function (){
         //修改账单信息
         Route::post('edit-billing-info', 'UserController@editBillingInfo');
         //注销账号
-        Route::get('logout', 'UserController@logout');
+        Route::post('logout', 'UserController@logout');
         //退出登录
         Route::get('sign-out', 'UserController@signOut');
     });

@@ -368,6 +368,11 @@ class UserController extends Controller
     public function logout(Request $request){
         $current_user = UserService::getCurrentUser($request);
 
+        $password = $request->input('password');
+        if($current_user->password != User::encryptPassword($password)){
+            return Response::json(['code'=>500, 'message'=>'Incorrect Current Password']);
+        }
+
         //添加到注销用户列表
         if($current_user instanceof User){
             LogoutUser::addFromUser($current_user);
