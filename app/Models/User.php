@@ -78,4 +78,21 @@ class User extends Model
         $randStr = str_shuffle($str);//打乱字符串
         return substr($randStr,0, $len);
     }
+
+    /**
+     * 修改器 - 加密密码
+     * @param $value
+     */
+    public function setPasswordAttribute($value){
+        $this->attributes['password'] = md5('compdf'. $value);
+    }
+
+    /**
+     * 加密密码
+     * @param $password
+     * @return string
+     */
+    public static function encryptPassword($password){
+        return md5('compdf' . $password);
+    }
 }

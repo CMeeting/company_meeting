@@ -84,7 +84,7 @@ class UserService
         $user = New User();
         $user->email = $email;
         $user->full_name = $full_name;
-        $user->password = encrypt($password);
+        $user->password = $password;
 
         $user->save();
 
@@ -304,7 +304,7 @@ class UserService
      * @param $password
      */
     public function changePassword(User $user, $password){
-        $user->password = encrypt($password);
+        $user->password = $password;
         $user->save();
     }
 

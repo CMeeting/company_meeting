@@ -76,7 +76,7 @@ class UserController extends Controller
             return \Response::json(['code'=>500, 'message'=>'Incorrect account or password.']);
         }
 
-        if(decrypt($user->password) != $password){
+        if($user->password != User::encryptPassword($password)){
             return \Response::json(['code'=>500, 'message'=>'Incorrect account or password.']);
         }
 
@@ -119,7 +119,7 @@ class UserController extends Controller
         $new_password = $request->input('new_password');
         $password_confirm = $request->input('password_confirm');
 
-        if(decrypt($current_user->password) != $old_password){
+        if($current_user->password != User::encryptPassword($old_password)){
             return \Response::json(['code'=>500, 'message'=>'Incorrect Old Password.']);
         }
 
@@ -153,7 +153,7 @@ class UserController extends Controller
         $password = $request->input('password');
         $email = $request->input('email');
 
-        if(decrypt($current_user->password) != $password){
+        if($current_user->password != User::encryptPassword($password)){
             return \Response::json(['code'=>500, 'message'=>'Incorrect Old Password.']);
         }
 
