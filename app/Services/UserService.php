@@ -244,7 +244,7 @@ class UserService
     public function validateFullName($full_name, $lang = 'zn'){
         $message = [
             'required' => ['zn'=>'Full Name不能为空', 'en'=>'Full Name is required.'],
-            'format' => ['zn'=>'Full Name长度需在1-24之间', 'en'=>'Full Name must between 1-24 characters.']
+//            'format' => ['zn'=>'Full Name长度需在1-24之间', 'en'=>'Full Name must between 1-24 characters.']
         ];
 
         if(!$full_name){

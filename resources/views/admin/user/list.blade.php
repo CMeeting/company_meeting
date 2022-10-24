@@ -186,6 +186,11 @@
                         }
                     })
 
+                    if(field.length == 0){
+                        alert("导出列需要至少选择一个字段")
+                        return false
+                    }
+
                     let keyword = $('#keyword').val()
                     let country = $('#country').val()
                     let type = $('#type').find("option:selected").val()

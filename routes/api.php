@@ -26,6 +26,7 @@ Route::namespace('Api')
         Route::post('/subscription','SubscriptionController@subscription_status');
         Route::any('/support','SupportController@getsupport');
         Route::get('/changelogs','ChangelogsController@changelogs');
+        Route::get('/getgoods','GoodsController@getGoods');
     });
 
 //用户管理
