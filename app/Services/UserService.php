@@ -344,7 +344,7 @@ class UserService
      */
     public function sendChangePasswordEmail($email){
         //发送邮件时间
-        $server_name = $_SERVER['HTTP_HOST'] . '/reset/password';
+        $server_name = env('WEB_HOST') . '/reset/password';
         $payload = ['email' => $email, 'alt'=>time(), 'expire_time' => 24];
         $token = encrypt(json_encode($payload));
 
