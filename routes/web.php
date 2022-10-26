@@ -177,6 +177,12 @@ Route::group(['namespace' => 'Admin','prefix' => 'admin'], function (){
         Route::post('goods/show', 'GoodsController@show')->name('goods.show');
         Route::get('goods/info/{id}', 'GoodsController@info')->name('goods.info');
 
+        Route::get('license/index', 'LicenseController@index')->name('license.index');
+        Route::get('license/createLicense','LicenseController@createLicense')->name('license.createLicense');
+        Route::get('license/updateLicense/{id}', 'LicenseController@updateLicense')->name('license.updateLicense');
+        Route::post('license/changeStatus', 'LicenseController@changeStatus')->name('license.changeStatus');
+        Route::get('license/info/{id}', 'LicenseController@info')->name('license.info');
+
     });
 
     Route::group( ['namespace' => "Count", 'middleware' => ['auth:admin','rbac']],function (){
