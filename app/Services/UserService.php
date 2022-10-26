@@ -344,13 +344,16 @@ class UserService
      */
     public function sendChangePasswordEmail($email){
         //发送邮件时间
+        $server_name = env('WEB_HOST') . '/reset/password';
         $payload = ['email' => $email, 'alt'=>time(), 'expire_time' => 24];
         $token = encrypt(json_encode($payload));
+
+        $server_name .= '?token=' . $token;
         //TODO 发送邮件
-//        $emailService = new EmailService();
-//        $data['title'] = '注册成功';
-//        $data['info'] = '<a href="">点击这个链接修改密码</a>';
-//        $emailService->sendDiyContactEmail($data, 1, $email);
+        $emailService = new EmailService();
+        $data['title'] = '注册成功';
+        $data['info'] = '<a href="'. $server_name .'">点击这个链接修改密码</a>';
+        $emailService->sendDiyContactEmail($data, 1, $email);
     }
 
     /**
