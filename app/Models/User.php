@@ -14,6 +14,9 @@ use Illuminate\Database\Eloquent\Model;
  * @property    $full_name      全名
  * @property    $type           用户类型
  * @property    $password       密码
+ * @property    $order_num      订单数量
+ * @property    $order_amount   消费金额
+ * @property    $login_times    登录次数
  * @property    $created_at
  * @property    $updated_at
  * @mixin       \Eloquent

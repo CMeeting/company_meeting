@@ -152,9 +152,9 @@ class UserController extends BaseController
      */
     public function detail($id)
     {
-        //用户信息（基本信息，统计信息）
+        //用户信息（基本信息）
         $userService = new UserService();
-        $user = $userService->getUserStatistics($id);
+        $user = $userService->getUserById($id);
 
         //账单信息
         $billingService = new UserBillingInfoService();

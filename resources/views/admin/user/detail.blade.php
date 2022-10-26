@@ -45,8 +45,8 @@
             <div class="layui-field-box">
                 <table class="layui-table" style="width: 800px; margin: 0 auto; height: 100px">
                     <tr>
-                        <td>{{$user->order_price}}</td>
-                        <td>{{$user->order_number}}</td>
+                        <td>{{$user->order_amount}}</td>
+                        <td>{{$user->order_num}}</td>
 {{--                        <td>###</td>--}}
 {{--                        <td>###</td>--}}
                         <td>{{$user->login_times}}</td>
@@ -150,7 +150,7 @@
                     <thead>
                     <tr>
                         <th style="background: #e2e2e2">订单编号</th>
-                        <th style="background: #e2e2e2">商品名称</th>
+{{--                        <th style="background: #e2e2e2">商品名称</th>--}}
                         <th style="background: #e2e2e2">APP ID/Machine</th>
                         <th style="background: #e2e2e2">提交时间</th>
                         <th style="background: #e2e2e2">用户账号</th>
@@ -166,7 +166,7 @@
                     @foreach($orders as $order)
                         <tr>
                             <th>{{$order->order_no}}</th>
-                            <th>{{$order->good_name}}</th>
+{{--                            <th>{{$order->good_name}}</th>--}}
                             <th>###</th>
                             <th>{{$order->created_at}}</th>
                             <th>{{$order->user_email}}</th>
