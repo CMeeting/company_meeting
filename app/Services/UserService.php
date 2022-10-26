@@ -32,14 +32,7 @@ class UserService
     {
         $query = \DB::table('users as u')
             ->leftJoin('user_billing_information as b', 'u.id', '=', 'b.user_id')
-            ->leftJoin('orders as o', function ($join) {
-                $join->on('u.id', '=', 'o.mid')
-                    ->where('o.status', '!=', 3)
-                    ->where('o.status', '!=', 4);
-            })
-            ->select(['u.id as uid', 'u.email as u_email', 'u.full_name as full_name', 'u.type as type', 'u.created_at as register_time', 'b.*'])
-            ->selectRaw('count(o.id) as order_number')
-            ->selectRaw('sum(o.pay_price) as order_price')
+            ->select(['u.id as uid', 'u.email as u_email', 'u.full_name as full_name', 'u.order_num', 'u.order_amount','u.type as type', 'u.created_at as register_time', 'b.*'])
             ->groupBy('u.id');
 
         if ($keyword) {
@@ -125,18 +118,9 @@ class UserService
      * @param $user_id
      * @return Model|Builder|object|null
      */
-    public function getUserStatistics($user_id)
+    public function getUserById($user_id)
     {
-        return \DB::table('users')
-            ->leftJoin('orders', 'users.id', '=', 'orders.mid')
-            ->leftJoin('user_login_logs', 'users.id', '=', 'user_login_logs.user_id')
-            ->select(['users.*'])
-            ->selectRaw('count(orders.id) as order_number')
-            ->selectRaw('sum(orders.pay_price) as order_price')
-            ->selectRaw('count(user_login_logs.id) as login_times')
-            ->groupBy('users.id')
-            ->where('users.id', $user_id)
-            ->first();
+        return User::find($user_id);
     }
 
     /**
@@ -148,10 +132,8 @@ class UserService
     {
         return \DB::table('orders as o')
             ->leftJoin('orders_goods as og', 'o.id', '=', 'og.order_id')
-            ->where('o.mid', $user_id)
+            ->where('o.user_id', $user_id)
             ->select(['o.*'])
-            ->selectRaw('group_concat(DISTINCT  og.goods_name) as good_name')
-            ->groupBy('o.id')
             ->orderBy('created_at', 'desc')
             ->paginate(10);
     }
@@ -172,8 +154,8 @@ class UserService
             'company' => 'Company',
             'country' => 'Country',
             'type' => '用户类型',
-            'order_price' => '消费金额',
-            'order_number' => '订单数量',
+            'order_amount' => '消费金额',
+            'order_num' => '订单数量',
             'register_time' => '注册时间',
         ];
 
@@ -362,15 +344,5 @@ class UserService
      */
     public function getLogoutList(){
         return LogoutUser::paginate(10);
-    }
-
-    /**
-     * 增加登录次数
-     * @param $user_id
-     */
-    public function addLoginTime($user_id){
-        $login_model = new UserLoginLog();
-        $login_model->user_id = $user_id;
-        $login_model->save();
     }
 }

@@ -99,8 +99,8 @@
                             <td  class="text-center" >{{$item->company ?? '-'}}</td>
                             <td  class="text-center" >{{$item->country ?? '-'}}</td>
                             <td  class="text-center" >{{$type_arr[$item->type]}}</td>
-                            <td  class="text-center" >{{$item->order_price ?? '-'}}</td>
-                            <td  class="text-center" >{{$item->order_number}}</td>
+                            <td  class="text-center" >{{$item->order_amount ?? '-'}}</td>
+                            <td  class="text-center" >{{$item->order_num}}</td>
                             <td  class="text-center" >{{$item->register_time}}</td>
                             <td class="text-center">
                                 <div class="btn-group">

@@ -94,9 +94,9 @@ class UserController extends Controller
         $payload = ['email' => $email, 'iat' => time(), 'jti'=>$jti];
         $token = JWTService::getToken($payload);
 
-        //记录登录次数
-        $userService = new UserService();
-        $userService->addLoginTime($user->id);
+        //增加登录次数
+        $user->login_times += 1;
+        $user->save();
 
         return Response::json(['code'=>200, 'message'=>'success', 'data'=>['token'=>$token]]);
     }
