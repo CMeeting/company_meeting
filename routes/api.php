@@ -16,8 +16,7 @@ use Illuminate\Http\Request;
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
-Route::namespace('Api')
-    ->group(function(){
+Route::group(['namespace'=>'Api'], function(){
         Route::get('/sdkIndex','DocumentationController@sdkIndex')->name('documentation.sdkIndex');
         Route::get('/sdkInfo','DocumentationController@sdkInfo')->name('documentation.sdkInfo');
         Route::get('/blogs/bloglist','BlogsController@blogList');
@@ -27,7 +26,11 @@ Route::namespace('Api')
         Route::any('/support','SupportController@getsupport');
         Route::get('/changelogs','ChangelogsController@changelogs');
         Route::get('/getgoods','GoodsController@getGoods');
-    });
+});
+
+Route::group(['middleware'=>'jwt.auth', 'namespace'=>'Api'], function(){
+    Route::post('/cart','OrdercartController@cart');
+});
 
 //用户管理
 Route::group(['prefix'=>'user', 'namespace'=>'Api'], function (){

@@ -68,7 +68,6 @@ class NewsletterController extends BaseController {
        }
        $data = $SubscriptionService->getFindcategorical($id);
        return $this->view('updatesubscription',['data'=>$data]);
-
     }
 
     public function updaterunsubscription(Request $request){
