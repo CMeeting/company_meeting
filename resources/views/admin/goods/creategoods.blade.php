@@ -63,6 +63,19 @@
                         <span class="lbl" style="float: left;margin-top: 0.5%">/year</span>
                     </div>
 
+                  <div id="infosdata">
+
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label no-padding-right" for="form-field-1"> Features：</label>
+                        <div class="col-sm-6 col-xs-12">
+                            <input style="float: left" id="maidian"  type="text" class="form-control" name="data[info][]" required>
+                        </div>
+                        <span class="lbl" style="float: left;margin-top: 0.2%;"><a style="display: inline-block;width: 30px;height: 30px;font-size: 18px;color: green;background: #fff9f9;text-align: center;line-height: 30px;border: 1px solid green" onclick="addmaidian()">+</a></span>
+                    </div>
+
+
+                  </div>
+
                     <div class="form-group">
                         <label class="col-sm-2 control-label no-padding-right" for="form-field-1"> status(是否上架)：</label>
                         <div class="col-sm-6 col-xs-12">
@@ -90,7 +103,15 @@
 
     <script src="{{loadEdition('/js/jquery.min.js')}}"></script>
     <script>
-
+    var mdindex=1;
+    function addmaidian(){
+        mdindex++;
+        var str='<div class="form-group" id="md'+mdindex+'"><label class="col-sm-2 control-label no-padding-right" for="form-field-1"> </label><div class="col-sm-6 col-xs-12"> <input style="float: left" id="maidian"  type="text" class="form-control" name="data[info][]" required> </div> <span class="lbl" style="float: left;margin-top: 0.2%;"><a style="display: inline-block;width: 30px;height: 30px;font-size: 18px;color: red;background: #fff9f9;text-align: center;line-height: 30px;border: 1px solid red" onclick="movemaidian('+mdindex+')">-</a></span> </div>';
+        $("#infosdata").append(str);
+    }
+    function movemaidian(id){
+        $("#md"+id).remove();
+    }
         function submits() {
             var index = layer.load();
 
@@ -112,6 +133,11 @@
             if($("#price").val() < 0.01){
                 layer.close(index);
                 layer.msg("价格不能低于0.01", {time: 1500, anim: 6});
+                return false;
+            }
+            if(!$("#maidian").val()){
+                layer.close(index);
+                layer.msg("至少填写一个Features", {time: 1500, anim: 6});
                 return false;
             }
             var form_data = new FormData($("#forms")[0]);

@@ -31,7 +31,7 @@ class CartService
             $arr = ['pay_years' => $data['pay_years']];
             $rest = $cart->_update($arr, "id='{$data['id']}'");
         }elseif (isset($data['delid'])){
-            $rest = $cart->_delete("id='{$data['delid']}'");
+            $rest = $cart->_delete([["id","=",$data['delid']]]);
         } else {
             if(!isset($data['goods_id'])){
                 $goods_data = $goods->_find("level1='{$data['products_id']}' and level2='{$data['platform_id']}' and level3='{$data['licensetype_id']}' and deleted=0 and status=1");
@@ -76,6 +76,19 @@ class CartService
 
     }
 
+
+    public function getdata($user_id){
+        $cart = new cart();
+        $list=$cart->_where("user_id='{$user_id}'");
+        if($list){
+            $goodsinfo=$this->get_goods();
+            foreach ($list as $k=>$v){
+                $list[$k]['price']=$goodsinfo['goods'][$v['goods_id']]['price']*$v['pay_years'];
+                $list[$k]['goodsname']=$goodsinfo['fenlei'][$v['level1']]['title'].$goodsinfo['fenlei'][$v['level2']]['title'].$goodsinfo['fenlei'][$v['level3']]['title'];
+            }
+        }
+        return ['code'=>200,'msg'=>"ok",'data'=>$list];
+    }
 
     public function get_goods(){
         $goodsfenlei = new Goodsclassification();

@@ -149,6 +149,9 @@ class GoodsService
         if (isset($param['data'])) {
             $data = $param['data'];
         }
+        if(isset($data['info'])){
+            $data['info']=serialize($data['info']);
+        }
         if (isset($data['id'])) {
             $where = "id='{$data['id']}'";
             $is_find = $Goods->_find($where);
@@ -186,7 +189,9 @@ class GoodsService
         $data = $Goods->_find("deleted=0 and id='{$id}'");
         $data = $Goods->objToArr($data);
         $classification = $this->assembly_classification();
-
+        if($data['info']){
+            $data['info'] = unserialize($data['info']);
+        }
         $data['level1name'] = $classification[$data['level1']]['title'];
         $data['level2name'] = $classification[$data['level2']]['title'];
         $data['level3name'] = $classification[$data['level3']]['title'];;
@@ -266,6 +271,11 @@ class GoodsService
         if (!empty($goodsdata)) {
             $classification = $this->assembly_classification();
             foreach ($goodsdata as $k => $v) {
+                if($v['info']){
+                    $goodsdata[$k]['info'] = unserialize($v['info']);
+                }else{
+                    $goodsdata[$k]['info'] = [];
+                }
                 $goodsdata[$k]['products'] = $classification[$v['level1']]['title'];
                 $goodsdata[$k]['platform'] = $classification[$v['level2']]['title'];
                 $goodsdata[$k]['licensie'] = $classification[$v['level3']]['title'];

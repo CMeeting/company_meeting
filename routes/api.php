@@ -30,6 +30,7 @@ Route::group(['namespace'=>'Api'], function(){
 
 Route::group(['middleware'=>'jwt.auth', 'namespace'=>'Api'], function(){
     Route::post('/cart','OrdercartController@cart');
+    Route::get('/getcart','OrdercartController@getcart');
 });
 
 //用户管理

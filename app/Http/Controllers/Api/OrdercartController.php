@@ -22,4 +22,13 @@ class OrdercartController
         return \Response::json($data);
     }
 
+
+    public function getcart(Request $request){
+        $cart = new CartService();
+        $current_user = UserService::getCurrentUser($request);
+        $user_id = $current_user->id;
+        $data = $cart->getdata($user_id);
+        return \Response::json($data);
+    }
+
 }
