@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use Illuminate\Http\Request;
 use App\Services\OrdersService;
+use App\Services\GoodsService;
 
 class OrderController extends BaseController {
 
@@ -14,25 +15,35 @@ class OrderController extends BaseController {
         $GoodsService = new OrdersService();
         $query["query_type"] = isset($param['query_type']) ? $param['query_type'] : "";
         $query["info"] = isset($param['info']) ? $param['info'] : "";
-        $query["level1"] = isset($param['level1']) ? $param['level1'] : "";
-        $query["level2"] = isset($param['level2']) ? $param['level2'] : "";
-        $query["level3"] = isset($param['level3']) ? $param['level3'] : "";
+        $query["type"] = isset($param['type']) ? $param['type'] : "";
+        $query["details_type"] = isset($param['details_type']) ? $param['details_type'] : "";
         $query["status"] = isset($param['status']) ? $param['status'] : "";
-        $query["start_date"] = isset($param['start_date']) ? $param['start_date'] : "";
-        $query["end_date"] = isset($param['end_date']) ? $param['end_date'] : "";
-        $query["updated_at"] = isset($param['updated_at']) ? $param['updated_at'] : "";
-        $query["endupdated_at"] = isset($param['endupdated_at']) ? $param['endupdated_at'] : "";
+        $query["pay_at"] = isset($param['pay_at']) ? $param['pay_at'] : "";
+        $query["endpay_at"] = isset($param['endpay_at']) ? $param['endpay_at'] : "";
         $query["shelf_at"] = isset($param['shelf_at']) ? $param['shelf_at'] : "";
         $query["endshelf_at"] = isset($param['endshelf_at']) ? $param['endshelf_at'] : "";
         $query['export'] = array_get($param, 'export', 0);
         $query ['field'] = array_get($param, 'field', '');
 
         $data = $GoodsService->data_list($query);
-        if($query['export'] == 1){
-            return $GoodsService->export($data, $query['field']);
-        }
+//        if($query['export'] == 1){
+//            return $GoodsService->export($data, $query['field']);
+//        }
 
         return $this->view('index',['data'=>$data,'query'=>$query]);
+    }
+
+    public function create(){
+        $GoodsService = new GoodsService();
+        $categorical_data = $GoodsService->threelevellinkage();
+        return $this->view('create',['lv1'=>json_encode($categorical_data['arr1']),'lv2'=>json_encode($categorical_data['arr2']),'lv3'=>json_encode($categorical_data['arr3'])]);
+    }
+
+    public function createrun(Request $request){
+        $param = $request->input();
+        $GoodsService = new OrdersService();
+        $rest=$GoodsService->rundata($param);
+        return $rest;
     }
 
 }

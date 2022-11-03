@@ -14,6 +14,9 @@ namespace App\Services;
 use App\Export\GoodsExport;
 use App\Export\UserExport;
 use App\Models\Order;
+use App\Models\Goods;
+use Illuminate\Support\Facades\DB;
+use App\Models\User;
 use App\Models\OrderGoods;
 use Auth;
 
@@ -27,18 +30,9 @@ class OrdersService
 
     public function data_list($param)
     {
-        $where = "deleted=0";
+        $where = "1=1";
         if ($param['info']) {
             $where .= " and {$param['query_type']}={$param['info']}";
-        }
-        if ($param['level1']) {
-            $where .= " and level1={$param['level1']}";
-        }
-        if ($param['level2']) {
-            $where .= " and level2={$param['level2']}";
-        }
-        if ($param['level3']) {
-            $where .= " and level3={$param['level3']}";
         }
         if ($param['status']) {
             $param['status'] = $param['status'] - 1;
@@ -73,17 +67,91 @@ class OrdersService
         if ($param['export'] == 1) {
             return $goods->whereRaw($where)->orderByRaw('id desc')->get()->toArray();
         } else {
-            $data = $goods->whereRaw($where)->orderByRaw('id desc')->paginate(10);
+            $data = $goods->leftJoin('users', 'orders.user_id', '=', 'users.id')->whereRaw($where)->orderByRaw('orders.id desc')->selectRaw("orders.*,users.email")->paginate(10);
         }
 
-        if (!empty($data)) {
-            $classification = $this->assembly_classification();
-            foreach ($data as $k => $v) {
-                $v->products = $classification[$v['level1']]['title'];
-                $v->platform = $classification[$v['level2']]['title'];
-                $v->licensie = $classification[$v['level3']]['title'];
-            }
-        }
+//        if (!empty($data)) {
+//            $classification = $this->assembly_classification();
+//            foreach ($data as $k => $v) {
+//                $v->products = $classification[$v['level1']]['title'];
+//                $v->platform = $classification[$v['level2']]['title'];
+//                $v->licensie = $classification[$v['level3']]['title'];
+//            }
+//        }
         return $data;
+    }
+
+    public function rundata($param){
+        $data=$param['data'];
+        $user = new User();
+        $goods = new Goods();
+        $order = new Order();
+        $orderGoods = new OrderGoods();
+        $is_user=$user->existsEmail($data['email']);
+        if(!$is_user){
+            $arr['full_name']=$data['email'];
+            $arr['email']=$data['email'];
+            $arr['flag']=2;
+            $arr['created_at']=date("Y-m-d H:i:s");
+            $arr['updated_at']=date("Y-m-d H:i:s");
+            $user_id= Db::table("users")->insertGetId($arr);
+        }else{
+            $users=DB::table('users')->where('email', $data['email'])->first();
+            $user_id= $users->id;
+        }
+        $goods_data=$goods->_where("deleted=0 and status=1");
+        $arr=[];
+        $sumprice=0;
+        $goodstotal=0;
+        foreach ($data['level1'] as $k=>$v){
+            foreach ($goods_data as $ks=>$vs){
+                if($v==$vs['level1'] && $data['level2'][$k]==$vs['level2'] && $data['level3'][$k]==$vs['level3']){
+                    $goodsid=$vs['id'];
+                    $price=$vs['price'];
+                }
+            }
+            $arr[]=[
+                'pay_type'=>0,
+                'status'=>$data['status'],
+                'type'=>1,
+                'details_type'=>1,
+                'price'=>$price,
+                'user_id'=>$user_id,
+                'pay_years'=>1,
+                'goods_id'=>$goodsid,
+                'created_at'=>date("Y-m-d H:i:s"),
+                'updated_at'=>date("Y-m-d H:i:s")
+            ];
+            $goodstotal++;
+            $sumprice+=$price;
+        }
+        $orderno=time();
+        $orderdata=[
+            'order_no'=>$orderno,
+            'pay_type'=>0,
+            'status'=>$data['status'],
+            'type'=>1,
+            'details_type'=>1,
+            'price'=>$sumprice,
+            'user_id'=>$user_id,
+            'goodstotal'=>$goodstotal
+        ];
+
+        try {
+            $order_id=$order->insertGetId($orderdata);
+            foreach ($arr as $k=>$v){
+                $arr[$k]['order_id']=$order_id;
+                $arr[$k]['order_no']=$orderno;
+            }
+            $orderGoods->_insert($arr);
+            $user_info=$user->_find("id='{$user_id}'");
+            $user_info=$user->objToArr($user_info);
+            $userprice=$user_info['order_amount']+$sumprice;
+            $userorder=$user_info['order_num']+1;
+            $user->_update(['order_amount'=>$userprice,'order_num'=>$userorder],"id='{$user_id}'");
+        }catch (Exception $e){
+            return ['code'=>500, 'message'=>'Invalid Token'];
+        }
+        return ['code'=>200];
     }
 }

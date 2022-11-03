@@ -177,6 +177,11 @@ Route::group(['namespace' => 'Admin','prefix' => 'admin'], function (){
         Route::post('goods/show', 'GoodsController@show')->name('goods.show');
         Route::get('goods/info/{id}', 'GoodsController@info')->name('goods.info');
 
+
+        Route::get('order/index', 'OrderController@index')->name('order.index');
+        Route::get('order/create', 'OrderController@create')->name('order.create');
+        Route::post('order/createrun', 'OrderController@createrun')->name('order.createrun');
+
         Route::get('license/index', 'LicenseController@index')->name('license.index');
         Route::get('license/createLicense','LicenseController@createLicense')->name('license.createLicense');
         Route::get('license/updateLicense/{id}', 'LicenseController@updateLicense')->name('license.updateLicense');
