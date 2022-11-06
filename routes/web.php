@@ -180,7 +180,9 @@ Route::group(['namespace' => 'Admin','prefix' => 'admin'], function (){
 
         Route::get('order/index', 'OrderController@index')->name('order.index');
         Route::get('order/create', 'OrderController@create')->name('order.create');
+        Route::get('order/getinfo/{id}', 'OrderController@getinfo')->name('order.getinfo');
         Route::post('order/createrun', 'OrderController@createrun')->name('order.createrun');
+        Route::post('order/updatestatus', 'OrderController@updatestatus')->name('order.updatestatus');
 
         Route::get('license/index', 'LicenseController@index')->name('license.index');
         Route::get('license/createLicense','LicenseController@createLicense')->name('license.createLicense');

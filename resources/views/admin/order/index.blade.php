@@ -46,16 +46,16 @@
                             <div class="input-group-btn" style="display: block;">
                                 <select id="query_type" name="query_type" class="form-control"
                                         style="display: inline-block;width: 100px;">
-                                    <option value="id" @if(isset($query)&&$query['query_type']=='id') selected @endif>
+                                    <option value="orders.id" @if(isset($query)&&$query['query_type']=='orders.id') selected @endif>
                                         ID
                                     </option>
-                                    <option value="order_no" @if(isset($query)&&$query['query_type']=='order_no') selected @endif>
+                                    <option value="orders.order_no" @if(isset($query)&&$query['query_type']=='orders.order_no') selected @endif>
                                         订单号
                                     </option>
                                 </select>
                             </div>
                             <input id="info" type="text" name="info" placeholder="请输入筛选内容" class="form-control" style="display: inline-block;width: 150px;
-                                   value="@if(isset($query)){{$query['info']}}@endif"/>
+                                   value="@if(isset($query['info']))value="{{$query['info']}}"@endif"/>
 
 
                             <div class="col-md-4 col-lg-3 col-sm-6 col-xs-12">
@@ -134,6 +134,7 @@
                         <th class="text-center" style="width: 8%">订单金额</th>
                         <th class="text-center" style="width: 6%">订单状态</th>
                         <th class="text-center" style="width: 6%">订单来源</th>
+                        <th class="text-center" style="width: 6%">订单类型</th>
                         <th class="text-center" style="width: 11%">创建时间</th>
                         <th class="text-center" style="width: 11%">支付时间</th>
                         <th class="text-center" style="width: 10%">操作</th>
@@ -153,7 +154,7 @@
                                     @elseif($item['pay_type'] == 3)
                                             <span class="ladda-label">微信</span>
                                     @else
-                                            <span class="ladda-label">不需支付</span>
+                                            <span class="ladda-label">未支付</span>
                                     @endif
 
                             </td>
@@ -173,6 +174,16 @@
 
                             </td>
                             <td>
+                                @if($item['type'] == 1)
+                                    <span class="ladda-label">后台创建</span>
+                                @elseif($item['type'] == 2)
+                                    <span class="ladda-label">用户购买</span>
+                                @else
+                                    <span class="ladda-label">未知</span>
+                                @endif
+
+                            </td>
+                            <td>
                                 @if($item['details_type'] == 1)
                                     <span class="ladda-label">SDK试用</span>
                                 @elseif($item['details_type'] == 2)
@@ -188,7 +199,7 @@
                             <td>{{$item['pay_time']}}</td>
                             <td class="text-center">
                                 <div class="btn-group">
-                                    <a class="btn  btn-xs" style="text-decoration: none;color: #f6fff8;background: #0b94ea" title="预览 " href="{{route('goods.info',$item['id'])}}">
+                                    <a class="btn  btn-xs" style="text-decoration: none;color: #f6fff8;background: #0b94ea" title="预览 " href="{{route('order.getinfo',$item['id'])}}">
                                         <i class="fa fa-users"></i> 详情
                                     </a>
                                 </div>

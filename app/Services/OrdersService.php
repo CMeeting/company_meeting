@@ -13,6 +13,7 @@ namespace App\Services;
 
 use App\Export\GoodsExport;
 use App\Export\UserExport;
+use App\Models\Goodsclassification;
 use App\Models\Order;
 use App\Models\Goods;
 use Illuminate\Support\Facades\DB;
@@ -36,30 +37,29 @@ class OrdersService
         }
         if ($param['status']) {
             $param['status'] = $param['status'] - 1;
-            $where .= " and status={$param['status']}";
+            $where .= " and orders.status={$param['status']}";
         }
-        if (isset($param['start_date']) && $param['start_date'] && isset($param['end_date']) && $param['end_date']) {
-            $where .= " AND created_at BETWEEN '" . $param['start_date'] . "' AND '" . $param['end_date'] . "'";
-        } elseif (isset($param['start_date']) && $param['start_date'] && empty($param['end_date'])) {
-            $where .= " AND created_at >= '" . $param['start_date'] . "'";
-        } elseif (isset($param['end_date']) && $param['end_date'] && empty($param['start_date'])) {
-            $where .= " AND created_at <= '" . $param['end_date'] . "'";
+        if ($param['details_type']) {
+            $where .= " and orders.details_type={$param['details_type']}";
+        }
+        if ($param['type']) {
+            $where .= " and orders.type={$param['type']}";
         }
 
-        if (isset($param['updated_at']) && $param['updated_at'] && isset($param['endupdated_at']) && $param['endupdated_at']) {
-            $where .= " AND updated_at BETWEEN '" . $param['updated_at'] . "' AND '" . $param['endupdated_at'] . "'";
-        } elseif (isset($param['updated_at']) && $param['updated_at'] && empty($param['endupdated_at'])) {
-            $where .= " AND updated_at >= '" . $param['updated_at'] . "'";
-        } elseif (isset($param['endupdated_at']) && $param['endupdated_at'] && empty($param['updated_at'])) {
-            $where .= " AND updated_at <= '" . $param['endupdated_at'] . "'";
+        if (isset($param['pay_at']) && $param['pay_at'] && isset($param['endpay_at']) && $param['endpay_at']) {
+            $where .= " AND orders.pay_time BETWEEN '" . $param['pay_at'] . "' AND '" . $param['endpay_at'] . "'";
+        } elseif (isset($param['pay_at']) && $param['pay_at'] && empty($param['endpay_at'])) {
+            $where .= " AND orders.pay_time >= '" . $param['pay_at'] . "'";
+        } elseif (isset($param['endpay_at']) && $param['endpay_at'] && empty($param['pay_at'])) {
+            $where .= " AND orders.pay_time <= '" . $param['endpay_at'] . "'";
         }
 
         if (isset($param['shelf_at']) && $param['shelf_at'] && isset($param['endshelf_at']) && $param['endshelf_at']) {
-            $where .= " AND shelf_at BETWEEN '" . $param['shelf_at'] . "' AND '" . $param['endshelf_at'] . "'";
+            $where .= " AND orders.created_at BETWEEN '" . $param['shelf_at'] . "' AND '" . $param['endshelf_at'] . "'";
         } elseif (isset($param['shelf_at']) && $param['shelf_at'] && empty($param['endshelf_at'])) {
-            $where .= " AND shelf_at >= '" . $param['shelf_at'] . "'";
+            $where .= " AND orders.created_at >= '" . $param['shelf_at'] . "'";
         } elseif (isset($param['endshelf_at']) && $param['endshelf_at'] && empty($param['shelf_at'])) {
-            $where .= " AND shelf_at <= '" . $param['endshelf_at'] . "'";
+            $where .= " AND orders.created_at <= '" . $param['endshelf_at'] . "'";
         }
 
         $goods = new Order();
@@ -70,14 +70,6 @@ class OrdersService
             $data = $goods->leftJoin('users', 'orders.user_id', '=', 'users.id')->whereRaw($where)->orderByRaw('orders.id desc')->selectRaw("orders.*,users.email")->paginate(10);
         }
 
-//        if (!empty($data)) {
-//            $classification = $this->assembly_classification();
-//            foreach ($data as $k => $v) {
-//                $v->products = $classification[$v['level1']]['title'];
-//                $v->platform = $classification[$v['level2']]['title'];
-//                $v->licensie = $classification[$v['level3']]['title'];
-//            }
-//        }
         return $data;
     }
 
@@ -110,13 +102,15 @@ class OrdersService
                     $price=$vs['price'];
                 }
             }
+            $s=$k+1;
             $arr[]=[
                 'pay_type'=>0,
                 'status'=>$data['status'],
                 'type'=>1,
-                'details_type'=>1,
+                'details_type'=>2,
                 'price'=>$price,
                 'user_id'=>$user_id,
+                'appid'=>implode(',',$data["appid$s"]),
                 'pay_years'=>1,
                 'goods_id'=>$goodsid,
                 'created_at'=>date("Y-m-d H:i:s"),
@@ -131,7 +125,7 @@ class OrdersService
             'pay_type'=>0,
             'status'=>$data['status'],
             'type'=>1,
-            'details_type'=>1,
+            'details_type'=>2,
             'price'=>$sumprice,
             'user_id'=>$user_id,
             'goodstotal'=>$goodstotal
@@ -144,14 +138,59 @@ class OrdersService
                 $arr[$k]['order_no']=$orderno;
             }
             $orderGoods->_insert($arr);
-            $user_info=$user->_find("id='{$user_id}'");
-            $user_info=$user->objToArr($user_info);
-            $userprice=$user_info['order_amount']+$sumprice;
-            $userorder=$user_info['order_num']+1;
-            $user->_update(['order_amount'=>$userprice,'order_num'=>$userorder],"id='{$user_id}'");
+            if($data['status']==1){
+                $user_info=$user->_find("id='{$user_id}'");
+                $user_info=$user->objToArr($user_info);
+                $userprice=$user_info['order_amount']+$sumprice;
+                $userorder=$user_info['order_num']+1;
+                $user->_update(['order_amount'=>$userprice,'order_num'=>$userorder],"id='{$user_id}'");
+            }
         }catch (Exception $e){
             return ['code'=>500, 'message'=>'Invalid Token'];
         }
         return ['code'=>200];
     }
+
+    public function data_info($id){
+        $orderGoods = new OrderGoods();
+        $ordergoodsdata=$orderGoods
+            ->leftJoin('goods', 'orders_goods.goods_id', '=', 'goods.id')
+            ->leftJoin('users', 'orders_goods.user_id', '=', 'users.id')
+            ->whereRaw("order_id='{$id}'")
+            ->selectRaw("orders_goods.*,users.email,goods.level1,goods.level2,goods.level3")
+            ->get()->toArray();
+        if (!empty($ordergoodsdata)) {
+            $classification = $this->assembly_classification();
+            foreach ($ordergoodsdata as $k => $v) {
+                $ordergoodsdata[$k]['products'] = $classification[$v['level1']]['title'];
+                $ordergoodsdata[$k]['platform'] = $classification[$v['level2']]['title'];
+                $ordergoodsdata[$k]['licensie'] = $classification[$v['level3']]['title'];
+            }
+        }
+        return $ordergoodsdata;
+    }
+
+    public function update_status($id){
+        $order = new Order();
+        $orderGoods = new OrderGoods();
+        try {
+            $order->_update(['status'=>4],"id='{$id}'");
+            $orderGoods->_update(['status'=>4],"order_id='{$id}'");
+        }catch (Exception $e){
+            return ['code'=>500, 'message'=>'关闭失败'];
+        }
+        return ['code'=>0];
+    }
+
+    function assembly_classification()
+    {
+        $Goodsclassification = new Goodsclassification();
+        $data = $Goodsclassification->_where("deleted=0");
+        $arr = array();
+        foreach ($data as $k => $v) {
+            $arr[$v['id']] = $v;
+        }
+        return $arr;
+    }
+
 }

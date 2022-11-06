@@ -24,7 +24,6 @@ class OrderController extends BaseController {
         $query["endshelf_at"] = isset($param['endshelf_at']) ? $param['endshelf_at'] : "";
         $query['export'] = array_get($param, 'export', 0);
         $query ['field'] = array_get($param, 'field', '');
-
         $data = $GoodsService->data_list($query);
 //        if($query['export'] == 1){
 //            return $GoodsService->export($data, $query['field']);
@@ -45,5 +44,22 @@ class OrderController extends BaseController {
         $rest=$GoodsService->rundata($param);
         return $rest;
     }
+
+
+    public function getinfo($id){
+        $order = new OrdersService();
+        $data = $order->data_info($id);
+
+        return $this->view('info',['data'=>$data]);
+    }
+
+    public function updatestatus(Request $request){
+        $param = $request->input();
+        $GoodsService = new OrdersService();
+        $rest=$GoodsService->update_status($param['id']);
+        return $rest;
+    }
+
+
 
 }
