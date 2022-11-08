@@ -252,6 +252,21 @@ class OrdersService
         return ['code' => 200, 'msg' => 'ok', 'data' => $data];
     }
 
+    public function get_ordertryoutlist($parm){
+        $orderGoods = new OrderGoods();
+        $ordergoodsdata=$orderGoods
+            ->leftJoin('goods', 'orders_goods.goods_id', '=', 'goods.id')
+            ->whereRaw("orders_goods.user_id='{$parm['user_id']}' and orders_goods.details_type=1")
+            ->selectRaw("goods.level1,goods.level2,goods.level3,orders_goods.order_id,orders_goods.goods_id,orders_goods.appid")
+            ->get()->toArray();
+        $classification = $this->assembly_classification();
+            foreach ($ordergoodsdata as $ks=>$vs){
+                $ordergoodsdata[$ks]['goodsname']=$classification[$vs['level1']]['title'].$classification[$vs['level2']]['title'].$classification[$vs['level3']]['title'];
+                $ordergoodsdata[$ks]['peroid']="1 month";
+            }
+        return ['code' => 200, 'msg' => 'ok', 'data' => $ordergoodsdata];
+    }
+
     public function get_license($parm){
 
         if(isset($parm['type'])){

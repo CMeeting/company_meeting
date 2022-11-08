@@ -42,6 +42,14 @@ class OrderController
         return \Response::json($data);
     }
 
-
+    public function getordertryoutlist(Request $request){
+        $order = new OrdersService();
+        $current_user = UserService::getCurrentUser($request);
+        $user_id = $current_user->id;
+        $param = $request->all();
+        $param['user_id'] = 150;
+        $data = $order->get_ordertryoutlist($param);
+        return \Response::json($data);
+    }
 
 }
