@@ -257,7 +257,7 @@ class OrdersService
         $ordergoodsdata=$orderGoods
             ->leftJoin('goods', 'orders_goods.goods_id', '=', 'goods.id')
             ->whereRaw("orders_goods.user_id='{$parm['user_id']}' and orders_goods.details_type=1")
-            ->selectRaw("goods.level1,goods.level2,goods.level3,orders_goods.order_id,orders_goods.goods_id,orders_goods.appid")
+            ->selectRaw("goods.level1,goods.level2,goods.level3,orders_goods.order_id,orders_goods.goods_id,orders_goods.appid,orders_goods.created_at")
             ->get()->toArray();
         $classification = $this->assembly_classification();
             foreach ($ordergoodsdata as $ks=>$vs){
@@ -265,6 +265,80 @@ class OrdersService
                 $ordergoodsdata[$ks]['peroid']="1 month";
             }
         return ['code' => 200, 'msg' => 'ok', 'data' => $ordergoodsdata];
+    }
+
+    public function createorder($data){
+        $order = new Order();
+        $orderGoods = new OrderGoods();
+        $goods = new goods();
+        $orderno=time();
+        $goods_data = $goods->_find("level1='{$data['products_id']}' and level2='{$data['platform_id']}' and level3='{$data['licensetype_id']}' and deleted=0 and status=1");
+        $goods_data = $goods->objToArr($goods_data);
+        if (!$goods_data) {
+            return ['code' => 403, 'msg' => "该商品不存在或已下架"];
+        }
+        $orderarr=[
+            'order_no'=>$orderno,
+            'pay_type'=>0,
+            'status'=>0,
+            'type'=>2,
+            'details_type'=>$data['details_type'],
+            'user_id'=>$data['user_id'],
+            'user_bill'=>serialize($data['info']),
+            'goodstotal'=>1
+        ];
+        $ordergoodsarr=[
+            'pay_type'=>0,
+            'order_no'=>$orderno,
+            'status'=>0,
+            'type'=>2,
+            'appid'=>implode(",",$data['appid']),
+            'goods_id'=>$goods_data['id'],
+            'details_type'=>$data['details_type'],
+            'user_id'=>$data['user_id']
+        ];
+        if($data['details_type']==1){
+            $data['appid']=implode(",",$data['appid']);
+            $gooodsdata=$orderGoods->_find("user_id='{$data['user_id']}' and appid='{$data['appid']}' and details_type='{$data['details_type']}' and status=2 and goods_id='{$goods_data['id']}'");
+            $gooodsdata=$orderGoods->objToArr($gooodsdata);
+            if($gooodsdata){
+                return ['code' => 403, 'msg' => "该APPID在当前商品已存在试用订单"];
+            }
+            $orderarr['status']=2;
+            $orderarr['pay_type']=4;
+            $orderarr['price']=0.00;
+            $ordergoodsarr['status']=2;
+            $ordergoodsarr['pay_type']=4;
+            $ordergoodsarr['price']=0.00;
+            $ordergoodsarr['pay_years']=1;
+            try {
+                $order_id=$order->insertGetId($orderarr);
+                $ordergoodsarr['order_id']=$order_id;
+                $orderGoods->insertGetId($ordergoodsarr);
+            } catch (Exception $e) {
+                return ['code' => 500, 'message' => '创建失败'];
+            }
+            return ['code' => 200, 'msg' => "创建试用订单成功",'data'=>['order_id'=>$order_id]];
+        }else{
+            $data['appid']=implode(",",$data['appid']);
+            $price=$data['pay_years']*$goods_data['price'];
+            $orderarr['status']=0;
+            $orderarr['pay_type']=0;
+            $orderarr['price']=$price;
+            $ordergoodsarr['status']=0;
+            $ordergoodsarr['pay_type']=0;
+            $ordergoodsarr['price']=$price;
+            $ordergoodsarr['pay_years']=$data['pay_years'];
+            try {
+                $order_id=$order->insertGetId($orderarr);
+                $ordergoodsarr['order_id']=$order_id;
+                $orderGoods->insertGetId($ordergoodsarr);
+            } catch (Exception $e) {
+                return ['code' => 500, 'message' => '创建失败'];
+            }
+            return ['code' => 200, 'msg' => "创建订单成功",'data'=>['order_id'=>$order_id]];
+        }
+
     }
 
     public function get_license($parm){

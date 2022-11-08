@@ -14,6 +14,8 @@ namespace App\Services;
 use App\Models\CartModels as cart;
 use App\Models\Goods;
 use App\Models\Goodsclassification;
+use App\Models\Order;
+use App\Models\OrderGoods;
 use Auth;
 
 class CartService
@@ -104,6 +106,66 @@ class CartService
         }
         return $arr;
     }
+
+
+    public function createorder($data){
+        $order = new Order();
+        $cart = new cart();
+        $orderGoods = new OrderGoods();
+        $goods = new goods();
+        $orderno=time();
+        $list=$cart->_where("user_id='{$data['user_id']}'");
+        $arr = [];
+        $sumprice = 0;
+        $goodstotal = 0;
+        foreach ($list as $k=>$v){
+            $goods_data = $goods->_find("level1='{$v['level1']}' and level2='{$v['level2']}' and level3='{$v['level3']}' and deleted=0 and status=1");
+            $goods_data = $goods->objToArr($goods_data);
+            if (!$goods_data) {
+                return ['code' => 403, 'msg' => "商品ID：".$v['goods_id']."该商品不存在或已下架"];
+            }
+            $price = $v['pay_years']*$goods_data['price'];
+            $arr[] = [
+                'pay_type' => 0,
+                'order_no'=>$orderno,
+                'status' => 0,
+                'type' => 2,
+                'details_type' => 2,
+                'price' => $price,
+                'user_id' => $data['user_id'],
+                'appid' => implode(',', $data["appid"]),
+                'goods_id' => $goods_data['id'],
+                'pay_years' => $v['pay_years'],
+                'created_at' => date("Y-m-d H:i:s"),
+                'updated_at' => date("Y-m-d H:i:s")
+            ];
+            $goodstotal++;
+            $sumprice += $price;
+        }
+        $orderdata = [
+            'order_no' => $orderno,
+            'pay_type' => 0,
+            'status' => 0,
+            'type' => 2,
+            'details_type' => 2,
+            'price' => $sumprice,
+            'user_id' => $data['user_id'],
+            'user_bill'=>serialize($data['info']),
+            'goodstotal' => $goodstotal
+        ];
+            try {
+                $order_id = $order->insertGetId($orderdata);
+                foreach ($arr as $k => $v) {
+                    $arr[$k]['order_id'] = $order_id;
+                    $arr[$k]['order_no'] = $orderno;
+                }
+                $orderGoods->_insert($arr);
+                $cart->_delete(["user_id",'=',$data['user_id']]);
+            } catch (Exception $e) {
+                return ['code' => 500, 'message' => '创建失败'];
+            }
+            return ['code' => 200, 'msg' => "创建订单成功",'data'=>['order_id'=>$order_id]];
+        }
 
 
 }

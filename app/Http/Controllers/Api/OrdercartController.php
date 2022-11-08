@@ -31,5 +31,14 @@ class OrdercartController
         return \Response::json($data);
     }
 
+    public function createcatorder(Request $request){
+        $cart = new CartService();
+        $current_user = UserService::getCurrentUser($request);
+        $user_id = $current_user->id;
+        $param = $request->all();
+        $param['user_id'] = $user_id;
+        $data = $cart->createorder($param);
+        return \Response::json($data);
+    }
 
 }

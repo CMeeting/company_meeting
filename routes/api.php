@@ -35,6 +35,8 @@ Route::group(['middleware'=>'jwt.auth', 'namespace'=>'Api'], function(){
     Route::get('/getorderlist','OrderController@getorderlist');
     Route::post('/get_license','OrderController@getlicense');
     Route::post('/getordertryoutlist','OrderController@getordertryoutlist');
+    Route::post('/createorder','OrderController@createorder');
+    Route::post('/createcatorder','OrdercartController@createcatorder');
 });
 
 //用户管理

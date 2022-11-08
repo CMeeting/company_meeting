@@ -52,4 +52,15 @@ class OrderController
         return \Response::json($data);
     }
 
+
+    public function createorder(Request $request){
+        $order = new OrdersService();
+        $current_user = UserService::getCurrentUser($request);
+        $user_id = $current_user->id;
+        $param = $request->all();
+        $param['user_id'] = $user_id;
+        $data = $order->createorder($param);
+        return \Response::json($data);
+    }
+
 }
