@@ -47,7 +47,7 @@ class OrderController
         $current_user = UserService::getCurrentUser($request);
         $user_id = $current_user->id;
         $param = $request->all();
-        $param['user_id'] = 150;
+        $param['user_id'] = $user_id;
         $data = $order->get_ordertryoutlist($param);
         return \Response::json($data);
     }
