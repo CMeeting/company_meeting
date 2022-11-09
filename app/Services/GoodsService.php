@@ -307,12 +307,12 @@ class GoodsService
                             }
                             if(isset($goodsarr['id'])){
                                 $licensetype[] = ['id' => $vv['id'], 'name' => $vv['title'], 'goods' => $goodsarr];
-                            }else{
-                                $licensetype[] = ['id' => $vv['id'], 'name' => $vv['title']];
                             }
                         }
                     }
-                    $arr[$k]['Platform'][] = ['id' => $vs['id'], 'name' => $vs['title'], 'licensetype' => $licensetype];
+                    if(count($licensetype)>0){
+                        $arr[$k]['Platform'][] = ['id' => $vs['id'], 'name' => $vs['title'], 'licensetype' => $licensetype];
+                    }
                 }
             }
         }
