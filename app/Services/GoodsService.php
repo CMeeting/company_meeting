@@ -305,7 +305,11 @@ class GoodsService
                                     }
                                 }
                             }
-                            $licensetype[] = ['id' => $vv['id'], 'name' => $vv['title'], 'goods' => $goodsarr];
+                            if(isset($goodsarr['id'])){
+                                $licensetype[] = ['id' => $vv['id'], 'name' => $vv['title'], 'goods' => $goodsarr];
+                            }else{
+                                $licensetype[] = ['id' => $vv['id'], 'name' => $vv['title']];
+                            }
                         }
                     }
                     $arr[$k]['Platform'][] = ['id' => $vs['id'], 'name' => $vs['title'], 'licensetype' => $licensetype];
