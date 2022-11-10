@@ -106,7 +106,7 @@ class CartService
                 if(!isset($goodsinfo['goods'][$v['goods_id']])){
                     continue;
                 }
-                $list[$k]['price']=$goodsinfo['goods'][$v['goods_id']]['price']*$v['pay_years'];
+                $list[$k]['price']=round($goodsinfo['goods'][$v['goods_id']]['price']*$v['pay_years'],2);
                 if(isset($goodsinfo['fenlei'][$v['level1']]['title'])){
                     $level1=$goodsinfo['fenlei'][$v['level1']]['title'];
                 }else{
