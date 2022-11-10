@@ -67,8 +67,26 @@ class CartService
            if($list){
                $goodsinfo=$this->get_goods();
                foreach ($list as $k=>$v){
+                   if(!isset($goodsinfo['goods'][$v['goods_id']])){
+                       continue;
+                   }
                    $list[$k]['price']=$goodsinfo['goods'][$v['goods_id']]['price']*$v['pay_years'];
-                   $list[$k]['goodsname']=$goodsinfo['fenlei'][$v['level1']]['title'].$goodsinfo['fenlei'][$v['level2']]['title'].$goodsinfo['fenlei'][$v['level3']]['title'];
+                   if(isset($goodsinfo['fenlei'][$v['level1']]['title'])){
+                       $level1=$goodsinfo['fenlei'][$v['level1']]['title'];
+                   }else{
+                       $level1="";
+                   }
+                   if(isset($goodsinfo['fenlei'][$v['level2']]['title'])){
+                       $level2=$goodsinfo['fenlei'][$v['level2']]['title'];
+                   }else{
+                       $level2="";
+                   }
+                   if(isset($goodsinfo['fenlei'][$v['level3']]['title'])){
+                       $level3=$goodsinfo['fenlei'][$v['level3']]['title'];
+                   }else{
+                       $level3="";
+                   }
+                   $list[$k]['goodsname']=$level1.$level2.$level3;
                }
            }
            return ['code'=>200,'msg'=>"ok",'data'=>$list];
@@ -85,8 +103,26 @@ class CartService
         if($list){
             $goodsinfo=$this->get_goods();
             foreach ($list as $k=>$v){
+                if(!isset($goodsinfo['goods'][$v['goods_id']])){
+                    continue;
+                }
                 $list[$k]['price']=$goodsinfo['goods'][$v['goods_id']]['price']*$v['pay_years'];
-                $list[$k]['goodsname']=$goodsinfo['fenlei'][$v['level1']]['title'].$goodsinfo['fenlei'][$v['level2']]['title'].$goodsinfo['fenlei'][$v['level3']]['title'];
+                if(isset($goodsinfo['fenlei'][$v['level1']]['title'])){
+                    $level1=$goodsinfo['fenlei'][$v['level1']]['title'];
+                }else{
+                    $level1="";
+                }
+                if(isset($goodsinfo['fenlei'][$v['level2']]['title'])){
+                    $level2=$goodsinfo['fenlei'][$v['level2']]['title'];
+                }else{
+                    $level2="";
+                }
+                if(isset($goodsinfo['fenlei'][$v['level3']]['title'])){
+                    $level3=$goodsinfo['fenlei'][$v['level3']]['title'];
+                }else{
+                    $level3="";
+                }
+                $list[$k]['goodsname']=$level1.$level2.$level3;
             }
         }
         return ['code'=>200,'msg'=>"ok",'data'=>$list];

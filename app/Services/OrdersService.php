@@ -202,11 +202,11 @@ class OrdersService
             ->selectRaw("orders_goods.appid,orders_goods.pay_type,orders_goods.status,orders_goods.price,orders_goods.id,goods.level1,goods.level2,goods.level3,license_code.license_key_url,license_code.period,license_code.period,license_code.expire_time,license_code.created_at")
             ->get()->toArray();
         if (!empty($ordergoodsdata)) {
-            $classification = $this->assembly_classification();
+            $classification = $this->assembly_orderclassification();
             foreach ($ordergoodsdata as $k => $v) {
-                $ordergoodsdata[$k]['products'] = $classification[$v['level1']]['title'];
-                $ordergoodsdata[$k]['platform'] = $classification[$v['level2']]['title'];
-                $ordergoodsdata[$k]['licensie'] = $classification[$v['level3']]['title'];
+                $ordergoodsdata[$k]['products'] = isset($classification[$v['level1']]['title'])?$classification[$v['level1']]['title']:"";
+                $ordergoodsdata[$k]['platform'] = isset($classification[$v['level2']]['title'])?$classification[$v['level2']]['title']:"";
+                $ordergoodsdata[$k]['licensie'] = isset($classification[$v['level3']]['title'])?$classification[$v['level3']]['title']:"";
                 switch ($v['pay_type']){
                     case 1:
                         $ordergoodsdata[$k]['payname']="paddle";
@@ -241,11 +241,26 @@ class OrdersService
             ->whereRaw("orders_goods.user_id='{$parm['user_id']}'")
             ->selectRaw("goods.level1,goods.level2,goods.level3,orders_goods.order_id")
             ->get()->toArray();
-        $classification = $this->assembly_classification();
+        $classification = $this->assembly_orderclassification();
         foreach ($data as $k=>$v){
             foreach ($ordergoodsdata as $ks=>$vs){
                 if($v['id']==$vs['order_id']){
-                    $data[$k]['list'][]=$classification[$vs['level1']]['title'].$classification[$vs['level2']]['title'].$classification[$vs['level3']]['title'];
+                    if(isset($classification['fenlei'][$vs['level1']]['title'])){
+                        $level1=$classification['fenlei'][$vs['level1']]['title'];
+                    }else{
+                        $level1="";
+                    }
+                    if(isset($classification['fenlei'][$vs['level2']]['title'])){
+                        $level2=$classification['fenlei'][$vs['level2']]['title'];
+                    }else{
+                        $level2="";
+                    }
+                    if(isset($classification['fenlei'][$vs['level3']]['title'])){
+                        $level3=$classification['fenlei'][$vs['level3']]['title'];
+                    }else{
+                        $level3="";
+                    }
+                    $data[$k]['list'][]=$level1.$level2.$level3;
                 }
             }
         }
@@ -259,7 +274,7 @@ class OrdersService
             ->whereRaw("orders_goods.user_id='{$parm['user_id']}' and orders_goods.details_type=1")
             ->selectRaw("goods.level1,goods.level2,goods.level3,orders_goods.order_id,orders_goods.goods_id,orders_goods.appid,orders_goods.created_at")
             ->get()->toArray();
-        $classification = $this->assembly_classification();
+        $classification = $this->assembly_orderclassification();
             foreach ($ordergoodsdata as $ks=>$vs){
                 $ordergoodsdata[$ks]['goodsname']=$classification[$vs['level1']]['title'].$classification[$vs['level2']]['title'].$classification[$vs['level3']]['title'];
                 $ordergoodsdata[$ks]['peroid']="1 month";
@@ -358,7 +373,7 @@ class OrdersService
         if(!$ordergoodsdata){
             return ['code' => 403, 'msg' => '没有数据', 'data' => []];
         }
-        $classification = $this->assembly_classification();
+        $classification = $this->assembly_orderclassification();
             foreach ($ordergoodsdata as $ks=>$vs){
                 $ordergoodsdata[$ks]['goodsname']=$classification[$vs['level1']]['title'].$classification[$vs['level2']]['title'].$classification[$vs['level3']]['title'];
             }
@@ -370,6 +385,17 @@ class OrdersService
     {
         $Goodsclassification = new Goodsclassification();
         $data = $Goodsclassification->_where("deleted=0");
+        $arr = array();
+        foreach ($data as $k => $v) {
+            $arr[$v['id']] = $v;
+        }
+        return $arr;
+    }
+
+    function assembly_orderclassification()
+    {
+        $Goodsclassification = new Goodsclassification();
+        $data = $Goodsclassification->_where("1=1");
         $arr = array();
         foreach ($data as $k => $v) {
             $arr[$v['id']] = $v;
