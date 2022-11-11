@@ -35,6 +35,7 @@ class CartService
         }elseif (isset($data['delid'])){
             $rest = $cart->_delete([["id","=",$data['delid']]]);
         } else {
+            $appid=implode(",",$data['appid']);
             if(!isset($data['goods_id'])){
                 $goods_data = $goods->_find("level1='{$data['products_id']}' and level2='{$data['platform_id']}' and level3='{$data['licensetype_id']}' and deleted=0 and status=1");
             }else{
@@ -44,7 +45,7 @@ class CartService
             if (!$goods_data) {
                 return ['code' => 403, 'msg' => "该商品不存在或已下架"];
             }
-            $cart_info = $cart->_find("goods_id='{$goods_data['id']}' and user_id='{$data['user_id']}' and appid='{$data['appid']}'");
+            $cart_info = $cart->_find("goods_id='{$goods_data['id']}' and user_id='{$data['user_id']}' and appid='{$appid}'");
             $cart_info = $cart->objToArr($cart_info);
             if ($cart_info) {
                 $arr = ['pay_years' => $data['pay_years'] + $cart_info['pay_years']];
@@ -56,7 +57,7 @@ class CartService
                     'level1' => $data['products_id'],
                     'level2' => $data['platform_id'],
                     'level3' => $data['licensetype_id'],
-                    'appid' => $data['appid'],
+                    'appid' => $appid,
                     'pay_years' => $data['pay_years']
                 ];
                 $rest = $cart->insertGetId($arr);
@@ -169,7 +170,7 @@ class CartService
                 'details_type' => 2,
                 'price' => $price,
                 'user_id' => $data['user_id'],
-                'appid' => implode(',', $data["appid"]),
+                'appid' => $v["appid"],
                 'goods_id' => $goods_data['id'],
                 'pay_years' => $v['pay_years'],
                 'created_at' => date("Y-m-d H:i:s"),
