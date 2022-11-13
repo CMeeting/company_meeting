@@ -13,6 +13,9 @@ namespace App\Services;
 
 use App\Export\GoodsExport;
 use App\Export\UserExport;
+use App\Http\Controllers\Api\biz\AlipayBiz;
+use App\Http\Controllers\Api\biz\PaddleBiz;
+use App\Http\Controllers\Api\biz\WechatPay;
 use App\Models\Goodsclassification;
 use App\Models\Order;
 use App\Models\Goods;
@@ -27,7 +30,7 @@ class OrdersService
     {
 
     }
-
+    public static $payments = ['paddle' => 1, 'alipay' => 2, 'wxpay' => 3];
 
     public function data_list($param)
     {
@@ -335,23 +338,27 @@ class OrdersService
             }
             return ['code' => 200, 'msg' => "创建试用订单成功",'data'=>['order_id'=>$order_id]];
         }else{
+            if(!isset($data['pay_type'])){
+                return ['code' => 403, 'msg' => "请选择支付方式"];
+            }
             $data['appid']=implode(",",$data['appid']);
             $price=$data['pay_years']*$goods_data['price'];
             $orderarr['status']=0;
-            $orderarr['pay_type']=0;
+            $orderarr['pay_type']=$data['pay_type'];
             $orderarr['price']=$price;
             $ordergoodsarr['status']=0;
-            $ordergoodsarr['pay_type']=0;
+            $ordergoodsarr['pay_type']=$data['pay_type'];
             $ordergoodsarr['price']=$price;
             $ordergoodsarr['pay_years']=$data['pay_years'];
             try {
                 $order_id=$order->insertGetId($orderarr);
                 $ordergoodsarr['order_id']=$order_id;
+                $pay=$this->comparePriceCloseAndCreateOrder($orderarr);
                 $orderGoods->insertGetId($ordergoodsarr);
             } catch (Exception $e) {
                 return ['code' => 500, 'message' => '创建失败'];
             }
-            return ['code' => 200, 'msg' => "创建订单成功",'data'=>['order_id'=>$order_id]];
+            return ['code' => 200, 'msg' => "创建订单成功",'data'=>['order_id'=>$order_id,'pay'=>$pay]];
         }
 
     }
@@ -401,6 +408,59 @@ class OrdersService
             $arr[$v['id']] = $v;
         }
         return $arr;
+    }
+
+
+    public function comparePriceCloseAndCreateOrder($order)
+    {
+        $ordernew = new Order();
+        if (empty($order['page_pay_url'])) {
+            $pay_url_data = $this->generatePayUrl($order['pay_type'],'test', $order['order_no'], $order['price']);
+            $newOrderData = [
+                'third_order_no' => $pay_url_data['id'] ?? '',
+                'page_pay_url' => $pay_url_data['url'],
+            ];
+            //$ordernew->_update($newOrderData, "id='{$order['id']}'");
+        }
+        return $newOrderData;
+    }
+
+
+    public function generatePayUrl($payment, $product, $trade_no, $price)
+    {
+        $call_back = $this->headerurl();
+        $pay_url_data = [];
+        if ($payment == self::$payments['paddle']) {
+            $paddle = new PaddleBiz();
+            $pay_url_data = $paddle->createPayLink($trade_no,$product,$price);
+        } elseif ($payment == self::$payments['alipay']) {
+            $pay_redirect_path = '/resubscribe/payed';
+            $return_url = $call_back . $pay_redirect_path;
+            $pay_url_data = $this->getAliPayUrl($trade_no, $product, $price, $call_back, $return_url);
+        } else if ($payment == self::$payments['wxpay']) {
+            $pay_url_data = WechatPay::wechatPay($trade_no, $product, $price, $call_back);
+        }
+        return $pay_url_data;
+    }
+
+    public function getAliPayUrl($trade_no, $name, $price, $call_back,$return_url)
+    {
+        $paramss = [
+            'out_trade_no' => $trade_no,
+            'subject' => $name,
+            'payment_type' => 1,//支付类型 只取值为1(商品购买) 固定值
+            'total_fee' => $price,
+            'body' => $name
+        ];
+        $obj = new AlipayBiz($paramss);
+
+        // 支付宝验证KEY统一调整为扫码支付
+        return $obj->pay($call_back . '/api/orders/alipayNotify',$return_url);
+    }
+
+    function headerurl(){
+        $http_type = ((isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on') || (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] == 'https')) ? 'https://' : 'http://';
+        return  $http_type . $_SERVER['HTTP_HOST'];
     }
 
 }
