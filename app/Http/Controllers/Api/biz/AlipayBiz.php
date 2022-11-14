@@ -74,8 +74,9 @@ class AlipayBiz
         $resultCode = $result->$responseNode->code;
         $data = JsonHelper::decode(JsonHelper::encode($result->$responseNode));
         if(!empty($resultCode)&&$resultCode == 10000){
-            if (!file_exists(public_path()."/aliPayImg/")) mkdir(public_path()."/aliPayImg/", 0777);
-            $img_url = public_path()."/aliPayImg/" . $this->data['out_trade_no'] . '.png';
+            if (!file_exists(public_path().DIRECTORY_SEPARATOR."aliPayImg".DIRECTORY_SEPARATOR)) mkdir(public_path().DIRECTORY_SEPARATOR."aliPayImg".DIRECTORY_SEPARATOR, 0777);
+
+            $img_url = public_path().DIRECTORY_SEPARATOR."aliPayImg".DIRECTORY_SEPARATOR. $this->data['out_trade_no'] . '.png';
             QRcode::png($data['qr_code'], $img_url);
             if (!file_exists($img_url)) error('ali_pay', 'ali_pay_error');
             $pay_url_data['url'] = $this->headerurl() . '/aliPayImg/' . $this->data['out_trade_no'] . '.png';
