@@ -39,11 +39,17 @@
                     </div>
                 </div>
                 <div class="form-group">
-                    <label class="col-sm-4 control-label no-padding-right" for="form-field-1">授权码文件地址：</label>
+                    <label class="col-sm-4 control-label no-padding-right" for="form-field-1">授权码：</label>
                     <div class="col-sm-6 col-xs-12" style="padding-top: 0.5%">
-                        <a href="{{$info['license_key_url']}}">下载</a>
+                        {{$info['license_key']}}"
                     </div>
                 </div>
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label no-padding-right" for="form-field-1">license_secret：</label>
+                        <div class="col-sm-6 col-xs-12" style="padding-top: 0.5%">
+                            {{$info['license_secret']}}"
+                        </div>
+                    </div>
                 <div class="form-group">
                     <label class="col-sm-4 control-label no-padding-right" for="form-field-1">类型：</label>
                     <div class="col-sm-6 col-xs-12" style="padding-top: 0.5%">

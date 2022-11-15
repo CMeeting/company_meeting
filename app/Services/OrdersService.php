@@ -17,6 +17,7 @@ use App\Http\Controllers\Api\biz\AlipayBiz;
 use App\Http\Controllers\Api\biz\PaddleBiz;
 use App\Http\Controllers\Api\biz\WechatPay;
 use App\Models\Goodsclassification;
+use App\Models\LicenseModel;
 use App\Models\Order;
 use App\Models\Goods;
 use Illuminate\Support\Facades\DB;
@@ -80,6 +81,7 @@ class OrdersService
     {
         $data = $param['data'];
         $user = new User();
+        $lisecosdmode=new LicenseModel();
         $goods = new Goods();
         $order = new Order();
         $orderGoods = new OrderGoods();
@@ -99,6 +101,11 @@ class OrdersService
         $arr = [];
         $sumprice = 0;
         $goodstotal = 0;
+        if($data['status']==1){
+            $pay_type=4;
+        }else{
+            $pay_type=0;
+        }
         foreach ($data['level1'] as $k => $v) {
             foreach ($goods_data as $ks => $vs) {
                 if ($v == $vs['level1'] && $data['level2'][$k] == $vs['level2'] && $data['level3'][$k] == $vs['level3']) {
@@ -107,15 +114,32 @@ class OrdersService
                 }
             }
             $s = $k + 1;
+            $lisecosd = str_pad("'".mt_rand(1,9999)."'", 4, '0', STR_PAD_LEFT)."-".str_pad("'".mt_rand(1, 9999)."'", 4, '0', STR_PAD_LEFT)."-".str_pad("'".mt_rand(1, 9999)."'", 4, '0', STR_PAD_LEFT)."-".str_pad("'".mt_rand(1, 9999)."'", 4, '0', STR_PAD_LEFT);
+            $license_secret = str_pad("'".mt_rand(1, 9999)."'", 4, '0', STR_PAD_LEFT)."-".str_pad("'".mt_rand(1, 9999)."'", 4, '0', STR_PAD_LEFT)."-".str_pad("'".mt_rand(1, 9999)."'", 4, '0', STR_PAD_LEFT)."-".str_pad("'".mt_rand(1, 9999)."'", 4, '0', STR_PAD_LEFT);
+            $lisecosdata[]=[
+                'user_id'=>$user_id,
+                'products_id'=>$v,
+                'platform_id'=>$data['level2'][$k],
+                'licensetype_id'=>$data['level3'][$k],
+                'license_key'=>$lisecosd,
+                'license_secret'=>$license_secret,
+                'uuid'=>implode(',', $data["appid$s"]),
+                'period'=>$data['period'][$k],
+                'type'=>2,
+                'status'=>1,
+                'expire_time'=>date("Y-m-d H:i:s",strtotime("+".$data['period'][$k]." year"))
+            ];
+
             $arr[] = [
-                'pay_type' => 0,
                 'status' => $data['status'],
                 'type' => 1,
                 'details_type' => 2,
+                'pay_type'=>$pay_type,
                 'price' => $price,
+                'pay_years'=>$data['period'][$k],
                 'user_id' => $user_id,
                 'appid' => implode(',', $data["appid$s"]),
-                'pay_years' => 1,
+                'pay_years' => $data['period'][$k],
                 'goods_id' => $goodsid,
                 'created_at' => date("Y-m-d H:i:s"),
                 'updated_at' => date("Y-m-d H:i:s")
@@ -125,8 +149,8 @@ class OrdersService
         }
         $orderno = time();
         $orderdata = [
+            'pay_type'=>$pay_type,
             'order_no' => $orderno,
-            'pay_type' => 0,
             'status' => $data['status'],
             'type' => 1,
             'details_type' => 2,
@@ -140,8 +164,13 @@ class OrdersService
             foreach ($arr as $k => $v) {
                 $arr[$k]['order_id'] = $order_id;
                 $arr[$k]['order_no'] = $orderno;
+                $ordergoods_id=$orderGoods->insertGetId($arr[$k]);
+                if($ordergoods_id){
+                    $lisecosdata[$k]['order_id']=$order_id;
+                    $lisecosdata[$k]['ordergoods_id']=$ordergoods_id;
+                    $lisecosdmode->insertGetId($lisecosdata[$k]);
+                }
             }
-            $orderGoods->_insert($arr);
             if ($data['status'] == 1) {
                 $user_info = $user->_find("id='{$user_id}'");
                 $user_info = $user->objToArr($user_info);

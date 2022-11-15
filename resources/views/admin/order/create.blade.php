@@ -82,6 +82,19 @@
                         </div>
                     </div>
 
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label no-padding-right" for="form-field-1">Period：</label>
+                        <div class="col-sm-6 col-xs-12">
+                            <select name="data[period][]" id="period" class="form-control">
+                                <option value="1">1yers</option>
+                                <option value="2">2yers</option>
+                                <option value="3">3yers</option>
+                                <option value="4">4yers</option>
+                                <option value="5">5yers</option>
+                            </select>
+                        </div>
+                    </div>
+
                     <div id="infosdata1">
 
                         <div class="form-group">
@@ -126,7 +139,7 @@
         var toarr;
         function addgoods(){
             goodsindex++;
-            var html='<div class="form-group"> <label class="col-sm-2 control-label no-padding-right" for="form-field-1" style="color: #0b94ea"><b>item'+goodsindex+'：</b></label> </div> <div class="form-group"> <label class="col-sm-2 control-label no-padding-right" for="form-field-1">Products：</label> <div class="col-sm-6 col-xs-12"> <select name="data[level1][]" id="province'+goodsindex+'" class="form-control province" onchange="province('+goodsindex+')"></select> </div> </div> <div class="form-group"> <label class="col-sm-2 control-label no-padding-right" for="form-field-1">Platform：</label> <div class="col-sm-6 col-xs-12"> <select name="data[level2][]" id="city'+goodsindex+'" class="form-control city" onchange="city('+goodsindex+')"></select> </div> </div> <div class="form-group"> <label class="col-sm-2 control-label no-padding-right" for="form-field-1">License Type：</label> <div class="col-sm-6 col-xs-12"> <select name="data[level3][]" id="town'+goodsindex+'" class="form-control town"></select></div></div> <div id="infosdata'+goodsindex+'"> <div class="form-group"> <label class="col-sm-2 control-label no-padding-right" for="form-field-1">APP ID/Machine ID：</label> <div class="col-sm-6 col-xs-12"><input style="float: left" id="maidian"  type="text" class="form-control maidian" name="data[appid'+goodsindex+'][]" required> </div> <span class="lbl" style="float: left;margin-top: 0.2%;"><a style="display: inline-block;width: 30px;height: 30px;font-size: 18px;color: green;background: #fff9f9;text-align: center;line-height: 30px;border: 1px solid green" onclick="addmaidian('+goodsindex+')">+</a>新增Machine ID</span></div></div>';
+            var html='<div class="form-group"> <label class="col-sm-2 control-label no-padding-right" for="form-field-1" style="color: #0b94ea"><b>item'+goodsindex+'：</b></label> </div> <div class="form-group"> <label class="col-sm-2 control-label no-padding-right" for="form-field-1">Products：</label> <div class="col-sm-6 col-xs-12"> <select name="data[level1][]" id="province'+goodsindex+'" class="form-control province" onchange="province('+goodsindex+')"></select> </div> </div> <div class="form-group"> <label class="col-sm-2 control-label no-padding-right" for="form-field-1">Platform：</label> <div class="col-sm-6 col-xs-12"> <select name="data[level2][]" id="city'+goodsindex+'" class="form-control city" onchange="city('+goodsindex+')"></select> </div> </div> <div class="form-group"> <label class="col-sm-2 control-label no-padding-right" for="form-field-1">License Type：</label> <div class="col-sm-6 col-xs-12"> <select name="data[level3][]" id="town'+goodsindex+'" class="form-control town"></select></div></div><div class="form-group"><label class="col-sm-2 control-label no-padding-right" for="form-field-1">Period：</label> <div class="col-sm-6 col-xs-12"> <select name="data[period][]" id="period" class="form-control"> <option value="1">1yers</option> <option value="2">2yers</option><option value="3">3yers</option> <option value="4">4yers</option> <option value="5">5yers</option></select> </div> </div> <div id="infosdata'+goodsindex+'"> <div class="form-group"> <label class="col-sm-2 control-label no-padding-right" for="form-field-1">APP ID/Machine ID：</label> <div class="col-sm-6 col-xs-12"><input style="float: left" id="maidian"  type="text" class="form-control maidian" name="data[appid'+goodsindex+'][]" required> </div> <span class="lbl" style="float: left;margin-top: 0.2%;"><a style="display: inline-block;width: 30px;height: 30px;font-size: 18px;color: green;background: #fff9f9;text-align: center;line-height: 30px;border: 1px solid green" onclick="addmaidian('+goodsindex+')">+</a>新增Machine ID</span></div></div>';
             $("#datas").append(html);
 
             $.each(proarr, function () {
@@ -149,7 +162,7 @@
         }
         function addmaidian(id) {
             mdindex++;
-            var str = '<div class="form-group" id="md' + mdindex + '"><label class="col-sm-2 control-label no-padding-right" for="form-field-1"> </label><div class="col-sm-6 col-xs-12"> <input style="float: left" id="maidian"  type="text" class="form-control" name="data[appid'+id+'][]" required> </div> <span class="lbl" style="float: left;margin-top: 0.2%;"><a style="display: inline-block;width: 30px;height: 30px;font-size: 18px;color: red;background: #fff9f9;text-align: center;line-height: 30px;border: 1px solid red" onclick="movemaidian(' + mdindex + ')">-</a></span> </div>';
+            var str = '<div class="form-group" id="md' + mdindex + '"><label class="col-sm-2 control-label no-padding-right" for="form-field-1"> </label><div class="col-sm-6 col-xs-12"> <input style="float: left" id="maidian"  type="text" class="form-control maidian" name="data[appid'+id+'][]" required> </div> <span class="lbl" style="float: left;margin-top: 0.2%;"><a style="display: inline-block;width: 30px;height: 30px;font-size: 18px;color: red;background: #fff9f9;text-align: center;line-height: 30px;border: 1px solid red" onclick="movemaidian(' + mdindex + ')">-</a></span> </div>';
             $("#infosdata"+id).append(str);
         }
 
@@ -158,7 +171,19 @@
         }
 
         function submits() {
+            var dd=2;
             var index = layer.load();
+            if(!$("#email").val()){
+                layer.close(index);
+                layer.msg("请输入用户邮箱", {time: 1500, anim: 6});
+                return false;
+            }
+            if(!$("#full_name").val()){
+                layer.close(index);
+                layer.msg("请输入Full Name", {time: 1500, anim: 6});
+                return false;
+            }
+
             $(".province").each(function (){
                 if(!$(this).val() || $(this).val()==0){
                     layer.close(index);
@@ -183,13 +208,17 @@
             })
 
             $(".maidian").each(function (){
-                if(!$(this).val()){
+                if(!$(this).val() || $(this).val()==""){
+                    dd=1;
                     layer.close(index);
                     layer.msg("有Machine ID为空", {time: 1500, anim: 6});
                     return false;
                 }
             })
 
+            if(dd==1){
+                return false;
+            }
             var form_data = new FormData($("#forms")[0]);
             layer.close(index);
 

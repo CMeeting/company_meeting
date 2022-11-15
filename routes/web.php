@@ -186,6 +186,7 @@ Route::group(['namespace' => 'Admin','prefix' => 'admin'], function (){
 
         Route::get('license/index', 'LicenseController@index')->name('license.index');
         Route::get('license/createLicense','LicenseController@createLicense')->name('license.createLicense');
+        Route::post('license/createrunLicense','LicenseController@createrunLicense')->name('license.createrunLicense');
         Route::get('license/updateLicense/{id}', 'LicenseController@updateLicense')->name('license.updateLicense');
         Route::post('license/changeStatus', 'LicenseController@changeStatus')->name('license.changeStatus');
         Route::get('license/info/{id}', 'LicenseController@info')->name('license.info');
