@@ -72,7 +72,7 @@
                             </div>
                             <div class="col-md-4 col-lg-3 col-sm-6 col-xs-12">
                                 <div class="form-group">
-                                    <select id="status" class="form-control"  name="details_type" tabindex="1">
+                                    <select id="details_type" class="form-control"  name="details_type" tabindex="1">
                                         <option value="">订单类型</option>
                                         <option value="1" @if(isset($query)&&$query['details_type']==1) selected @endif>SDK试用</option>
                                         <option value="2" @if(isset($query)&&$query['details_type']==2) selected @endif>SDK订单</option>
@@ -82,7 +82,7 @@
                             </div>
                             <div class="col-md-4 col-lg-3 col-sm-6 col-xs-12">
                                 <div class="form-group">
-                                    <select id="status" class="form-control"  name="type" tabindex="1">
+                                    <select id="type" class="form-control"  name="type" tabindex="1">
                                         <option value="">订单来源</option>
                                         <option value="1" @if(isset($query)&&$query['type']==1) selected @endif>后台创建</option>
                                         <option value="2" @if(isset($query)&&$query['type']==2) selected @endif>用户购买</option>
@@ -115,7 +115,7 @@
 
                             <span class="input-group-btn" style="display: inline-block;">
                                                     <button type="submit" class="btn btn-purple btn-sm"
-                                                            style="margin-left: 20px;">
+                                                            style="margin-left: 20px;" id="selectd">
                                                         <span class="ace-icon fa fa-search icon-on-right bigger-110"></span>
                                                         搜索
                                                     </button>
@@ -124,7 +124,31 @@
                     </form>
                 </div>
 
-                <table class="table table-striped table-bordered table-hover m-t-md" style="word-wrap:break-word; word-break:break-all;text-align: center">
+                <div class="tabbable-line boxless tabbable-reversed" >
+                    <ul class="nav nav-tabs" id="selestatus" style="margin-top: 40px">
+                        <li class="@if(isset($query)&&$query['status']=="") active @endif goodsstatus goodsstatus_all" id="goodsstatus_all">
+                            <a onclick="orderList('all')"  class="orderTab"> 所有订单  </a>
+                            <!-- 	                                        <a href="{:url('order_list')}"   > 所有订单  </a> -->
+                        </li>
+                        <li class="@if(isset($query)&&$query['status']=="1") active @endif goodsstatus goodsstatus_0" id="goodsstatus_0">
+                            <a onclick="orderList(0)" class="orderTab"   > 待支付订单 </a>
+                        </li>
+                        <li class="@if(isset($query)&&$query['status']=="2") active @endif goodsstatus goodsstatus_1" id="goodsstatus_1">
+                            <a onclick="orderList(1)" class="orderTab"  > 已支付订单 </a>
+                        </li>
+                        <li class="@if(isset($query)&&$query['status']=="3") active @endif goodsstatus goodsstatus_2" id="goodsstatus_2">
+                            <a onclick="orderList(2)"  class="orderTab" > 已完成订单 </a>
+                        </li>
+                        <li class="@if(isset($query)&&$query['status']=="4") active @endif goodsstatus goodsstatus_3" id="goodsstatus_3">
+                            <a onclick="orderList(3)" class="orderTab" > 待退款订单 </a>
+                        </li>
+                        <li class="@if(isset($query)&&$query['status']=="5") active @endif goodsstatus goodsstatus_4" id="goodsstatus_4">
+                            <a onclick="orderList(4)"  class="orderTab"> 已关闭订单 </a>
+                        </li>
+
+                    </ul>
+                </div>
+                <table class="table table-striped table-bordered table-hover m-t-md" style="margin-top: 3px">
                     <thead>
                     <tr>
                         <th class="text-center" style="width: 5%">ID</th>
@@ -220,6 +244,44 @@
         var id = 0;
         var indexs;
 
+        function orderList(type){
+
+            $("#goodsstatus_all").attr("class",'');
+            $("#goodsstatus_0").attr("class",'');
+            $("#goodsstatus_1").attr("class",'');
+            $("#goodsstatus_2").attr("class",'');
+            $("#goodsstatus_3").attr("class",'');
+            $("#goodsstatus_4").attr("class",'');
+            var  n=type||'';
+            switch(n){
+                case 'all':
+                    $("#goodsstatus_all").addClass("active");
+                    $("#status").find("option[value='']").prop("selected",true);
+                    break;
+                case '':
+                    $("#goodsstatus_0").addClass("active");
+                    $("#status").find("option[value=1]").prop("selected",true);
+                    break;
+                case 1:
+                    $("#goodsstatus_1").addClass("active");
+                    $("#status").find("option[value=2]").prop("selected",true);
+                    break;
+                case 2:
+                    $("#goodsstatus_2").addClass("active");
+                    $("#status").find("option[value=3]").prop("selected",true);
+                    break;
+                case 3:
+                    $("#goodsstatus_3").addClass("active");
+                    $("#status").find("option[value=4]").prop("selected",true);
+                    break;
+                case 4:
+                    $("#goodsstatus_4").addClass("active");
+                    $("#status").find("option[value=5]").prop("selected",true);
+                    break;
+            }
+            $("#selectd").click();
+
+        }
 
         layui.use('laydate', function () {
             var laydate = layui.laydate;
