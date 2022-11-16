@@ -39,7 +39,7 @@
                     <div class="form-group h1title">
                         <label class="col-sm-2 control-label no-padding-right" for="form-field-1"> 用户邮箱：</label>
                         <div class="col-sm-6 col-xs-12">
-                            <input id="email" class="form-control" name="data[email]" required>
+                            <input id="email" class="form-control" name="data[email]" required placeholder="请输入用户邮箱">
                             <span class="lbl"></span>
                         </div>
                     </div>
@@ -48,7 +48,7 @@
                     <div class="form-group">
                         <label class="col-sm-2 control-label no-padding-right" for="form-field-1">Full Name：</label>
                         <div class="col-sm-6 col-xs-12">
-                            <input name="data[full_name]" id="full_name" class="form-control"></input>
+                            <input name="data[full_name]" id="full_name" class="form-control" placeholder="请输入用户名">
                         </div>
                     </div>
 
@@ -100,7 +100,7 @@
                         <div class="form-group">
                             <label class="col-sm-2 control-label no-padding-right" for="form-field-1">APP ID/Machine ID：</label>
                             <div class="col-sm-6 col-xs-12">
-                                <input style="float: left" id="maidian"  type="text" class="form-control maidian" name="data[appid1][]" required>
+                                <input style="float: left" id="maidian"  type="text" class="form-control maidian" name="data[appid1][]" required placeholder="APP ID直接填写，Machine ID可添加多条">
                             </div>
                             <span class="lbl" style="float: left;margin-top: 0.2%;"><a style="display: inline-block;width: 30px;height: 30px;font-size: 18px;color: green;background: #fff9f9;text-align: center;line-height: 30px;border: 1px solid green" onclick="addmaidian(1)">+</a>新增Machine ID</span>
                         </div>
@@ -176,6 +176,12 @@
             if(!$("#email").val()){
                 layer.close(index);
                 layer.msg("请输入用户邮箱", {time: 1500, anim: 6});
+                return false;
+            }
+            var e= /^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
+            if(!e.test($("#email").val())){
+                layer.close(index);
+                layer.msg('邮件地址不合法', {time: 1500, anim: 6});
                 return false;
             }
             if(!$("#full_name").val()){
