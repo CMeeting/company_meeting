@@ -52,6 +52,9 @@
                                     <option value="orders.order_no" @if(isset($query)&&$query['query_type']=='orders.order_no') selected @endif>
                                         订单号
                                     </option>
+                                    <option value="users.email" @if(isset($query)&&$query['query_type']=='users.email') selected @endif>
+                                        用户邮箱
+                                    </option>
                                 </select>
                             </div>
                             <input id="info" type="text" name="info" placeholder="请输入筛选内容" class="form-control" style="display: inline-block;width: 150px;
@@ -65,7 +68,7 @@
                                         <option value="1" @if(isset($query)&&$query['status']==1) selected @endif>待支付</option>
                                         <option value="2" @if(isset($query)&&$query['status']==2) selected @endif>已支付</option>
                                         <option value="3" @if(isset($query)&&$query['status']==3) selected @endif>已完成</option>
-                                        <option value="4" @if(isset($query)&&$query['status']==4) selected @endif>待退款</option>
+{{--                                        <option value="4" @if(isset($query)&&$query['status']==4) selected @endif>待退款</option>--}}
                                         <option value="5" @if(isset($query)&&$query['status']==5) selected @endif>已关闭</option>
                                     </select>
                                 </div>
@@ -139,9 +142,9 @@
                         <li class="@if(isset($query)&&$query['status']=="3") active @endif goodsstatus goodsstatus_2" id="goodsstatus_2">
                             <a onclick="orderList(2)"  class="orderTab" > 已完成订单 </a>
                         </li>
-                        <li class="@if(isset($query)&&$query['status']=="4") active @endif goodsstatus goodsstatus_3" id="goodsstatus_3">
-                            <a onclick="orderList(3)" class="orderTab" > 待退款订单 </a>
-                        </li>
+{{--                        <li class="@if(isset($query)&&$query['status']=="4") active @endif goodsstatus goodsstatus_3" id="goodsstatus_3">--}}
+{{--                            <a onclick="orderList(3)" class="orderTab" > 待退款订单 </a>--}}
+{{--                        </li>--}}
                         <li class="@if(isset($query)&&$query['status']=="5") active @endif goodsstatus goodsstatus_4" id="goodsstatus_4">
                             <a onclick="orderList(4)"  class="orderTab"> 已关闭订单 </a>
                         </li>
@@ -232,6 +235,7 @@
                             </td>
                         </tr>
                     @endforeach
+                    <tr><td colspan="11">当前总订单数:{{$sum['sumcount']}}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;当前所有状态订单金额:{{$sum['price']}}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;当前待支付订单数:{{$sum['sumnostatus']}}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;当前已支付订单数:{{$sum['sumyesstatus']}}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;当前已完成订单数:{{$sum['sumwcstatus']}}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;当前已关闭订单数:{{$sum['sumgbstatus']}}</td></tr>
                     </tbody>
                 </table>
                 {{$data->appends(['info' => isset($query['info'])?$query['info']:'','query_type'=>isset($query['query_type'])?$query['query_type']:'','status'=>isset($query['status'])?$query['status']:'','start_date'=>isset($query['start_date'])?$query['start_date']:'','end_date'=>isset($query['end_date'])?$query['end_date']:'','level1'=>isset($query['level1'])?$query['level1']:'','level2'=>isset($query['level2'])?$query['level2']:'','level3'=>isset($query['level3'])?$query['level3']:''])->links()}}

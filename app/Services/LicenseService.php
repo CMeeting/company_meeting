@@ -69,7 +69,7 @@ class LicenseService
             $where .= " AND l.expire_time <= '" . $param['expire_end'] . "'";
         }
         $query = DB::table("license_code as l");
-        $data = $query->select("l.id", "o.order_id", "o.id as order_no", "l.uuid", "l.created_at", "l.expire_time",
+        $data = $query->select("l.id", "o.order_no as order_id", "o.goods_no as order_no", "l.uuid", "l.created_at", "l.expire_time",
             "u.email", "l.license_key", "l.license_key_url", "l.type", "l.status", "l.products_id", "l.platform_id", "l.licensetype_id")
             ->whereRaw($where)
             ->leftJoin("orders_goods as o","l.order_id", "=", "o.order_id")

@@ -25,11 +25,13 @@ class OrderController extends BaseController {
         $query['export'] = array_get($param, 'export', 0);
         $query ['field'] = array_get($param, 'field', '');
         $data = $GoodsService->data_list($query);
+        $sum = $GoodsService->sum_data($query);
+
 //        if($query['export'] == 1){
 //            return $GoodsService->export($data, $query['field']);
 //        }
 
-        return $this->view('index',['data'=>$data,'query'=>$query]);
+        return $this->view('index',['data'=>$data,'query'=>$query,'sum'=>$sum]);
     }
 
     public function create(){

@@ -115,12 +115,13 @@
                 <tr>
                     <th class="text-center" style="width: 9%">总订单ID</th>
                     <th class="text-center" style="width: 9%">子订单ID</th>
+                    <th class="text-center" style="width: 9%">用户账号</th>
                     <th class="text-center" style="width: 7%">商品名称</th>
                     <th class="text-center" style="width: 8%">App ID/Machine ID</th>
                     <th class="text-center" style="width: 9%">创建时间</th>
                     <th class="text-center" style="width: 8%">过期时间</th>
-                    <th class="text-center" style="width: 9%">用户账号</th>
-                    <th class="text-center" style="width: 7%">授权码</th>
+
+                    <th class="text-center" style="width: 7%">license_key</th>
                     <th class="text-center" style="width: 5%">授权码类型</th>
                     <th class="text-center" style="width: 3%">状态</th>
                     <th class="text-center" style="width: 10%">操作</th>
@@ -131,22 +132,23 @@
                     <tr>
                         <td class="text-center">{{$item->order_id}}</td>
                         <td class="text-center">{{$item->order_no}}</td>
+                        <td class="text-center" title="{{$item->email}}">{{$item->emaild}}</td>
                         <td class="text-center" title="{{$item->name}}">{{$item->named}}</td>
                         <td class="text-center" title="{{$item->uuid}}">{{$item->uuidd}}</td>
                         <td class="text-center">{{$item->created_at}}</td>
                         <td class="text-center">{{$item->expire_time}}</td>
-                        <td class="text-center" title="{{$item->email}}">{{$item->emaild}}</td>
+
                         <td class="text-center">{{$item->license_key}}</td>
                         <td class="text-center">{{$item->type}}</td>
                         <td class="text-center">{{$item->statusd}}</td>
                         <td class="text-center">
                             <div class="btn-group">
                                 <a href="{{route('license.info',$item->id)}}"><button class="btn btn-primary btn-xs" type="button"><i class="fa fa-paste"></i>查看</button></a>
-                                @if($item->status == 1)
-                                    <a onclick="changeStatus('{{$item->id}}',2)"><button class="btn btn-danger del btn-xs" type="button"><i class="fa fa-trash-o"></i>停用</button></a>
-                                @else
-                                    <a onclick="changeStatus('{{$item->id}}',1)"><button class="btn btn-danger del btn-xs" type="button"><i class="fa fa-trash-o"></i>启用</button></a>
-                                @endif
+{{--                                @if($item->status == 1)--}}
+{{--                                    <a onclick="changeStatus('{{$item->id}}',2)"><button class="btn btn-danger del btn-xs" type="button"><i class="fa fa-trash-o"></i>停用</button></a>--}}
+{{--                                @else--}}
+{{--                                    <a onclick="changeStatus('{{$item->id}}',1)"><button class="btn btn-danger del btn-xs" type="button"><i class="fa fa-trash-o"></i>启用</button></a>--}}
+{{--                                @endif--}}
                             </div>
                         </td>
                     </tr>

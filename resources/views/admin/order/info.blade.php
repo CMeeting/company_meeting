@@ -42,8 +42,8 @@
                            style="word-wrap:break-word; word-break:break-all;text-align: center">
                         <thead>
                         <tr>
-                            <th class="text-center" style="width: 5%">ID</th>
-                            <th class="text-center" style="width: 9%">商品名称</th>
+                            <th class="text-center" style="width: 12%">子订单编号</th>
+                            <th class="text-center" style="width: 15%">商品名称</th>
                             <th class="text-center" style="width: 9%">APP ID/Machine</th>
                             <th class="text-center" style="width: 9%">提交时间</th>
                             <th class="text-center" style="width: 8%">用户账号</th>
@@ -56,7 +56,7 @@
                         <tbody>
                         @foreach($data as $key => $item)
                             <tr id="del_{{$item['id']}}">
-                                <td class="text-center">{{$item['id']}}</td>
+                                <td class="text-center">{{$item['goods_no']}}</td>
                                 <td class="text-center">{{$item['products']}}{{$item['platform']}}{{$item['licensie']}}</td>
                                 <td>{{$item['appid']}}</td>
                                 <td>{{$item['created_at']}}</td>
