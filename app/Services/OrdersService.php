@@ -43,6 +43,10 @@ class OrdersService
             $param['status'] = $param['status'] - 1;
             $where .= " and orders.status={$param['status']}";
         }
+        if ($param['pay_type']) {
+            $param['pay_type'] = $param['pay_type'] - 1;
+            $where .= " and orders.pay_type={$param['pay_type']}";
+        }
         if ($param['details_type']) {
             $where .= " and orders.details_type={$param['details_type']}";
         }
@@ -88,6 +92,11 @@ class OrdersService
         if ($param['type']) {
             $where .= " and orders.type={$param['type']}";
         }
+        if ($param['pay_type']) {
+            $param['pay_type'] = $param['pay_type'] - 1;
+            $where .= " and orders.pay_type={$param['pay_type']}";
+        }
+
         if (isset($param['pay_at']) && $param['pay_at'] && isset($param['endpay_at']) && $param['endpay_at']) {
             $where .= " AND orders.pay_time BETWEEN '" . $param['pay_at'] . "' AND '" . $param['endpay_at'] . "'";
         } elseif (isset($param['pay_at']) && $param['pay_at'] && empty($param['endpay_at'])) {
@@ -167,6 +176,7 @@ class OrdersService
         }else{
             $pay_type=0;
         }
+        $classification = $this->assembly_orderclassification();
         foreach ($data['level1'] as $k => $v) {
             foreach ($goods_data as $ks => $vs) {
                 if ($v == $vs['level1'] && $data['level2'][$k] == $vs['level2'] && $data['level3'][$k] == $vs['level3']) {
@@ -174,6 +184,7 @@ class OrdersService
                     $price = $vs['price'];
                 }
             }
+            if(!isset($goodsid))return ['code' => 500, 'msg' => $classification[$v]['title'].'-'.$classification[$data['level2'][$k]]['title'].'-'.$classification[$data['level3'][$k]]['title'].'下没有商品'];
             $ordergoods_no=chr(rand(65,90)).time();
             $s = $k + 1;
             $lisecosd = str_pad("'".mt_rand(1,9999)."'", 4, '0', STR_PAD_LEFT)."-".str_pad("'".mt_rand(1, 9999)."'", 4, '0', STR_PAD_LEFT)."-".str_pad("'".mt_rand(1, 9999)."'", 4, '0', STR_PAD_LEFT)."-".str_pad("'".mt_rand(1, 9999)."'", 4, '0', STR_PAD_LEFT);

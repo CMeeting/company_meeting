@@ -37,7 +37,7 @@
                     {{ csrf_field() }}
 
                     <div class="form-group h1title">
-                        <label class="col-sm-2 control-label no-padding-right" for="form-field-1"> 用户邮箱：</label>
+                        <label class="col-sm-2 control-label no-padding-right" for="form-field-1"> 用户邮箱：<span style="color: red;font-size: 14px">*</span></label>
                         <div class="col-sm-6 col-xs-12">
                             <input id="email" class="form-control" name="data[email]" required placeholder="请输入用户邮箱">
                             <span class="lbl"></span>
@@ -46,14 +46,14 @@
 
 
                     <div class="form-group">
-                        <label class="col-sm-2 control-label no-padding-right" for="form-field-1">Full Name：</label>
+                        <label class="col-sm-2 control-label no-padding-right" for="form-field-1">Full Name：<span style="color: red;font-size: 14px">*</span></label>
                         <div class="col-sm-6 col-xs-12">
                             <input name="data[full_name]" id="full_name" class="form-control" placeholder="请输入用户名">
                         </div>
                     </div>
 
                     <div class="form-group">
-                        <label class="col-sm-2 control-label no-padding-right" for="form-field-1">订单状态：</label>
+                        <label class="col-sm-2 control-label no-padding-right" for="form-field-1">订单状态：<span style="color: red;font-size: 14px">*</span></label>
                         <div class="col-sm-6 col-xs-12">
                             <select name="data[status]" id="full_name1" class="form-control">
                                 <option value="1">已付款</option>
@@ -63,34 +63,34 @@
                     </div>
 
                     <div class="form-group">
-                        <label class="col-sm-2 control-label no-padding-right" for="form-field-1">Products：</label>
+                        <label class="col-sm-2 control-label no-padding-right" for="form-field-1">Products：<span style="color: red;font-size: 14px">*</span></label>
                         <div class="col-sm-6 col-xs-12">
                             <select name="data[level1][]" id="province1" class="form-control province" onchange="province(1)"></select>
                         </div>
                     </div>
                     <div class="form-group">
-                        <label class="col-sm-2 control-label no-padding-right" for="form-field-1">Platform：</label>
+                        <label class="col-sm-2 control-label no-padding-right" for="form-field-1">Platform：<span style="color: red;font-size: 14px">*</span></label>
                         <div class="col-sm-6 col-xs-12">
                             <select name="data[level2][]" id="city1" class="form-control city" onchange="city(1)"></select>
                         </div>
                     </div>
 
                     <div class="form-group">
-                        <label class="col-sm-2 control-label no-padding-right" for="form-field-1">License Type：</label>
+                        <label class="col-sm-2 control-label no-padding-right" for="form-field-1">License Type：<span style="color: red;font-size: 14px">*</span></label>
                         <div class="col-sm-6 col-xs-12">
                             <select name="data[level3][]" id="town1" class="form-control town"></select>
                         </div>
                     </div>
 
                     <div class="form-group">
-                        <label class="col-sm-2 control-label no-padding-right" for="form-field-1">Period：</label>
+                        <label class="col-sm-2 control-label no-padding-right" for="form-field-1">Period：<span style="color: red;font-size: 14px">*</span></label>
                         <div class="col-sm-6 col-xs-12">
                             <select name="data[period][]" id="period" class="form-control">
-                                <option value="1">1yers</option>
-                                <option value="2">2yers</option>
-                                <option value="3">3yers</option>
-                                <option value="4">4yers</option>
-                                <option value="5">5yers</option>
+                                <option value="1">1years</option>
+                                <option value="2">2years</option>
+                                <option value="3">3years</option>
+                                <option value="4">4years</option>
+                                <option value="5">5years</option>
                             </select>
                         </div>
                     </div>
@@ -98,11 +98,11 @@
                     <div id="infosdata1">
 
                         <div class="form-group">
-                            <label class="col-sm-2 control-label no-padding-right" for="form-field-1">APP ID/Machine ID：</label>
+                            <label class="col-sm-2 control-label no-padding-right" for="form-field-1" id="shebei1">APP ID/Machine ID：<span style="color: red;font-size: 14px">*</span></label>
                             <div class="col-sm-6 col-xs-12">
-                                <input style="float: left" id="maidian"  type="text" class="form-control maidian" name="data[appid1][]" required placeholder="APP ID直接填写，Machine ID可添加多条">
+                                <input style="float: left" id="maidian1"  type="text" class="form-control maidian" name="data[appid1][]" required placeholder="APP ID/Machine ID">
                             </div>
-                            <span class="lbl" style="float: left;margin-top: 0.2%;"><a style="display: inline-block;width: 30px;height: 30px;font-size: 18px;color: green;background: #fff9f9;text-align: center;line-height: 30px;border: 1px solid green" onclick="addmaidian(1)">+</a>新增Machine ID</span>
+                            <span class="lbl" style="float: left;margin-top: 0.2%;display: none;" id="addmaidian1"><a style="display: inline-block;width: 30px;height: 30px;font-size: 18px;color: green;background: #fff9f9;text-align: center;line-height: 30px;border: 1px solid green" onclick="addmaidian(1)">+</a>新增Machine ID</span>
                         </div>
 
                     </div>
@@ -139,7 +139,7 @@
         var toarr;
         function addgoods(){
             goodsindex++;
-            var html='<div class="form-group"> <label class="col-sm-2 control-label no-padding-right" for="form-field-1" style="color: #0b94ea"><b>item'+goodsindex+'：</b></label> </div> <div class="form-group"> <label class="col-sm-2 control-label no-padding-right" for="form-field-1">Products：</label> <div class="col-sm-6 col-xs-12"> <select name="data[level1][]" id="province'+goodsindex+'" class="form-control province" onchange="province('+goodsindex+')"></select> </div> </div> <div class="form-group"> <label class="col-sm-2 control-label no-padding-right" for="form-field-1">Platform：</label> <div class="col-sm-6 col-xs-12"> <select name="data[level2][]" id="city'+goodsindex+'" class="form-control city" onchange="city('+goodsindex+')"></select> </div> </div> <div class="form-group"> <label class="col-sm-2 control-label no-padding-right" for="form-field-1">License Type：</label> <div class="col-sm-6 col-xs-12"> <select name="data[level3][]" id="town'+goodsindex+'" class="form-control town"></select></div></div><div class="form-group"><label class="col-sm-2 control-label no-padding-right" for="form-field-1">Period：</label> <div class="col-sm-6 col-xs-12"> <select name="data[period][]" id="period" class="form-control"> <option value="1">1yers</option> <option value="2">2yers</option><option value="3">3yers</option> <option value="4">4yers</option> <option value="5">5yers</option></select> </div> </div> <div id="infosdata'+goodsindex+'"> <div class="form-group"> <label class="col-sm-2 control-label no-padding-right" for="form-field-1">APP ID/Machine ID：</label> <div class="col-sm-6 col-xs-12"><input style="float: left" id="maidian"  type="text" class="form-control maidian" name="data[appid'+goodsindex+'][]" required> </div> <span class="lbl" style="float: left;margin-top: 0.2%;"><a style="display: inline-block;width: 30px;height: 30px;font-size: 18px;color: green;background: #fff9f9;text-align: center;line-height: 30px;border: 1px solid green" onclick="addmaidian('+goodsindex+')">+</a>新增Machine ID</span></div></div>';
+            var html='<div class="form-group"> <label class="col-sm-2 control-label no-padding-right" for="form-field-1" style="color: #0b94ea"><b>item'+goodsindex+'：</b></label> </div> <div class="form-group"> <label class="col-sm-2 control-label no-padding-right" for="form-field-1">Products：<span style="color: red;font-size: 14px">*</span></label> <div class="col-sm-6 col-xs-12"> <select name="data[level1][]" id="province'+goodsindex+'" class="form-control province" onchange="province('+goodsindex+')"></select> </div> </div> <div class="form-group"> <label class="col-sm-2 control-label no-padding-right" for="form-field-1">Platform：<span style="color: red;font-size: 14px">*</span></label> <div class="col-sm-6 col-xs-12"> <select name="data[level2][]" id="city'+goodsindex+'" class="form-control city" onchange="city('+goodsindex+')"></select> </div> </div> <div class="form-group"> <label class="col-sm-2 control-label no-padding-right" for="form-field-1">License Type：<span style="color: red;font-size: 14px">*</span></label> <div class="col-sm-6 col-xs-12"> <select name="data[level3][]" id="town'+goodsindex+'" class="form-control town"></select></div></div><div class="form-group"><label class="col-sm-2 control-label no-padding-right" for="form-field-1">Period：<span style="color: red;font-size: 14px">*</span></label> <div class="col-sm-6 col-xs-12"> <select name="data[period][]" id="period" class="form-control"> <option value="1">1years</option> <option value="2">2years</option><option value="3">3years</option> <option value="4">4years</option> <option value="5">5years</option></select> </div> </div> <div id="infosdata'+goodsindex+'"> <div class="form-group"> <label class="col-sm-2 control-label no-padding-right" for="form-field-1" id="shebei'+goodsindex+'">APP ID/Machine ID：<span style="color: red;font-size: 14px">*</span></label> <div class="col-sm-6 col-xs-12"><input style="float: left" id="maidian'+goodsindex+'"  type="text" class="form-control maidian" name="data[appid'+goodsindex+'][]" required> </div> <span class="lbl" style="float: left;margin-top: 0.2%;display: none;" id="addmaidian'+goodsindex+'"><a style="display: inline-block;width: 30px;height: 30px;font-size: 18px;color: green;background: #fff9f9;text-align: center;line-height: 30px;border: 1px solid green" onclick="addmaidian('+goodsindex+')">+</a>新增Machine ID</span></div></div>';
             $("#datas").append(html);
 
             $.each(proarr, function () {
@@ -162,7 +162,7 @@
         }
         function addmaidian(id) {
             mdindex++;
-            var str = '<div class="form-group" id="md' + mdindex + '"><label class="col-sm-2 control-label no-padding-right" for="form-field-1"> </label><div class="col-sm-6 col-xs-12"> <input style="float: left" id="maidian"  type="text" class="form-control maidian" name="data[appid'+id+'][]" required> </div> <span class="lbl" style="float: left;margin-top: 0.2%;"><a style="display: inline-block;width: 30px;height: 30px;font-size: 18px;color: red;background: #fff9f9;text-align: center;line-height: 30px;border: 1px solid red" onclick="movemaidian(' + mdindex + ')">-</a></span> </div>';
+            var str = '<div class="form-group md'+id+'" id="md' + mdindex + '"><label class="col-sm-2 control-label no-padding-right" for="form-field-1"> </label><div class="col-sm-6 col-xs-12"> <input style="float: left" id="maidian"  type="text" class="form-control maidian" name="data[appid'+id+'][]" required> </div> <span class="lbl" style="float: left;margin-top: 0.2%;"><a style="display: inline-block;width: 30px;height: 30px;font-size: 18px;color: red;background: #fff9f9;text-align: center;line-height: 30px;border: 1px solid red" onclick="movemaidian(' + mdindex + ')">-</a></span> </div>';
             $("#infosdata"+id).append(str);
         }
 
@@ -192,32 +192,42 @@
 
             $(".province").each(function (){
                 if(!$(this).val() || $(this).val()==0){
+                    dd=1;
                     layer.close(index);
                     layer.msg("请选择Products", {time: 1500, anim: 6});
                     return false;
                 }
             })
-
+            if(dd==1){
+                return false;
+            }
             $(".city").each(function (){
                 if(!$(this).val() || $(this).val()==0){
+                    dd=1;
                     layer.close(index);
                     layer.msg("请选择Platform", {time: 1500, anim: 6});
                     return false;
                 }
             })
+            if(dd==1){
+                return false;
+            }
             $(".town").each(function (){
                 if(!$(this).val() || $(this).val()==0){
+                    dd=1;
                     layer.close(index);
                     layer.msg("请选择License Type", {time: 1500, anim: 6});
                     return false;
                 }
             })
-
+            if(dd==1){
+                return false;
+            }
             $(".maidian").each(function (){
                 if(!$(this).val() || $(this).val()==""){
                     dd=1;
                     layer.close(index);
-                    layer.msg("有Machine ID为空", {time: 1500, anim: 6});
+                    layer.msg("有APPID/Machine ID为空", {time: 1500, anim: 6});
                     return false;
                 }
             })
@@ -290,6 +300,16 @@
             //获取被点击的城市的索引
             var index2 = $("#city"+id+" option:checked").index();
 
+            if($("#city"+id+" option:checked").text()=="Windows"){
+                $("#addmaidian"+id).show();
+                $("#shebei"+id).html("Machine ID");
+                $("#maidian"+id).attr("placeholder","Machine ID");
+            }else{
+                $("#addmaidian"+id).hide();
+                $(".md"+id).remove();
+                $("#shebei"+id).html("APPID");
+                $("#maidian"+id).attr("placeholder","APPID");
+            }
             //清空县区下拉列表中的内容
             $("#town"+id).empty();
 

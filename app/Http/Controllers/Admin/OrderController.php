@@ -22,6 +22,7 @@ class OrderController extends BaseController {
         $query["endpay_at"] = isset($param['endpay_at']) ? $param['endpay_at'] : "";
         $query["shelf_at"] = isset($param['shelf_at']) ? $param['shelf_at'] : "";
         $query["endshelf_at"] = isset($param['endshelf_at']) ? $param['endshelf_at'] : "";
+        $query["pay_type"] = isset($param['pay_type']) ? $param['pay_type'] : "";
         $query['export'] = array_get($param, 'export', 0);
         $query ['field'] = array_get($param, 'field', '');
         $data = $GoodsService->data_list($query);

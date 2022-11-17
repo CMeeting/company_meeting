@@ -136,7 +136,10 @@ class LicenseService
 
     public function createlicense($data){
         $user = new User();
+        $goods = new Goods();
         $lisecosdmode=new LicenseModel();
+        $goods_data = $goods->_where("deleted=0 and status=1");
+        $classification = $this->assembly_orderclassification();
         $is_user = $user->existsEmail($data['email']);
         if (!$is_user) {
             $arr['full_name'] = $data['email'];
@@ -152,7 +155,12 @@ class LicenseService
         }
        $lisecosd = str_pad("'".mt_rand(1,9999)."'", 4, '0', STR_PAD_LEFT)."-".str_pad("'".mt_rand(1, 9999)."'", 4, '0', STR_PAD_LEFT)."-".str_pad("'".mt_rand(1, 9999)."'", 4, '0', STR_PAD_LEFT)."-".str_pad("'".mt_rand(1, 9999)."'", 4, '0', STR_PAD_LEFT);
         $license_secret = str_pad("'".mt_rand(1, 9999)."'", 4, '0', STR_PAD_LEFT)."-".str_pad("'".mt_rand(1, 9999)."'", 4, '0', STR_PAD_LEFT)."-".str_pad("'".mt_rand(1, 9999)."'", 4, '0', STR_PAD_LEFT)."-".str_pad("'".mt_rand(1, 9999)."'", 4, '0', STR_PAD_LEFT);
-
+        foreach ($goods_data as $ks => $vs) {
+            if ($data['level1'] == $vs['level1'] && $data['level2'] == $vs['level2'] && $data['level3'] == $vs['level3']) {
+                $goodsid = $vs['id'];
+            }
+        }
+        if(!isset($goodsid))return ['code' => 500, 'msg' => $classification[$data['level1']]['title'].'-'.$classification[$data['level2']]['title'].'-'.$classification[$data['level3']]['title'].'下没有商品'];
         $data=[
             'user_id'=>$user_id,
             'products_id'=>$data['level1'],
@@ -172,7 +180,16 @@ class LicenseService
     }
 
 
-
+    function assembly_orderclassification()
+    {
+        $Goodsclassification = new Goodsclassification();
+        $data = $Goodsclassification->_where("1=1");
+        $arr = array();
+        foreach ($data as $k => $v) {
+            $arr[$v['id']] = $v;
+        }
+        return $arr;
+    }
 
 
 }

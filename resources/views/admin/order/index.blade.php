@@ -73,6 +73,20 @@
                                     </select>
                                 </div>
                             </div>
+
+                            <div class="col-md-4 col-lg-3 col-sm-6 col-xs-12">
+                                <div class="form-group">
+                                    <select id="status" class="form-control"  name="pay_type" tabindex="1">
+                                        <option value="">支付类型</option>
+                                        <option value="1" @if(isset($query)&&$query['pay_type']==1) selected @endif>未支付</option>
+                                        <option value="2" @if(isset($query)&&$query['pay_type']==2) selected @endif>Paddle</option>
+                                        <option value="3" @if(isset($query)&&$query['pay_type']==3) selected @endif>支付宝</option>
+                                        <option value="4" @if(isset($query)&&$query['pay_type']==4) selected @endif>微信</option>
+                                        {{--                                        <option value="4" @if(isset($query)&&$query['status']==4) selected @endif>待退款</option>--}}
+                                        <option value="5" @if(isset($query)&&$query['pay_type']==5) selected @endif>不需支付</option>
+                                    </select>
+                                </div>
+                            </div>
                             <div class="col-md-4 col-lg-3 col-sm-6 col-xs-12">
                                 <div class="form-group">
                                     <select id="details_type" class="form-control"  name="details_type" tabindex="1">
