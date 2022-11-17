@@ -177,8 +177,16 @@ Route::group(['namespace' => 'Admin','prefix' => 'admin'], function (){
         Route::post('goods/show', 'GoodsController@show')->name('goods.show');
         Route::get('goods/info/{id}', 'GoodsController@info')->name('goods.info');
 
+
+        Route::get('order/index', 'OrderController@index')->name('order.index');
+        Route::get('order/create', 'OrderController@create')->name('order.create');
+        Route::get('order/getinfo/{id}', 'OrderController@getinfo')->name('order.getinfo');
+        Route::post('order/createrun', 'OrderController@createrun')->name('order.createrun');
+        Route::post('order/updatestatus', 'OrderController@updatestatus')->name('order.updatestatus');
+
         Route::get('license/index', 'LicenseController@index')->name('license.index');
         Route::get('license/createLicense','LicenseController@createLicense')->name('license.createLicense');
+        Route::post('license/createrunLicense','LicenseController@createrunLicense')->name('license.createrunLicense');
         Route::get('license/updateLicense/{id}', 'LicenseController@updateLicense')->name('license.updateLicense');
         Route::post('license/changeStatus', 'LicenseController@changeStatus')->name('license.changeStatus');
         Route::get('license/info/{id}', 'LicenseController@info')->name('license.info');

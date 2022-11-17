@@ -22,6 +22,12 @@
 <script src="{{loadEdition('/js/jquery.min.js')}}"></script>
 <link rel="stylesheet" href="/layui/css/layui.css" media="all">
 <script src="{{loadEdition('/layui/layui.js')}}"></script>
+<textarea style="display: none" id="lv1">{{$lv1}}</textarea>
+<textarea style="display: none" id="lv2">{{$lv2}}</textarea>
+<textarea style="display: none" id="lv3">{{$lv3}}</textarea>
+<input type="hidden" id="ls1" value="{{$query['level1']}}">
+<input type="hidden" id="ls2" value="{{$query['level2']}}">
+<input type="hidden" id="ls3" value="{{$query['level3']}}">
 <div class="row">
     <div class="col-sm-12">
         <div class="ibox-title">
@@ -62,34 +68,13 @@
                             </div>
                         </div>
                         <div class="col-md-4 col-lg-2 col-sm-6 col-xs-12">
-                            <div class="form-group">
-                                <select id="status" class="form-control" name="level1" tabindex="1">
-                                    <option value="">选择产品</option>
-                                    @foreach($products as $key => $value)
-                                        <option value="{{$key}}" @if(isset($query)&&$query['level1']==$key) selected @endif>{{$value}}</option>
-                                    @endforeach
-                                </select>
-                            </div>
+                            <select name="level1" id="province" class="form-control"></select>
                         </div>
                         <div class="col-md-4 col-lg-2 col-sm-6 col-xs-12">
-                            <div class="form-group">
-                                <select id="status" class="form-control" name="level2" tabindex="1">
-                                    <option value="">选择平台</option>
-                                    @foreach($platforms as $key => $value)
-                                        <option value="{{$key}}" @if(isset($query)&&$query['level2']==$key) selected @endif>{{$value}}</option>
-                                    @endforeach
-                                </select>
-                            </div>
+                            <select name="level2" id="city" class="form-control"></select>
                         </div>
                         <div class="col-md-4 col-lg-2 col-sm-6 col-xs-12">
-                            <div class="form-group">
-                                <select id="status" class="form-control" name="level3" tabindex="1">
-                                    <option value="">选择商品类型</option>
-                                    @foreach($license_types as $key => $value)
-                                        <option value="{{$key}}" @if(isset($query)&&$query['level3']==$key) selected @endif>{{$value}}</option>
-                                    @endforeach
-                                </select>
-                            </div>
+                            <select name="level3" id="town" class="form-control"></select>
                         </div>
 
                         <div class="input-group-btn" style="display: inline-block;width: 150px;margin-left:20px;">
@@ -128,14 +113,15 @@
                    style="word-wrap:break-word; word-break:break-all;">
                 <thead>
                 <tr>
-                    <th class="text-center" style="width: 9%">总订单编号</th>
-                    <th class="text-center" style="width: 9%">子订单编号</th>
+                    <th class="text-center" style="width: 9%">总订单ID</th>
+                    <th class="text-center" style="width: 9%">子订单ID</th>
+                    <th class="text-center" style="width: 9%">用户账号</th>
                     <th class="text-center" style="width: 7%">商品名称</th>
                     <th class="text-center" style="width: 8%">App ID/Machine ID</th>
                     <th class="text-center" style="width: 9%">创建时间</th>
                     <th class="text-center" style="width: 8%">过期时间</th>
-                    <th class="text-center" style="width: 9%">用户账号</th>
-                    <th class="text-center" style="width: 7%">授权码地址</th>
+
+                    <th class="text-center" style="width: 7%">license_key</th>
                     <th class="text-center" style="width: 5%">授权码类型</th>
                     <th class="text-center" style="width: 3%">状态</th>
                     <th class="text-center" style="width: 10%">操作</th>
@@ -146,22 +132,23 @@
                     <tr>
                         <td class="text-center">{{$item->order_id}}</td>
                         <td class="text-center">{{$item->order_no}}</td>
+                        <td class="text-center" title="{{$item->email}}">{{$item->emaild}}</td>
                         <td class="text-center" title="{{$item->name}}">{{$item->named}}</td>
                         <td class="text-center" title="{{$item->uuid}}">{{$item->uuidd}}</td>
                         <td class="text-center">{{$item->created_at}}</td>
                         <td class="text-center">{{$item->expire_time}}</td>
-                        <td class="text-center" title="{{$item->email}}">{{$item->emaild}}</td>
-                        <td class="text-center"><a href="{{$item->license_key_url}}" target="_blank">下载</a></td>
+
+                        <td class="text-center">{{$item->license_key}}</td>
                         <td class="text-center">{{$item->type}}</td>
                         <td class="text-center">{{$item->statusd}}</td>
                         <td class="text-center">
                             <div class="btn-group">
                                 <a href="{{route('license.info',$item->id)}}"><button class="btn btn-primary btn-xs" type="button"><i class="fa fa-paste"></i>查看</button></a>
-                                @if($item->status == 1)
-                                    <a onclick="changeStatus('{{$item->id}}',2)"><button class="btn btn-danger del btn-xs" type="button"><i class="fa fa-trash-o"></i>停用</button></a>
-                                @else
-                                    <a onclick="changeStatus('{{$item->id}}',1)"><button class="btn btn-danger del btn-xs" type="button"><i class="fa fa-trash-o"></i>启用</button></a>
-                                @endif
+{{--                                @if($item->status == 1)--}}
+{{--                                    <a onclick="changeStatus('{{$item->id}}',2)"><button class="btn btn-danger del btn-xs" type="button"><i class="fa fa-trash-o"></i>停用</button></a>--}}
+{{--                                @else--}}
+{{--                                    <a onclick="changeStatus('{{$item->id}}',1)"><button class="btn btn-danger del btn-xs" type="button"><i class="fa fa-trash-o"></i>启用</button></a>--}}
+{{--                                @endif--}}
                             </div>
                         </td>
                     </tr>
@@ -369,18 +356,100 @@
     }
 
     $(function () {
+        var proarr = JSON.parse($("#lv1").text());
+        var ciarr = JSON.parse($("#lv2").text());
+        var toarr = JSON.parse($("#lv3").text());
+        var level1 = $("#ls1").val();
+        var level2 = $("#ls2").val();
+        var level3 = $("#ls3").val();
+        //遍历省份数组，将省份添加到省份下拉列表中
+        console.log(toarr)
+        $.each(proarr, function () {
+            if(this.id==level1){
+                $("#province").append("<option value='"+this.id+"' selected>" + this.title + "</option>>")
+            }else{
+                $("#province").append("<option value='"+this.id+"'>" + this.title + "</option>>")
+            }
+
+        })
+        var index = $("#province option:checked").index();
+
+        $.each(ciarr[index], function () {
+            if(this.id==level2){
+                $("#city").append("<option value='"+this.id+"' selected>" + this.title + "</option>>")
+            }else {
+                $("#city").append("<option value='" + this.id + "'>" + this.title + "</option>>")
+            }
+        })
+
+        var index1 = $("#province option:checked").index();
+        //获取被点击的城市的索引
+        var index2 = $("#city option:checked").index();
+        $.each(toarr[index1][index2], function () {
+            if(this.id==level3){
+                $("#town").append("<option value='"+this.id+"' selected>" + this.title + "</option>>");
+            }else{
+                $("#town").append("<option value='"+this.id+"'>" + this.title + "</option>>");
+            }
+        })
+
+        //创建一个用户改变域的内容的事件：改变省份下拉列表中的内容
+        $("#province").change(function () {
+
+            //获取被点击的省份的索引
+            var index = $("#province option:checked").index();
+
+            //先清空城市下拉列表中的内容
+            $("#city").empty();
+
+            //根据获得的省份索引，遍历城市数组中对应的索引中的内容，将内容添加到城市下拉列表中
+
+            $.each(ciarr[index], function () {
+                $("#city").append("<option value='"+this.id+"'>" + this.title + "</option>>")
+            })
+            var index1 = $("#province option:checked").index();
+            //获取被点击的城市的索引
+            var index2 = $("#city option:checked").index();
+
+            //清空县区下拉列表中的内容
+            $("#town").empty();
+
+            //根据被点击的省份和城市索引，遍历县区数组中对应的索引中的内容，将内容添加到县区下拉列表中去
+            $.each(toarr[index1][index2], function () {
+                $("#town").append("<option value='"+this.id+"'>" + this.title + "</option>>");
+            })
+        })
+
+        //创建一个用户改变域的内容的事件：改变城市下拉列表中的内容
+        $("#city").change(function () {
+
+            //获得被点击的省份的索引
+            var index1 = $("#province option:checked").index();
+            //获取被点击的城市的索引
+            var index2 = $("#city option:checked").index();
+
+            //清空县区下拉列表中的内容
+            $("#town").empty();
+
+            //根据被点击的省份和城市索引，遍历县区数组中对应的索引中的内容，将内容添加到县区下拉列表中去
+            $.each(toarr[index1][index2], function () {
+                $("#town").append("<option value='"+this.id+"'>" + this.title + "</option>>");
+            })
+        })
+
         //导出
         $("#export").click(function () {
-            html = '<div style="display: flex; justify-content: left;flex-wrap: wrap; padding: 10px">' +
-                '<div style="margin-bottom: 20px"><label style="margin-right: 10px; width: 50px"><input name="id"  type="checkbox"  value="id" checked="checked"/>编号</label>' +
-                '<label style="margin-right: 10px; width: 100px"><input name="order_no"  type="checkbox"  value="order_no" checked="checked"/>订单编号</label>' +
-                '<label style="margin-right: 10px; width: 100px"><input name="name"  type="checkbox"  value="name" checked="checked"/>商品名称</label>' +
-                '<label style="margin-right: 10px; width: 120px"><input name="uuid"  type="checkbox"  value="uuid" checked="checked"/>App ID/Machine ID</label>' +
-                '<label style="margin-right: 10px; width: 120px"><input name="created_at"  type="checkbox"  value="created_at" checked="checked"/>创建时间</label></div>' +
-                '<div><label style="margin-right: 10px; width: 50px"><input name="expire_time"  type="checkbox"  value="expire_time" checked="checked"/>过期时间</label>' +
-                '<label style="margin-right: 10px; width: 100px"><input name="email"  type="checkbox"  value="email" checked="checked"/>用户账号</label>' +
-                '<label style="margin-right: 10px; width: 100px"><input name="license_key_url"  type="checkbox"  value="license_key_url" checked="checked"/>授权码地址</label>' +
-                '<label style="margin-right: 10px; width: 100px"><input name="type"  type="checkbox"  value="type" checked="checked"/>授权码类型</label></div></div>';
+            html =  '<div style="display: flex; justify-content: left;flex-wrap: wrap; padding: 10px">' +
+                '<div style="margin-bottom: 20px"><label style="margin-right: 10px; width: 50px"><input name="id"  type="checkbox"  value="id" checked="checked"/>ID</label>' +
+                '<label style="margin-right: 10px; width: 100px"><input name="products"  type="checkbox"  value="level1" checked="checked"/>Products</label>' +
+                '<label style="margin-right: 10px; width: 100px"><input name="platform"  type="checkbox"  value="level2" checked="checked"/>Platform</label>' +
+                '<label style="margin-right: 10px; width: 120px"><input name="licensie"  type="checkbox"  value="level3" checked="checked"/>Licensie Type</label>' +
+                '<label style="margin-right: 10px; width: 120px"><input name="price"  type="checkbox"  value="price" checked="checked"/>Pricing(USD)</label></div>' +
+                '<div><label style="margin-right: 10px; width: 50px"><input name="status"  type="checkbox"  value="status" checked="checked"/>状态</label>' +
+                '<label style="margin-right: 10px; width: 100px"><input name="created_at"  type="checkbox"  value="created_at" checked="checked"/>创建时间</label>' +
+                '<label style="margin-right: 10px; width: 100px"><input name="updated_at"  type="checkbox"  value="updated_at" checked="checked"/>更新时间</label>' +
+                '<label style="margin-right: 10px; width: 100px"><input name="shelf_at"  type="checkbox"  value="shelf_at" checked="checked"/>上架时间</label></div></div>';
+
             layer.open({
                 type: 1,
                 title: false,
@@ -389,22 +458,22 @@
                 anim: 2,
                 content: html,
                 // content: "<pre>"+data+"</pre>"
-                btn: ['确定'],
+                btn:['确定'],
                 area: ['600px', '150px'],
                 btn1: function () {
                     let field = [];
-                    $("input").each(function () {
-                        if ($(this).is(':checked')) {
+                    $("input").each(function (){
+                        if($(this).is(':checked')){
                             field.push($(this).val())
                         }
                     })
 
-                    if (field.length == 0) {
+                    if(field.length == 0){
                         alert("至少需要一列导出字段")
                         return false;
                     }
 
-                    let query_type = $('#query_type').find("option:selected").val()
+                    let query_type =  $('#query_type').find("option:selected").val()
                     let info = $('#info').val()
                     let level1 = $('#province').val()
                     let level2 = $('#city').val()
@@ -419,7 +488,7 @@
                         header: {
                             contentType: "application/octet-stream"
                         },
-                        data: "query_type=" + query_type + "info=" + info + "&level1=" + level1 + "&level2=" + level2 + "&level3=" + level3 + "&status=" + status + "&start_date=" + startDate + "&end_date=" + endDate
+                        data: "query_type="+ query_type + "info=" + info + "&level1=" + level1 + "&level2=" + level2 + "&level3=" + level3 + "&status=" + status + "&start_date=" + startDate + "&end_date=" + endDate
                             + "&field=" + field.join(',') + "&export=1",
                         type: 'get',
                         success: function (res) {

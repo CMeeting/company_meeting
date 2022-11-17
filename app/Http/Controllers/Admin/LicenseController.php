@@ -17,6 +17,7 @@ class LicenseController extends BaseController
     {
         $param = request()->input();
         $license = new LicenseService();
+        $GoodsService = new GoodsService();
         $query["query_type"] = isset($param['query_type']) ? $param['query_type'] : "";
         $query["info"] = isset($param['info']) ? $param['info'] : "";
         $query["type"] = isset($param['type']) ? $param['type'] : "";
@@ -29,10 +30,10 @@ class LicenseController extends BaseController
         $query["expire_end"] = isset($param['expire_end']) ? $param['expire_end'] : "";
         $license_type = config("constants.license_type");
         $data = $license->list($query);
-        $products = $license->getGoodsClassifications(['lv' => 1]);
-        $platforms = $license->getGoodsClassifications(['lv' => 2]);
-        $license_types = $license->getGoodsClassifications(['lv' => 3]);
-        return $this->view('index', compact('data', 'query', 'license_type', 'products', 'platforms', 'license_types'));
+        $categorical_data = $GoodsService->threelevellinkage();
+
+//        return $this->view('index', compact('data', 'query', 'license_type', 'products', 'platforms', 'license_types'));
+        return $this->view('index',['data'=>$data,'license_type'=>$license_type,'query'=>$query,'lv1'=>json_encode($categorical_data['arr1']),'lv2'=>json_encode($categorical_data['arr2']),'lv3'=>json_encode($categorical_data['arr3'])]);
     }
 
     /**
@@ -68,26 +69,13 @@ class LicenseController extends BaseController
     }
 
 
-    public function createrungoods(Request $request)
+    public function createrunLicense(Request $request)
     {
         $param = $request->input();
-        $GoodsService = new GoodsService();
-        if (!empty($param)) {
-            $bool = $GoodsService->addEditcaregorical($param);
-            if ($bool && $bool === "repeat") {
-                flash('该产品已存在/该平台已存在/该License 类型已存在')->error()->important();
-                $result['code'] = 200;
-                $result['msg'] = "该产品已存在/该平台已存在/该License 类型已存在";
-            } else {
-                if ($bool) {
-                    flash('添加成功')->success()->important();
-                    $result['code'] = 1;
-                } else {
-                    flash('添加失败')->error()->important();
-                    $result['code'] = 1;
-                }
-            }
-            return $result;
+        $license = new LicenseService();
+        $ret=$license->createlicense($param['data']);
+        if($ret){
+            return ['code'=>1,'msg'=>"OK"];
         }
     }
 

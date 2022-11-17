@@ -32,27 +32,31 @@
                         返回列表
                     </button>
                 </a>
-                <form class="form-horizontal" id="forms" name="form"  method="post" action="{{route('goods.updaterungoods')}}" >
+                <form class="form-horizontal" id="forms" name="form" method="post"
+                      action="{{route('goods.updaterungoods')}}">
                     {{ csrf_field() }}
                     <input type="hidden" name="data[id]" value="{{$data['id']}}">
                     <div class="form-group">
                         <label class="col-sm-2 control-label no-padding-right" for="form-field-1">Products：</label>
                         <div class="col-sm-6 col-xs-12">
-                            <select name="data[level1]" id="province" class="form-control" style="pointer-events: none;color: #9f9f9f"></select>
+                            <select name="data[level1]" id="province" class="form-control"
+                                    style="pointer-events: none;color: #9f9f9f"></select>
                         </div>
                     </div>
 
                     <div class="form-group">
                         <label class="col-sm-2 control-label no-padding-right" for="form-field-1">Platform：</label>
                         <div class="col-sm-6 col-xs-12">
-                            <select name="data[level2]" id="city" class="form-control" style="pointer-events: none;color: #9f9f9f"></select>
+                            <select name="data[level2]" id="city" class="form-control"
+                                    style="pointer-events: none;color: #9f9f9f"></select>
                         </div>
                     </div>
 
                     <div class="form-group">
                         <label class="col-sm-2 control-label no-padding-right" for="form-field-1">License Type：</label>
                         <div class="col-sm-6 col-xs-12">
-                            <select name="data[level3]" id="town" class="form-control" style="pointer-events: none;color: #9f9f9f"></select>
+                            <select name="data[level3]" id="town" class="form-control"
+                                    style="pointer-events: none;color: #9f9f9f"></select>
                         </div>
                     </div>
 
@@ -60,11 +64,56 @@
                     <div class="form-group">
                         <label class="col-sm-2 control-label no-padding-right" for="form-field-1"> Pricing(USD)：</label>
                         <div class="col-sm-6 col-xs-12">
-                            <input style="float: left" id="price"  type="number" class="form-control" name="data[price]" min="0.01" max="99999999" step="0.01" oninput="if(value.length>8)value=value.slice(0,8)" value="{{$data['price']}}" required>
+                            <input style="float: left" id="price" type="number" class="form-control" name="data[price]"
+                                   min="0.01" max="99999999" step="0.01"
+                                   oninput="if(value.length>8)value=value.slice(0,8)" value="{{$data['price']}}"
+                                   required>
                         </div>
                         <span class="lbl" style="float: left;margin-top: 0.5%">/year</span>
                     </div>
+                    <div id="infosdata">
+                        @if($data['info'] && count($data['info'])>0)
+                            <?php $i = 1; ?>
+                            @foreach($data['info'] as $k=>$v)
+                                @if($i==1)
+                                    <div class="form-group">
+                                        <label class="col-sm-2 control-label no-padding-right" for="form-field-1">
+                                            Features：</label>
+                                        <div class="col-sm-6 col-xs-12">
+                                            <input style="float: left" id="maidian" type="text" class="form-control"
+                                                   name="data[info][]" value="{{$v}}" required>
+                                        </div>
+                                        <span class="lbl" style="float: left;margin-top: 0.2%;"><a
+                                                    style="display: inline-block;width: 30px;height: 30px;font-size: 18px;color: green;background: #fff9f9;text-align: center;line-height: 30px;border: 1px solid green"
+                                                    onclick="addmaidian()">+</a></span>
+                                    </div>
+                                    @else
+                                <div class="form-group" id="md{{$k}}"><label
+                                            class="col-sm-2 control-label no-padding-right" for="form-field-1"> </label>
+                                    <div class="col-sm-6 col-xs-12"><input style="float: left" id="maidian" type="text"
+                                                                           class="form-control" name="data[info][]" value="{{$v}}"
+                                                                           required></div>
+                                    <span class="lbl" style="float: left;margin-top: 0.2%;"><a
+                                                style="display: inline-block;width: 30px;height: 30px;font-size: 18px;color: red;background: #fff9f9;text-align: center;line-height: 30px;border: 1px solid red"
+                                                onclick="movemaidian({{$k}})">-</a></span></div>
+                                    @endif
+                                    <?php $i++; ?>
+                            @endforeach
+                        @else
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label no-padding-right" for="form-field-1">
+                                    Features：</label>
+                                <div class="col-sm-6 col-xs-12">
+                                    <input style="float: left" id="maidian" type="text" class="form-control"
+                                           name="data[info][]" required>
+                                </div>
+                                <span class="lbl" style="float: left;margin-top: 0.2%;"><a
+                                            style="display: inline-block;width: 30px;height: 30px;font-size: 18px;color: green;background: #fff9f9;text-align: center;line-height: 30px;border: 1px solid green"
+                                            onclick="addmaidian()">+</a></span>
+                            </div>
+                        @endif
 
+                    </div>
                     <div class="form-group">
                         <label class="col-sm-2 control-label no-padding-right" for="form-field-1"> status(是否上架)：</label>
                         <div class="col-sm-6 col-xs-12">
@@ -74,16 +123,17 @@
                     </div>
 
 
-                <div class="clearfix form-actions">
-                    <div class="col-md-offset-3 col-md-9">
+                    <div class="clearfix form-actions">
+                        <div class="col-md-offset-3 col-md-9">
 
-                        <a class="btn dropdown-toggle ladda-button"    style="background: deepskyblue" data-style="zoom-in" onclick="submits()">
-                            保&nbsp;&nbsp;存
-                        </a>
-                        &nbsp;&nbsp;&nbsp;&nbsp;
-                        <button class="btn btn-white reset" type="reset"><i class="fa fa-repeat"></i> 重 置</button>
+                            <a class="btn dropdown-toggle ladda-button" style="background: deepskyblue"
+                               data-style="zoom-in" onclick="submits()">
+                                保&nbsp;&nbsp;存
+                            </a>
+                            &nbsp;&nbsp;&nbsp;&nbsp;
+                            <button class="btn btn-white reset" type="reset"><i class="fa fa-repeat"></i> 重 置</button>
+                        </div>
                     </div>
-                </div>
 
                 </form>
             </div>
@@ -92,26 +142,39 @@
 
     <script src="{{loadEdition('/js/jquery.min.js')}}"></script>
     <script>
+        var mdindex=1;
 
+        function addmaidian(){
+            for(var i=0;i<4;i++)
+            {
+                mdindex+=Math.floor(Math.random()*10);
+            }
+            mdindex++;
+            var str='<div class="form-group" id="md'+mdindex+'"><label class="col-sm-2 control-label no-padding-right" for="form-field-1"> </label><div class="col-sm-6 col-xs-12"> <input style="float: left" id="maidian"  type="text" class="form-control" name="data[info][]" required> </div> <span class="lbl" style="float: left;margin-top: 0.2%;"><a style="display: inline-block;width: 30px;height: 30px;font-size: 18px;color: red;background: #fff9f9;text-align: center;line-height: 30px;border: 1px solid red" onclick="movemaidian('+mdindex+')">-</a></span> </div>';
+            $("#infosdata").append(str);
+        }
+        function movemaidian(id){
+            $("#md"+id).remove();
+        }
         function submits() {
             var index = layer.load();
 
-            if(!$("#province").val()){
+            if (!$("#province").val()) {
                 layer.close(index);
                 layer.msg("请选择Products", {time: 1500, anim: 6});
                 return false;
             }
-            if(!$("#city").val()){
+            if (!$("#city").val()) {
                 layer.close(index);
                 layer.msg("请选择Platform", {time: 1500, anim: 6});
                 return false;
             }
-            if(!$("#town").val()){
+            if (!$("#town").val()) {
                 layer.close(index);
                 layer.msg("请选择License Type", {time: 1500, anim: 6});
                 return false;
             }
-            if($("#price").val() < 0.01){
+            if ($("#price").val() < 0.01) {
                 layer.close(index);
                 layer.msg("价格不能低于0.01", {time: 1500, anim: 6});
                 return false;
@@ -151,19 +214,19 @@
             var level3 = {{$data['level3']}};
             //遍历省份数组，将省份添加到省份下拉列表中
             $.each(proarr, function () {
-                if(this.id==level1){
-                    $("#province").append("<option value='"+this.id+"' selected>" + this.title + "</option>>")
-                }else{
-                        $("#province").append("<option value='"+this.id+"'>" + this.title + "</option>>");
+                if (this.id == level1) {
+                    $("#province").append("<option value='" + this.id + "' selected>" + this.title + "</option>>")
+                } else {
+                    $("#province").append("<option value='" + this.id + "'>" + this.title + "</option>>");
                 }
 
             })
             var index = $("#province option:checked").index();
             $.each(ciarr[index], function () {
-                if(this.id==level2){
-                    $("#city").append("<option value='"+this.id+"' selected>" + this.title + "</option>>")
-                }else {
-                        $("#city").append("<option value='"+this.id+"'>" + this.title + "</option>>");
+                if (this.id == level2) {
+                    $("#city").append("<option value='" + this.id + "' selected>" + this.title + "</option>>")
+                } else {
+                    $("#city").append("<option value='" + this.id + "'>" + this.title + "</option>>");
                 }
             })
 
@@ -171,10 +234,10 @@
             //获取被点击的城市的索引
             var index2 = $("#city option:checked").index();
             $.each(toarr[index1][index2], function () {
-                if(this.id==level3){
-                    $("#town").append("<option value='"+this.id+"' selected>" + this.title + "</option>>");
-                }else{
-                        $("#town").append("<option value='"+this.id+"'>" + this.title + "</option>>");
+                if (this.id == level3) {
+                    $("#town").append("<option value='" + this.id + "' selected>" + this.title + "</option>>");
+                } else {
+                    $("#town").append("<option value='" + this.id + "'>" + this.title + "</option>>");
                 }
             })
 
@@ -190,7 +253,7 @@
                 //根据获得的省份索引，遍历城市数组中对应的索引中的内容，将内容添加到城市下拉列表中
 
                 $.each(ciarr[index], function () {
-                        $("#city").append("<option value='" + this.id + "'>" + this.title + "</option>>")
+                    $("#city").append("<option value='" + this.id + "'>" + this.title + "</option>>")
                 })
                 var index1 = $("#province option:checked").index();
                 //获取被点击的城市的索引
@@ -201,7 +264,7 @@
 
                 //根据被点击的省份和城市索引，遍历县区数组中对应的索引中的内容，将内容添加到县区下拉列表中去
                 $.each(toarr[index1][index2], function () {
-                        $("#town").append("<option value='"+this.id+"'>" + this.title + "</option>>");
+                    $("#town").append("<option value='" + this.id + "'>" + this.title + "</option>>");
                 })
             })
 
@@ -218,7 +281,7 @@
 
                 //根据被点击的省份和城市索引，遍历县区数组中对应的索引中的内容，将内容添加到县区下拉列表中去
                 $.each(toarr[index1][index2], function () {
-                        $("#town").append("<option value='"+this.id+"'>" + this.title + "</option>>");
+                    $("#town").append("<option value='" + this.id + "'>" + this.title + "</option>>");
                 })
             })
 

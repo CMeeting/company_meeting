@@ -24,16 +24,33 @@
     <div class="row">
         <div class="col-sm-12">
             <div class="ibox-title">
-                <h5>New Goods</h5>
+                <h5>New license</h5>
             </div>
             <div class="ibox-content">
-                <a href="{{route('goods.index')}}" style="margin-bottom: 8px">
+                <a href="{{route('license.index')}}" style="margin-bottom: 8px">
                     <button class="menuid btn btn-primary btn-sm back" type="button"><i class="fa fa-chevron-left"></i>
                         返回列表
                     </button>
                 </a>
                 <form class="form-horizontal" id="forms" name="form"  method="post" action="{{route('goods.createrungoods')}}" >
                     {{ csrf_field() }}
+
+                    <div class="form-group h1title">
+                        <label class="col-sm-2 control-label no-padding-right" for="form-field-1"> 用户邮箱：</label>
+                        <div class="col-sm-6 col-xs-12">
+                            <input id="email" class="form-control" name="data[email]" required placeholder="请输入用户邮箱">
+                            <span class="lbl"></span>
+                        </div>
+                    </div>
+
+
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label no-padding-right" for="form-field-1">Full Name：</label>
+                        <div class="col-sm-6 col-xs-12">
+                            <input name="data[full_name]" id="full_name" class="form-control" placeholder="full Name"></input>
+                        </div>
+                    </div>
+
                     <div class="form-group">
                         <label class="col-sm-2 control-label no-padding-right" for="form-field-1">Products：</label>
                         <div class="col-sm-6 col-xs-12">
@@ -54,22 +71,31 @@
                         <select name="data[level3]" id="town" class="form-control"></select>
                     </div>
                 </div>
+                    <div id="infosdata1">
 
-                    <div class="form-group">
-                        <label class="col-sm-2 control-label no-padding-right" for="form-field-1"> Pricing(USD)：</label>
-                        <div class="col-sm-6 col-xs-12">
-                            <input style="float: left" id="price"  type="number" class="form-control" name="data[price]" min="0.01" max="99999999" step="0.01" oninput="if(value.length>8)value=value.slice(0,8)" value="0.00" required>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label no-padding-right" for="form-field-1">APP ID/Machine ID：</label>
+                            <div class="col-sm-6 col-xs-12">
+                                <input style="float: left" id="maidian"  type="text" class="form-control maidian" name="data[appid][]" required placeholder="APP ID直接填写，Machine ID可添加多条">
+                            </div>
+                            <span class="lbl" style="float: left;margin-top: 0.2%;"><a style="display: inline-block;width: 30px;height: 30px;font-size: 18px;color: green;background: #fff9f9;text-align: center;line-height: 30px;border: 1px solid green" onclick="addmaidian(1)">+</a>新增Machine ID</span>
                         </div>
-                        <span class="lbl" style="float: left;margin-top: 0.5%">/year</span>
+
                     </div>
 
                     <div class="form-group">
-                        <label class="col-sm-2 control-label no-padding-right" for="form-field-1"> status(是否上架)：</label>
+                        <label class="col-sm-2 control-label no-padding-right" for="form-field-1">Period：</label>
                         <div class="col-sm-6 col-xs-12">
-                            <input type="radio" name="data[status]" value="1" checked >上架
-                            <input type="radio" name="data[status]" value="0">下架
+                            <select name="data[period]" id="period" class="form-control">
+                                <option value="1">1yers</option>
+                                <option value="2">2yers</option>
+                                <option value="3">3yers</option>
+                                <option value="4">4yers</option>
+                                <option value="5">5yers</option>
+                            </select>
                         </div>
                     </div>
+
 
 
                 <div class="clearfix form-actions">
@@ -90,10 +116,35 @@
 
     <script src="{{loadEdition('/js/jquery.min.js')}}"></script>
     <script>
+ var mdindex=0;
+        function addmaidian(id) {
+            mdindex++;
+            var str = '<div class="form-group" id="md' + mdindex + '"><label class="col-sm-2 control-label no-padding-right" for="form-field-1"> </label><div class="col-sm-6 col-xs-12"> <input style="float: left" id="maidian"  type="text" class="form-control maidian" name="data[appid][]" required> </div> <span class="lbl" style="float: left;margin-top: 0.2%;"><a style="display: inline-block;width: 30px;height: 30px;font-size: 18px;color: red;background: #fff9f9;text-align: center;line-height: 30px;border: 1px solid red" onclick="movemaidian(' + mdindex + ')">-</a></span> </div>';
+            $("#infosdata"+id).append(str);
+        }
+        function movemaidian(id) {
+            $("#md" + id).remove();
+        }
 
         function submits() {
             var index = layer.load();
-
+            var dd=2;
+            if(!$("#email").val()){
+                layer.close(index);
+                layer.msg("请输入用户邮箱", {time: 1500, anim: 6});
+                return false;
+            }
+            var e= /^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
+            if(!e.test($("#email").val())){
+                layer.close(index);
+                layer.msg('邮件地址不合法', {time: 1500, anim: 6});
+                return false;
+            }
+            if(!$("#full_name").val()){
+                layer.close(index);
+                layer.msg("请输入Full Name", {time: 1500, anim: 6});
+                return false;
+            }
             if(!$("#province").val()||$("#province").val()==0){
                 layer.close(index);
                 layer.msg("请选择Products", {time: 1500, anim: 6});
@@ -109,16 +160,22 @@
                 layer.msg("请选择License Type", {time: 1500, anim: 6});
                 return false;
             }
-            if($("#price").val() < 0.01){
-                layer.close(index);
-                layer.msg("价格不能低于0.01", {time: 1500, anim: 6});
+            $(".maidian").each(function (){
+                if(!$(this).val()){
+                    dd=1;
+                    layer.close(index);
+                    layer.msg("有Machine ID为空", {time: 1500, anim: 6});
+                    return false;
+                }
+            })
+            if(dd==1){
                 return false;
             }
             var form_data = new FormData($("#forms")[0]);
             layer.close(index);
 
             $.ajax({
-                url: "{{route('goods.createrungoods')}}",
+                url: "{{route('license.createrunLicense')}}",
                 processData: false,//需设置为false。因为data值是FormData对象，不需要对数据做处理
                 contentType: false,
                 type: "post",

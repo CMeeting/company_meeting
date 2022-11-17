@@ -20,6 +20,7 @@ class ApiChangeLogsService
             return ['code' => '403', 'msg' => '没有找到该数据'];
         }
         $where['platform'] = $platform_array['id'];
+        $where['is_delete'] = 0;
         $list = DB::table('change_logs')
             ->where($where)
             ->whereIn("product", $product_array)

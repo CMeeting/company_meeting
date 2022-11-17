@@ -16,6 +16,7 @@ use App\Export\UserExport;
 use App\Models\Goods;
 use App\Models\Goodsclassification;
 use App\Models\LicenseModel;
+use App\Models\User;
 use Auth;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\DB;
@@ -44,13 +45,13 @@ class LicenseService
             $where .= " and l.type = " . $param['type'];
         }
         if ($param['level1']) {
-            $where .= " and g.level1 = " . $param['level1'];
+            $where .= " and l.products_id = " . $param['level1'];
         }
         if ($param['level2']) {
-            $where .= " and g.level2 = " . $param['level2'];
+            $where .= " and l.platform_id = " . $param['level2'];
         }
         if ($param['level3']) {
-            $where .= " and g.level3 = " . $param['level3'];
+            $where .= " and l.licensetype_id = " . $param['level3'];
         }
         if (isset($param['created_start']) && $param['created_start'] && isset($param['created_end']) && $param['created_end']) {
             $where .= " AND l.created_at BETWEEN '" . $param['created_start'] . "' AND '" . $param['created_end'] . "'";
@@ -68,18 +69,17 @@ class LicenseService
             $where .= " AND l.expire_time <= '" . $param['expire_end'] . "'";
         }
         $query = DB::table("license_code as l");
-        $data = $query->select("l.id", "o.order_id", "o.order_no", "l.uuid", "l.created_at", "l.expire_time",
-            "u.email", "l.license_key", "l.license_key_url", "l.type", "l.status", "g.level1", "g.level2", "g.level3")
+        $data = $query->select("l.id", "o.order_no as order_id", "o.goods_no as order_no", "l.uuid", "l.created_at", "l.expire_time",
+            "u.email", "l.license_key", "l.license_key_url", "l.type", "l.status", "l.products_id", "l.platform_id", "l.licensetype_id")
             ->whereRaw($where)
-            ->leftJoin("goods as g","g.id", "=", "l.products_id")
-            ->leftJoin("orders_goods as o","l.order_id", "=", "o.order_no")
+            ->leftJoin("orders_goods as o","l.order_id", "=", "o.order_id")
             ->leftJoin("users as u","u.id", "=", "l.user_id")
             ->orderBy("l.created_at","desc")
             ->paginate(10);
         $goodsClassifications = $this->getGoodsClassifications();
         if ($data) {
             foreach ($data as $key => $value) {
-                $name = $goodsClassifications[$value->level1] . " for " . $goodsClassifications[$value->level2] . " ( " . $goodsClassifications[$value->level3] . " ) ";
+                $name = $goodsClassifications[$value->products_id] . " for " . $goodsClassifications[$value->platform_id] . " ( " . $goodsClassifications[$value->licensetype_id] . " ) ";
                 $data[$key]->named = cut_str($name,6);
                 $data[$key]->name = $name;
                 $data[$key]->order_id = $value->order_id ?? '-';
@@ -117,10 +117,9 @@ class LicenseService
     public function getInfo($id)
     {
         $query = DB::table("license_code as l");
-        $info = $query->select("l.id", "o.order_id", "o.order_no", "l.uuid", "l.created_at", "l.expire_time",
-            "u.email", "l.license_key", "l.license_key_url", "l.type", "l.status", "g.level1", "g.level2", "g.level3")
-            ->leftJoin("goods as g", "g.id", "=", "l.products_id")
-            ->leftJoin("orders_goods as o", "l.order_id", "=", "o.order_no")
+        $info = $query->select("l.id","l.license_secret", "o.order_id", "o.id as order_no", "l.uuid", "l.created_at", "l.expire_time",
+            "u.email", "l.license_key", "l.license_key_url", "l.type", "l.status", "l.products_id", "l.platform_id", "l.licensetype_id")
+            ->leftJoin("orders_goods as o", "l.order_id", "=", "o.order_id")
             ->leftJoin("users as u", "u.id", "=", "l.user_id")
             ->where("l.id", $id)
             ->get();
@@ -128,10 +127,52 @@ class LicenseService
         $goodsClassifications = $this->getGoodsClassifications();
         $info['order_id'] = $info['order_id'] ?? '-';
         $info['order_no'] = $info['order_no'] ?? '-';
-        $info['name'] = $goodsClassifications[$info['level1']] . " for " . $goodsClassifications[$info['level2']] . " ( " . $goodsClassifications[$info['level3']] . " ) ";
+        $info['name'] = $goodsClassifications[$info['products_id']] . " for " . $goodsClassifications[$info['platform_id']] . " ( " . $goodsClassifications[$info['licensetype_id']] . " ) ";
         $info['type'] = config("constants.license_type")[$info['type']];
         $info['status'] = config("constants.license_status")[$info['status']];
         return $info;
     }
+
+
+    public function createlicense($data){
+        $user = new User();
+        $lisecosdmode=new LicenseModel();
+        $is_user = $user->existsEmail($data['email']);
+        if (!$is_user) {
+            $arr['full_name'] = $data['email'];
+            $arr['email'] = $data['email'];
+            $arr['flag'] = 3;
+            $arr['type'] = 4;
+            $arr['created_at'] = date("Y-m-d H:i:s");
+            $arr['updated_at'] = date("Y-m-d H:i:s");
+            $user_id = Db::table("users")->insertGetId($arr);
+        } else {
+            $users = DB::table('users')->where('email', $data['email'])->first();
+            $user_id = $users->id;
+        }
+       $lisecosd = str_pad("'".mt_rand(1,9999)."'", 4, '0', STR_PAD_LEFT)."-".str_pad("'".mt_rand(1, 9999)."'", 4, '0', STR_PAD_LEFT)."-".str_pad("'".mt_rand(1, 9999)."'", 4, '0', STR_PAD_LEFT)."-".str_pad("'".mt_rand(1, 9999)."'", 4, '0', STR_PAD_LEFT);
+        $license_secret = str_pad("'".mt_rand(1, 9999)."'", 4, '0', STR_PAD_LEFT)."-".str_pad("'".mt_rand(1, 9999)."'", 4, '0', STR_PAD_LEFT)."-".str_pad("'".mt_rand(1, 9999)."'", 4, '0', STR_PAD_LEFT)."-".str_pad("'".mt_rand(1, 9999)."'", 4, '0', STR_PAD_LEFT);
+
+        $data=[
+            'user_id'=>$user_id,
+            'products_id'=>$data['level1'],
+            'platform_id'=>$data['level2'],
+            'licensetype_id'=>$data['level3'],
+            'license_key'=>$lisecosd,
+            'license_secret'=>$license_secret,
+            'uuid'=>implode(',', $data["appid"]),
+            'period'=>$data['period'],
+            'type'=>2,
+            'status'=>1,
+            'expire_time'=>date("Y-m-d H:i:s",strtotime("+".$data['period']." year"))
+            ];
+         $res=$lisecosdmode->insertGetId($data);
+         return $res;
+
+    }
+
+
+
+
 
 }
