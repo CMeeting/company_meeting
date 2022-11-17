@@ -24,7 +24,7 @@ class ApiChangeLogsService
         $list = DB::table('change_logs')
             ->where($where)
             ->whereIn("product", $product_array)
-            ->select("version_no", "content", "platform", "change_date")
+            ->select("version_no", "content", "platform", "change_date", "seo_title", "slug")
             ->orderBy("change_date", "desc")
             ->get();
         $data = [];
