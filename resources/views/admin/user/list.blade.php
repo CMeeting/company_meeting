@@ -25,27 +25,27 @@
             </div>
             <div class="ibox-content">
 
-                <div class="col-xs-10 col-sm-11 margintop5" style="margin-bottom: 5px;padding-left: 0">
+                <div class="col-xs-10 col-sm-11 margintop5" style="margin-bottom: 5px;padding-left: 0; width: 100%">
                     <form name="admin_list_sea" class="form-search" method="get" action="{{route('user.list')}}">
                         {{ csrf_field() }}
-                        <div class="input-group">
-                            <div class="layui-form-item" style="display: inline-block">
-                                <label class="layui-form-label" style="width: 90px">用户筛选</label>
-                                <div class="input-group-btn" style="display: inline-block;width: 200px;">
-                                    <input id="keyword" type="text" name="keyword" class="form-control" style="display: inline-block;width: 240px;" value="@if(isset($query['keyword'])){{$query['keyword']}}@endif" placeholder="用户ID/邮箱/Full Name/Company"/>
+                        <div class="input-group" style="display: flex">
+                            <div class="layui-form-item" style="display: flex;">
+                                <label class="layui-form-label" style="width:auto;flex-wrap:nowrap">用户筛选</label>
+                                <div class="input-group-btn" style="display: inline-block;width: auto;">
+                                    <input id="keyword" type="text" name="keyword" class="form-control" style="display: inline-block;width: auto;" value="@if(isset($query['keyword'])){{$query['keyword']}}@endif" placeholder="用户ID/邮箱/Full Name/Company"/>
                                 </div>
                             </div>
 
-                            <div class="layui-form-item" style="display: inline-block; margin-left: 50px">
+                            <div class="layui-form-item" style="display: inline-block; margin-left: 20px">
                                 <div class="form-group">
-                                    <label class="layui-form-label" style="width: 70px">Country</label>
+                                    <label class="layui-form-label" style="width:auto;flex-wrap:nowrap">国家/地区</label>
                                     <select id="country" name="country" class="selectpicker countrypicker" data-live-search="true" data-default="{{array_get($query, 'country', 'All')}}" data-flag="true"></select>
                                 </div>
                             </div>
 
-                            <div class="layui-form-item" style="display: inline-block; margin-left: 100px">
-                                <label class="layui-form-label" style="width: 90px">用户类型</label>
-                                <div class="input-group-btn" style="display: inline-block;width: 120px;">
+                            <div class="layui-form-item" style="display: inline-block; margin-left: 20px">
+                                <label class="layui-form-label" style="width:auto;flex-wrap:nowrap">用户类型</label>
+                                <div class="input-group-btn" style="display: inline-block;width: auto;">
                                     <select id="type" class="form-control"  name="type">
                                         <option value="-1">用户类型</option>
                                         @foreach($type_arr as $key=>$type)
@@ -56,15 +56,15 @@
                             </div>
 
                             <div class="layui-form-item" style="display: inline-block; margin-left: 20px">
-                                <label class="layui-form-label" style="width: 90px">注册时间</label>
-                                <div class="input-group-btn" style="display: inline-block;width: 150px;">
+                                <label class="layui-form-label" style="width:auto;flex-wrap:nowrap">注册时间</label>
+                                <div class="input-group-btn" style="display: inline-block;width: auto;">
                                     <input type="text"  name="start_date" class="form-control" style="display: inline-block;width: 160px;" id="startDate" placeholder="注册时间-开始" value="@if(isset($query['start_date'])){{$query['start_date']}}@endif" />
                                 </div>
-                                <div class="input-group-btn" style="display: inline-block;width: 150px;margin-left:20px;">
+                                <div class="input-group-btn" style="display: inline-block;width: auto;margin-left:20px;">
                                     <input type="text"  name="end_date" class="form-control" style="display: inline-block;width: 160px;" id="endDate" placeholder="注册时间-结束" value="@if(isset($query['end_date'])){{$query['end_date']}}@endif" />
                                 </div>
                                 <span class="input-group-btn" style="display: inline-block;">
-                                <button type="submit" class="btn btn-purple btn-sm" style="margin-left: 20px;">
+                                <button type="submit" class="btn btn-purple btn-sm">
                                     <span class="ace-icon fa fa-search icon-on-right bigger-110"></span>
                                     搜索
                                 </button>
