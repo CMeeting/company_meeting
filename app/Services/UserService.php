@@ -7,13 +7,13 @@ namespace App\Services;
 use App\Export\UserExport;
 use App\Models\LogoutUser;
 use App\Models\User;
-use App\Models\UserLoginLog;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Response;
+use Maatwebsite\Excel\Facades\Excel;
 
 class UserService
 {
@@ -142,7 +142,7 @@ class UserService
      * 导出
      * @param $fields
      * @param $data
-     * @return array
+     * @return \Symfony\Component\HttpFoundation\BinaryFileResponse
      * @throws \PhpOffice\PhpSpreadsheet\Exception
      * @throws \PhpOffice\PhpSpreadsheet\Writer\Exception
      */
@@ -180,11 +180,8 @@ class UserService
         }
 
         $userExport = new UserExport($result);
-        $fileName = 'export'. DIRECTORY_SEPARATOR .'用户列表' . time() . '.xlsx';
-        \Excel::store($userExport, $fileName);
-
-        //ajax请求 需要返回下载地址，在使用location.href请求下载地址
-        return ['url'=>route('download', ['file_name'=>$fileName])];
+        $fileName = '用户列表' . time() . '.xlsx';
+        return  Excel::download($userExport, $fileName);
     }
 
     /**

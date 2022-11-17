@@ -164,8 +164,8 @@
                     '<label style="margin-right: 10px; width: 100px"><input name="company"  type="checkbox"  value="company" checked="checked"/>Company</label>' +
                     '<label style="margin-right: 10px; width: 100px"><input name="country"  type="checkbox"  value="country" checked="checked"/>Country</label></div>' +
                     '<div><label style="margin-right: 10px; width: 100px"><input name="type"  type="checkbox"  value="type" checked="checked"/>用户类型</label>' +
-                    '<label style="margin-right: 10px; width: 100px"><input name="order_price"  type="checkbox"  value="order_price" checked="checked"/>消费金额</label>' +
-                    '<label style="margin-right: 10px; width: 100px"><input name="order_number"  type="checkbox"  value="order_number" checked="checked"/>订单数量</label>' +
+                    '<label style="margin-right: 10px; width: 100px"><input name="order_price"  type="checkbox"  value="order_amount" checked="checked"/>消费金额</label>' +
+                    '<label style="margin-right: 10px; width: 100px"><input name="order_number"  type="checkbox"  value="order_num" checked="checked"/>订单数量</label>' +
                     '<label style="margin-right: 10px; width: 100px"><input name="created_at"  type="checkbox"  value="register_time" checked="checked"/>注册时间</label></div></div>';
 
             layer.open({
@@ -192,19 +192,8 @@
                     let startDate = $('#startDate').val()
                     let endDate = $('#endDate').val()
 
-                    $.ajax({
-                        url: "{{route('user.list')}}",
-                        header: {
-                            contentType: "application/octet-stream"
-                        },
-                        data: "keyword=" + keyword + "&country=" + country + "&type=" + type + "&start_date=" + startDate + "&end_date=" + endDate
-                        + "&field=" + field.join(',') + "&export=1",
-                        type: 'get',
-                        success: function (res) {
-                            //导出
-                            location.href = res.url;
-                        }
-                    });
+                    location.href = "/admin/user/list?export=1" + keyword + "&country=" + country + "&type=" + type + "&start_date=" + startDate + "&end_date=" + endDate
+                        + "&field=" + field.join(',');
                 }
             });
         });

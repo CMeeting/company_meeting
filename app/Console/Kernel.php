@@ -28,9 +28,6 @@ class Kernel extends ConsoleKernel
     {
         // $schedule->command('inspire')
         //          ->hourly();
-
-        //清除导出的文件
-        $schedule->command('remove:export:file')->dailyAt('23:50');
     }
 
     /**
