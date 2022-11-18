@@ -147,20 +147,12 @@
                             <td>{{$item['platform']}}</td>
                             <td>{{$item['licensie']}}</td>
                             <td>{{$item['price']}}</td>
-                            <td>
-                                <font class="open_{{$item['id']}}">
+                            <td id="status_{{$item['id']}}">
                                     @if($item['status'] == 1)
-                                        <a data-id="{{$item['id']}}" class="openBtn_{{$item['id']}} abutton cloros1"
-                                           data-style="zoom-out" onclick="show({{$item['id']}},{{$item['status']}});" title="当前上架状态">
-                                            <span class="ladda-label">下架</span>
-                                        </a>
-                                    @else
-                                        <a data-id="{{$item['id']}}" class="openBtn_{{$item['id']}} abutton cloros"
-                                           data-style="zoom-out" onclick="show({{$item['id']}},{{$item['status']}});" title="当前下架状态">
                                             <span class="ladda-label">上架</span>
-                                        </a>
+                                    @else
+                                            <span class="ladda-label">下架</span>
                                     @endif
-                                </font>
                             </td>
                             <td>{{$item['created_at']}}</td>
                             <td>{{$item['updated_at']}}</td>
@@ -175,6 +167,19 @@
                                             修改
                                         </button>
                                     </a>
+                                    <font class="open_{{$item['id']}}">
+                                        @if($item['status'] == 1)
+                                            <a data-id="{{$item['id']}}" class="openBtn_{{$item['id']}} abutton cloros1"
+                                               data-style="zoom-out" onclick="show({{$item['id']}},{{$item['status']}});" title="当前上架状态">
+                                                <span class="ladda-label">下架</span>
+                                            </a>
+                                        @else
+                                            <a data-id="{{$item['id']}}" class="openBtn_{{$item['id']}} abutton cloros"
+                                               data-style="zoom-out" onclick="show({{$item['id']}},{{$item['status']}});" title="当前下架状态">
+                                                <span class="ladda-label">上架</span>
+                                            </a>
+                                        @endif
+                                    </font>
                                     <a onclick="del('{{$item['id']}}')">
                                         <button class="btn btn-danger del btn-xs" type="button"><i
                                                     class="fa fa-trash-o"></i> 删除
@@ -372,9 +377,12 @@
                         if (resp.code == 0) {
                             if (resp.status == 0) {
                                 var htmls = '<a type="button" style="text-decoration: none;color: #f6fff8"   data-id="{$v.id}"  class="openBtn_' + id + ' abutton cloros" data-style="zoom-out" onclick="show(' + id + ','+resp.status+');" title="当前下架状态"> <span class="ladda-label">上架</span></a>';
+                                $("#status_"+id).html('<span class="ladda-label">下架</span>');
                             } else {
                                 var htmls = '<a type="button" style="text-decoration: none;color: #f6fff8"  data-id="{$v.id}"  class="openBtn_' + id + ' abutton cloros1" data-style="zoom-out" onclick="show(' + id + ','+resp.status+');" title="当前上架状态"> <span class="ladda-label">下架</span></a>';
+                                $("#status_"+id).html('<span class="ladda-label">上架</span>');
                             }
+
                             $(".open_" + id).html(htmls);
 
                         } else {

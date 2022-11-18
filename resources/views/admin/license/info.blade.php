@@ -38,12 +38,12 @@
                         {{$info['license_key']}}
                     </div>
                 </div>
-                <div class="form-group">
-                    <label class="col-sm-4 control-label no-padding-right" for="form-field-1">license_secret：</label>
-                    <div class="col-sm-6 col-xs-12" style="padding-top: 0.5%">
-                        {{$info['license_key']}}"
-                    </div>
-                </div>
+{{--                <div class="form-group">--}}
+{{--                    <label class="col-sm-4 control-label no-padding-right" for="form-field-1">license_secret：</label>--}}
+{{--                    <div class="col-sm-6 col-xs-12" style="padding-top: 0.5%">--}}
+{{--                        {{$info['license_key']}}"--}}
+{{--                    </div>--}}
+{{--                </div>--}}
                     <div class="form-group">
                         <label class="col-sm-4 control-label no-padding-right" for="form-field-1">license_secret：</label>
                         <div class="col-sm-6 col-xs-12" style="padding-top: 0.5%">
