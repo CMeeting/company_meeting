@@ -36,14 +36,14 @@
                                 </div>
                             </div>
 
-                            <div class="layui-form-item" style="display: inline-block; margin-left: 20px">
+                            <div class="layui-form-item" style="display: inline-block;">
                                 <div class="form-group">
                                     <label class="layui-form-label" style="width:auto;flex-wrap:nowrap">国家/地区</label>
                                     <select id="country" name="country" class="selectpicker countrypicker" data-live-search="true" data-default="{{array_get($query, 'country', 'All')}}" data-flag="true"></select>
                                 </div>
                             </div>
 
-                            <div class="layui-form-item" style="display: inline-block; margin-left: 20px">
+                            <div class="layui-form-item" style="display: inline-block;">
                                 <label class="layui-form-label" style="width:auto;flex-wrap:nowrap">用户类型</label>
                                 <div class="input-group-btn" style="display: inline-block;width: auto;">
                                     <select id="type" class="form-control"  name="type">
@@ -55,7 +55,7 @@
                                 </div>
                             </div>
 
-                            <div class="layui-form-item" style="display: inline-block; margin-left: 20px">
+                            <div class="layui-form-item" style="display: inline-block;">
                                 <label class="layui-form-label" style="width:auto;flex-wrap:nowrap">注册时间</label>
                                 <div class="input-group-btn" style="display: inline-block;width: auto;">
                                     <input type="text"  name="start_date" class="form-control" style="display: inline-block;width: 160px;" id="startDate" placeholder="注册时间-开始" value="@if(isset($query['start_date'])){{$query['start_date']}}@endif" />
