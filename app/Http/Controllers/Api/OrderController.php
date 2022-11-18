@@ -63,4 +63,22 @@ class OrderController
         return \Response::json($data);
     }
 
+    public function getgoodsprice(Request $request){
+        $order = new OrdersService();
+        $param = $request->all();
+        $data = $order->getgoodsprice($param);
+        return \Response::json($data);
+    }
+
+    public function noorderpay(Request $request){
+        $order = new OrdersService();
+        $current_user = UserService::getCurrentUser($request);
+        $user_id = $current_user->id;
+        $param = $request->all();
+        $param['user_id'] = $user_id;
+        $data = $order->noorderpay($param);
+        return \Response::json($data);
+    }
+
+
 }

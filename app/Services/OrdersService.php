@@ -464,6 +464,25 @@ class OrdersService
             }
             return ['code' => 200, 'msg' => "创建订单成功",'data'=>['order_id'=>$order_id,'pay'=>$pay]];
         }
+    }
+    public function noorderpay($data){
+        $order = new Order();
+        $orderGoods = new OrderGoods();
+        if(!isset($data['pay_type'])){
+            return ['code' => 403, 'msg' => "请选择支付方式"];
+        }
+        $order_data = $order->_find("id='{$data['order_id']}' and user_id='{$data['user_id']}' and status=0");
+        $order_data = $order->objToArr($order_data);
+        if(!$order_data)return ['code' => 403, 'msg' => "该订单不存在或已关闭"];
+        $order_goodsdata = $orderGoods->_where("order_id='{$order_data['id']}' and order_no='{$order_data['order_no']}' and status=0");
+        if(!$order_goodsdata)return ['code' => 403, 'msg' => "该订单商品明细单不存在或已关闭"];
+        $goodadata=$this->assembly_ordergoods();
+        foreach ($order_goodsdata as $k=>$v){
+                if(!isset($goodadata[$v['goods_id']]))return ['code' => 403, 'msg' => "商品id".$v['goods_id']."已下架"];
+        }
+        $order_data['pay_type']=$data['pay_type'];
+        $pay=$this->comparePriceCloseAndCreateOrder($order_data);
+        return ['code' => 200, 'msg' => "创建订单成功",'data'=>['order_id'=>$order_data['id'],'pay'=>$pay]];
 
     }
 
@@ -492,10 +511,31 @@ class OrdersService
         return ['code' => 200, 'msg' => 'ok', 'data' => $ordergoodsdata];
     }
 
+
+
+    public function getgoodsprice($data){
+        $Goods = new Goods();
+        if(!isset($data['years']))return ['code' => 403, 'msg' => '缺少购买年限'];
+        $datas = $Goods->_find("level1='{$data['products_id']}' and level2='{$data['platform_id']}'and level3='{$data['licenseType_id']}' and deleted=0");
+        $datas = $Goods->objToArr($datas);
+        $price = round($datas['price']*$data['years'],2);
+        return ['code' => 200, 'msg' => 'ok', 'price' => $price];
+    }
+
     function assembly_classification()
     {
         $Goodsclassification = new Goodsclassification();
         $data = $Goodsclassification->_where("deleted=0");
+        $arr = array();
+        foreach ($data as $k => $v) {
+            $arr[$v['id']] = $v;
+        }
+        return $arr;
+    }
+    function assembly_ordergoods()
+    {
+        $Goods = new Goods();
+        $data = $Goods->_where("status=1 and deleted=0");
         $arr = array();
         foreach ($data as $k => $v) {
             $arr[$v['id']] = $v;
@@ -520,6 +560,9 @@ class OrdersService
         $ordernew = new Order();
         if (empty($order['page_pay_url'])) {
             $pay_url_data = $this->generatePayUrl($order['pay_type'],'test', $order['order_no'], $order['price']);
+            if($order['pay_type']==2){
+                $pay_url_data['id']='ali'.$order['order_no'];
+            }
             $newOrderData = [
                 'third_order_no' => $pay_url_data['id'] ?? '',
                 'page_pay_url' => $pay_url_data['url'],
@@ -550,7 +593,7 @@ class OrdersService
     public function getAliPayUrl($trade_no, $name, $price, $call_back,$return_url)
     {
         $paramss = [
-            'out_trade_no' => $trade_no,
+            'out_trade_no' => 'ali'.$trade_no,
             'subject' => $name,
             'payment_type' => 1,//支付类型 只取值为1(商品购买) 固定值
             'total_fee' => $price,

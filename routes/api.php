@@ -26,6 +26,7 @@ Route::group(['namespace'=>'Api'], function(){
         Route::any('/support','SupportController@getsupport');
         Route::get('/changelogs','ChangelogsController@changelogs');
         Route::get('/getgoods','GoodsController@getGoods');
+        Route::post('/getgoodsprice','OrderController@getgoodsprice');
 });
 
 Route::group(['middleware'=>'jwt.auth', 'namespace'=>'Api'], function(){
@@ -37,6 +38,7 @@ Route::group(['middleware'=>'jwt.auth', 'namespace'=>'Api'], function(){
     Route::post('/getordertryoutlist','OrderController@getordertryoutlist');
     Route::post('/createorder','OrderController@createorder');
     Route::post('/createcatorder','OrdercartController@createcatorder');
+    Route::post('/noorderpay','OrderController@noorderpay');
 });
 
 //用户管理
