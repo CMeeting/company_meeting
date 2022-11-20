@@ -204,7 +204,7 @@ class LicenseService
     public function getInfo($id)
     {
         $query = DB::table("license_code as l");
-        $info = $query->select("l.id","l.license_secret", "o.order_id", "o.id as order_no", "l.uuid", "l.created_at", "l.expire_time",
+        $info = $query->select("l.id","l.license_secret", "o.order_no as order_id", "o.goods_no as order_no", "l.uuid", "l.created_at", "l.expire_time",
             "u.email", "l.license_key", "l.license_key_url", "l.type", "l.status", "l.products_id", "l.platform_id", "l.licensetype_id")
             ->leftJoin("orders_goods as o", "l.order_id", "=", "o.order_id")
             ->leftJoin("users as u", "u.id", "=", "l.user_id")
