@@ -69,29 +69,116 @@ class LicenseService
             $where .= " AND l.expire_time <= '" . $param['expire_end'] . "'";
         }
         $query = DB::table("license_code as l");
-        $data = $query->select("l.id", "o.order_no as order_id", "o.goods_no as order_no", "l.uuid", "l.created_at", "l.expire_time",
-            "u.email", "l.license_key", "l.license_key_url", "l.type", "l.status", "l.products_id", "l.platform_id", "l.licensetype_id")
-            ->whereRaw($where)
-            ->leftJoin("orders_goods as o","l.order_id", "=", "o.order_id")
-            ->leftJoin("users as u","u.id", "=", "l.user_id")
-            ->orderBy("l.created_at","desc")
-            ->paginate(10);
+        if ($param['export'] == 1) {
+            $data = $query->select("l.id", "o.order_no as order_id", "o.goods_no as order_no", "l.uuid", "l.created_at", "l.expire_time",
+                "u.email", "l.license_key", "l.license_key_url", "l.type", "l.status", "l.products_id", "l.platform_id", "l.licensetype_id")
+                ->whereRaw($where)
+                ->leftJoin("orders_goods as o","l.order_id", "=", "o.order_id")
+                ->leftJoin("users as u","u.id", "=", "l.user_id")
+                ->orderBy("l.created_at","desc")
+                ->get()->toArray();
+        }else{
+            $data = $query->select("l.id", "o.order_no as order_id", "o.goods_no as order_no", "l.uuid", "l.created_at", "l.expire_time",
+                "u.email", "l.license_key", "l.license_key_url", "l.type", "l.status", "l.products_id", "l.platform_id", "l.licensetype_id")
+                ->whereRaw($where)
+                ->leftJoin("orders_goods as o","l.order_id", "=", "o.order_id")
+                ->leftJoin("users as u","u.id", "=", "l.user_id")
+                ->orderBy("l.created_at","desc")
+                ->paginate(10);
+
+        }
         $goodsClassifications = $this->getGoodsClassifications();
         if ($data) {
-            foreach ($data as $key => $value) {
-                $name = $goodsClassifications[$value->products_id] . " for " . $goodsClassifications[$value->platform_id] . " ( " . $goodsClassifications[$value->licensetype_id] . " ) ";
-                $data[$key]->named = cut_str($name,6);
-                $data[$key]->name = $name;
-                $data[$key]->order_id = $value->order_id ?? '-';
-                $data[$key]->order_no = $value->order_no ?? '-';
-                $data[$key]->license_keyd = cut_str($value->license_key,5);
-                $data[$key]->uuidd = cut_str($value->uuid,5);
-                $data[$key]->emaild = cut_str($value->email,5);
-                $data[$key]->type = config("constants.license_type")[$value->type];
-                $data[$key]->statusd = config("constants.license_status")[$value->status];
+            if($param['export'] != 1) {
+                foreach ($data as $key => $value) {
+                    $name = $goodsClassifications[$value->products_id] . " for " . $goodsClassifications[$value->platform_id] . " ( " . $goodsClassifications[$value->licensetype_id] . " ) ";
+                    $data[$key]->named = cut_str($name, 6);
+                    $data[$key]->name = $name;
+                    $data[$key]->order_id = $value->order_id ?? '-';
+                    $data[$key]->order_no = $value->order_no ?? '-';
+                    $data[$key]->license_keyd = cut_str($value->license_key, 5);
+                    $data[$key]->uuidd = cut_str($value->uuid, 5);
+                    $data[$key]->emaild = cut_str($value->email, 5);
+                    $data[$key]->type = config("constants.license_type")[$value->type];
+                    $data[$key]->statusd = config("constants.license_status")[$value->status];
+                }
+            }else{
+                foreach ($data as $key => $value) {
+                    $data[$key]->order_id = $value->order_id ?? '-';
+                    $data[$key]->order_no = $value->order_no ?? '-';
+                    $name = $goodsClassifications[$value->products_id] . " for " . $goodsClassifications[$value->platform_id] . " ( " . $goodsClassifications[$value->licensetype_id] . " ) ";
+                    $data[$key]->name = $name;
+                }
             }
         }
-        return $data ?? [];
+
+            return $data ?? [];
+
+    }
+
+    public function export($list, $field)
+    {
+        $title_arr = [
+            'order_id' => '总订单ID',
+            'order_no' => '子订单ID',
+            'email' => '用户账号',
+            'name' => '商品名称',
+            'uuid' => 'App ID/Machine ID',
+            'created_at' => '创建时间',
+            'expire_time' => '过期时间',
+            'license_key' => 'license_key',
+            'type' => '授权码类型',
+            'status' => '状态',
+        ];
+
+
+        $field = explode(',', $field);
+
+        $header = [];
+        foreach ($field as $title) {
+            $header[] = array_get($title_arr, $title);
+        }
+        $rows[] = $header;
+
+        foreach ($list as $data) {
+            $row = [];
+            foreach ($field as $key) {
+                $value = array_get($data, $key);
+                if ($key == 'type') {
+                    switch ($value){
+                        case 1:
+                            $value ="sdk试用";
+                            break;
+                        case 2:
+                            $value ="sdk";
+                            break;
+                    }
+                }
+                if ($key == 'status') {
+                    switch ($value){
+                        case 1:
+                            $value ="正常";
+                            break;
+                        case 2:
+                            $value ="停用";
+                            break;
+                        case 3:
+                            $value ="过期";
+                            break;
+                    }
+                }
+                $row[] = $value;
+            }
+
+            $rows[] = $row;
+        }
+
+        $userExport = new GoodsExport($rows);
+        $fileName = 'export' . DIRECTORY_SEPARATOR . '授权码列表' . time() . '.xlsx';
+        \Excel::store($userExport, $fileName);
+
+        //ajax请求 需要返回下载地址，在使用location.href请求下载地址
+        return ['url' => route('download', ['file_name' => $fileName])];
     }
 
     public function getGoodsClassifications($param = [])

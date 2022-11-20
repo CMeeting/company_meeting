@@ -73,12 +73,114 @@ class OrdersService
         $goods = new Order();
 
         if ($param['export'] == 1) {
-            return $goods->whereRaw($where)->orderByRaw('id desc')->get()->toArray();
+            return $goods->leftJoin('users', 'orders.user_id', '=', 'users.id')->whereRaw($where)->orderByRaw('orders.id desc')->selectRaw("orders.*,users.email")->get()->toArray();
         } else {
             $data = $goods->leftJoin('users', 'orders.user_id', '=', 'users.id')->whereRaw($where)->orderByRaw('orders.id desc')->selectRaw("orders.*,users.email")->paginate(10);
         }
 
         return $data;
+    }
+    public function export($list, $field)
+    {
+        $title_arr = [
+            'id' => 'ID',
+            'order_no' => '订单编号',
+            'email' => '用户账号',
+            'pay_type' => '支付方式',
+            'price' => '订单金额',
+            'status' => '订单状态',
+            'type' => '订单来源',
+            'details_type' => '订单类型',
+            'created_at' => '创建时间',
+            'pay_time' => '支付时间',
+        ];
+
+
+        $field = explode(',', $field);
+
+        $header = [];
+        foreach ($field as $title) {
+            $header[] = array_get($title_arr, $title);
+        }
+        $rows[] = $header;
+
+        foreach ($list as $data) {
+            $row = [];
+            foreach ($field as $key) {
+                $value = array_get($data, $key);
+                if ($key == 'status') {
+                   switch ($value){
+                       case 0:
+                           $value ="待付款";
+                           break;
+                       case 1:
+                           $value ="已付款";
+                           break;
+                       case 2:
+                           $value ="已完成";
+                           break;
+                       case 3:
+                           $value ="待退款";
+                           break;
+                       case 4:
+                           $value ="已关闭";
+                           break;
+                   }
+                }
+                if ($key == 'pay_type') {
+                    switch ($value){
+                        case 0:
+                            $value ="未支付";
+                            break;
+                        case 1:
+                            $value ="paddle支付";
+                            break;
+                        case 2:
+                            $value ="支付宝";
+                            break;
+                        case 3:
+                            $value ="微信";
+                            break;
+                        case 4:
+                            $value ="不需支付";
+                            break;
+                    }
+                }
+                if ($key == 'type') {
+                    switch ($value){
+                        case 1:
+                            $value ="后台创建";
+                            break;
+                        case 2:
+                            $value ="用户购买";
+                            break;
+                    }
+                }
+                if ($key == 'details_type') {
+                    switch ($value){
+                        case 1:
+                            $value ="SDK试用";
+                            break;
+                        case 2:
+                            $value ="SDK订单";
+                            break;
+                        case 2:
+                            $value ="SaaS订单";
+                            break;
+                    }
+                }
+                $row[] = $value;
+            }
+
+            $rows[] = $row;
+        }
+
+        $userExport = new GoodsExport($rows);
+        $fileName = 'export' . DIRECTORY_SEPARATOR . '订单列表' . time() . '.xlsx';
+        \Excel::store($userExport, $fileName);
+
+        //ajax请求 需要返回下载地址，在使用location.href请求下载地址
+        return ['url' => route('download', ['file_name' => $fileName])];
     }
 
     public function sum_data($param){
@@ -511,7 +613,21 @@ class OrdersService
         return ['code' => 200, 'msg' => 'ok', 'data' => $ordergoodsdata];
     }
 
-
+    public static function findThirdOrderNotifyHandle($trade_no) {
+        $order = new Order();
+        if (!empty_verify($trade_no)) {
+            return [];
+        }
+        $data = $order->_find(['merchant_no'=>$trade_no]);
+        $data = $order->objToArr($data);
+        if (empty($data)) {
+            return [];
+        }
+        if ($data['pay_type'] == 2) {
+            self::AlipayNotifyService($data['merchant_no']);
+        }
+        return Order::findByOrdersWhere('o.trade_no = \'' . $trade_no . '\'');
+    }
 
     public function getgoodsprice($data){
         $Goods = new Goods();
@@ -567,7 +683,7 @@ class OrdersService
                 'third_order_no' => $pay_url_data['id'] ?? '',
                 'page_pay_url' => $pay_url_data['url'],
             ];
-            //$ordernew->_update($newOrderData, "id='{$order['id']}'");
+            $ordernew->_update(['merchant_no'=>$pay_url_data['id']], "id='{$order['id']}'");
         }
         return $newOrderData;
     }
@@ -603,6 +719,21 @@ class OrdersService
 
         // 支付宝验证KEY统一调整为扫码支付
         return $obj->pay($call_back . '/api/orders/alipayNotify',$return_url);
+    }
+
+    public static function AlipayNotifyService($trade_no) {
+        $alipay = new AlipayBiz();
+        $order_data = $alipay->findAlipayByOrderNo($trade_no);
+        try {
+            if (!empty($order_data) && $order_data['trade_status'] == 'TRADE_SUCCESS') {
+                OrderService::notifyHandle($order_data['trade_no'], Order::$statuses['completed'], $order_data['out_trade_no']);
+            } else {
+                LogHelper::logSubs($trade_no.' alipay order status error, ' . json_encode($order_data), LogHelper::LEVEL_WARN);
+            }
+        } catch (\Exception $e) {
+            LogHelper::logSubs($trade_no.' alipay notify: '.$e->getMessage(),LogHelper::LEVEL_ERROR);
+            error('alipay',$e->getMessage(),200);
+        }
     }
 
     function headerurl(){

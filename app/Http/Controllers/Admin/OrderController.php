@@ -28,9 +28,9 @@ class OrderController extends BaseController {
         $data = $GoodsService->data_list($query);
         $sum = $GoodsService->sum_data($query);
 
-//        if($query['export'] == 1){
-//            return $GoodsService->export($data, $query['field']);
-//        }
+        if($query['export'] == 1){
+            return $GoodsService->export($data, $query['field']);
+        }
 
         return $this->view('index',['data'=>$data,'query'=>$query,'sum'=>$sum]);
     }

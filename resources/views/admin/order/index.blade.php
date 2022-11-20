@@ -76,7 +76,7 @@
 
                             <div class="col-md-4 col-lg-3 col-sm-6 col-xs-12">
                                 <div class="form-group">
-                                    <select id="status" class="form-control"  name="pay_type" tabindex="1">
+                                    <select id="pay_type" class="form-control"  name="pay_type" tabindex="1">
                                         <option value="">支付类型</option>
                                         <option value="1" @if(isset($query)&&$query['pay_type']==1) selected @endif>未支付</option>
                                         <option value="2" @if(isset($query)&&$query['pay_type']==2) selected @endif>Paddle</option>
@@ -382,14 +382,15 @@
             $("#export").click(function () {
                 html =  '<div style="display: flex; justify-content: left;flex-wrap: wrap; padding: 10px">' +
                     '<div style="margin-bottom: 20px"><label style="margin-right: 10px; width: 50px"><input name="id"  type="checkbox"  value="id" checked="checked"/>ID</label>' +
-                    '<label style="margin-right: 10px; width: 100px"><input name="products"  type="checkbox"  value="level1" checked="checked"/>Products</label>' +
-                    '<label style="margin-right: 10px; width: 100px"><input name="platform"  type="checkbox"  value="level2" checked="checked"/>Platform</label>' +
-                    '<label style="margin-right: 10px; width: 120px"><input name="licensie"  type="checkbox"  value="level3" checked="checked"/>Licensie Type</label>' +
-                    '<label style="margin-right: 10px; width: 120px"><input name="price"  type="checkbox"  value="price" checked="checked"/>Pricing(USD)</label></div>' +
-                    '<div><label style="margin-right: 10px; width: 50px"><input name="status"  type="checkbox"  value="status" checked="checked"/>状态</label>' +
+                    '<label style="margin-right: 10px; width: 100px"><input name="order_no"  type="checkbox"  value="order_no" checked="checked"/>订单编号</label>' +
+                    '<label style="margin-right: 10px; width: 100px"><input name="email"  type="checkbox"  value="email" checked="checked"/>用户邮箱</label>' +
+                    '<label style="margin-right: 10px; width: 120px"><input name="pay_type"  type="checkbox"  value="pay_type" checked="checked"/>支付方式</label>' +
+                    '<label style="margin-right: 10px; width: 120px"><input name="price"  type="checkbox"  value="price" checked="checked"/>订单金额</label></div>' +
+                    '<div><label style="margin-right: 10px; width: 50px"><input name="status"  type="checkbox"  value="status" checked="checked"/>订单状态</label>' +
+                    '<div><label style="margin-right: 10px; width: 50px"><input name="type"  type="checkbox"  value="type" checked="checked"/>订单来源</label>' +
+                    '<div><label style="margin-right: 10px; width: 50px"><input name="details_type"  type="checkbox"  value="details_type" checked="checked"/>订单类型</label>' +
                     '<label style="margin-right: 10px; width: 100px"><input name="created_at"  type="checkbox"  value="created_at" checked="checked"/>创建时间</label>' +
-                    '<label style="margin-right: 10px; width: 100px"><input name="updated_at"  type="checkbox"  value="updated_at" checked="checked"/>更新时间</label>' +
-                    '<label style="margin-right: 10px; width: 100px"><input name="shelf_at"  type="checkbox"  value="shelf_at" checked="checked"/>上架时间</label></div></div>';
+                    '<label style="margin-right: 10px; width: 100px"><input name="pay_time"  type="checkbox"  value="pay_time" checked="checked"/>支付时间</label>';
 
                 layer.open({
                     type: 1,
@@ -416,20 +417,20 @@
 
                         let query_type =  $('#query_type').find("option:selected").val()
                         let info = $('#info').val()
-                        let level1 = $('#province').val()
-                        let level2 = $('#city').val()
-                        let level3 = $('#town').val()
-
+                        let type = $('#type').find("option:selected").val()
+                        let details_type = $('#details_type').find("option:selected").val()
                         let status = $('#status').find("option:selected").val()
-                        let startDate = $('#startDate').val()
-                        let endDate = $('#endDate').val()
-
+                        let pay_type = $('#pay_type').find("option:selected").val()
+                        let pay_at = $('#pay_at').val()
+                        let endpay_at = $('#endpay_at').val()
+                        let shelf_at = $('#shelf_at').val()
+                        let endshelf_at = $('#endshelf_at').val()
                         $.ajax({
-                            url: "{{route('goods.index')}}",
+                            url: "{{route('order.index')}}",
                             header: {
                                 contentType: "application/octet-stream"
                             },
-                            data: "query_type="+ query_type + "info=" + info + "&level1=" + level1 + "&level2=" + level2 + "&level3=" + level3 + "&status=" + status + "&start_date=" + startDate + "&end_date=" + endDate
+                            data: "query_type="+ query_type + "info=" + info + "&type=" + type + "&details_type=" + details_type + "&pay_type=" + pay_type +"&shelf_at=" + shelf_at +"&endshelf_at=" + endshelf_at + "&status=" + status + "&pay_at=" + pay_at + "&endpay_at=" + endpay_at
                                 + "&field=" + field.join(',') + "&export=1",
                             type: 'get',
                             success: function (res) {

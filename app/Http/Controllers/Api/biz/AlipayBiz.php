@@ -120,7 +120,6 @@ class AlipayBiz
             "  }");
         $result = $aop->execute($request);
         $responseNode = str_replace(".", "_", $request->getApiMethodName()) . "_response";
-        LogHelper::logSubs('alipay find order:'.$order_no.',status:'.JsonHelper::encode($result->$responseNode));
         $resultCode = $result->$responseNode->code;
         if (!empty($resultCode) && $resultCode == 10000) {
             return JsonHelper::decode(JsonHelper::encode($result->$responseNode));

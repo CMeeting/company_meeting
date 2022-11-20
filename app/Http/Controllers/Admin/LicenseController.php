@@ -28,10 +28,13 @@ class LicenseController extends BaseController
         $query["created_end"] = isset($param['created_end']) ? $param['created_end'] : "";
         $query["expire_start"] = isset($param['expire_start']) ? $param['expire_start'] : "";
         $query["expire_end"] = isset($param['expire_end']) ? $param['expire_end'] : "";
+        $query['export'] = array_get($param, 'export', 0);
         $license_type = config("constants.license_type");
         $data = $license->list($query);
         $categorical_data = $GoodsService->threelevellinkage();
-
+        if($query['export'] == 1){
+            return $license->export($data, $param['field']);
+        }
 //        return $this->view('index', compact('data', 'query', 'license_type', 'products', 'platforms', 'license_types'));
         return $this->view('index',['data'=>$data,'license_type'=>$license_type,'query'=>$query,'lv1'=>json_encode($categorical_data['arr1']),'lv2'=>json_encode($categorical_data['arr2']),'lv3'=>json_encode($categorical_data['arr3'])]);
     }

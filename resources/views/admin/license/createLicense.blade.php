@@ -120,6 +120,10 @@
         function addmaidian(id) {
             mdindex++;
             var str = '<div class="form-group md" id="md' + mdindex + '"><label class="col-sm-2 control-label no-padding-right" for="form-field-1"> </label><div class="col-sm-6 col-xs-12"> <input style="float: left" id="maidian"  type="text" class="form-control maidian" name="data[appid][]" required> </div> <span class="lbl" style="float: left;margin-top: 0.2%;"><a style="display: inline-block;width: 30px;height: 30px;font-size: 18px;color: red;background: #fff9f9;text-align: center;line-height: 30px;border: 1px solid red" onclick="movemaidian(' + mdindex + ')">-</a></span> </div>';
+            if($("#infosdata"+id).children().length==5){
+                layer.msg('Machine ID不能超过5个', {time: 1500, anim: 6});
+                return false;
+            }
             $("#infosdata"+id).append(str);
         }
         function movemaidian(id) {

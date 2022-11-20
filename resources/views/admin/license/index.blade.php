@@ -47,7 +47,7 @@
                 <form name="admin_list_sea" class="form-search" method="get" action="{{route('license.index')}}">
                     <div class="input-group" style="margin-left: 0 auto">
                         <div class="input-group-btn" style="vertical-align: top;">
-                            <select name="query_type" class="form-control" style="display: inline-block;width: 115px;">
+                            <select name="query_type" class="form-control" style="display: inline-block;width: 115px;" id="query_type">
                                 <option value="order_no" @if(isset($query)&&$query['query_type']=='order_no') selected @endif>订单编号
                                 </option>
                                 <option value="uuid" @if(isset($query)&&$query['query_type']=='uuid') selected @endif>APP ID
@@ -56,10 +56,10 @@
                                 </option>
                             </select>
                         </div>
-                        <input type="text" name="info" class="form-control" style="display: inline-block;width: 200px;" value="@if(isset($query)){{$query['info']}}@endif"/>
+                        <input type="text" name="info" id="info" class="form-control" style="display: inline-block;width: 200px;" value="@if(isset($query)){{$query['info']}}@endif"/>
                         <div class="col-md-4 col-lg-2 col-sm-6 col-xs-12">
                             <div class="form-group">
-                                <select id="status" class="form-control" name="type" tabindex="1">
+                                <select id="type" class="form-control" name="type" tabindex="1">
                                     <option value="">请选择授权码类型</option>
                                     @foreach($license_type as $key => $value)
                                         <option value="{{$key}}" @if(isset($query)&&$query['type']==$key) selected @endif>{{$value}}</option>
@@ -79,23 +79,23 @@
 
                         <div class="input-group-btn" style="display: inline-block;width: 150px;margin-left:20px;">
                             <input type="text" name="created_start" class="form-control"
-                                   style="display: inline-block;width: 160px;" id="startDate" placeholder="创建时间-开始"
+                                   style="display: inline-block;width: 160px;" id="created_start" placeholder="创建时间-开始"
                                    value="@if(isset($query)){{$query['created_start']}}@endif"/>
                         </div>
                         <div class="input-group-btn" style="display: inline-block;width: 150px;margin-left:20px;">
-                            <input type="text" name="created_end" class="form-control"
-                                   style="display: inline-block;width: 160px;" id="endDate" placeholder="创建时间-结束"
+                            <input type="text" id="created_end" name="created_end" class="form-control"
+                                   style="display: inline-block;width: 160px;" placeholder="创建时间-结束"
                                    value="@if(isset($query)){{$query['created_end']}}@endif"/>
                         </div>
 
                         <div class="input-group-btn" style="display: inline-block;width: 150px;margin-left:20px;">
                             <input type="text" name="expire_start" class="form-control"
-                                   style="display: inline-block;width: 160px;" id="startDate" placeholder="过期时间-开始"
+                                   style="display: inline-block;width: 160px;" id="expire_start" placeholder="过期时间-开始"
                                    value="@if(isset($query)){{$query['expire_start']}}@endif"/>
                         </div>
                         <div class="input-group-btn" style="display: inline-block;width: 150px;margin-left:20px;">
                             <input type="text" name="expire_end" class="form-control"
-                                   style="display: inline-block;width: 160px;" id="endDate" placeholder="过期时间-结束"
+                                   style="display: inline-block;width: 160px;" id="expire_end" placeholder="过期时间-结束"
                                    value="@if(isset($query)){{$query['expire_end']}}@endif"/>
                         </div>
 
@@ -113,8 +113,8 @@
                    style="word-wrap:break-word; word-break:break-all;">
                 <thead>
                 <tr>
-                    <th class="text-center" style="width: 9%">总订单ID</th>
-                    <th class="text-center" style="width: 9%">子订单ID</th>
+                    <th class="text-center" style="width: 9%">总订单号</th>
+                    <th class="text-center" style="width: 9%">子订单号</th>
                     <th class="text-center" style="width: 9%">用户账号</th>
                     <th class="text-center" style="width: 7%">商品名称</th>
                     <th class="text-center" style="width: 8%">App ID/Machine ID</th>
@@ -205,15 +205,15 @@
 
         //执行一个laydate实例
         var start = laydate.render({
-            elem: '#startDate', //指定元素
+            elem: '#created_start', //指定元素
             max: 1,//最大值为当前日期
             trigger: 'click',
             type: 'datetime',//日期时间选择器
             // value: getRecentDay(-30),//默认值30天前
             done: function (value, date) {
-                if (value && (value > $("#endDate").val())) {
+                if (value && (value > $("#created_end").val())) {
                     /*开始时间大于结束时间时，清空结束时间*/
-                    $("#endDate").val("");
+                    $("#created_end").val("");
                 }
                 end.config.min = {
                     year: date.year,
@@ -226,7 +226,7 @@
             }
         });
         var end = laydate.render({
-            elem: '#endDate', //指定元素
+            elem: '#created_end', //指定元素
             max: 1,//最大值为当前日期
             type: 'datetime',//日期时间选择器
             // value: getRecentDay(-1),//默认值昨天
@@ -242,15 +242,15 @@
 
         //执行一个laydate实例
         var start = laydate.render({
-            elem: '#updated_at', //指定元素
+            elem: '#expire_start', //指定元素
             max: 1,//最大值为当前日期
             trigger: 'click',
             type: 'datetime',//日期时间选择器
             // value: getRecentDay(-30),//默认值30天前
             done: function (value, date) {
-                if (value && (value > $("#endupdated_at").val())) {
+                if (value && (value > $("#expire_end").val())) {
                     /*开始时间大于结束时间时，清空结束时间*/
-                    $("#endupdated_at").val("");
+                    $("#expire_end").val("");
                 }
                 end.config.min = {
                     year: date.year,
@@ -263,7 +263,7 @@
             }
         });
         var end = laydate.render({
-            elem: '#endupdated_at', //指定元素
+            elem: '#expire_end', //指定元素
             max: 1,//最大值为当前日期
             type: 'datetime',//日期时间选择器
             // value: getRecentDay(-1),//默认值昨天
@@ -438,17 +438,19 @@
         })
 
         //导出
+        html =  '<div style="display: flex; justify-content: left;flex-wrap: wrap; padding: 10px">' +
+            '<div style="margin-bottom: 20px"><label style="margin-right: 10px; width: 50px"><input name="order_id"  type="checkbox"  value="order_id" checked="checked"/>总订单编号</label>' +
+            '<label style="margin-right: 10px; width: 100px"><input name="order_no"  type="checkbox"  value="order_no" checked="checked"/>子订单号</label>' +
+            '<label style="margin-right: 10px; width: 100px"><input name="email"  type="checkbox"  value="email" checked="checked"/>用户账号</label>' +
+            '<label style="margin-right: 10px; width: 120px"><input name="name"  type="checkbox"  value="name" checked="checked"/>商品名称</label>' +
+            '<label style="margin-right: 10px; width: 120px"><input name="uuid"  type="checkbox"  value="uuid" checked="checked"/>App ID/Machine ID</label></div>' +
+            '<label style="margin-right: 10px; width: 100px"><input name="created_at"  type="checkbox"  value="created_at" checked="checked"/>创建时间</label>' +
+            '<label style="margin-right: 10px; width: 100px"><input name="expire_time"  type="checkbox"  value="expire_time" checked="checked"/>过期时间</label>' +
+            '<div><label style="margin-right: 10px; width: 50px"><input name="license_key"  type="checkbox"  value="license_key" checked="checked"/>license_key</label>' +
+
+            '<label style="margin-right: 10px; width: 100px"><input name="type"  type="checkbox"  value="type" checked="checked"/>授权码类型</label></div></div>';
+        '<label style="margin-right: 10px; width: 100px"><input name="status"  type="checkbox"  value="status" checked="checked"/>状态</label></div></div>';
         $("#export").click(function () {
-            html =  '<div style="display: flex; justify-content: left;flex-wrap: wrap; padding: 10px">' +
-                '<div style="margin-bottom: 20px"><label style="margin-right: 10px; width: 50px"><input name="id"  type="checkbox"  value="id" checked="checked"/>ID</label>' +
-                '<label style="margin-right: 10px; width: 100px"><input name="products"  type="checkbox"  value="level1" checked="checked"/>Products</label>' +
-                '<label style="margin-right: 10px; width: 100px"><input name="platform"  type="checkbox"  value="level2" checked="checked"/>Platform</label>' +
-                '<label style="margin-right: 10px; width: 120px"><input name="licensie"  type="checkbox"  value="level3" checked="checked"/>Licensie Type</label>' +
-                '<label style="margin-right: 10px; width: 120px"><input name="price"  type="checkbox"  value="price" checked="checked"/>Pricing(USD)</label></div>' +
-                '<div><label style="margin-right: 10px; width: 50px"><input name="status"  type="checkbox"  value="status" checked="checked"/>状态</label>' +
-                '<label style="margin-right: 10px; width: 100px"><input name="created_at"  type="checkbox"  value="created_at" checked="checked"/>创建时间</label>' +
-                '<label style="margin-right: 10px; width: 100px"><input name="updated_at"  type="checkbox"  value="updated_at" checked="checked"/>更新时间</label>' +
-                '<label style="margin-right: 10px; width: 100px"><input name="shelf_at"  type="checkbox"  value="shelf_at" checked="checked"/>上架时间</label></div></div>';
 
             layer.open({
                 type: 1,
@@ -474,21 +476,23 @@
                     }
 
                     let query_type =  $('#query_type').find("option:selected").val()
+                    let type =  $('#type').find("option:selected").val()
                     let info = $('#info').val()
                     let level1 = $('#province').val()
                     let level2 = $('#city').val()
                     let level3 = $('#town').val()
 
-                    let status = $('#status').find("option:selected").val()
-                    let startDate = $('#startDate').val()
-                    let endDate = $('#endDate').val()
+                    let created_start = $('#created_start').val()
+                    let created_end = $('#created_end').val()
+                    let expire_start = $('#expire_start').val()
+                    let expire_end = $('#expire_end').val()
 
                     $.ajax({
-                        url: "{{route('goods.index')}}",
+                        url: "{{route('license.index')}}",
                         header: {
                             contentType: "application/octet-stream"
                         },
-                        data: "query_type="+ query_type + "info=" + info + "&level1=" + level1 + "&level2=" + level2 + "&level3=" + level3 + "&status=" + status + "&start_date=" + startDate + "&end_date=" + endDate
+                        data: "query_type="+ query_type + "&info=" + info + "&level1=" + level1 + "&level2=" + level2 + "&level3=" + level3 + "&type=" + type + "&created_start=" + created_start + "&created_end=" + created_end+ "&expire_start=" + expire_start+ "&expire_end=" + expire_end
                             + "&field=" + field.join(',') + "&export=1",
                         type: 'get',
                         success: function (res) {
