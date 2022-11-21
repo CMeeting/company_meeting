@@ -139,7 +139,7 @@
                         <tr>
                             <th class="text-center" style="width: 5%"></th>
                             <th class="text-center" style="width: 35%">商品名称</th>
-                            <th class="text-center" style="width: 9%">APP ID</th>
+                            <th class="text-center" style="width: 9%">APP ID/Machine ID</th>
                             <th class="text-center" style="width: 9%">License Type</th>
                             <th class="text-center" style="width: 9%">Period</th>
                             <th class="text-center" style="width: 9%">License Key</th>
@@ -157,12 +157,12 @@
                             <td class="text-center">{{$item['products']}}{{$item['platform']}}{{$item['licensie']}}</td>
                             <td class="text-center">{{$item['appid']}}</td>
                             <td class="text-center">{{$item['licensie']}}</td>
-                            <td class="text-center">{{$item['pay_years']}}/yers</td>
+                            <td class="text-center">{{$item['pay_years']}}/years</td>
                             <td class="text-center">XML</td>
-                            <td class="text-center">{{$item['price']}}</td>
+                            <td class="text-center">${{$item['price']}}</td>
                         </tr>
                         @endforeach
-                        <tr><td colspan="6"></td><td>合计：{{$sum}}</td></tr>
+                        <tr><td colspan="6"></td><td>合计：${{$sum}}</td></tr>
                         </tbody>
                     </table>
 
@@ -184,11 +184,11 @@
                         </thead>
                         <tbody>
                             <tr id="de">
-                                <td class="text-center">{{$sum}}</td>
+                                <td class="text-center">${{$sum}}</td>
                                 <td class="text-center">-0.00</td>
                                 <td class="text-center">0.00</td>
-                                <td class="text-center">{{$sum}}</td>
-                                <td class="text-center">{{$sum}}</td>
+                                <td class="text-center">${{$sum}}</td>
+                                <td class="text-center">${{$sum}}</td>
                             </tr>
                         </tbody>
                     </table>
