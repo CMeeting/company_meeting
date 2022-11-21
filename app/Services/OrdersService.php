@@ -164,9 +164,6 @@ class OrdersService
                         case 2:
                             $value ="SDK订单";
                             break;
-                        case 2:
-                            $value ="SaaS订单";
-                            break;
                     }
                 }
                 $row[] = $value;
@@ -225,7 +222,7 @@ class OrdersService
         foreach ($data as $k=>$v){
             $sumcount++;
             $price+=$v['price'];
-            switch ($v['price']){
+            switch ($v['status']){
                 case 0:
                     $sumnostatus++;
                     break;
@@ -626,7 +623,9 @@ class OrdersService
         if ($data['pay_type'] == 2) {
             self::AlipayNotifyService($data['merchant_no']);
         }
-        return Order::findByOrdersWhere('o.trade_no = \'' . $trade_no . '\'');
+        $data = $order->_find(['merchant_no'=>$trade_no]);
+        $data = $order->objToArr($data);
+        return $data;
     }
 
     public function getgoodsprice($data){
@@ -726,7 +725,7 @@ class OrdersService
         $order_data = $alipay->findAlipayByOrderNo($trade_no);
         try {
             if (!empty($order_data) && $order_data['trade_status'] == 'TRADE_SUCCESS') {
-                OrderService::notifyHandle($order_data['trade_no'], Order::$statuses['completed'], $order_data['out_trade_no']);
+                //Db::table("callback_log")->in
             } else {
                 LogHelper::logSubs($trade_no.' alipay order status error, ' . json_encode($order_data), LogHelper::LEVEL_WARN);
             }
