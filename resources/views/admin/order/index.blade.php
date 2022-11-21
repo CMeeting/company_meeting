@@ -77,7 +77,7 @@
                             <div class="col-md-4 col-lg-3 col-sm-6 col-xs-12">
                                 <div class="form-group">
                                     <select id="pay_type" class="form-control"  name="pay_type" tabindex="1">
-                                        <option value="">支付类型</option>
+                                        <option value="">支付方式</option>
                                         <option value="1" @if(isset($query)&&$query['pay_type']==1) selected @endif>未支付</option>
                                         <option value="2" @if(isset($query)&&$query['pay_type']==2) selected @endif>Paddle</option>
                                         <option value="3" @if(isset($query)&&$query['pay_type']==3) selected @endif>支付宝</option>
