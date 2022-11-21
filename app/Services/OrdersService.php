@@ -280,13 +280,14 @@ class OrdersService
         }
         $classification = $this->assembly_orderclassification();
         foreach ($data['level1'] as $k => $v) {
+            $goodsid=0;
             foreach ($goods_data as $ks => $vs) {
                 if ($v == $vs['level1'] && $data['level2'][$k] == $vs['level2'] && $data['level3'][$k] == $vs['level3']) {
                     $goodsid = $vs['id'];
                     $price = $vs['price'];
                 }
             }
-            if (!isset($goodsid)) return ['code' => 500, 'msg' => $classification[$v]['title'] . '-' . $classification[$data['level2'][$k]]['title'] . '-' . $classification[$data['level3'][$k]]['title'] . '下没有商品'];
+            if (!$goodsid) return ['code' => 500, 'msg' => $classification[$v]['title'] . '-' . $classification[$data['level2'][$k]]['title'] . '-' . $classification[$data['level3'][$k]]['title'] . '下没有商品'];
             $ordergoods_no = chr(rand(65, 90)) . time();
             $s = $k + 1;
             $lisecosd = str_pad("'" . mt_rand(1, 9999) . "'", 4, '0', STR_PAD_LEFT) . "-" . str_pad("'" . mt_rand(1, 9999) . "'", 4, '0', STR_PAD_LEFT) . "-" . str_pad("'" . mt_rand(1, 9999) . "'", 4, '0', STR_PAD_LEFT) . "-" . str_pad("'" . mt_rand(1, 9999) . "'", 4, '0', STR_PAD_LEFT);
