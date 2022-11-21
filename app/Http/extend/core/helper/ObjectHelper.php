@@ -6,7 +6,7 @@
  * Time: 10:23
  */
 
-namespace core\helper;
+namespace App\Http\extend\core\helper;
 
 
 class ObjectHelper

@@ -75,7 +75,7 @@ class WechatPay
         $input->SetTotal_fee($price * 100);
         $input->SetTime_start(date("YmdHis"));
         $input->SetGoods_tag($product);
-        $input->SetNotify_url($call_back . '/api/orders/wechatNotify');
+        $input->SetNotify_url($call_back . '/api/wechatNotify');
         $input->SetTrade_type("NATIVE");
         $input->SetProduct_id("01");
 

@@ -16,8 +16,11 @@ use App\Export\UserExport;
 use App\Http\Controllers\Api\biz\AlipayBiz;
 use App\Http\Controllers\Api\biz\PaddleBiz;
 use App\Http\Controllers\Api\biz\WechatPay;
+use App\Http\extend\wechat\lib\WxPayNotifyResults;
+use App\Http\extend\wechat\example\WxPayConfig;
 use App\Models\Goodsclassification;
 use App\Models\LicenseModel;
+use App\Http\extend\core\helper\ObjectHelper;
 use App\Models\Order;
 use App\Models\Goods;
 use Illuminate\Support\Facades\DB;
@@ -636,6 +639,23 @@ class OrdersService
         $data = $order->_find("merchant_no='{$trade_no}'");
         $data = $order->objToArr($data);
         return $data;
+    }
+
+    public function wechatnot($xml){
+        try {
+            $result = WxPayNotifyResults::Init(new WxPayConfig(), $xml);
+            $result = array_values(ObjectHelper::convertObjectToArray($result))[0];
+            Db::table("callback_log")->insert(['info' => 'wxtext='. json_encode($result), 'pay_type' => 3]);
+            if (array_key_exists("return_code", $result) && array_key_exists("result_code", $result) && $result["return_code"] == "SUCCESS" && $result["result_code"] == "SUCCESS") {
+                Db::table("callback_log")->insert(['info' => 'orderno=' . $result['out_trade_no'] . json_encode($result), 'pay_type' => 3]);
+                $order = new Order();
+                $order_goods = new OrderGoods();
+                $order->_update(['status' => 1, 'pay_time' => date("Y-m-d H:i:s")], "merchant_no='{$result['out_trade_no']}'");
+                $order_goods->_update(['status' => 1, 'pay_time' => date("Y-m-d H:i:s")], "merchant_no='{$result['out_trade_no']}'");
+            }
+        } catch (WxPayException $e) {
+            return json_encode(['code' => 200, 'message' => '失败']);
+        }
     }
 
     public function getgoodsprice($data)

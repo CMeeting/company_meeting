@@ -1,4 +1,5 @@
 <?php
+namespace App\Http\extend\wechat\lib;
 
 use App\Http\extend\wechat\lib\WxPayApi;
 
