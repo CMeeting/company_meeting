@@ -73,7 +73,7 @@ class LicenseService
             $data = $query->select("l.id", "o.order_no as order_id", "o.goods_no as order_no", "l.uuid", "l.created_at", "l.expire_time",
                 "u.email", "l.license_key", "l.license_key_url", "l.type", "l.status", "l.products_id", "l.platform_id", "l.licensetype_id")
                 ->whereRaw($where)
-                ->leftJoin("orders_goods as o","l.order_id", "=", "o.order_id")
+                ->leftJoin("orders_goods as o","l.ordergoods_id", "=", "o.id")
                 ->leftJoin("users as u","u.id", "=", "l.user_id")
                 ->orderBy("l.created_at","desc")
                 ->get()->toArray();
@@ -81,7 +81,7 @@ class LicenseService
             $data = $query->select("l.id", "o.order_no as order_id", "o.goods_no as order_no", "l.uuid", "l.created_at", "l.expire_time",
                 "u.email", "l.license_key", "l.license_key_url", "l.type", "l.status", "l.products_id", "l.platform_id", "l.licensetype_id")
                 ->whereRaw($where)
-                ->leftJoin("orders_goods as o","l.order_id", "=", "o.order_id")
+                ->leftJoin("orders_goods as o","l.ordergoods_id", "=", "o.id")
                 ->leftJoin("users as u","u.id", "=", "l.user_id")
                 ->orderBy("l.created_at","desc")
                 ->paginate(10);
