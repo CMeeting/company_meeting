@@ -74,7 +74,7 @@
                     <div id="infosdata1">
 
                         <div class="form-group">
-                            <label class="col-sm-2 control-label no-padding-right" for="form-field-1" id="shebei">APP ID/Machine ID：<span style="color: red;font-size: 14px">*</span></label>
+                            <label class="col-sm-2 control-label no-padding-right" for="form-field-1" ><span id="shebei">APP ID/Machine ID：</span><span style="color: red;font-size: 14px">*</span></label>
                             <div class="col-sm-6 col-xs-12">
                                 <input style="float: left" id="maidian"  type="text" class="form-control maidian" name="data[appid][]" required placeholder="APP ID/Machine ID">
                             </div>
@@ -271,12 +271,12 @@
 
                 if($("#city option:checked").text()=="Windows"){
                     $("#addmaidian").show();
-                    $("#shebei").html("Machine ID");
+                    $("#shebei").html("Machine ID：");
                     $("#maidian").attr("placeholder","Machine ID");
                 }else{
                     $("#addmaidian").hide();
                     $(".md").remove();
-                    $("#shebei").html("APPID");
+                    $("#shebei").html("APPID：");
                     $("#maidian").attr("placeholder","APPID");
                 }
                 //清空县区下拉列表中的内容
