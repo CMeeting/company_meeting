@@ -87,11 +87,11 @@
                         <label class="col-sm-2 control-label no-padding-right" for="form-field-1">Period：<span style="color: red;font-size: 14px">*</span></label>
                         <div class="col-sm-6 col-xs-12">
                             <select name="data[period]" id="period" class="form-control">
-                                <option value="1">1yers</option>
-                                <option value="2">2yers</option>
-                                <option value="3">3yers</option>
-                                <option value="4">4yers</option>
-                                <option value="5">5yers</option>
+                                <option value="1">1year</option>
+                                <option value="2">2years</option>
+                                <option value="3">3years</option>
+                                <option value="4">4years</option>
+                                <option value="5">5years</option>
                             </select>
                         </div>
                     </div>
