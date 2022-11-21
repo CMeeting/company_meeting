@@ -101,6 +101,7 @@ class OrderController
     {
         $order = new OrdersService();
         $xml = isset($GLOBALS['HTTP_RAW_POST_DATA']) ? $GLOBALS['HTTP_RAW_POST_DATA'] : file_get_contents("php://input");
+        Db::table("callback_log")->insert(['info' => 'wxtext='. json_encode($xml), 'pay_type' => 3]);
         $order->wechatnot($xml);
 
     }
