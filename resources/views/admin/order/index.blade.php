@@ -83,7 +83,7 @@
                                         <option value="3" @if(isset($query)&&$query['pay_type']==3) selected @endif>支付宝</option>
                                         <option value="4" @if(isset($query)&&$query['pay_type']==4) selected @endif>微信</option>
                                         {{--                                        <option value="4" @if(isset($query)&&$query['status']==4) selected @endif>待退款</option>--}}
-                                        <option value="5" @if(isset($query)&&$query['pay_type']==5) selected @endif>不需支付</option>
+                                        <option value="5" @if(isset($query)&&$query['pay_type']==5) selected @endif>无需支付</option>
                                     </select>
                                 </div>
                             </div>
@@ -383,7 +383,7 @@
                 html =  '<div style="display: flex; justify-content: left;flex-wrap: wrap; padding: 10px">' +
                     '<div style="margin-bottom: 20px"><label style="margin-right: 10px; width: 50px"><input name="id"  type="checkbox"  value="id" checked="checked"/>ID</label>' +
                     '<label style="margin-right: 10px; width: 100px"><input name="order_no"  type="checkbox"  value="order_no" checked="checked"/>订单编号</label>' +
-                    '<label style="margin-right: 10px; width: 100px"><input name="email"  type="checkbox"  value="email" checked="checked"/>用户邮箱</label>' +
+                    '<label style="margin-right: 10px; width: 100px"><input name="email"  type="checkbox"  value="email" checked="checked"/>用户账号</label>' +
                     '<label style="margin-right: 10px; width: 120px"><input name="pay_type"  type="checkbox"  value="pay_type" checked="checked"/>支付方式</label>' +
                     '<label style="margin-right: 10px; width: 120px"><input name="price"  type="checkbox"  value="price" checked="checked"/>订单金额</label></div>' +
                     '<div><label style="margin-right: 10px; width: 50px"><input name="status"  type="checkbox"  value="status" checked="checked"/>订单状态</label>' +
