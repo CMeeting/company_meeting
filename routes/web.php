@@ -234,3 +234,5 @@ Route::group(['namespace'=>'Common', 'middleware' => ['auth:admin','rbac']], fun
     Route::get('download', 'DownloadController@download')->name('download'); //下载文件
 });
 
+
+Route::get('generate-license-code', 'Admin\LicenseController@generateLicenseCode');

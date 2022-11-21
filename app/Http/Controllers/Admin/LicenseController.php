@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Services\GenerateLicenseCodeService;
 use App\Services\LicenseService;
 use Illuminate\Http\Request;
 use App\Services\GoodsService;
@@ -80,6 +81,11 @@ class LicenseController extends BaseController
         if($ret){
             return ['code'=>1,'msg'=>"OK"];
         }
+    }
+
+    public function generateLicenseCode(){
+        $generate = new GenerateLicenseCodeService();
+        return $generate->generate('ComPDFKit PDF SDK', 'Enterprise License', 'IOS');
     }
 
 }
