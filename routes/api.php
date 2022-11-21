@@ -27,6 +27,7 @@ Route::group(['namespace'=>'Api'], function(){
         Route::get('/changelogs','ChangelogsController@changelogs');
         Route::get('/getgoods','GoodsController@getGoods');
         Route::post('/getgoodsprice','OrderController@getgoodsprice');
+        Route::get('/notify','OrderController@notify');
 });
 
 Route::group(['middleware'=>'jwt.auth', 'namespace'=>'Api'], function(){

@@ -31,6 +31,7 @@ class OrdersService
     {
 
     }
+
     public static $payments = ['paddle' => 1, 'alipay' => 2, 'wxpay' => 3];
 
     public function data_list($param)
@@ -80,6 +81,7 @@ class OrdersService
 
         return $data;
     }
+
     public function export($list, $field)
     {
         $title_arr = [
@@ -109,60 +111,60 @@ class OrdersService
             foreach ($field as $key) {
                 $value = array_get($data, $key);
                 if ($key == 'status') {
-                   switch ($value){
-                       case 0:
-                           $value ="待付款";
-                           break;
-                       case 1:
-                           $value ="已付款";
-                           break;
-                       case 2:
-                           $value ="已完成";
-                           break;
-                       case 3:
-                           $value ="待退款";
-                           break;
-                       case 4:
-                           $value ="已关闭";
-                           break;
-                   }
-                }
-                if ($key == 'pay_type') {
-                    switch ($value){
+                    switch ($value) {
                         case 0:
-                            $value ="未支付";
+                            $value = "待付款";
                             break;
                         case 1:
-                            $value ="paddle支付";
+                            $value = "已付款";
                             break;
                         case 2:
-                            $value ="支付宝";
+                            $value = "已完成";
                             break;
                         case 3:
-                            $value ="微信";
+                            $value = "待退款";
                             break;
                         case 4:
-                            $value ="不需支付";
+                            $value = "已关闭";
+                            break;
+                    }
+                }
+                if ($key == 'pay_type') {
+                    switch ($value) {
+                        case 0:
+                            $value = "未支付";
+                            break;
+                        case 1:
+                            $value = "paddle支付";
+                            break;
+                        case 2:
+                            $value = "支付宝";
+                            break;
+                        case 3:
+                            $value = "微信";
+                            break;
+                        case 4:
+                            $value = "不需支付";
                             break;
                     }
                 }
                 if ($key == 'type') {
-                    switch ($value){
+                    switch ($value) {
                         case 1:
-                            $value ="后台创建";
+                            $value = "后台创建";
                             break;
                         case 2:
-                            $value ="用户购买";
+                            $value = "用户购买";
                             break;
                     }
                 }
                 if ($key == 'details_type') {
-                    switch ($value){
+                    switch ($value) {
                         case 1:
-                            $value ="SDK试用";
+                            $value = "SDK试用";
                             break;
                         case 2:
-                            $value ="SDK订单";
+                            $value = "SDK订单";
                             break;
                     }
                 }
@@ -180,7 +182,8 @@ class OrdersService
         return ['url' => route('download', ['file_name' => $fileName])];
     }
 
-    public function sum_data($param){
+    public function sum_data($param)
+    {
         $where = "1=1";
         if ($param['info']) {
             $where .= " and {$param['query_type']}='{$param['info']}'";
@@ -212,17 +215,17 @@ class OrdersService
         }
         $goods = new Order();
         $data = $goods->leftJoin('users', 'orders.user_id', '=', 'users.id')->whereRaw($where)->get()->toArray();
-        $arr=[];
-        $price=0;
-        $sumcount=0;
-        $sumnostatus=0;
-        $sumyesstatus=0;
-        $sumgbstatus=0;
-        $sumwcstatus=0;
-        foreach ($data as $k=>$v){
+        $arr = [];
+        $price = 0;
+        $sumcount = 0;
+        $sumnostatus = 0;
+        $sumyesstatus = 0;
+        $sumgbstatus = 0;
+        $sumwcstatus = 0;
+        foreach ($data as $k => $v) {
             $sumcount++;
-            $price+=$v['price'];
-            switch ($v['status']){
+            $price += $v['price'];
+            switch ($v['status']) {
                 case 0:
                     $sumnostatus++;
                     break;
@@ -237,12 +240,12 @@ class OrdersService
                     break;
             }
         }
-        $arr['price']=$price;
-        $arr['sumcount']=$sumcount;
-        $arr['sumnostatus']=$sumnostatus;
-        $arr['sumyesstatus']=$sumyesstatus;
-        $arr['sumwcstatus']=$sumwcstatus;
-        $arr['sumgbstatus']=$sumgbstatus;
+        $arr['price'] = $price;
+        $arr['sumcount'] = $sumcount;
+        $arr['sumnostatus'] = $sumnostatus;
+        $arr['sumyesstatus'] = $sumyesstatus;
+        $arr['sumwcstatus'] = $sumwcstatus;
+        $arr['sumgbstatus'] = $sumgbstatus;
         return $arr;
     }
 
@@ -250,7 +253,7 @@ class OrdersService
     {
         $data = $param['data'];
         $user = new User();
-        $lisecosdmode=new LicenseModel();
+        $lisecosdmode = new LicenseModel();
         $goods = new Goods();
         $order = new Order();
         $orderGoods = new OrderGoods();
@@ -270,10 +273,10 @@ class OrdersService
         $arr = [];
         $sumprice = 0;
         $goodstotal = 0;
-        if($data['status']==1){
-            $pay_type=4;
-        }else{
-            $pay_type=0;
+        if ($data['status'] == 1) {
+            $pay_type = 4;
+        } else {
+            $pay_type = 0;
         }
         $classification = $this->assembly_orderclassification();
         foreach ($data['level1'] as $k => $v) {
@@ -283,34 +286,34 @@ class OrdersService
                     $price = $vs['price'];
                 }
             }
-            if(!isset($goodsid))return ['code' => 500, 'msg' => $classification[$v]['title'].'-'.$classification[$data['level2'][$k]]['title'].'-'.$classification[$data['level3'][$k]]['title'].'下没有商品'];
-            $ordergoods_no=chr(rand(65,90)).time();
+            if (!isset($goodsid)) return ['code' => 500, 'msg' => $classification[$v]['title'] . '-' . $classification[$data['level2'][$k]]['title'] . '-' . $classification[$data['level3'][$k]]['title'] . '下没有商品'];
+            $ordergoods_no = chr(rand(65, 90)) . time();
             $s = $k + 1;
-            $lisecosd = str_pad("'".mt_rand(1,9999)."'", 4, '0', STR_PAD_LEFT)."-".str_pad("'".mt_rand(1, 9999)."'", 4, '0', STR_PAD_LEFT)."-".str_pad("'".mt_rand(1, 9999)."'", 4, '0', STR_PAD_LEFT)."-".str_pad("'".mt_rand(1, 9999)."'", 4, '0', STR_PAD_LEFT);
-            $license_secret = str_pad("'".mt_rand(1, 9999)."'", 4, '0', STR_PAD_LEFT)."-".str_pad("'".mt_rand(1, 9999)."'", 4, '0', STR_PAD_LEFT)."-".str_pad("'".mt_rand(1, 9999)."'", 4, '0', STR_PAD_LEFT)."-".str_pad("'".mt_rand(1, 9999)."'", 4, '0', STR_PAD_LEFT);
-            $lisecosdata[]=[
-                'goods_no'=>$ordergoods_no,
-                'user_id'=>$user_id,
-                'products_id'=>$v,
-                'platform_id'=>$data['level2'][$k],
-                'licensetype_id'=>$data['level3'][$k],
-                'license_key'=>$lisecosd,
-                'license_secret'=>$license_secret,
-                'uuid'=>implode(',', $data["appid$s"]),
-                'period'=>$data['period'][$k],
-                'type'=>2,
-                'status'=>1,
-                'expire_time'=>date("Y-m-d H:i:s",strtotime("+".$data['period'][$k]." year"))
+            $lisecosd = str_pad("'" . mt_rand(1, 9999) . "'", 4, '0', STR_PAD_LEFT) . "-" . str_pad("'" . mt_rand(1, 9999) . "'", 4, '0', STR_PAD_LEFT) . "-" . str_pad("'" . mt_rand(1, 9999) . "'", 4, '0', STR_PAD_LEFT) . "-" . str_pad("'" . mt_rand(1, 9999) . "'", 4, '0', STR_PAD_LEFT);
+            $license_secret = str_pad("'" . mt_rand(1, 9999) . "'", 4, '0', STR_PAD_LEFT) . "-" . str_pad("'" . mt_rand(1, 9999) . "'", 4, '0', STR_PAD_LEFT) . "-" . str_pad("'" . mt_rand(1, 9999) . "'", 4, '0', STR_PAD_LEFT) . "-" . str_pad("'" . mt_rand(1, 9999) . "'", 4, '0', STR_PAD_LEFT);
+            $lisecosdata[] = [
+                'goods_no' => $ordergoods_no,
+                'user_id' => $user_id,
+                'products_id' => $v,
+                'platform_id' => $data['level2'][$k],
+                'licensetype_id' => $data['level3'][$k],
+                'license_key' => $lisecosd,
+                'license_secret' => $license_secret,
+                'uuid' => implode(',', $data["appid$s"]),
+                'period' => $data['period'][$k],
+                'type' => 2,
+                'status' => 1,
+                'expire_time' => date("Y-m-d H:i:s", strtotime("+" . $data['period'][$k] . " year"))
             ];
 
             $arr[] = [
-                'goods_no'=>$ordergoods_no,
+                'goods_no' => $ordergoods_no,
                 'status' => $data['status'],
                 'type' => 1,
                 'details_type' => 2,
-                'pay_type'=>$pay_type,
+                'pay_type' => $pay_type,
                 'price' => $price,
-                'pay_years'=>$data['period'][$k],
+                'pay_years' => $data['period'][$k],
                 'user_id' => $user_id,
                 'appid' => implode(',', $data["appid$s"]),
                 'pay_years' => $data['period'][$k],
@@ -323,7 +326,7 @@ class OrdersService
         }
         $orderno = time();
         $orderdata = [
-            'pay_type'=>$pay_type,
+            'pay_type' => $pay_type,
             'order_no' => $orderno,
             'status' => $data['status'],
             'type' => 1,
@@ -338,10 +341,10 @@ class OrdersService
             foreach ($arr as $k => $v) {
                 $arr[$k]['order_id'] = $order_id;
                 $arr[$k]['order_no'] = $orderno;
-                $ordergoods_id=$orderGoods->insertGetId($arr[$k]);
-                if($ordergoods_id){
-                    $lisecosdata[$k]['order_id']=$order_id;
-                    $lisecosdata[$k]['ordergoods_id']=$ordergoods_id;
+                $ordergoods_id = $orderGoods->insertGetId($arr[$k]);
+                if ($ordergoods_id) {
+                    $lisecosdata[$k]['order_id'] = $order_id;
+                    $lisecosdata[$k]['ordergoods_id'] = $ordergoods_id;
                     $lisecosdmode->insertGetId($lisecosdata[$k]);
                 }
             }
@@ -410,21 +413,21 @@ class OrdersService
         if (!empty($ordergoodsdata)) {
             $classification = $this->assembly_orderclassification();
             foreach ($ordergoodsdata as $k => $v) {
-                $ordergoodsdata[$k]['products'] = isset($classification[$v['level1']]['title'])?$classification[$v['level1']]['title']:"";
-                $ordergoodsdata[$k]['platform'] = isset($classification[$v['level2']]['title'])?$classification[$v['level2']]['title']:"";
-                $ordergoodsdata[$k]['licensie'] = isset($classification[$v['level3']]['title'])?$classification[$v['level3']]['title']:"";
-                switch ($v['pay_type']){
+                $ordergoodsdata[$k]['products'] = isset($classification[$v['level1']]['title']) ? $classification[$v['level1']]['title'] : "";
+                $ordergoodsdata[$k]['platform'] = isset($classification[$v['level2']]['title']) ? $classification[$v['level2']]['title'] : "";
+                $ordergoodsdata[$k]['licensie'] = isset($classification[$v['level3']]['title']) ? $classification[$v['level3']]['title'] : "";
+                switch ($v['pay_type']) {
                     case 1:
-                        $ordergoodsdata[$k]['payname']="paddle";
+                        $ordergoodsdata[$k]['payname'] = "paddle";
                         break;
                     case 2:
-                        $ordergoodsdata[$k]['payname']="AliPay";
+                        $ordergoodsdata[$k]['payname'] = "AliPay";
                         break;
                     case 3:
-                        $ordergoodsdata[$k]['payname']="WeChat Pay";
+                        $ordergoodsdata[$k]['payname'] = "WeChat Pay";
                         break;
                     case 4:
-                        $ordergoodsdata[$k]['payname']="unpaid";
+                        $ordergoodsdata[$k]['payname'] = "unpaid";
                         break;
                 }
             }
@@ -435,187 +438,193 @@ class OrdersService
     }
 
 
-    public function get_orderlist($parm){
+    public function get_orderlist($parm)
+    {
         $order = new Order();
         $orderGoods = new OrderGoods();
-        $data=$order->_where("user_id='{$parm['user_id']}'","id DESC","id,status,created_at,price");
-        if(!$data){
+        $data = $order->_where("user_id='{$parm['user_id']}'", "id DESC", "id,status,created_at,price");
+        if (!$data) {
             return ['code' => 403, 'msg' => '当前没有订单数据', 'data' => []];
         }
-        $ordergoodsdata=$orderGoods
+        $ordergoodsdata = $orderGoods
             ->leftJoin('goods', 'orders_goods.goods_id', '=', 'goods.id')
             ->whereRaw("orders_goods.user_id='{$parm['user_id']}'")
             ->selectRaw("goods.level1,goods.level2,goods.level3,orders_goods.order_id")
             ->get()->toArray();
         $classification = $this->assembly_orderclassification();
-        foreach ($data as $k=>$v){
-            foreach ($ordergoodsdata as $ks=>$vs){
-                if($v['id']==$vs['order_id']){
-                    if(isset($classification['fenlei'][$vs['level1']]['title'])){
-                        $level1=$classification['fenlei'][$vs['level1']]['title'];
-                    }else{
-                        $level1="";
+        foreach ($data as $k => $v) {
+            foreach ($ordergoodsdata as $ks => $vs) {
+                if ($v['id'] == $vs['order_id']) {
+                    if (isset($classification['fenlei'][$vs['level1']]['title'])) {
+                        $level1 = $classification['fenlei'][$vs['level1']]['title'];
+                    } else {
+                        $level1 = "";
                     }
-                    if(isset($classification['fenlei'][$vs['level2']]['title'])){
-                        $level2=$classification['fenlei'][$vs['level2']]['title'];
-                    }else{
-                        $level2="";
+                    if (isset($classification['fenlei'][$vs['level2']]['title'])) {
+                        $level2 = $classification['fenlei'][$vs['level2']]['title'];
+                    } else {
+                        $level2 = "";
                     }
-                    if(isset($classification['fenlei'][$vs['level3']]['title'])){
-                        $level3=$classification['fenlei'][$vs['level3']]['title'];
-                    }else{
-                        $level3="";
+                    if (isset($classification['fenlei'][$vs['level3']]['title'])) {
+                        $level3 = $classification['fenlei'][$vs['level3']]['title'];
+                    } else {
+                        $level3 = "";
                     }
-                    $data[$k]['list'][]=$level1.$level2.$level3;
+                    $data[$k]['list'][] = $level1 . $level2 . $level3;
                 }
             }
         }
         return ['code' => 200, 'msg' => 'ok', 'data' => $data];
     }
 
-    public function get_ordertryoutlist($parm){
+    public function get_ordertryoutlist($parm)
+    {
         $orderGoods = new OrderGoods();
-        $ordergoodsdata=$orderGoods
+        $ordergoodsdata = $orderGoods
             ->leftJoin('goods', 'orders_goods.goods_id', '=', 'goods.id')
             ->whereRaw("orders_goods.user_id='{$parm['user_id']}' and orders_goods.details_type=1")
             ->selectRaw("goods.level1,goods.level2,goods.level3,orders_goods.order_id,orders_goods.goods_id,orders_goods.appid,orders_goods.created_at")
             ->get()->toArray();
         $classification = $this->assembly_orderclassification();
-            foreach ($ordergoodsdata as $ks=>$vs){
-                $ordergoodsdata[$ks]['goodsname']=$classification[$vs['level1']]['title'].$classification[$vs['level2']]['title'].$classification[$vs['level3']]['title'];
-                $ordergoodsdata[$ks]['peroid']="1 month";
-            }
+        foreach ($ordergoodsdata as $ks => $vs) {
+            $ordergoodsdata[$ks]['goodsname'] = $classification[$vs['level1']]['title'] . $classification[$vs['level2']]['title'] . $classification[$vs['level3']]['title'];
+            $ordergoodsdata[$ks]['peroid'] = "1 month";
+        }
         return ['code' => 200, 'msg' => 'ok', 'data' => $ordergoodsdata];
     }
 
-    public function createorder($data){
+    public function createorder($data)
+    {
         $order = new Order();
         $orderGoods = new OrderGoods();
         $goods = new goods();
-        $orderno=time();
+        $orderno = time();
         $goods_data = $goods->_find("level1='{$data['products_id']}' and level2='{$data['platform_id']}' and level3='{$data['licensetype_id']}' and deleted=0 and status=1");
         $goods_data = $goods->objToArr($goods_data);
         if (!$goods_data) {
             return ['code' => 403, 'msg' => "该商品不存在或已下架"];
         }
-        $orderarr=[
-            'order_no'=>$orderno,
-            'pay_type'=>0,
-            'status'=>0,
-            'type'=>2,
-            'details_type'=>$data['details_type'],
-            'user_id'=>$data['user_id'],
-            'user_bill'=>serialize($data['info']),
-            'goodstotal'=>1
+        $ordergoods_no = chr(rand(65, 90)) . time();
+        $orderarr = [
+            'order_no' => $orderno,
+            'pay_type' => 0,
+            'status' => 0,
+            'type' => 2,
+            'details_type' => $data['details_type'],
+            'user_id' => $data['user_id'],
+            'user_bill' => serialize($data['info']),
+            'goodstotal' => 1
         ];
-        $ordergoodsarr=[
-            'pay_type'=>0,
-            'order_no'=>$orderno,
-            'status'=>0,
-            'type'=>2,
-            'appid'=>implode(",",$data['appid']),
-            'goods_id'=>$goods_data['id'],
-            'details_type'=>$data['details_type'],
-            'user_id'=>$data['user_id']
+        $ordergoodsarr = [
+            'goods_no' => $ordergoods_no,
+            'pay_type' => 0,
+            'order_no' => $orderno,
+            'status' => 0,
+            'type' => 2,
+            'appid' => implode(",", $data['appid']),
+            'goods_id' => $goods_data['id'],
+            'details_type' => $data['details_type'],
+            'user_id' => $data['user_id']
         ];
-        if($data['details_type']==1){
-            $data['appid']=implode(",",$data['appid']);
-            $gooodsdata=$orderGoods->_find("user_id='{$data['user_id']}' and appid='{$data['appid']}' and details_type='{$data['details_type']}' and status=2 and goods_id='{$goods_data['id']}'");
-            $gooodsdata=$orderGoods->objToArr($gooodsdata);
-            if($gooodsdata){
+        if ($data['details_type'] == 1) {
+            $data['appid'] = implode(",", $data['appid']);
+            $gooodsdata = $orderGoods->_find("user_id='{$data['user_id']}' and appid='{$data['appid']}' and details_type='{$data['details_type']}' and status=2 and goods_id='{$goods_data['id']}'");
+            $gooodsdata = $orderGoods->objToArr($gooodsdata);
+            if ($gooodsdata) {
                 return ['code' => 403, 'msg' => "该APPID在当前商品已存在试用订单"];
             }
-            $orderarr['status']=2;
-            $orderarr['pay_type']=4;
-            $orderarr['price']=0.00;
-            $ordergoodsarr['status']=2;
-            $ordergoodsarr['pay_type']=4;
-            $ordergoodsarr['price']=0.00;
-            $ordergoodsarr['pay_years']=1;
+            $orderarr['status'] = 2;
+            $orderarr['pay_type'] = 4;
+            $orderarr['price'] = 0.00;
+            $ordergoodsarr['status'] = 2;
+            $ordergoodsarr['pay_type'] = 4;
+            $ordergoodsarr['price'] = 0.00;
+            $ordergoodsarr['pay_years'] = 1;
             try {
-                $order_id=$order->insertGetId($orderarr);
-                $ordergoodsarr['order_id']=$order_id;
+                $order_id = $order->insertGetId($orderarr);
+                $ordergoodsarr['order_id'] = $order_id;
                 $orderGoods->insertGetId($ordergoodsarr);
             } catch (Exception $e) {
                 return ['code' => 500, 'message' => '创建失败'];
             }
-            return ['code' => 200, 'msg' => "创建试用订单成功",'data'=>['order_id'=>$order_id]];
-        }else{
-            if(!isset($data['pay_type'])){
+            return ['code' => 200, 'msg' => "创建试用订单成功", 'data' => ['order_id' => $order_id]];
+        } else {
+            if (!isset($data['pay_type'])) {
                 return ['code' => 403, 'msg' => "请选择支付方式"];
             }
-            $data['appid']=implode(",",$data['appid']);
-            $price=$data['pay_years']*$goods_data['price'];
-            $orderarr['status']=0;
-            $orderarr['pay_type']=$data['pay_type'];
-            $orderarr['price']=$price;
-            $ordergoodsarr['status']=0;
-            $ordergoodsarr['pay_type']=$data['pay_type'];
-            $ordergoodsarr['price']=$price;
-            $ordergoodsarr['pay_years']=$data['pay_years'];
+            $data['appid'] = implode(",", $data['appid']);
+            $price = $data['pay_years'] * $goods_data['price'];
+            $orderarr['status'] = 0;
+            $orderarr['pay_type'] = $data['pay_type'];
+            $orderarr['price'] = $price;
+            $ordergoodsarr['status'] = 0;
+            $ordergoodsarr['pay_type'] = $data['pay_type'];
+            $ordergoodsarr['price'] = $price;
+            $ordergoodsarr['pay_years'] = $data['pay_years'];
             try {
-                $order_id=$order->insertGetId($orderarr);
-                $ordergoodsarr['order_id']=$order_id;
-                $pay=$this->comparePriceCloseAndCreateOrder($orderarr);
+                $order_id = $order->insertGetId($orderarr);
+                $ordergoodsarr['order_id'] = $order_id;
+                $pay = $this->comparePriceCloseAndCreateOrder($orderarr);
                 $orderGoods->insertGetId($ordergoodsarr);
             } catch (Exception $e) {
                 return ['code' => 500, 'message' => '创建失败'];
             }
-            return ['code' => 200, 'msg' => "创建订单成功",'data'=>['order_id'=>$order_id,'pay'=>$pay]];
+            return ['code' => 200, 'msg' => "创建订单成功", 'data' => ['order_id' => $order_id, 'pay' => $pay]];
         }
     }
-    public function noorderpay($data){
+
+    public function noorderpay($data)
+    {
         $order = new Order();
         $orderGoods = new OrderGoods();
-        if(!isset($data['pay_type'])){
+        if (!isset($data['pay_type'])) {
             return ['code' => 403, 'msg' => "请选择支付方式"];
         }
         $order_data = $order->_find("id='{$data['order_id']}' and user_id='{$data['user_id']}' and status=0");
         $order_data = $order->objToArr($order_data);
-        if(!$order_data)return ['code' => 403, 'msg' => "该订单不存在或已关闭"];
+        if (!$order_data) return ['code' => 403, 'msg' => "该订单不存在或已关闭"];
         $order_goodsdata = $orderGoods->_where("order_id='{$order_data['id']}' and order_no='{$order_data['order_no']}' and status=0");
-        if(!$order_goodsdata)return ['code' => 403, 'msg' => "该订单商品明细单不存在或已关闭"];
-        $goodadata=$this->assembly_ordergoods();
-        foreach ($order_goodsdata as $k=>$v){
-                if(!isset($goodadata[$v['goods_id']]))return ['code' => 403, 'msg' => "商品id".$v['goods_id']."已下架"];
+        if (!$order_goodsdata) return ['code' => 403, 'msg' => "该订单商品明细单不存在或已关闭"];
+        $goodadata = $this->assembly_ordergoods();
+        foreach ($order_goodsdata as $k => $v) {
+            if (!isset($goodadata[$v['goods_id']])) return ['code' => 403, 'msg' => "商品id" . $v['goods_id'] . "已下架"];
         }
-        $order_data['pay_type']=$data['pay_type'];
-        $pay=$this->comparePriceCloseAndCreateOrder($order_data);
-        return ['code' => 200, 'msg' => "创建订单成功",'data'=>['order_id'=>$order_data['id'],'pay'=>$pay]];
+        $order_data['pay_type'] = $data['pay_type'];
+        $pay = $this->comparePriceCloseAndCreateOrder($order_data);
+        return ['code' => 200, 'msg' => "创建订单成功", 'data' => ['order_id' => $order_data['id'], 'pay' => $pay]];
 
     }
 
-    public function get_license($parm){
+    public function get_license($parm)
+    {
 
-        if(isset($parm['type'])){
-            $wehere="orders_goods.user_id='{$parm['user_id']}' and (orders_goods.status=1 or orders_goods.status=2) and orders_goods.details_type=1";
-        }else{
-            $wehere="orders_goods.user_id='{$parm['user_id']}' and (orders_goods.status=1 or orders_goods.status=2)";
+        if (isset($parm['type'])) {
+            $wehere = "orders_goods.user_id='{$parm['user_id']}' and (orders_goods.status=1 or orders_goods.status=2) and orders_goods.details_type=1";
+        } else {
+            $wehere = "orders_goods.user_id='{$parm['user_id']}' and (orders_goods.status=1 or orders_goods.status=2)";
         }
         $orderGoods = new OrderGoods();
-        $ordergoodsdata=$orderGoods
+        $ordergoodsdata = $orderGoods
             ->leftJoin('goods', 'orders_goods.goods_id', '=', 'goods.id')
             ->leftJoin('license_code', 'orders_goods.order_id', '=', 'license_code.order_id')
             ->whereRaw($wehere)
             ->selectRaw("goods.level1,goods.level2,goods.level3,orders_goods.order_id,orders_goods.goods_id,license_code.uuid as appid,license_code.expire_time,license_code.status,license_code.license_key,license_code.license_secret")
             ->get()->toArray();
-        if(!$ordergoodsdata){
+        if (!$ordergoodsdata) {
             return ['code' => 403, 'msg' => '没有数据', 'data' => []];
         }
         $classification = $this->assembly_orderclassification();
-            foreach ($ordergoodsdata as $ks=>$vs){
-                $ordergoodsdata[$ks]['goodsname']=$classification[$vs['level1']]['title'].$classification[$vs['level2']]['title'].$classification[$vs['level3']]['title'];
-            }
+        foreach ($ordergoodsdata as $ks => $vs) {
+            $ordergoodsdata[$ks]['goodsname'] = $classification[$vs['level1']]['title'] . $classification[$vs['level2']]['title'] . $classification[$vs['level3']]['title'];
+        }
 
         return ['code' => 200, 'msg' => 'ok', 'data' => $ordergoodsdata];
     }
 
-    public static function findThirdOrderNotifyHandle($trade_no) {
+    public static function findThirdOrderNotifyHandle($trade_no)
+    {
         $order = new Order();
-        if (!empty_verify($trade_no)) {
-            return [];
-        }
-        $data = $order->_find(['merchant_no'=>$trade_no]);
+        $data = $order->_find("merchant_no='{$trade_no}'");
         $data = $order->objToArr($data);
         if (empty($data)) {
             return [];
@@ -623,17 +632,18 @@ class OrdersService
         if ($data['pay_type'] == 2) {
             self::AlipayNotifyService($data['merchant_no']);
         }
-        $data = $order->_find(['merchant_no'=>$trade_no]);
+        $data = $order->_find("merchant_no='{$trade_no}'");
         $data = $order->objToArr($data);
         return $data;
     }
 
-    public function getgoodsprice($data){
+    public function getgoodsprice($data)
+    {
         $Goods = new Goods();
-        if(!isset($data['years']))return ['code' => 403, 'msg' => '缺少购买年限'];
+        if (!isset($data['years'])) return ['code' => 403, 'msg' => '缺少购买年限'];
         $datas = $Goods->_find("level1='{$data['products_id']}' and level2='{$data['platform_id']}'and level3='{$data['licenseType_id']}' and deleted=0");
         $datas = $Goods->objToArr($datas);
-        $price = round($datas['price']*$data['years'],2);
+        $price = round($datas['price'] * $data['years'], 2);
         return ['code' => 200, 'msg' => 'ok', 'price' => $price];
     }
 
@@ -647,6 +657,7 @@ class OrdersService
         }
         return $arr;
     }
+
     function assembly_ordergoods()
     {
         $Goods = new Goods();
@@ -673,16 +684,18 @@ class OrdersService
     public function comparePriceCloseAndCreateOrder($order)
     {
         $ordernew = new Order();
+        $ordergoods = new OrderGoods();
         if (empty($order['page_pay_url'])) {
-            $pay_url_data = $this->generatePayUrl($order['pay_type'],'test', $order['order_no'], $order['price']);
-            if($order['pay_type']==2){
-                $pay_url_data['id']='ali'.$order['order_no'];
+            $pay_url_data = $this->generatePayUrl($order['pay_type'], 'test', $order['order_no'], $order['price']);
+            if ($order['pay_type'] == 2) {
+                $pay_url_data['id'] = 'ali' . $order['order_no'];
             }
             $newOrderData = [
                 'third_order_no' => $pay_url_data['id'] ?? '',
                 'page_pay_url' => $pay_url_data['url'],
             ];
-            $ordernew->_update(['merchant_no'=>$pay_url_data['id']], "id='{$order['id']}'");
+            $ordernew->_update(['merchant_no' => $pay_url_data['id']], "order_no='{$order['order_no']}'");
+            $ordergoods->_update(['merchant_no' => $pay_url_data['id']], "order_no='{$order['order_no']}'");
         }
         return $newOrderData;
     }
@@ -694,7 +707,7 @@ class OrdersService
         $pay_url_data = [];
         if ($payment == self::$payments['paddle']) {
             $paddle = new PaddleBiz();
-            $pay_url_data = $paddle->createPayLink($trade_no,$product,$price);
+            $pay_url_data = $paddle->createPayLink($trade_no, $product, $price);
         } elseif ($payment == self::$payments['alipay']) {
             $pay_redirect_path = '/resubscribe/payed';
             $return_url = $call_back . $pay_redirect_path;
@@ -705,10 +718,10 @@ class OrdersService
         return $pay_url_data;
     }
 
-    public function getAliPayUrl($trade_no, $name, $price, $call_back,$return_url)
+    public function getAliPayUrl($trade_no, $name, $price, $call_back, $return_url)
     {
         $paramss = [
-            'out_trade_no' => 'ali'.$trade_no,
+            'out_trade_no' => 'ali' . $trade_no,
             'subject' => $name,
             'payment_type' => 1,//支付类型 只取值为1(商品购买) 固定值
             'total_fee' => $price,
@@ -717,27 +730,32 @@ class OrdersService
         $obj = new AlipayBiz($paramss);
 
         // 支付宝验证KEY统一调整为扫码支付
-        return $obj->pay($call_back . '/api/orders/alipayNotify',$return_url);
+        return $obj->pay($call_back . '/api/orders/alipayNotify', $return_url);
     }
 
-    public static function AlipayNotifyService($trade_no) {
+    public static function AlipayNotifyService($trade_no)
+    {
         $alipay = new AlipayBiz();
         $order_data = $alipay->findAlipayByOrderNo($trade_no);
         try {
             if (!empty($order_data) && $order_data['trade_status'] == 'TRADE_SUCCESS') {
-                //Db::table("callback_log")->in
+                Db::table("callback_log")->insert(['info' => 'orderno=' . $trade_no . json_encode($order_data), 'pay_type' => 2]);
+                $order = new Order();
+                $order_goods = new OrderGoods();
+                $order->_update(['status' => 1, 'pay_time' => date("Y-m-d H:i:s")], "merchant_no='{$trade_no}'");
+                $order_goods->_update(['status' => 1, 'pay_time' => date("Y-m-d H:i:s")], "merchant_no='{$trade_no}'");
             } else {
-                LogHelper::logSubs($trade_no.' alipay order status error, ' . json_encode($order_data), LogHelper::LEVEL_WARN);
+                Db::table("callback_log")->insert(['info' => 'orderno=' . $trade_no . json_encode($order_data), 'pay_type' => 2]);
             }
         } catch (\Exception $e) {
-            LogHelper::logSubs($trade_no.' alipay notify: '.$e->getMessage(),LogHelper::LEVEL_ERROR);
-            error('alipay',$e->getMessage(),200);
+            error('alipay', $e->getMessage(), 200);
         }
     }
 
-    function headerurl(){
+    function headerurl()
+    {
         $http_type = ((isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on') || (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] == 'https')) ? 'https://' : 'http://';
-        return  $http_type . $_SERVER['HTTP_HOST'];
+        return $http_type . $_SERVER['HTTP_HOST'];
     }
 
 }
