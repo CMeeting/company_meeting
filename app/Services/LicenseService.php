@@ -35,7 +35,9 @@ class LicenseService
         if ($param['info']) {
             if ($param['query_type'] == "order_no") {
                 $where .= " and o.order_no like '%" . $param['info'] . "%'";
-            } elseif ($param['query_type'] == "uuid") {
+            } elseif ($param['query_type'] == "goods_no") {
+                $where .= " and o.goods_no like '%" . $param['info'] . "%'";
+            }elseif ($param['query_type'] == "uuid") {
                 $where .= " and l.uuid like '%" . $param['info'] . "%'";
             } elseif ($param['query_type'] == "email") {
                 $where .= " and u.email like '%" . $param['info'] . "%'";

@@ -204,7 +204,7 @@
                             <td>{{$item['price']}}</td>
                             <td>
                                 @if($item['status'] == 1)
-                                    <span class="ladda-label">已付款</span>
+                                    <span class="ladda-label">已支付</span>
                                 @elseif($item['status'] == 2)
                                     <span class="ladda-label">已完成</span>
                                 @elseif($item['status'] == 3)

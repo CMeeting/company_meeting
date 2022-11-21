@@ -50,7 +50,9 @@
                             <select name="query_type" class="form-control" style="display: inline-block;width: 115px;" id="query_type">
                                 <option value="order_no" @if(isset($query)&&$query['query_type']=='order_no') selected @endif>订单编号
                                 </option>
-                                <option value="uuid" @if(isset($query)&&$query['query_type']=='uuid') selected @endif>APP ID
+                                <option value="goods_no" @if(isset($query)&&$query['query_type']=='order_no') selected @endif>子单编号
+                                </option>
+                                <option value="uuid" @if(isset($query)&&$query['query_type']=='uuid') selected @endif>App ID/Machine ID
                                 </option>
                                 <option value="email" @if(isset($query)&&$query['query_type']=='email') selected @endif>用户账号
                                 </option>
@@ -243,7 +245,7 @@
         //执行一个laydate实例
         var start = laydate.render({
             elem: '#expire_start', //指定元素
-            max: 1,//最大值为当前日期
+            max: 3,//最大值为当前日期
             trigger: 'click',
             type: 'datetime',//日期时间选择器
             // value: getRecentDay(-30),//默认值30天前
@@ -264,51 +266,16 @@
         });
         var end = laydate.render({
             elem: '#expire_end', //指定元素
-            max: 1,//最大值为当前日期
+            max: '2099-12-31',//最大值为当前日期
             type: 'datetime',//日期时间选择器
             // value: getRecentDay(-1),//默认值昨天
+
             choose: function (datas) {
                 start.max = datas; //结束日选好后，重置开始日的最大日期
             }
         });
     });
 
-
-    layui.use('laydate', function () {
-        var laydate = layui.laydate;
-
-        //执行一个laydate实例
-        var start = laydate.render({
-            elem: '#shelf_at', //指定元素
-            max: 1,//最大值为当前日期
-            trigger: 'click',
-            type: 'datetime',//日期时间选择器
-            // value: getRecentDay(-30),//默认值30天前
-            done: function (value, date) {
-                if (value && (value > $("#endshelf_at").val())) {
-                    /*开始时间大于结束时间时，清空结束时间*/
-                    $("#endshelf_at").val("");
-                }
-                end.config.min = {
-                    year: date.year,
-                    month: date.month - 1,
-                    date: date.date,
-                    hours: date.hours,//可注释
-                    minutes: date.minutes,//可注释
-                    seconds: date.seconds//可注释
-                };
-            }
-        });
-        var end = laydate.render({
-            elem: '#endshelf_at', //指定元素
-            max: 1,//最大值为当前日期
-            type: 'datetime',//日期时间选择器
-            // value: getRecentDay(-1),//默认值昨天
-            choose: function (datas) {
-                start.max = datas; //结束日选好后，重置开始日的最大日期
-            }
-        });
-    });
 
     function show(id, status) {
         if (status == 1) {
