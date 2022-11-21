@@ -189,7 +189,7 @@
                             <td>{{$item['email']}}</td>
                             <td>
                                     @if($item['pay_type'] == 1)
-                                            <span class="ladda-label">paddle支付</span>
+                                            <span class="ladda-label">paddle</span>
                                     @elseif($item['pay_type'] == 2)
                                             <span class="ladda-label">支付宝</span>
                                     @elseif($item['pay_type'] == 3)
