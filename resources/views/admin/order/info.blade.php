@@ -137,7 +137,6 @@
                            style="word-wrap:break-word; word-break:break-all;text-align: center">
                         <thead>
                         <tr>
-                            <th class="text-center" style="width: 5%"></th>
                             <th class="text-center" style="width: 35%">商品名称</th>
                             <th class="text-center" style="width: 9%">APP ID/Machine ID</th>
                             <th class="text-center" style="width: 9%">License Type</th>
@@ -151,9 +150,6 @@
                         @foreach($data as $key => $item)
                             <?php $sum+=$item['price'] ;?>
                         <tr id="de">
-                            <td class="text-center">
-                                    <img id="u14091_img" class="img " src="https://d1icd6shlvmxi6.cloudfront.net/gsc/WQDX7J/6e/72/53/6e7253e7811947a28db93473e52d0d73/images/查看订单/u14091.png">
-                            </td>
                             <td class="text-center">{{$item['products']}}{{$item['platform']}}{{$item['licensie']}}</td>
                             <td class="text-center">{{$item['appid']}}</td>
                             <td class="text-center">{{$item['licensie']}}</td>
@@ -162,7 +158,7 @@
                             <td class="text-center">${{$item['price']}}</td>
                         </tr>
                         @endforeach
-                        <tr><td colspan="6"></td><td>合计：${{$sum}}</td></tr>
+                        <tr><td colspan="5"></td><td>合计：${{$sum}}</td></tr>
                         </tbody>
                     </table>
 
@@ -185,8 +181,8 @@
                         <tbody>
                             <tr id="de">
                                 <td class="text-center">${{$sum}}</td>
-                                <td class="text-center">-0.00</td>
-                                <td class="text-center">0.00</td>
+                                <td class="text-center">-$0.00</td>
+                                <td class="text-center">$0.00</td>
                                 <td class="text-center">${{$sum}}</td>
                                 <td class="text-center">${{$sum}}</td>
                             </tr>
