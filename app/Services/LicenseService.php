@@ -141,6 +141,7 @@ class LicenseService
         $rows[] = $header;
 
         foreach ($list as $data) {
+            $data=json_decode(json_encode($data), true);
             $row = [];
             foreach ($field as $key) {
                 $value = array_get($data, $key);
