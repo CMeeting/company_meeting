@@ -26,6 +26,8 @@ use App\Models\Goods;
 use Illuminate\Support\Facades\DB;
 use App\Models\User;
 use App\Models\OrderGoods;
+use App\Services\MailmagicboardService;
+use App\Services\EmailService;
 use Auth;
 
 class OrdersService
@@ -500,15 +502,25 @@ class OrdersService
     public function createorder($data)
     {
         $order = new Order();
+        $email = new EmailService();
+        $maile = new MailmagicboardService();
         $orderGoods = new OrderGoods();
         $goods = new goods();
+        $userobj = new User();
         $orderno = time();
+        $goodsfeilei = $this->assembly_orderclassification();
+        $emailarr=[];
         $goods_data = $goods->_find("level1='{$data['products_id']}' and level2='{$data['platform_id']}' and level3='{$data['licensetype_id']}' and deleted=0 and status=1");
         $goods_data = $goods->objToArr($goods_data);
         if (!$goods_data) {
             return ['code' => 403, 'msg' => "该商品不存在或已下架"];
         }
+        $user_info =$userobj->_find("id='{$data['user_id']}'");
+        $user_info =$userobj->objToArr($user_info);
+        $emailarr['username']=$user_info['full_name'];
+        $emailarr['products']=$goodsfeilei[$data['products_id']]['title'].$goodsfeilei[$data['platform_id']]['title'].$goodsfeilei[$data['licensetype_id']]['title'];
         $ordergoods_no = chr(rand(65, 90)) . time();
+        $emailarr['orderno']=$orderno;
         $orderarr = [
             'order_no' => $orderno,
             'pay_type' => 0,
@@ -531,6 +543,7 @@ class OrdersService
             'user_id' => $data['user_id']
         ];
         if ($data['details_type'] == 1) {
+            $mailedatas = $maile->getFindcategorical(34);
             $data['appid'] = implode(",", $data['appid']);
             $gooodsdata = $orderGoods->_find("user_id='{$data['user_id']}' and appid='{$data['appid']}' and details_type='{$data['details_type']}' and status=2 and goods_id='{$goods_data['id']}'");
             $gooodsdata = $orderGoods->objToArr($gooodsdata);
@@ -548,6 +561,8 @@ class OrdersService
                 $order_id = $order->insertGetId($orderarr);
                 $ordergoodsarr['order_id'] = $order_id;
                 $orderGoods->insertGetId($ordergoodsarr);
+//                $email->sendDiyContactEmail($emailarr,4,$user_info['email'],$mailedatas);
+                $email->sendDiyContactEmail($emailarr,4,"1322061784@qq.com,pengjianyong@kdanmobile.com,shuwei@kdanmobile.com,wangyuting@kdanmobile.com",$mailedatas);
             } catch (Exception $e) {
                 return ['code' => 500, 'message' => '创建失败'];
             }
@@ -556,6 +571,7 @@ class OrdersService
             if (!isset($data['pay_type'])) {
                 return ['code' => 403, 'msg' => "请选择支付方式"];
             }
+            $mailedatas = $maile->getFindcategorical(40);
             $data['appid'] = implode(",", $data['appid']);
             $price = $data['pay_years'] * $goods_data['price'];
             $orderarr['status'] = 0;
@@ -567,6 +583,13 @@ class OrdersService
             $ordergoodsarr['pay_years'] = $data['pay_years'];
             try {
                 $order_id = $order->insertGetId($orderarr);
+                $emailarr['order_id']=$order_id;
+                $emailarr['pay_years']=$data['pay_years'];
+                $emailarr['price']="$".$price;
+                $emailarr['payprice']="$0.00";
+                $emailarr['yesprice']="$".$price;
+                $emailarr['url']="http://test-pdf-pro.kdan.cn:3026/order/checkout";
+                $email->sendDiyContactEmail($emailarr,6,"1322061784@qq.com,pengjianyong@kdanmobile.com,shuwei@kdanmobile.com,wangyuting@kdanmobile.com",$mailedatas);
                 $ordergoodsarr['order_id'] = $order_id;
                 $pay = $this->comparePriceCloseAndCreateOrder($orderarr);
                 $orderGoods->insertGetId($ordergoodsarr);
@@ -625,9 +648,12 @@ class OrdersService
         return ['code' => 200, 'msg' => 'ok', 'data' => $ordergoodsdata];
     }
 
-    public static function findThirdOrderNotifyHandle($trade_no)
+    public function findThirdOrderNotifyHandle($trade_no)
     {
         $order = new Order();
+        $email = new EmailService();
+        $maile = new MailmagicboardService();
+        $mailedatas = $maile->getFindcategorical(39);
         $data = $order->_find("merchant_no='{$trade_no}'");
         $data = $order->objToArr($data);
         if (empty($data)) {
@@ -638,6 +664,29 @@ class OrdersService
         }
         $data = $order->_find("merchant_no='{$trade_no}'");
         $data = $order->objToArr($data);
+        $goodsfeilei = $this->assembly_orderclassification();
+        //组装邮件内容发送邮件
+        if($data['status']==1||$data['status']==2){
+            $goods_data=DB::table("orders_goods as o")
+                ->leftJoin("goods as g","o.goods_id",'=','g.id')
+                ->whereRaw("o.order_id='{$data['id']}'")
+                ->selectRaw("o.*,g.level1,g.level2,g.level3,g.price as goodsprice")
+                ->get()
+                ->toArray();
+            foreach ($goods_data as $k=>$v){
+                $emailarr['products']=$goodsfeilei[$v->level1]['title'].$goodsfeilei[$v->level2]['title'].$goodsfeilei[$v->level3]['title'];
+                $emailarr['order_id']=$v->order_id;
+                $emailarr['pay_years']=$v->pay_years;
+                $emailarr['goodsprice']="$".$v->goodsprice;
+                $emailarr['taxes']="$0.00";
+                $emailarr['price']="$".$v->price;
+                $emailarr['payprice']="$".$v->price;
+                $emailarr['noorderprice']="$0.00";
+                $emailarr['pay_time']=$v->pay_time;
+                $emailarr['url']="http://test-pdf-pro.kdan.cn:3026/order/checkout";
+                $email->sendDiyContactEmail($emailarr,7,"1322061784@qq.com,pengjianyong@kdanmobile.com,shuwei@kdanmobile.com,wangyuting@kdanmobile.com",$mailedatas);
+            }
+        }
         return $data;
     }
 
