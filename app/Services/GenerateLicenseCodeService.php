@@ -260,16 +260,18 @@ Class GenerateLicenseCodeService
      */
     public function generate($product, $license_type, $platform, $start_time, $end_time, $ids, $email){
         $permission = $this->getPermission($product, $license_type);
-        \Log::info('permission:' . $permission);
+        \Log::info('生成序列码permission:' . $permission);
         $platform = $this->getPlatformCode($platform);
 
         //新建文件
         $license_demo_path = base_path('licensedemo');
+        $private_key = $license_demo_path . DIRECTORY_SEPARATOR . 'private_key.pem';
         $file = $license_demo_path . DIRECTORY_SEPARATOR . 'licensefile' . DIRECTORY_SEPARATOR . $email . '_' . time() . '.xml';
         $my_file = fopen($file, 'w');
         fclose($my_file);
 
-        $command = $license_demo_path . DIRECTORY_SEPARATOR. "LicenseDemo -pem \"/var/www/license-demo/private_key.pem\" -plat \"$platform\" -sst \"$start_time\" -edt \"$end_time\" -t \"2\" -parms \"$permission\"";
+        $command = $license_demo_path . DIRECTORY_SEPARATOR. "LicenseDemo -pem \"$private_key\" -plat \"$platform\" -sst \"$start_time\" -edt \"$end_time\" -t \"2\" -parms \"$permission\"";
+        \Log::info('生成序列码命令:' . $command);
 
         //拼接ids
         foreach ($ids as $id){
@@ -278,7 +280,8 @@ Class GenerateLicenseCodeService
 
         $command .= " -output \"$file\"";
 
-        exec($command);
+        exec($command, $result);
+        \Log::info('生成序列码结果：', $result);
 
         $str = file_get_contents($file);
         //获取key
