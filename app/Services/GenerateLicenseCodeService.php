@@ -264,7 +264,7 @@ Class GenerateLicenseCodeService
         $platform = $this->getPlatformCode($platform);
 
         //新建文件
-        $license_demo_path = 'licensedemo';
+        $license_demo_path = '/php_compdf_server' . DIRECTORY_SEPARATOR . 'licensedemo';
         $private_key = $license_demo_path . DIRECTORY_SEPARATOR . 'private_key.pem';
         $file = $license_demo_path . DIRECTORY_SEPARATOR . 'licensefile' . DIRECTORY_SEPARATOR . $email . '_' . time() . '.xml';
         $my_file = fopen($file, 'w');
