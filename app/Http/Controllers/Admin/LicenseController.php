@@ -85,7 +85,7 @@ class LicenseController extends BaseController
 
     public function generateLicenseCode(){
         $generate = new GenerateLicenseCodeService();
-        return $generate->generate('ComPDFKit PDF SDK', 'Enterprise License', 'IOS');
+        return $generate->generate('ComPDFKit PDF SDK', 'Enterprise License', 'iOS', '1669083426', '1671675425', ['312312'], '123@gmail.com');
     }
 
 }
