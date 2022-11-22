@@ -266,7 +266,7 @@ class LicenseService
             'expire_time'=>date("Y-m-d H:i:s",strtotime("+".$data['period']." year"))
             ];
          $res=$lisecosdmode->insertGetId($data);
-         return $res;
+         return ['code' => 200, 'msg' => "添加成功"];
 
     }
 
