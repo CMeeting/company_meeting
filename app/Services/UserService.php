@@ -6,6 +6,7 @@ namespace App\Services;
 
 use App\Export\UserExport;
 use App\Models\LogoutUser;
+use App\Models\Mailmagicboard;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
@@ -320,19 +321,25 @@ class UserService
     /**
      * 发送修改密码的邮件
      * @param $email
+     * @param $name
      */
-    public function sendChangePasswordEmail($email){
+    public function sendChangePasswordEmail($email, $name){
+        $server_name = $server = env('WEB_HOST') . '/reset/password';
+
         //发送邮件时间
-        $server_name = env('WEB_HOST') . '/reset/password';
         $payload = ['email' => $email, 'alt'=>time(), 'expire_time' => 24];
         $token = encrypt(json_encode($payload));
 
-        $server_name .= '?token=' . $token;
-        //TODO 发送邮件
+        $server .= '?token=' . $token;
+        $url = "<a href='$server'>$server_name</a>";
+        //发送邮件
+        $email_model = Mailmagicboard::getByName($name);
         $emailService = new EmailService();
-        $data['title'] = '注册成功';
-        $data['info'] = '<a href="'. $server_name .'">点击这个链接修改密码</a>';
-        $emailService->sendDiyContactEmail($data, 1, $email);
+        $data['title'] = $email_model->title;
+        $data['info'] = $email_model->info;
+        $data['info'] = str_replace("#@url", $url, $data['info']);
+
+        $emailService->sendDiyContactEmail($data, 0, $email);
     }
 
     /**
