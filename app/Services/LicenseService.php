@@ -16,6 +16,7 @@ use App\Export\UserExport;
 use App\Models\Goods;
 use App\Models\Goodsclassification;
 use App\Models\LicenseModel;
+use App\Models\Mailmagicboard;
 use App\Models\User;
 use Auth;
 use Illuminate\Support\Facades\Config;
@@ -232,13 +233,24 @@ class LicenseService
         $classification = $this->assembly_orderclassification();
         $is_user = $user->existsEmail($data['email']);
         if (!$is_user) {
+            $password = User::getRandStr();
             $arr['full_name'] = $data['email'];
             $arr['email'] = $data['email'];
+            $arr['password'] = User::encryptPassword($password);
             $arr['flag'] = 3;
             $arr['type'] = 4;
             $arr['created_at'] = date("Y-m-d H:i:s");
             $arr['updated_at'] = date("Y-m-d H:i:s");
             $user_id = Db::table("users")->insertGetId($arr);
+            //发送邮件
+            $emailService = new EmailService();
+            $emailModel = Mailmagicboard::getByName('后台新增订单（用户注册成功邮件）');
+            $data['title'] = $emailModel->title;
+            $data['info'] = $emailModel->info;
+            $data['info'] = str_replace("#@username", $arr['full_name'], $data['info']);
+            $data['info'] = str_replace("#@mail", $arr['email'], $data['info']);
+            $data['info'] = str_replace("#@password", $password, $data['info']);
+            $emailService->sendDiyContactEmail($data, 0, $arr['email']);
         } else {
             $users = DB::table('users')->where('email', $data['email'])->first();
             $user_id = $users->id;
