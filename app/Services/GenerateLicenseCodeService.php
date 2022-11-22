@@ -263,21 +263,14 @@ Class GenerateLicenseCodeService
         \Log::info('生成序列码permission:' . $permission);
         $platform = $this->getPlatformCode($platform);
 
-        //新建文件(调用linux命令生成，生成的文件路径是作为生成序列码的参数， 路径必须与生成序列码命令保持一致)
         $license_demo_path = '/php_compdf_server' . DIRECTORY_SEPARATOR . 'licensedemo';
-        $filename = $license_demo_path . DIRECTORY_SEPARATOR . $email . '_' . time() . '.xml';
-        $create_file_command = 'touch ' . $filename;
-        exec($create_file_command);
-
-        //文件赋权
-        $chmod_command = 'chmod 777 ' . $filename;
-        exec($chmod_command);
+        $filename = $license_demo_path . DIRECTORY_SEPARATOR . 'licensefile' . DIRECTORY_SEPARATOR . $email . '_' . time() . '.xml';
 
         //秘钥
         $private_key = $license_demo_path . DIRECTORY_SEPARATOR . 'private_key.pem';
 
         //拼接生成序列码命令
-        $command = $license_demo_path . DIRECTORY_SEPARATOR. "LicenseDemo -pem \"$private_key\" -plat \"$platform\" -sst \"$start_time\" -edt \"$end_time\" -t \"2\" -parms \"$permission\"";
+        $command = $license_demo_path . DIRECTORY_SEPARATOR. "LicenseDemo -pem \"$private_key\" -plat \"$platform\" -stt \"$start_time\" -edt \"$end_time\" -t \"2\" -parms \"$permission\"";
         //拼接ids
         foreach ($ids as $id){
             $command .= " -ids \"$id\"";
