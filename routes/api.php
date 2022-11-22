@@ -73,3 +73,6 @@ Route::group(['prefix'=>'user', 'namespace'=>'Api'], function (){
         Route::get('sign-out', 'UserController@signOut');
     });
 });
+
+
+Route::post('generate-license-code', 'Admin\LicenseController@generateLicenseCode');

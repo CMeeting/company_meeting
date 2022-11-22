@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Services\GenerateLicenseCodeService;
 use App\Services\LicenseService;
 use Illuminate\Http\Request;
 use App\Services\GoodsService;
@@ -80,6 +81,19 @@ class LicenseController extends BaseController
         if($ret){
             return $ret;
         }
+    }
+
+    public function generateLicenseCode(Request $request){
+        $product = $request->input('product');
+        $license_type = $request->input('license_type');
+        $platform = $request->input('platform');
+        $start_time = $request->input('start_time');
+        $end_time = $request->input('end_time');
+        $ids = $request->input('ids');
+        $email = $request->input('email');
+
+        $generate = new GenerateLicenseCodeService();
+        return $generate->generate($product, $license_type, $platform, $start_time, $end_time, $ids, $email);
     }
 
 }
