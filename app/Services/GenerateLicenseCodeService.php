@@ -264,11 +264,11 @@ Class GenerateLicenseCodeService
 
             //新建文件
             $license_demo_path = base_path('licensedemo');
-            $file = $license_demo_path . '/licensefile/' . $email . '_' . time() . '.xml';
+            $file = $license_demo_path . DIRECTORY_SEPARATOR . 'licensefile' . DIRECTORY_SEPARATOR . $email . '_' . time() . '.xml';
             $my_file = fopen($file, 'w');
             fclose($my_file);
 
-            $command = "$license_demo_path/LicenseDemo -pem \"/var/www/license-demo/private_key.pem\" -plat \"$platform\" -sst \"$start_time\" -edt \"$end_time\" -t \"2\" -parms \"$permission\"";
+            $command = $license_demo_path . DIRECTORY_SEPARATOR. "LicenseDemo -pem \"/var/www/license-demo/private_key.pem\" -plat \"$platform\" -sst \"$start_time\" -edt \"$end_time\" -t \"2\" -parms \"$permission\"";
 
             //拼接ids
             foreach ($ids as $id){
