@@ -279,7 +279,7 @@ Class GenerateLicenseCodeService
 
         \Log::info('生成序列码命令:' . $command);
 
-        exec($command, $result);
+        exec("php -v", $result);
         \Log::info('生成序列码结果：', $result);
 
         $str = file_get_contents($filename);
