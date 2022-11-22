@@ -260,6 +260,7 @@ Class GenerateLicenseCodeService
     public function generate($product, $license_type, $platform, $start_time, $end_time, $ids, $email){
         try {
             $permission = $this->getPermission($product, $license_type);
+            \Log::info('permission:' . $permission);
             $platform = $this->getPlatformCode($platform);
 
             //新建文件
@@ -315,6 +316,7 @@ Class GenerateLicenseCodeService
                     break;
                 case 'Enterprise License':
                     $permissions = self::PDF_SDK_ENTERPRISE_FUNCTION;
+                    break;
             }
 
             return $this->formatSDKPermission($permissions);
@@ -328,6 +330,7 @@ Class GenerateLicenseCodeService
                     break;
                 case 'Enterprise License':
                     $permissions = self::CONVERSION_SDK_ENTERPRISE_FUNCTION;
+                    break;
             }
             return $this->formatConversionPermission($permissions);
         }
