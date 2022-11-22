@@ -263,28 +263,33 @@ Class GenerateLicenseCodeService
         \Log::info('生成序列码permission:' . $permission);
         $platform = $this->getPlatformCode($platform);
 
-        //新建文件
+        //新建文件(调用linux命令生成，生成的文件路径是作为生成序列码的参数， 路径必须与生成序列码命令保持一致)
         $license_demo_path = '/php_compdf_server' . DIRECTORY_SEPARATOR . 'licensedemo';
+        $filename = $license_demo_path . DIRECTORY_SEPARATOR . $email . '_' . time() . '.xml';
+        $create_file_command = 'touch ' . $filename;
+        exec($create_file_command);
+
+        //文件赋权
+        $chmod_command = 'chmod 777 ' . $filename;
+        exec($chmod_command);
+
+        //秘钥
         $private_key = $license_demo_path . DIRECTORY_SEPARATOR . 'private_key.pem';
-        $file = $license_demo_path . DIRECTORY_SEPARATOR . 'licensefile' . DIRECTORY_SEPARATOR . $email . '_' . time() . '.xml';
-        $my_file = fopen($file, 'w');
-        fclose($my_file);
 
+        //拼接生成序列码命令
         $command = $license_demo_path . DIRECTORY_SEPARATOR. "LicenseDemo -pem \"$private_key\" -plat \"$platform\" -sst \"$start_time\" -edt \"$end_time\" -t \"2\" -parms \"$permission\"";
-
         //拼接ids
         foreach ($ids as $id){
             $command .= " -ids \"$id\"";
         }
-
-        $command .= " -output \"$file\"";
+        $command .= " -output \"$filename\"";
 
         \Log::info('生成序列码命令:' . $command);
 
         exec($command, $result);
         \Log::info('生成序列码结果：', $result);
 
-        $str = file_get_contents($file);
+        $str = file_get_contents($filename);
         //获取key
         $first_key = strpos($str, '<key>') + strlen('<key>');
         $len_key = strripos($str, '</key>') - $first_key;
