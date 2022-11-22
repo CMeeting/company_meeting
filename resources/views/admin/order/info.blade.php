@@ -61,7 +61,7 @@
                                 <td>{{$item['appid']}}</td>
                                 <td>{{$item['created_at']}}</td>
                                 <td>{{$item['email']}}</td>
-                                <td>{{$item['price']}}</td>
+                                <td>${{$item['price']}}</td>
                                 <td>
                                     @if($item['pay_type'] == 1)
                                         <span class="ladda-label">paddle支付</span>
