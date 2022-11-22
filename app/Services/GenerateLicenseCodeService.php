@@ -279,7 +279,8 @@ Class GenerateLicenseCodeService
 
         \Log::info('生成序列码命令:' . $command);
 
-        exec("php -v", $result);
+        exec(' cat /php_compdf_server/licensedemo/licensefile/123@gmail.com_1669106845.xml
+', $result);
         \Log::info('生成序列码结果：', $result);
 
         $str = file_get_contents($filename);
