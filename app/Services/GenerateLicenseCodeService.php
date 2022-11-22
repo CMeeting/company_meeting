@@ -264,14 +264,13 @@ Class GenerateLicenseCodeService
         $platform = $this->getPlatformCode($platform);
 
         //新建文件
-        $license_demo_path = base_path('licensedemo');
+        $license_demo_path = 'licensedemo';
         $private_key = $license_demo_path . DIRECTORY_SEPARATOR . 'private_key.pem';
         $file = $license_demo_path . DIRECTORY_SEPARATOR . 'licensefile' . DIRECTORY_SEPARATOR . $email . '_' . time() . '.xml';
         $my_file = fopen($file, 'w');
         fclose($my_file);
 
         $command = $license_demo_path . DIRECTORY_SEPARATOR. "LicenseDemo -pem \"$private_key\" -plat \"$platform\" -sst \"$start_time\" -edt \"$end_time\" -t \"2\" -parms \"$permission\"";
-        \Log::info('生成序列码命令:' . $command);
 
         //拼接ids
         foreach ($ids as $id){
@@ -279,6 +278,8 @@ Class GenerateLicenseCodeService
         }
 
         $command .= " -output \"$file\"";
+
+        \Log::info('生成序列码命令:' . $command);
 
         exec($command, $result);
         \Log::info('生成序列码结果：', $result);
