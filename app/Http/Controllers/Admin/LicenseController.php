@@ -78,7 +78,7 @@ class LicenseController extends BaseController
         $license = new LicenseService();
         $ret=$license->createlicense($param['data']);
         if($ret){
-            return ['code'=>1,'msg'=>"OK"];
+            return $ret;
         }
     }
 

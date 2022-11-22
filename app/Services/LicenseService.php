@@ -40,7 +40,7 @@ class LicenseService
             }elseif ($param['query_type'] == "uuid") {
                 $where .= " and l.uuid like '%" . $param['info'] . "%'";
             } elseif ($param['query_type'] == "email") {
-                $where .= " and u.email like '%" . $param['info'] . "%'";
+                $where .= " and u.email ='{$param['info']}'";
             }
         }
         if ($param['type']) {
@@ -77,7 +77,7 @@ class LicenseService
                 ->whereRaw($where)
                 ->leftJoin("orders_goods as o","l.ordergoods_id", "=", "o.id")
                 ->leftJoin("users as u","u.id", "=", "l.user_id")
-                ->orderBy("l.created_at","desc")
+                ->orderBy("l.id","desc")
                 ->get()->toArray();
         }else{
             $data = $query->select("l.id", "o.order_no as order_id", "o.goods_no as order_no", "l.uuid", "l.created_at", "l.expire_time",
@@ -85,7 +85,7 @@ class LicenseService
                 ->whereRaw($where)
                 ->leftJoin("orders_goods as o","l.ordergoods_id", "=", "o.id")
                 ->leftJoin("users as u","u.id", "=", "l.user_id")
-                ->orderBy("l.created_at","desc")
+                ->orderBy("l.id","desc")
                 ->paginate(10);
 
         }
@@ -250,6 +250,7 @@ class LicenseService
                 $goodsid = $vs['id'];
             }
         }
+
         if(!isset($goodsid))return ['code' => 500, 'msg' => $classification[$data['level1']]['title'].'-'.$classification[$data['level2']]['title'].'-'.$classification[$data['level3']]['title'].'下没有商品'];
         $data=[
             'user_id'=>$user_id,
