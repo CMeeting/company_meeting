@@ -121,7 +121,9 @@ Class GenerateLicenseCodeService
             self::LICENSE_ANNOT_MARKUP,
             self::LICENSE_ANNOT_DELETE,
         ],
-        'form' => [],
+        'form' => [
+            self::LICENSE_FORM_FILL
+        ],
         'document_editor' => [
             self::LICENSE_EDITOR_PAGE,
         ],
@@ -147,10 +149,7 @@ Class GenerateLicenseCodeService
             self::LICENSE_ANNOT_STAMP_S,
             self::LICENSE_ANNOT_STAMP_C,
             self::LICENSE_ANNOT_FREETEXT,
-            self::LICENSE_ANNOT_INK,
-            self::LICENSE_ANNOT_SOUND,
-            self::LICENSE_ANNOT_XFDF,
-            self::LICENSE_ANNOT_FLATTEN,
+            self::LICENSE_ANNOT_INK
         ],
         'form' => [
             self::LICENSE_FORM,
