@@ -256,45 +256,42 @@ Class GenerateLicenseCodeService
      * @param $ids
      * @param $email
      * @return array
+     * @throws \Exception
      */
     public function generate($product, $license_type, $platform, $start_time, $end_time, $ids, $email){
-        try {
-            $permission = $this->getPermission($product, $license_type);
-            \Log::info('permission:' . $permission);
-            $platform = $this->getPlatformCode($platform);
+        $permission = $this->getPermission($product, $license_type);
+        \Log::info('permission:' . $permission);
+        $platform = $this->getPlatformCode($platform);
 
-            //新建文件
-            $license_demo_path = base_path('licensedemo');
-            $file = $license_demo_path . DIRECTORY_SEPARATOR . 'licensefile' . DIRECTORY_SEPARATOR . $email . '_' . time() . '.xml';
-            $my_file = fopen($file, 'w');
-            fclose($my_file);
+        //新建文件
+        $license_demo_path = base_path('licensedemo');
+        $file = $license_demo_path . DIRECTORY_SEPARATOR . 'licensefile' . DIRECTORY_SEPARATOR . $email . '_' . time() . '.xml';
+        $my_file = fopen($file, 'w');
+        fclose($my_file);
 
-            $command = $license_demo_path . DIRECTORY_SEPARATOR. "LicenseDemo -pem \"/var/www/license-demo/private_key.pem\" -plat \"$platform\" -sst \"$start_time\" -edt \"$end_time\" -t \"2\" -parms \"$permission\"";
+        $command = $license_demo_path . DIRECTORY_SEPARATOR. "LicenseDemo -pem \"/var/www/license-demo/private_key.pem\" -plat \"$platform\" -sst \"$start_time\" -edt \"$end_time\" -t \"2\" -parms \"$permission\"";
 
-            //拼接ids
-            foreach ($ids as $id){
-                $command .= " -ids \"$id\"";
-            }
-
-            $command .= " -output \"$file\"";
-
-            exec($command);
-
-            $str = file_get_contents($file);
-            //获取key
-            $first_key = strpos($str, '<key>') + strlen('<key>');
-            $len_key = strripos($str, '</key>') - $first_key;
-            $key = substr($str, $first_key, $len_key);
-
-            //获取secret
-            $first_secret = strpos($str, '<secret>') + strlen('<secret>');
-            $len_secret = strripos($str, '</secret>') - $first_secret;
-            $secret = substr($str, $first_secret, $len_secret);
-
-            return ['key'=>$key, 'secret'=>$secret];
-        } catch (\Exception $e) {
-            \Log::info('未定义产品套餐');die;
+        //拼接ids
+        foreach ($ids as $id){
+            $command .= " -ids \"$id\"";
         }
+
+        $command .= " -output \"$file\"";
+
+        exec($command);
+
+        $str = file_get_contents($file);
+        //获取key
+        $first_key = strpos($str, '<key>') + strlen('<key>');
+        $len_key = strripos($str, '</key>') - $first_key;
+        $key = substr($str, $first_key, $len_key);
+
+        //获取secret
+        $first_secret = strpos($str, '<secret>') + strlen('<secret>');
+        $len_secret = strripos($str, '</secret>') - $first_secret;
+        $secret = substr($str, $first_secret, $len_secret);
+
+        return ['key'=>$key, 'secret'=>$secret];
     }
 
     /**
@@ -400,7 +397,6 @@ Class GenerateLicenseCodeService
         switch ($platform){
             case 'iOS':
                 return self::LICENSE_PLATFORM_IOS;
-                break;
             case 'Android':
                 return self::LICENSE_PLATFORM_AND;
             case 'Windows':
