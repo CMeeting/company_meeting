@@ -6,14 +6,15 @@ namespace App\Services;
 
 use App\Export\UserExport;
 use App\Models\LogoutUser;
+use App\Models\Mailmagicboard;
 use App\Models\User;
-use App\Models\UserLoginLog;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Response;
+use Maatwebsite\Excel\Facades\Excel;
 
 class UserService
 {
@@ -142,7 +143,7 @@ class UserService
      * 导出
      * @param $fields
      * @param $data
-     * @return array
+     * @return \Symfony\Component\HttpFoundation\BinaryFileResponse
      * @throws \PhpOffice\PhpSpreadsheet\Exception
      * @throws \PhpOffice\PhpSpreadsheet\Writer\Exception
      */
@@ -180,11 +181,8 @@ class UserService
         }
 
         $userExport = new UserExport($result);
-        $fileName = 'export'. DIRECTORY_SEPARATOR .'用户列表' . time() . '.xlsx';
-        \Excel::store($userExport, $fileName);
-
-        //ajax请求 需要返回下载地址，在使用location.href请求下载地址
-        return ['url'=>route('download', ['file_name'=>$fileName])];
+        $fileName = '用户列表' . time() . '.xlsx';
+        return  Excel::download($userExport, $fileName);
     }
 
     /**
@@ -323,19 +321,25 @@ class UserService
     /**
      * 发送修改密码的邮件
      * @param $email
+     * @param $name
      */
-    public function sendChangePasswordEmail($email){
+    public function sendChangePasswordEmail($email, $name){
+        $server_name = $server = env('WEB_HOST') . '/reset/password';
+
         //发送邮件时间
-        $server_name = env('WEB_HOST') . '/reset/password';
         $payload = ['email' => $email, 'alt'=>time(), 'expire_time' => 24];
         $token = encrypt(json_encode($payload));
 
-        $server_name .= '?token=' . $token;
-        //TODO 发送邮件
+        $server .= '?token=' . $token;
+        $url = "<a href='$server'>$server_name</a>";
+        //发送邮件
+        $email_model = Mailmagicboard::getByName($name);
         $emailService = new EmailService();
-        $data['title'] = '注册成功';
-        $data['info'] = '<a href="'. $server_name .'">点击这个链接修改密码</a>';
-        $emailService->sendDiyContactEmail($data, 1, $email);
+        $data['title'] = $email_model->title;
+        $data['info'] = $email_model->info;
+        $data['info'] = str_replace("#@url", $url, $data['info']);
+
+        $emailService->sendDiyContactEmail($data, 0, $email);
     }
 
     /**

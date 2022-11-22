@@ -6,6 +6,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\LogoutUser;
+use App\Models\Mailmagicboard;
 use App\Models\User;
 use App\Services\EmailService;
 use App\Services\JWTService;
@@ -52,11 +53,12 @@ class UserController extends Controller
 
         $user_id = $userService->add($email, $full_name, $password);
 
-        //TODO 发送注册成功邮件
+        //发送邮件
+        $email_model = Mailmagicboard::getByName('注册完成');
         $emailService = new EmailService();
-        $data['title'] = '注册成功';
-        $data['info'] = '感谢注册，账号' . $email;
-        $emailService->sendDiyContactEmail($data,1, $email);
+        $data['title'] = $email_model->title;
+        $data['info'] = $email_model->info;
+        $emailService->sendDiyContactEmail($data,0, $email);
 
         //['email'=>'test@gmail.com', 'iat'=>'签发时间', 'jti'=>'token唯一标识']
         $jti = JWTService::getJTI();
@@ -182,11 +184,21 @@ class UserController extends Controller
         //删除token
         JWTService::forgetToken($old_email);
 
-        //TODO 发送邮件
-//        $emailService = new EmailService();
-//        $data['title'] = '注册成功';
-//        $data['info'] = '您的账号正在修改邮箱，请注意';
-//        $emailService->sendDiyContactEmail($data, 1, $old_email);
+        $emailService = new EmailService();
+        //变更邮箱新邮箱提醒
+        $email_model_new = Mailmagicboard::getByName('变更邮箱新邮箱提醒');
+        $data['title'] = $email_model_new->title;
+        $data['info'] = $email_model_new->info;
+        $data['info'] = str_replace("#@old_mail", $old_email, $data['info']);
+        $data['info'] = str_replace("#@new_mail", $email, $data['info']);
+        $emailService->sendDiyContactEmail($data, 1, $email);
+
+        //变更邮箱旧邮箱提醒
+        $email_model_old = Mailmagicboard::getByName('变更邮箱旧邮箱提醒');
+        $data['title'] = $email_model_old->title;
+        $data['info'] = $email_model_old->info;
+        $data['info'] = str_replace("#@new_mail", $email, $data['info']);
+        $emailService->sendDiyContactEmail($data, 1, $old_email);
 
         return Response::json(['code'=>200, 'message'=>'success']);
     }
@@ -302,7 +314,7 @@ class UserController extends Controller
         }
 
         $userService = new UserService();
-        $userService->sendChangePasswordEmail($email);
+        $userService->sendChangePasswordEmail($email, '忘记密码');
 
         return ['code'=>200, 'message'=>'Success.'];
     }

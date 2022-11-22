@@ -169,9 +169,9 @@
 {{--                            <th>{{$order->good_name}}</th>--}}
                             <th>###</th>
                             <th>{{$order->created_at}}</th>
-                            <th>{{$order->user_email}}</th>
+                            <th>{{$user->email}}</th>
                             <th>###</th>
-                            <th>{{$order->pay_price}}</th>
+                            <th>{{$order->price}}</th>
                             <th>{{array_get($pay_type_arr, $order->pay_type)}}</th>
                             <th>{{array_get($source_arr, $order->type)}}</th>
                             <th>{{array_get($status_arr, $order->status)}}</th>

@@ -4,6 +4,7 @@
 namespace App\Http\Controllers\Admin;
 
 
+use App\Models\Mailmagicboard;
 use App\Models\User;
 use App\Services\EmailService;
 use App\Services\JWTService;
@@ -79,11 +80,16 @@ class UserController extends BaseController
         $userService = new UserService();
         $userService->add($email, $full_name, $password);
 
-        //TODO 发送邮件
+        //发送邮件
+        $emailModel = Mailmagicboard::getByName('新增用户');
         $emailService = new EmailService();
-        $data['title'] = 'ComPDFKit添加成功';
-        $data['info'] = '您的密码为' . $password . '请及时修改';
-        $emailService->sendDiyContactEmail($data, 1, $email);
+        $data['title'] = $emailModel->title;
+        $data['info'] = $emailModel->info;
+        $data['info'] = str_replace("#@username", $full_name, $data['info']);
+        $data['info'] = str_replace("#@mail", $email, $data['info']);
+        $data['info'] = str_replace("#@password", $password, $data['info']);
+
+        $emailService->sendDiyContactEmail($data, 0, $email);
 
         return ['code' => 200, 'msg' => 'success'];
     }
@@ -135,11 +141,21 @@ class UserController extends BaseController
             //删除token缓存
             JWTService::forgetToken($old_email);
 
-            //TODO 发送邮件提醒
             $emailService = new EmailService();
-            $data['title'] = 'ComPDFKit邮箱修改';
-            $data['info'] = '请注意邮箱已修改';
-            $emailService->sendDiyContactEmail($data, 1, $email);
+            //编辑用户资料提示新邮箱
+            $emailModelNew = Mailmagicboard::getByName('编辑用户资料提示新邮箱');
+            $data['title'] = $emailModelNew->title;
+            $data['info'] = $emailModelNew->info;
+            $data['info'] = str_replace("#@old_mail", $old_email, $data['info']);
+            $data['info'] = str_replace("#@new_mail", $email, $data['info']);
+            $emailService->sendDiyContactEmail($data, 0, $email);
+
+            //编辑用户资料提示老邮箱
+            $emailModelOld = Mailmagicboard::getByName('编辑用户资料提示老邮箱');
+            $data['title'] = $emailModelOld->title;
+            $data['info'] = $emailModelOld->info;
+            $data['info'] = str_replace("#@new_mail", $email, $data['info']);
+            $emailService->sendDiyContactEmail($data, 0, $old_email);
         }
 
         return ['code' => 200, 'msg' => 'success'];
@@ -181,8 +197,7 @@ class UserController extends BaseController
         $user = $userService->getById($id);
 
         $email = $user->email;
-
-        $userService->sendChangePasswordEmail($email);
+        $userService->sendChangePasswordEmail($email, '后台重置用户密码');
 
         return ['code' => 200, 'msg' => 'success'];
     }
