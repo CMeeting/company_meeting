@@ -111,9 +111,12 @@ class OrderController
         $param = $request->all();
         Db::table("callback_log")->insert(['info' => 'paddle='. json_encode($param), 'pay_type' => 1]);
         if(isset($param['alert_name']) && $param['alert_name']=="payment_succeeded" && isset($param['passthrough'])){
-            $orderno=$param['passthrough'];
-            $order = new OrdersService();
-            $order->updateorderstatus($orderno);
+            try {
+                DB::table("orders")->whereRaw("order_no='{$param['passthrough']}'")->update(['status' => 1, 'pay_time' => date("Y-m-d H:i:s")]);
+                DB::table("orders_goods")->whereRaw("order_no='{$param['passthrough']}'")->update(['status' => 1, 'pay_time' => date("Y-m-d H:i:s")]);
+            }catch (\Exception $e) {
+                error('paddle', $e->getMessage(), 200);
+            }
         }else{
             return \Response::json(['code'=>0,'mgs'=>"缺少参数"]);
         }
