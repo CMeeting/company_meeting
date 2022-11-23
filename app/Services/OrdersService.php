@@ -633,10 +633,10 @@ class OrdersService
                 $emailarr['payprice']="$0.00";
                 $emailarr['yesprice']="$".$price;
                 $emailarr['url']="http://test-pdf-pro.kdan.cn:3026/order/checkout";
-                $email->sendDiyContactEmail($emailarr,6,"1322061784@qq.com,wangyuting@kdanmobile.com",$mailedatas);
+                //$email->sendDiyContactEmail($emailarr,6,"1322061784@qq.com,wangyuting@kdanmobile.com",$mailedatas);
                 $ordergoodsarr['order_id'] = $order_id;
-                $pay = $this->comparePriceCloseAndCreateOrder($orderarr);
                 $orderGoods->insertGetId($ordergoodsarr);
+                $pay = $this->comparePriceCloseAndCreateOrder($orderarr);
             } catch (Exception $e) {
                 return ['code' => 500, 'message' => '创建失败'];
             }
@@ -803,13 +803,15 @@ class OrdersService
             $pay_url_data = $this->generatePayUrl($order['pay_type'], 'test', $order['order_no'], $order['price']);
             if ($order['pay_type'] == 2) {
                 $pay_url_data['id'] = 'ali' . $order['order_no'];
+            }elseif ($order['pay_type'] == 1){
+                $pay_url_data['id'] = 'paddle' . $order['order_no'];
             }
             $newOrderData = [
                 'third_order_no' => $pay_url_data['id'] ?? '',
                 'page_pay_url' => $pay_url_data['url'],
             ];
-            $ordernew->_update(['merchant_no' => $pay_url_data['id']], "order_no='{$order['order_no']}'");
-            $ordergoods->_update(['merchant_no' => $pay_url_data['id']], "order_no='{$order['order_no']}'");
+            $ordernew->_update(['merchant_no' => $pay_url_data['id']?? ''], "order_no='{$order['order_no']}'");
+            $ordergoods->_update(['merchant_no' => $pay_url_data['id']?? ''], "order_no='{$order['order_no']}'");
         }
         return $newOrderData;
     }
@@ -864,6 +866,13 @@ class OrdersService
         } catch (\Exception $e) {
             error('alipay', $e->getMessage(), 200);
         }
+    }
+
+    public function updateorderstatus($trade_no){
+        $order = new Order();
+        $order_goods = new OrderGoods();
+        $order->_update(['status' => 1, 'pay_time' => date("Y-m-d H:i:s")], "order_no='{$trade_no}'");
+        $order_goods->_update(['status' => 1, 'pay_time' => date("Y-m-d H:i:s")], "order_no='{$trade_no}'");
     }
 
     function headerurl()
