@@ -53,19 +53,19 @@ class UserController extends Controller
 
         $user_id = $userService->add($email, $full_name, $password);
 
+        //['email'=>'test@gmail.com', 'iat'=>'签发时间', 'jti'=>'token唯一标识']
+        $jti = JWTService::getJTI();
+        JWTService::saveToken($email, $jti);
+
+        $payload = ['email' => $email, 'iat' => time(), 'jti'=>$jti, 'id'=>$user_id];
+        $token = JWTService::getToken($payload);
+
         //发送邮件
         $email_model = Mailmagicboard::getByName('注册完成');
         $emailService = new EmailService();
         $data['title'] = $email_model->title;
         $data['info'] = $email_model->info;
         $emailService->sendDiyContactEmail($data,0, $email);
-
-        //['email'=>'test@gmail.com', 'iat'=>'签发时间', 'jti'=>'token唯一标识']
-        $jti = JWTService::getJTI();
-        Cache::add($jti, 1, 60*24);
-
-        $payload = ['email' => $email, 'iat' => time(), 'jti'=>$jti, 'id'=>$user_id];
-        $token = JWTService::getToken($payload);
 
         return Response::json(['code'=>200, 'message'=>'success', 'data'=>['token'=>$token]]);
     }
