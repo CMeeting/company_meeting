@@ -282,7 +282,7 @@ Class GenerateLicenseCodeService
         exec($command, $result);
         \Log::info('生成序列码结果：', $result);
 
-        $str = file_get_contents('../../' . $filename);
+        $str = file_get_contents('../' . $filename);
         //获取key
         $first_key = strpos($str, '<key>') + strlen('<key>');
         $len_key = strripos($str, '</key>') - $first_key;
