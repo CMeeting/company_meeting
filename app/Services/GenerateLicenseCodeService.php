@@ -277,13 +277,13 @@ Class GenerateLicenseCodeService
         }
         $command .= " -output \"$filename\"";
 
-        \Log::info('生成序列码命令:' . $command);
+//        \Log::info('生成序列码命令:' . $command);
+//
+//        exec('cat /php_compdf_server/licensedemo/licensefile/123@gmail.com_1669106845.xml', $result);
+//        \Log::info('生成序列码结果：', $result);
 
-        exec('cat /php_compdf_server/licensedemo/licensefile/123@gmail.com_1669106845.xml', $result);
-        \Log::info('生成序列码结果：', $result);
-
-        exec('pwd', $pwd_result);
-        \Log::info('测试命令', $pwd_result);
+        exec('cat /var/www/php_compdf_server/licensedemo/licensefile/123@gmail.com_1669106845.xml', $pwd_result);
+        \Log::info('测试命令', $pwd_result);die;
 
         $str = file_get_contents($filename);
         //获取key
