@@ -871,6 +871,7 @@ class OrdersService
     public function updateorderstatus($trade_no){
         $order = new Order();
         $order_goods = new OrderGoods();
+        Db::table("callback_log")->insert(['info' => 'paddle='.$trade_no, 'pay_type' => 1]);
         $order->_update(['status' => 1, 'pay_time' => date("Y-m-d H:i:s")], "order_no='{$trade_no}'");
         $order_goods->_update(['status' => 1, 'pay_time' => date("Y-m-d H:i:s")], "order_no='{$trade_no}'");
     }
