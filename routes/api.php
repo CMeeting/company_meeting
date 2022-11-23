@@ -29,7 +29,8 @@ Route::group(['namespace'=>'Api'], function(){
         Route::post('/getgoodsprice','OrderController@getgoodsprice');
         Route::get('/notify','OrderController@notify');
         Route::get('/wechatNotify','OrderController@wechatNotify');
-    Route::get('/emailtest','EmailtestContr@emailtest');
+        Route::get('/emailtest','EmailtestContr@emailtest');
+        Route::post('/paddlecallback','OrderController@paddlecallback');
 });
 
 Route::group(['middleware'=>'jwt.auth', 'namespace'=>'Api'], function(){

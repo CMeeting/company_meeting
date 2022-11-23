@@ -31,8 +31,8 @@ class PaddleBiz
         $this->public_key_string = file_get_contents(dirname(dirname(dirname(__DIR__))).'/extend/paddle/'. $pem);
         if($this->sandbox){
             $this->config=[
-                'vendor_id'         =>  2760,
-                'vendor_auth_code'  =>  'a618d381d6e20acd36bb0f130586779e98641137a9f649b878'
+                'vendor_id'         =>  9265,
+                'vendor_auth_code'  =>  '41e7a70aa9b8693a9e7636d6b7e50dae1561f8a727b0e573f8'
             ];
         }else{
             $this->config=[
@@ -159,7 +159,7 @@ class PaddleBiz
         $orderData = [
             'vendor_id'         =>  $this->config['vendor_id'],
             'vendor_auth_code'  =>  $this->config['vendor_auth_code'],
-            'product_id'   =>  14196, //产品ID
+            'product_id'   =>  40001, //产品ID
             'title'   =>  $product, //产品名称
             'prices' =>  ['USD:' . $price],
             'quantity_variable'   =>  '0', //用户修改更改购买数量配置

@@ -16,7 +16,6 @@ use App\Export\UserExport;
 use App\Http\Controllers\Api\biz\AlipayBiz;
 use App\Http\Controllers\Api\biz\PaddleBiz;
 use App\Http\Controllers\Api\biz\WechatPay;
-use App\Http\extend\wechat\lib\WxPayNotifyResults;
 use App\Http\extend\wechat\example\WxPayConfig;
 use App\Models\Goodsclassification;
 use App\Models\LicenseModel;
@@ -30,6 +29,8 @@ use App\Models\OrderGoods;
 use App\Services\MailmagicboardService;
 use App\Services\EmailService;
 use Auth;
+
+require_once  app_path('Http\extend\wechat\lib\WxPay.Data.php');
 
 class OrdersService
 {
@@ -259,6 +260,8 @@ class OrdersService
     {
         $data = $param['data'];
         $user = new User();
+        $email = new EmailService();
+        $maile = new MailmagicboardService();
         $lisecosdmode = new LicenseModel();
         $goods = new Goods();
         $order = new Order();
@@ -274,18 +277,20 @@ class OrdersService
             $arr['updated_at'] = date("Y-m-d H:i:s");
             $user_id = Db::table("users")->insertGetId($arr);
             //发送邮件
-            $emailService = new EmailService();
             $emailModel = Mailmagicboard::getByName('后台新增订单（用户注册成功邮件）');
             $data['title'] = $emailModel->title;
             $data['info'] = $emailModel->info;
             $data['info'] = str_replace("#@username", $arr['full_name'], $data['info']);
             $data['info'] = str_replace("#@mail", $arr['email'], $data['info']);
             $data['info'] = str_replace("#@password", $password, $data['info']);
-            $emailService->sendDiyContactEmail($data, 0, $arr['email']);
+            $email->sendDiyContactEmail($data, 0, $arr['email']);
+            $emailarr['username']=$arr['full_name'];
         } else {
             $users = DB::table('users')->where('email', $data['email'])->first();
             $user_id = $users->id;
+            $emailarr['username']=$users->full_name;
         }
+
         $goods_data = $goods->_where("deleted=0 and status=1");
         $arr = [];
         $sumprice = 0;
@@ -296,6 +301,8 @@ class OrdersService
             $pay_type = 0;
         }
         $classification = $this->assembly_orderclassification();
+        $sarr=[];
+        $parcudt=[];
         foreach ($data['level1'] as $k => $v) {
             $goodsid=0;
             foreach ($goods_data as $ks => $vs) {
@@ -303,6 +310,16 @@ class OrdersService
                     $goodsid = $vs['id'];
                     $price = $vs['price'];
                 }
+            }
+            $a=$classification[$v]['title'] . '-' . $classification[$data['level2'][$k]]['title'] . '-' . $classification[$data['level3'][$k]]['title'];
+            $parcudt[]=$a;
+            if($data['status']==1){
+                $mailedatas = $maile->getFindcategorical(59);
+                $sarr[]=$mailedatas;
+            }else{
+                $mailedatas = $maile->getFindcategorical(60);
+                $mailedatas['title'] = str_replace("...（产品名）",$a,$mailedatas['title']);
+                $sarr[]=$mailedatas;
             }
             if (!$goodsid) return ['code' => 500, 'msg' => $classification[$v]['title'] . '-' . $classification[$data['level2'][$k]]['title'] . '-' . $classification[$data['level3'][$k]]['title'] . '下没有商品'];
             $ordergoods_no = chr(rand(65, 90)) . time();
@@ -331,7 +348,6 @@ class OrdersService
                 'details_type' => 2,
                 'pay_type' => $pay_type,
                 'price' => $price,
-                'pay_years' => $data['period'][$k],
                 'user_id' => $user_id,
                 'appid' => implode(',', $data["appid$s"]),
                 'pay_years' => $data['period'][$k],
@@ -364,7 +380,23 @@ class OrdersService
                     $lisecosdata[$k]['order_id'] = $order_id;
                     $lisecosdata[$k]['ordergoods_id'] = $ordergoods_id;
                     $lisecosdmode->insertGetId($lisecosdata[$k]);
+                    $emailarr['products']=$parcudt[$k];
+                    $emailarr['order_id']=$order_id;
+                    $emailarr['pay_time']=date("Y-m-d H:i:s");
+                    $emailarr['goodsprice']="$".$v['price']/$v['pay_years'];
+                    $emailarr['pay_years']=$v['pay_years'];
+                    $emailarr['price']="$".$v['price'];
+                    if($data['status']==1){
+                        $emailarr['payprice']="$".$v['price'];
+                        $emailarr['noorderprice']="$0.00";
+                    }else{
+                        $emailarr['payprice']="$0.00";
+                        $emailarr['noorderprice']="$".$v['price'];
+                    }
+                    $emailarr['yesprice']="$".$price;
+                    $emailarr['url']="http://test-pdf-pro.kdan.cn:3026/order/checkout";
                 }
+                $email->sendDiyContactEmail($emailarr,9,"1322061784@qq.com,wangyuting@kdanmobile.com",$sarr[$k]);
             }
             if ($data['status'] == 1) {
                 $user_info = $user->_find("id='{$user_id}'");
@@ -574,7 +606,7 @@ class OrdersService
                 $ordergoodsarr['order_id'] = $order_id;
                 $orderGoods->insertGetId($ordergoodsarr);
 //                $email->sendDiyContactEmail($emailarr,4,$user_info['email'],$mailedatas);
-                $email->sendDiyContactEmail($emailarr,4,"1322061784@qq.com,pengjianyong@kdanmobile.com,shuwei@kdanmobile.com,wangyuting@kdanmobile.com",$mailedatas);
+                $email->sendDiyContactEmail($emailarr,4,"1322061784@qq.com,wangyuting@kdanmobile.com",$mailedatas);
             } catch (Exception $e) {
                 return ['code' => 500, 'message' => '创建失败'];
             }
@@ -601,7 +633,7 @@ class OrdersService
                 $emailarr['payprice']="$0.00";
                 $emailarr['yesprice']="$".$price;
                 $emailarr['url']="http://test-pdf-pro.kdan.cn:3026/order/checkout";
-                $email->sendDiyContactEmail($emailarr,6,"1322061784@qq.com,pengjianyong@kdanmobile.com,shuwei@kdanmobile.com,wangyuting@kdanmobile.com",$mailedatas);
+                $email->sendDiyContactEmail($emailarr,6,"1322061784@qq.com,wangyuting@kdanmobile.com",$mailedatas);
                 $ordergoodsarr['order_id'] = $order_id;
                 $pay = $this->comparePriceCloseAndCreateOrder($orderarr);
                 $orderGoods->insertGetId($ordergoodsarr);
@@ -696,7 +728,7 @@ class OrdersService
                 $emailarr['noorderprice']="$0.00";
                 $emailarr['pay_time']=$v->pay_time;
                 $emailarr['url']="http://test-pdf-pro.kdan.cn:3026/order/checkout";
-                $email->sendDiyContactEmail($emailarr,7,"1322061784@qq.com,pengjianyong@kdanmobile.com,shuwei@kdanmobile.com,wangyuting@kdanmobile.com",$mailedatas);
+                $email->sendDiyContactEmail($emailarr,7,"1322061784@qq.com,wangyuting@kdanmobile.com",$mailedatas);
             }
         }
         return $data;
