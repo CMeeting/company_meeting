@@ -263,7 +263,7 @@ Class GenerateLicenseCodeService
         \Log::info('生成序列码permission:' . $permission);
         $platform = $this->getPlatformCode($platform);
 
-        $license_demo_path = '/php_compdf_server' . DIRECTORY_SEPARATOR . 'licensedemo';
+        $license_demo_path = '../' . DIRECTORY_SEPARATOR . 'licensedemo';
         $filename = $license_demo_path . DIRECTORY_SEPARATOR . 'licensefile' . DIRECTORY_SEPARATOR . $email . '_' . time() . '.xml';
 
         //秘钥
@@ -277,13 +277,12 @@ Class GenerateLicenseCodeService
         }
         $command .= " -output \"$filename\"";
 
-//        \Log::info('生成序列码命令:' . $command);
-//
-//        exec('cat /php_compdf_server/licensedemo/licensefile/123@gmail.com_1669106845.xml', $result);
-//        \Log::info('生成序列码结果：', $result);
+        \Log::info('生成序列码命令:' . $command);
 
-        exec('cat /var/www/php_compdf_server/licensedemo/licensefile/123@gmail.com_1669106845.xml', $pwd_result);
-        \Log::info('测试命令', $pwd_result);die;
+        exec($command, $result);
+        \Log::info('生成序列码结果：', $result);
+
+        die;
 
         $str = file_get_contents($filename);
         //获取key
