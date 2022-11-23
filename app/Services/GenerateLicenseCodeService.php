@@ -263,7 +263,8 @@ Class GenerateLicenseCodeService
         \Log::info('生成序列码permission:' . $permission);
         $platform = $this->getPlatformCode($platform);
 
-        $license_demo_path = '../' . DIRECTORY_SEPARATOR . 'licensedemo';
+        //用相对路径，绝对路径在容器里面执行会找不到命令。容器的实际执行目录会有卷的名称 /etc/nginx/volumes/php_compdf_server/public
+        $license_demo_path = '..' . DIRECTORY_SEPARATOR . 'licensedemo';
         $filename = $license_demo_path . DIRECTORY_SEPARATOR . 'licensefile' . DIRECTORY_SEPARATOR . $email . '_' . time() . '.xml';
 
         //秘钥
@@ -278,13 +279,10 @@ Class GenerateLicenseCodeService
         $command .= " -output \"$filename\"";
 
         \Log::info('生成序列码命令:' . $command);
-
         exec($command, $result);
         \Log::info('生成序列码结果：', $result);
 
-        die;
-
-        $str = file_get_contents($filename);
+        $str = file_get_contents('../../' . $filename);
         //获取key
         $first_key = strpos($str, '<key>') + strlen('<key>');
         $len_key = strripos($str, '</key>') - $first_key;
