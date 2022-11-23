@@ -111,8 +111,8 @@ class OrderController
         $param = $request->all();
         Db::table("callback_log")->insert(['info' => 'paddle='. json_encode($param), 'pay_type' => 1]);
 
-        Db::table("callback_log")->insert(['info' => 'paddle='.$param['alert_name'], 'pay_type' => 1]);
-        if(isset($param['alert_name'])&&$param['alert_name']=="payment_succeeded"){
+        if(isset($param['alert_name']) && $param['alert_name']=="payment_succeeded"){
+            Db::table("callback_log")->insert(['info' => 'paddle=yes', 'pay_type' => 1]);
             $order = new OrdersService();
             $order->updateorderstatus($param['passthrough']);
         }else{
