@@ -284,8 +284,9 @@ Class GenerateLicenseCodeService
 
         $file_path = '../' . $filename;
         \Log::info('当前文件位置:' . __FILE__);
-        die;
-        $str = file_get_contents($file_path);
+        $fp = fopen($file_path , "r" );
+        $str = fread($fp , filesize($file_path ));
+        fclose($fp);
         //获取key
         $first_key = strpos($str, '<key>') + strlen('<key>');
         $len_key = strripos($str, '</key>') - $first_key;
