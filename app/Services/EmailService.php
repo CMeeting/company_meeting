@@ -52,6 +52,27 @@ class EmailService
             $arrs['info'] = str_replace("未付金额",$data['noorderprice'],$arrs['info']);
             $arrs['info'] = str_replace("(产品名)",$data['products'],$arrs['info']);
             $data['info'] = $arrs['info'];
+        }elseif ($type==8){
+            $arrs['info'] = str_replace("(具体的订单号)","test123",$arrs['info']);
+            $arrs['info'] = str_replace("(具体日期)","2022/11/22",$arrs['info']);
+            $arrs['info'] = str_replace("(对方的账号信息)","xiaochaomen",$arrs['info']);
+            $arrs['info'] = str_replace("登录ComPDFKit用户账户的链接",$data['url'],$arrs['info']);
+            $data['info'] = $arrs['info'];
+        }elseif ($type==9){
+            $arrs['info'] = str_replace("具体ID号",$data['order_id'],$arrs['info']);
+            $arrs['info'] = str_replace("具体时间",$data['pay_time'],$arrs['info']);
+            $arrs['info'] = str_replace("(人名)",$data['username'],$arrs['info']);
+            $arrs['info'] = str_replace("具体产品名",$data['products'],$arrs['info']);
+            $arrs['info'] = str_replace("购买时长",$data['pay_years']."/year",$arrs['info']);
+            $arrs['info'] = str_replace("产品费用",$data['goodsprice'],$arrs['info']);
+            $arrs['info'] = str_replace("总金额",$data['price'],$arrs['info']);
+            $arrs['info'] = str_replace("税收金额","$0.00",$arrs['info']);
+            $arrs['info'] = str_replace("已支付的金额",$data['payprice'],$arrs['info']);
+            $arrs['info'] = str_replace("未付金额",$data['noorderprice'],$arrs['info']);
+            $arrs['info'] = str_replace("对应产品的购买页面",$data['url'],$arrs['info']);
+            $arrs['info'] = str_replace("应支付的金额",$data['price'],$arrs['info']);
+            $arrs['info'] = str_replace("发票下载链接",$data['url'],$arrs['info']);
+            $data['info'] = $arrs['info'];
         }
         $res=$this->send_email($data,$arr,$subject,$type);
     }

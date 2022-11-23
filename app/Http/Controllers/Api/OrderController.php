@@ -6,6 +6,7 @@ namespace App\Http\Controllers\Api;
 use App\Services\OrdersService;
 use App\Services\UserService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 
 class OrderController
@@ -101,8 +102,21 @@ class OrderController
     {
         $order = new OrdersService();
         $xml = isset($GLOBALS['HTTP_RAW_POST_DATA']) ? $GLOBALS['HTTP_RAW_POST_DATA'] : file_get_contents("php://input");
-        Db::table("callback_log")->insert(['info' => 'wxtext='. json_encode($xml), 'pay_type' => 3]);
+        //Db::table("callback_log")->insert(['info' => 'wxtext='. json_encode($xml), 'pay_type' => 3]);
         $order->wechatnot($xml);
 
     }
+
+    public function paddlecallback(Request $request){
+        $param = $request->all();
+        Db::table("callback_log")->insert(['info' => 'paddle='. json_encode($param), 'pay_type' => 1]);
+        if(isset($param['alert_name'])&&$param['alert_name']=="payment_succeeded"){
+            $order = new OrdersService();
+            $order->updateorderstatus($param['passthrough']);
+        }else{
+            return \Response::json(['code'=>0,'mgs'=>"缺少参数"]);
+        }
+
+    }
+
 }
