@@ -163,7 +163,7 @@ class JWTService
      * @param $email
      */
     public static function forgetToken($email){
-        $key = 'jwt' . $email;
+        $key = 'jwt:' . $email;
         if(\Cache::has($key)){
             \Cache::forget($key);
         }
@@ -176,7 +176,7 @@ class JWTService
      */
     public static function saveToken($email, $jti)
     {
-        $key = 'jwt' . $email;
+        $key = 'jwt:' . $email;
         self::forgetToken($email);
         \Cache::add($key, $jti, 60 * 24 * 14);
     }
