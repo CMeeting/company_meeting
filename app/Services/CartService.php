@@ -200,7 +200,7 @@ class CartService
                 }
                 $orderGoods->_insert($arr);
                 $pay=$orderserve->comparePriceCloseAndCreateOrder($orderdata);
-                $cart->_deletes("user_id='{$data['user_id']}'");
+                DB::table("order_cart")->whereRaw("user_id='{$data['user_id']}'")->delete();
             } catch (Exception $e) {
                 return ['code' => 500, 'message' => '创建失败'];
             }
