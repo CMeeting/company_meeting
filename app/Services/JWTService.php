@@ -131,9 +131,9 @@ class JWTService
         //是否过期
         if(!isset($payload->jti)){
             return ['code'=>401, 'msg'=>'Expired Token'];
-        }elseif(!\Cache::has('jwt' . $payload->email)){
+        }elseif(!\Cache::has('jwt:' . $payload->email)){
             return ['code'=>401, 'msg'=>'Expired Token'];
-        }elseif(\Cache::get('jwt' . $payload->email) != $payload->jti){
+        }elseif(\Cache::get('jwt:' . $payload->email) != $payload->jti){
             return ['code'=>401, 'msg'=>'Expired Token'];
         }
 
