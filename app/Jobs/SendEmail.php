@@ -25,7 +25,7 @@ class SendEmail implements ShouldQueue
 
     public function __construct($data, $type, $email)
     {
-        \Log::info('邮件发送队列');
+        \Log::info('邮件发送队列:' . $email);
         $this->data = $data;
         $this->type = $type;
         $this->email = $email;
@@ -38,7 +38,7 @@ class SendEmail implements ShouldQueue
      */
     public function handle()
     {
-        \Log::info('开始发送邮件');
+        \Log::info('开始发送邮件:' . $this->email);
         $emailService = new EmailService();
         $emailService->sendDiyContactEmail($this->data, $this->type, $this->email);
     }
