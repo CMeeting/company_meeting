@@ -36,7 +36,6 @@ class OrdercartController
         $current_user = UserService::getCurrentUser($request);
         $user_id = $current_user->id;
         $param = $request->all();
-        dump($param);exit;
         $param['user_id'] = $user_id;
         $data = $cart->createorder($param);
         return \Response::json($data);

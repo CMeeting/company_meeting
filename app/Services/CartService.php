@@ -16,6 +16,7 @@ use App\Models\Goods;
 use App\Models\Goodsclassification;
 use App\Models\Order;
 use App\Models\OrderGoods;
+use App\Services\OrdersService;
 use Auth;
 
 class CartService
@@ -149,6 +150,7 @@ class CartService
         $order = new Order();
         $cart = new cart();
         $orderGoods = new OrderGoods();
+        $orderserve = new OrdersService();
         $goods = new goods();
         $orderno=time();
         $list=$cart->_where("user_id='{$data['user_id']}'");
@@ -163,7 +165,7 @@ class CartService
             }
             $price = $v['pay_years']*$goods_data['price'];
             $arr[] = [
-                'pay_type' => 0,
+                'pay_type' => $data['pay_type'],
                 'order_no'=>$orderno,
                 'status' => 0,
                 'type' => 2,
@@ -181,7 +183,7 @@ class CartService
         }
         $orderdata = [
             'order_no' => $orderno,
-            'pay_type' => 0,
+            'pay_type' => $data['pay_type'],
             'status' => 0,
             'type' => 2,
             'details_type' => 2,
@@ -197,11 +199,12 @@ class CartService
                     $arr[$k]['order_no'] = $orderno;
                 }
                 $orderGoods->_insert($arr);
+                $pay=$orderserve->comparePriceCloseAndCreateOrder($orderdata);
                 $cart->_delete(["user_id",'=',$data['user_id']]);
             } catch (Exception $e) {
                 return ['code' => 500, 'message' => '创建失败'];
             }
-            return ['code' => 200, 'msg' => "创建订单成功",'data'=>['order_id'=>$order_id]];
+            return ['code' => 200, 'msg' => "创建订单成功",'data'=>['order_id'=>$order_id,'pay'=>$pay]];
         }
 
 
