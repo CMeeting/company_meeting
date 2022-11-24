@@ -21,10 +21,10 @@ class JWTService
     ];
 
     //jwt秘钥
-    private static $jwt_key = '123456';
+    private static $jwt_key = 'compdfkitjwtkeydev';
 
     //token加密iv
-    private static $iv = 'abcdefgh';
+    private static $iv = 'compdfkitivdev';
 
     //token加密方式
     private static $method = 'DES-EDE-CFB';
