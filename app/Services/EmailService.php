@@ -84,7 +84,12 @@ class EmailService
                  ['info' => $data['info']],//模板页面的内容
                  function ($obj) use($v, $subject) {
                      //用邮件对象执行发送的功能
-                     $obj->to($v)->subject($subject);
+                     try{
+                         $obj->to($v)->subject($subject);
+                     }catch (\Exception $e){
+                         \Log::info("$v:邮件发送异常", $e->getMessage());
+                         throw new \Exception("邮件发送失败");
+                     }
                  }
              );
               if($type==2){
