@@ -15,6 +15,7 @@ use App\Models\CartModels as cart;
 use App\Models\Goods;
 use App\Models\Goodsclassification;
 use App\Models\Order;
+use Illuminate\Support\Facades\DB;
 use App\Models\OrderGoods;
 use App\Services\OrdersService;
 use Auth;
