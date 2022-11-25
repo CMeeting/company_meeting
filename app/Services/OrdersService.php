@@ -605,7 +605,6 @@ class OrdersService
                 $order_id = $order->insertGetId($orderarr);
                 $ordergoodsarr['order_id'] = $order_id;
                 $orderGoods->insertGetId($ordergoodsarr);
-//                $email->sendDiyContactEmail($emailarr,4,$user_info['email'],$mailedatas);
                 $email->sendDiyContactEmail($emailarr,4,"1322061784@qq.com,wangyuting@kdanmobile.com",$mailedatas);
             } catch (Exception $e) {
                 return ['code' => 500, 'message' => '创建失败'];
@@ -636,7 +635,7 @@ class OrdersService
                 $email->sendDiyContactEmail($emailarr,6,"1322061784@qq.com,wangyuting@kdanmobile.com",$mailedatas);
                 $ordergoodsarr['order_id'] = $order_id;
                 $orderGoods->insertGetId($ordergoodsarr);
-                $orderarr['email']=isset($data['info']['email'])??'';
+                $orderarr['email']=$data['info']['email'] ?? '';
                 $pay = $this->comparePriceCloseAndCreateOrder($orderarr);
             } catch (Exception $e) {
                 return ['code' => 500, 'message' => '创建失败'];
