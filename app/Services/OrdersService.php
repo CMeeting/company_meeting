@@ -633,9 +633,10 @@ class OrdersService
                 $emailarr['payprice']="$0.00";
                 $emailarr['yesprice']="$".$price;
                 $emailarr['url']="http://test-pdf-pro.kdan.cn:3026/order/checkout";
-                //$email->sendDiyContactEmail($emailarr,6,"1322061784@qq.com,wangyuting@kdanmobile.com",$mailedatas);
+                $email->sendDiyContactEmail($emailarr,6,"1322061784@qq.com,wangyuting@kdanmobile.com",$mailedatas);
                 $ordergoodsarr['order_id'] = $order_id;
                 $orderGoods->insertGetId($ordergoodsarr);
+                $orderarr['email']=isset($data['info']['email'])??'';
                 $pay = $this->comparePriceCloseAndCreateOrder($orderarr);
             } catch (Exception $e) {
                 return ['code' => 500, 'message' => '创建失败'];
@@ -800,7 +801,7 @@ class OrdersService
         $ordernew = new Order();
         $ordergoods = new OrderGoods();
         if (empty($order['page_pay_url'])) {
-            $pay_url_data = $this->generatePayUrl($order['pay_type'], 'test', $order['order_no'], $order['price']);
+            $pay_url_data = $this->generatePayUrl($order['pay_type'], 'ComPDFKit', $order['order_no'], $order['price'],$order['email']);
             if ($order['pay_type'] == 2) {
                 $pay_url_data['id'] = 'ali' . $order['order_no'];
             }elseif ($order['pay_type'] == 1){
@@ -817,13 +818,13 @@ class OrdersService
     }
 
 
-    public function generatePayUrl($payment, $product, $trade_no, $price)
+    public function generatePayUrl($payment, $product, $trade_no, $price,$email)
     {
         $call_back = $this->headerurl();
         $pay_url_data = [];
         if ($payment == self::$payments['paddle']) {
             $paddle = new PaddleBiz();
-            $pay_url_data = $paddle->createPayLink($trade_no, $product, $price);
+            $pay_url_data = $paddle->createPayLink($trade_no, $product, $price,1,$email);
         } elseif ($payment == self::$payments['alipay']) {
             $pay_redirect_path = '/resubscribe/payed';
             $return_url = $call_back . $pay_redirect_path;
