@@ -249,8 +249,8 @@ Class GenerateLicenseCodeService
     /**
      * 生成序列码
      * @param $product
-     * @param $license_type
      * @param $platform
+     * @param $license_type
      * @param $start_time
      * @param $end_time
      * @param $ids
@@ -258,7 +258,7 @@ Class GenerateLicenseCodeService
      * @return array
      * @throws \Exception
      */
-    public function generate($product, $license_type, $platform, $start_time, $end_time, $ids, $email){
+    public function generate($product, $platform, $license_type, $start_time, $end_time, $ids, $email){
         $permission = $this->getPermission($product, $license_type);
         \Log::info('生成序列码permission:' . $permission);
         $platform = $this->getPlatformCode($platform);

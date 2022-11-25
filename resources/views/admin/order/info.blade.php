@@ -7,7 +7,7 @@
                 <h5 style="width: 20%;float: left">查看订单</h5>
                 <div class="clearfix form-actions" style="float: right;width: 79.5%">
                     <div class="col-md-offset-5 col-md-9" style="margin-left: 94.5%">
-                        <a id="reset" class="menuid btn btn-primary btn-sm" href="{{route('order.index')}}">返回</a>
+                        <a id="reset" class="menuid btn btn-primary btn-sm" onclick="returnHistory()">返回</a>
                     </div>
                 </div>
             </div>
@@ -235,6 +235,10 @@
             layer.close(index);
         });
 
+    }
+
+    function returnHistory() {
+        window.location.href = document.referrer
     }
 </script>
 

@@ -31,17 +31,21 @@ class UserService
 
     public function getList($keyword, $country, $type, $start_date, $end_date, $export)
     {
-        $query = \DB::table('users as u')
-            ->leftJoin('user_billing_information as b', 'u.id', '=', 'b.user_id')
-            ->select(['u.id as uid', 'u.email as u_email', 'u.full_name as full_name', 'u.order_num', 'u.order_amount','u.type as type', 'u.created_at as register_time', 'b.*'])
-            ->groupBy('u.id');
+        $query = User::leftJoin('user_billing_information as b', 'b.user_id', '=', 'users.id')
+            ->with(['orders' => function ($query){
+                $query->whereIn('status', [1,2]);
+            }])
+            ->selectRaw('SUM(orders.price) as order_amount')
+            ->selectRaw('COUNT(orders.id) as order_num')
+            ->select(['users.id as uid', 'users.email as u_email', 'users.full_name as full_name', 'users.order_num', 'users.order_amount','users.type as type', 'users.created_at as register_time'])
+            ->groupBy('users.id');
 
         if ($keyword) {
             $query->where(function ($item) use ($keyword) {
-                $item->where('u.id', intval($keyword))
-                    ->orWhere('b.company', $keyword)
-                    ->orWhere('u.email', $keyword)
-                    ->orWhere('u.full_name', $keyword);
+                $item->where('users.id', intval($keyword))
+                    ->orWhere('b.country', $keyword)
+                    ->orWhere('users.email', $keyword)
+                    ->orWhere('users.full_name', $keyword);
             });
         }
 
@@ -50,18 +54,18 @@ class UserService
         }
 
         if ($type && $type != -1) {
-            $query->where('u.type', intval($type));
+            $query->where('users.type', intval($type));
         }
 
         if ($start_date) {
-            $query->where('u.created_at', '>=', Carbon::parse($start_date)->startOfDay()->toDateTimeString());
+            $query->where('users.created_at', '>=', Carbon::parse($start_date)->startOfDay()->toDateTimeString());
         }
 
         if ($end_date) {
-            $query->where('u.created_at', '<=', Carbon::parse($end_date)->endOfDay()->toDateTimeString());
+            $query->where('users.created_at', '<=', Carbon::parse($end_date)->endOfDay()->toDateTimeString());
         }
 
-        $query->orderBy('u.created_at', 'desc');
+        $query->orderBy('users.created_at', 'desc');
 
         if($export == User::CODE_1_YES){
             return $query->get()->toArray();
@@ -132,7 +136,6 @@ class UserService
     public function getUserOrders($user_id)
     {
         return \DB::table('orders as o')
-            ->leftJoin('orders_goods as og', 'o.id', '=', 'og.order_id')
             ->where('o.user_id', $user_id)
             ->select(['o.*'])
             ->orderBy('created_at', 'desc')

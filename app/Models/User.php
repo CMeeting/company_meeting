@@ -53,6 +53,14 @@ class User extends Model
     }
 
     /**
+     * 订单信息
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function orders(){
+        return $this->hasMany(Order::class, 'user_id', 'id');
+    }
+
+    /**
      * 邮箱是否存在
      * @param $email
      * @param $id

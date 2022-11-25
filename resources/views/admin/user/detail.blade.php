@@ -18,7 +18,7 @@
     <div class="row">
         <div class="ibox-title" style="margin-bottom:20px">
             <span style="display: inline-block; width: 200px; font-size: 20px">用户详情</span>
-            <a href="javascript:history.back(-1)"><button class="btn btn-primary btn-sm back" type="button" style="float: right"><i class="fa fa-chevron-left"></i> 返回列表 </button></a>
+            <a href="{{route('user.list')}}"><button class="btn btn-primary btn-sm back" type="button" style="float: right"><i class="fa fa-chevron-left"></i> 返回列表 </button></a>
         </div>
         <fieldset class="layui-elem-field">
             <legend>基本信息</legend>
@@ -150,15 +150,14 @@
                     <thead>
                     <tr>
                         <th style="background: #e2e2e2">订单编号</th>
-{{--                        <th style="background: #e2e2e2">商品名称</th>--}}
-                        <th style="background: #e2e2e2">APP ID/Machine</th>
-                        <th style="background: #e2e2e2">提交时间</th>
                         <th style="background: #e2e2e2">用户账号</th>
-                        <th style="background: #e2e2e2">订单类型</th>
-                        <th style="background: #e2e2e2">订单金额</th>
                         <th style="background: #e2e2e2">支付方式</th>
-                        <th style="background: #e2e2e2">订单来源</th>
+                        <th style="background: #e2e2e2">订单金额</th>
                         <th style="background: #e2e2e2">订单状态</th>
+                        <th style="background: #e2e2e2">订单来源</th>
+                        <th style="background: #e2e2e2">订单类型</th>
+                        <th style="background: #e2e2e2">创建时间</th>
+                        <th style="background: #e2e2e2">支付时间</th>
                         <th style="background: #e2e2e2">操作</th>
                     </tr>
                     </thead>
@@ -166,18 +165,18 @@
                     @foreach($orders as $order)
                         <tr>
                             <th>{{$order->order_no}}</th>
-{{--                            <th>{{$order->good_name}}</th>--}}
-                            <th>###</th>
-                            <th>{{$order->created_at}}</th>
                             <th>{{$user->email}}</th>
-                            <th>###</th>
-                            <th>{{$order->price}}</th>
                             <th>{{array_get($pay_type_arr, $order->pay_type)}}</th>
-                            <th>{{array_get($source_arr, $order->type)}}</th>
+                            <th>{{$order->price}}</th>
                             <th>{{array_get($status_arr, $order->status)}}</th>
+                            <th>{{array_get($source_arr, $order->type)}}</th>
+                            <th>{{array_get($details_type_arr, $order->details_type)}}</th>
+                            <th>{{$order->created_at}}</th>
+                            <th>{{$order->pay_time}}</th>
+
                             <th>
                                 <div class="btn-group">
-                                    <a href=""><button class="btn btn-primary btn-xs" type="button"><i class="fa fa-paste"></i> 查看订单</button></a>
+                                    <a  href="{{route('order.getinfo',$order->id)}}"><button class="btn btn-primary btn-xs" type="button"><i class="fa fa-paste"></i> 查看订单</button></a>
                                 </div>
                             </th>
                         </tr>

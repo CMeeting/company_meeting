@@ -93,7 +93,7 @@ class LicenseController extends BaseController
         $email = $request->input('email');
 
         $generate = new GenerateLicenseCodeService();
-        return $generate->generate($product, $license_type, $platform, $start_time, $end_time, $ids, $email);
+        return $generate->generate($product, $platform, $license_type, $start_time, $end_time, $ids, $email);
     }
 
 }
