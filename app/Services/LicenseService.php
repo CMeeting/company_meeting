@@ -294,5 +294,72 @@ class LicenseService
         return $arr;
     }
 
+    /**
+     * 构造序列码数组
+     * @param $ordergoods_no
+     * @param $period
+     * @param $user_id
+     * @param $product_id
+     * @param $platform_id
+     * @param $licensetype_id
+     * @param $app_id
+     * @param $email
+     * @return array
+     * @throws \Exception
+     */
+    public static function buildLicenseCodeData($ordergoods_no, $period, $user_id, $product_id, $platform_id, $licensetype_id, $app_id, $email){
+        $license_code_arr = [];
 
+        $start_time = time();
+        $end_time = strtotime("+" . $period . " year");
+
+        $product = GoodsclassificationService::getNameById($product_id);
+        $platform = GoodsclassificationService::getNameById($platform_id);
+        $license_type = GoodsclassificationService::getNameById($licensetype_id);
+
+        $generateService = new GenerateLicenseCodeService();
+        if($product == 'ComPDFKit SDK'){
+            $license_code_pdf = $generateService->generate('ComPDFKit PDF SDK ', $platform, $license_type, $start_time, $end_time, $app_id, $email);
+            $license_code_arr[] = self::getLicenseCodeData($license_code_pdf, $ordergoods_no, $user_id, $product_id, $platform_id, $licensetype_id, $app_id, $period);
+
+            $license_code_conversion = $generateService->generate('ComPDFKit Conversion SDK ', $platform, $license_type, $start_time, $end_time, $app_id, $email);
+            $license_code_arr[] = self::getLicenseCodeData($license_code_conversion, $ordergoods_no, $user_id, $product_id, $platform_id, $licensetype_id, $app_id, $period);
+        }else{
+            $license_code_conversion = $generateService->generate($product, $platform, $license_type, $start_time, $end_time, $app_id, $email);
+            $license_code_arr[] = self::getLicenseCodeData($license_code_conversion, $ordergoods_no, $user_id, $product_id, $platform_id, $licensetype_id, $app_id, $period);
+        }
+
+        return $license_code_arr;
+    }
+
+    /**
+     * 返回序列码数组
+     * @param $license_code
+     * @param $ordergoods_no
+     * @param $user_id
+     * @param $product_id
+     * @param $platform_id
+     * @param $licensetype_id
+     * @param $app_id
+     * @param $period
+     * @return array
+     */
+    public static function getLicenseCodeData($license_code, $ordergoods_no, $user_id, $product_id, $platform_id, $licensetype_id, $app_id, $period){
+        $license_key = $license_code['key'];
+        $license_secret = $license_code['secret'];
+        return [
+            'goods_no' => $ordergoods_no,
+            'user_id' => $user_id,
+            'products_id' => $product_id,
+            'platform_id' => $platform_id,
+            'licensetype_id' => $licensetype_id,
+            'license_key' => $license_key,
+            'license_secret' => $license_secret,
+            'uuid' => implode(',', $app_id),
+            'period' => $period,
+            'type' => 2,
+            'status' => 1,
+            'expire_time' => date("Y-m-d H:i:s", strtotime("+" . $period . " year"))
+        ];
+    }
 }

@@ -188,4 +188,9 @@ class GoodsclassificationService
         return $arr;
     }
 
+    public static function getNameById($id){
+        $good_class = Goodsclassification::find($id);
+        return $good_class->title;
+    }
+
 }

@@ -324,22 +324,8 @@ class OrdersService
             if (!$goodsid) return ['code' => 500, 'msg' => $classification[$v]['title'] . '-' . $classification[$data['level2'][$k]]['title'] . '-' . $classification[$data['level3'][$k]]['title'] . '下没有商品'];
             $ordergoods_no = chr(rand(65, 90)) . time();
             $s = $k + 1;
-            $lisecosd = str_pad("'" . mt_rand(1, 9999) . "'", 4, '0', STR_PAD_LEFT) . "-" . str_pad("'" . mt_rand(1, 9999) . "'", 4, '0', STR_PAD_LEFT) . "-" . str_pad("'" . mt_rand(1, 9999) . "'", 4, '0', STR_PAD_LEFT) . "-" . str_pad("'" . mt_rand(1, 9999) . "'", 4, '0', STR_PAD_LEFT);
-            $license_secret = str_pad("'" . mt_rand(1, 9999) . "'", 4, '0', STR_PAD_LEFT) . "-" . str_pad("'" . mt_rand(1, 9999) . "'", 4, '0', STR_PAD_LEFT) . "-" . str_pad("'" . mt_rand(1, 9999) . "'", 4, '0', STR_PAD_LEFT) . "-" . str_pad("'" . mt_rand(1, 9999) . "'", 4, '0', STR_PAD_LEFT);
-            $lisecosdata[] = [
-                'goods_no' => $ordergoods_no,
-                'user_id' => $user_id,
-                'products_id' => $v,
-                'platform_id' => $data['level2'][$k],
-                'licensetype_id' => $data['level3'][$k],
-                'license_key' => $lisecosd,
-                'license_secret' => $license_secret,
-                'uuid' => implode(',', $data["appid$s"]),
-                'period' => $data['period'][$k],
-                'type' => 2,
-                'status' => 1,
-                'expire_time' => date("Y-m-d H:i:s", strtotime("+" . $data['period'][$k] . " year"))
-            ];
+
+            $lisecosdata = LicenseService::buildLicenseCodeData($ordergoods_no, $data['period'][$k], $user_id, $v, $data['level2'][$k], $data['level3'][$k],  $data["appid$s"], $data['email']);
 
             $arr[] = [
                 'goods_no' => $ordergoods_no,
@@ -874,5 +860,4 @@ class OrdersService
         $http_type = ((isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on') || (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] == 'https')) ? 'https://' : 'http://';
         return $http_type . $_SERVER['HTTP_HOST'];
     }
-
 }
