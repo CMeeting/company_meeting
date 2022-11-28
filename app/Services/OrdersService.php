@@ -602,6 +602,8 @@ class OrdersService
             $ordergoodsarr['pay_years'] = $data['pay_years'];
             try {
                 $order_id = $order->insertGetId($orderarr);
+                $ordergoodsarr['order_id'] = $order_id;
+                $orderGoods->insertGetId($ordergoodsarr);
                 $emailarr['order_id']=$order_id;
                 $emailarr['pay_years']=$data['pay_years'];
                 $emailarr['price']="$".$price;
@@ -609,8 +611,6 @@ class OrdersService
                 $emailarr['yesprice']="$".$price;
                 $emailarr['url']="http://test-pdf-pro.kdan.cn:3026/order/checkout";
                 $email->sendDiyContactEmail($emailarr,6,"1322061784@qq.com,wangyuting@kdanmobile.com",$mailedatas);
-                $ordergoodsarr['order_id'] = $order_id;
-                $orderGoods->insertGetId($ordergoodsarr);
                 $orderarr['email'] = $data['info']['email'] ?? '';
                 $orderarr['id'] = $order_id ?? 0;
                 $pay = $this->comparePriceCloseAndCreateOrder($orderarr);
@@ -841,14 +841,14 @@ class OrdersService
         $emaildata = unserialize($orderdata['user_bill']);
         $ordergoods_data = $ordergoods->_where("merchant_no='{$trade_no}'");
         $goods_data = $goods->_where("1=1");
-        try {
+
             if (!empty($order_data) && $order_data['trade_status'] == 'TRADE_SUCCESS') {
                 Db::table("callback_log")->insert(['info' => 'orderno=' . $trade_no . json_encode($order_data), 'pay_type' => 2]);
                 $order_goods = new OrderGoods();
                 foreach ($ordergoods_data as $k=>$v){
                     foreach ($goods_data as $ks=>$vs){
                         if($v['goods_id']==$vs['id']){
-                            $licensecodedata=LicenseService::buildLicenseCodeData($v['goods_no'], $v['pay_years'], $v['user_id'], $vs['level1'], $vs['level2'], $vs['level3'],  explode($v['appid']), $emaildata['email'],$v['order_id'],$v['id']);
+                            $licensecodedata=LicenseService::buildLicenseCodeData($v['goods_no'], $v['pay_years'], $v['user_id'], $vs['level1'], $vs['level2'], $vs['level3'],  explode(",",$v['appid']), $emaildata['email'],$v['order_id'],$v['id']);
                             $lisecosdmode->_insert($licensecodedata);
                         }
                     }
@@ -858,9 +858,7 @@ class OrdersService
             } else {
                 Db::table("callback_log")->insert(['info' => 'orderno=' . $trade_no . json_encode($order_data), 'pay_type' => 2]);
             }
-        } catch (\Exception $e) {
-            error('alipay', $e->getMessage(), 200);
-        }
+
     }
 
 
