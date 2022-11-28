@@ -3,6 +3,11 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Models\Goods;
+use App\Models\LicenseModel;
+use App\Models\Order;
+use App\Models\OrderGoods;
+use App\Services\LicenseService;
 use App\Services\OrdersService;
 use App\Services\UserService;
 use Illuminate\Http\Request;
@@ -108,12 +113,29 @@ class OrderController
     }
 
     public function paddlecallback(Request $request){
+        $goods = new Goods();
+        $ordergoods = new OrderGoods();
+        $order = new Order();
+        $lisecosdmode = new LicenseModel();
         $param = $request->all();
         Db::table("callback_log")->insert(['info' => 'paddle='. json_encode($param), 'pay_type' => 1]);
         if(isset($param['alert_name']) && $param['alert_name']=="payment_succeeded" && isset($param['passthrough'])){
+            $orderdata = $order->_find("merchant_no={$param['passthrough']}");
+            $orderdata = $order->objToArr($orderdata);
+            $emaildata = unserialize($orderdata['user_bill']);
+            $ordergoods_data = $ordergoods->_where("merchant_no={$param['passthrough']}");
+            $goods_data = $goods->_where("1=1");
             try {
                 DB::table("orders")->whereRaw("order_no='{$param['passthrough']}'")->update(['status' => 1, 'pay_time' => date("Y-m-d H:i:s")]);
                 DB::table("orders_goods")->whereRaw("order_no='{$param['passthrough']}'")->update(['status' => 1, 'pay_time' => date("Y-m-d H:i:s")]);
+                foreach ($ordergoods_data as $k=>$v){
+                    foreach ($goods_data as $ks=>$vs){
+                        if($v['goods_id']==$vs['id']){
+                            $licensecodedata=LicenseService::buildLicenseCodeData($v['goods_no'], $v['pay_years'], $v['user_id'], $vs['level1'], $vs['level2'], $vs['level3'],  explode($v['appid']), $emaildata['email'],$v['order_id'],$v['id']);
+                            $lisecosdmode->_insert($licensecodedata);
+                        }
+                    }
+                }
             }catch (\Exception $e) {
                 error('paddle', $e->getMessage(), 200);
             }

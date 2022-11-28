@@ -325,8 +325,7 @@ class OrdersService
             $ordergoods_no = chr(rand(65, 90)) . time();
             $s = $k + 1;
 
-            $lisecosdata = LicenseService::buildLicenseCodeData($ordergoods_no, $data['period'][$k], $user_id, $v, $data['level2'][$k], $data['level3'][$k],  $data["appid$s"], $data['email']);
-
+            $appid[]=$data["appid$s"];
             $arr[] = [
                 'goods_no' => $ordergoods_no,
                 'status' => $data['status'],
@@ -363,9 +362,6 @@ class OrdersService
                 $arr[$k]['order_no'] = $orderno;
                 $ordergoods_id = $orderGoods->insertGetId($arr[$k]);
                 if ($ordergoods_id) {
-                    $lisecosdata[$k]['order_id'] = $order_id;
-                    $lisecosdata[$k]['ordergoods_id'] = $ordergoods_id;
-                    $lisecosdmode->insertGetId($lisecosdata[$k]);
                     $emailarr['products']=$parcudt[$k];
                     $emailarr['order_id']=$order_id;
                     $emailarr['pay_time']=date("Y-m-d H:i:s");
@@ -375,6 +371,8 @@ class OrdersService
                     if($data['status']==1){
                         $emailarr['payprice']="$".$v['price'];
                         $emailarr['noorderprice']="$0.00";
+                        $lisecosdata = LicenseService::buildLicenseCodeData($arr[$k]['goods_no'], $arr[$k]['pay_years'], $user_id, $data['level1'][$k], $data['level2'][$k], $data['level3'][$k],  $appid[$k], $data['email'],$order_id,$ordergoods_id);
+                        $lisecosdmode->insertGetId($lisecosdata);
                     }else{
                         $emailarr['payprice']="$0.00";
                         $emailarr['noorderprice']="$".$v['price'];
@@ -407,7 +405,7 @@ class OrdersService
             ->selectRaw("orders_goods.*,users.email,goods.level1,goods.level2,goods.level3")
             ->get()->toArray();
         if (!empty($ordergoodsdata)) {
-            $classification = $this->assembly_classification();
+            $classification = $this->assembly_orderclassification();
             foreach ($ordergoodsdata as $k => $v) {
                 $ordergoodsdata[$k]['products'] = $classification[$v['level1']]['title'];
                 $ordergoodsdata[$k]['platform'] = $classification[$v['level2']]['title'];
@@ -478,35 +476,23 @@ class OrdersService
     {
         $order = new Order();
         $orderGoods = new OrderGoods();
-        $data = $order->_where("user_id='{$parm['user_id']}'", "id DESC", "id,status,created_at,price");
+        $data = $order->_where("user_id='{$parm['user_id']}'", "id DESC", "id,order_no,status,created_at,price");
         if (!$data) {
             return ['code' => 403, 'msg' => '当前没有订单数据', 'data' => []];
         }
         $ordergoodsdata = $orderGoods
             ->leftJoin('goods', 'orders_goods.goods_id', '=', 'goods.id')
-            ->whereRaw("orders_goods.user_id='{$parm['user_id']}'")
-            ->selectRaw("goods.level1,goods.level2,goods.level3,orders_goods.order_id")
+            ->whereRaw("orders_goods.user_id='{$parm['user_id']}' and orders_goods.details_type!=1")
+            ->selectRaw("goods.level1,goods.level2,goods.level3,orders_goods.order_no as order_id")
             ->get()->toArray();
         $classification = $this->assembly_orderclassification();
         foreach ($data as $k => $v) {
             foreach ($ordergoodsdata as $ks => $vs) {
-                if ($v['id'] == $vs['order_id']) {
-                    if (isset($classification['fenlei'][$vs['level1']]['title'])) {
-                        $level1 = $classification['fenlei'][$vs['level1']]['title'];
-                    } else {
-                        $level1 = "";
-                    }
-                    if (isset($classification['fenlei'][$vs['level2']]['title'])) {
-                        $level2 = $classification['fenlei'][$vs['level2']]['title'];
-                    } else {
-                        $level2 = "";
-                    }
-                    if (isset($classification['fenlei'][$vs['level3']]['title'])) {
-                        $level3 = $classification['fenlei'][$vs['level3']]['title'];
-                    } else {
-                        $level3 = "";
-                    }
-                    $data[$k]['list'][] = $level1 . $level2 . $level3;
+                if ($v['order_no'] == $vs['order_id']) {
+                        $level1 = $classification[$vs['level1']]['title'];
+                        $level2 = $classification[$vs['level2']]['title'];
+                        $level3 = $classification[$vs['level3']]['title'];
+                        $data[$k]['list'][] = $level1 ." for ". $level2 ." (". $level3.")";
                 }
             }
         }
@@ -519,7 +505,7 @@ class OrdersService
         $ordergoodsdata = $orderGoods
             ->leftJoin('goods', 'orders_goods.goods_id', '=', 'goods.id')
             ->whereRaw("orders_goods.user_id='{$parm['user_id']}' and orders_goods.details_type=1")
-            ->selectRaw("goods.level1,goods.level2,goods.level3,orders_goods.order_id,orders_goods.goods_id,orders_goods.appid,orders_goods.created_at")
+            ->selectRaw("goods.level1,goods.level2,goods.level3,orders_goods.order_no as order_id,orders_goods.goods_id,orders_goods.appid,orders_goods.created_at")
             ->get()->toArray();
         $classification = $this->assembly_orderclassification();
         foreach ($ordergoodsdata as $ks => $vs) {
@@ -537,6 +523,7 @@ class OrdersService
         $orderGoods = new OrderGoods();
         $goods = new goods();
         $userobj = new User();
+        $lisecosdmode= new LicenseModel();
         $orderno = time();
         $goodsfeilei = $this->assembly_orderclassification();
         $emailarr=[];
@@ -574,6 +561,7 @@ class OrdersService
         ];
         if ($data['details_type'] == 1) {
             $mailedatas = $maile->getFindcategorical(34);
+            $appid=$data['appid'];
             $data['appid'] = implode(",", $data['appid']);
             $gooodsdata = $orderGoods->_find("user_id='{$data['user_id']}' and appid='{$data['appid']}' and details_type='{$data['details_type']}' and status=2 and goods_id='{$goods_data['id']}'");
             $gooodsdata = $orderGoods->objToArr($gooodsdata);
@@ -590,7 +578,9 @@ class OrdersService
             try {
                 $order_id = $order->insertGetId($orderarr);
                 $ordergoodsarr['order_id'] = $order_id;
-                $orderGoods->insertGetId($ordergoodsarr);
+                $ordergoods_id=$orderGoods->insertGetId($ordergoodsarr);
+                $licensecodedata=LicenseService::buildLicenseCodeData($ordergoods_no, $data['period'], $data['user_id'], $data['products_id'], $data['platform_id'], $data['licensetype_id'],  $appid, $data['info']['email'],$order_id,$ordergoods_id);
+                $lisecosdmode->_insert($licensecodedata);
                 $email->sendDiyContactEmail($emailarr,4,"1322061784@qq.com,wangyuting@kdanmobile.com",$mailedatas);
             } catch (Exception $e) {
                 return ['code' => 500, 'message' => '创建失败'];
@@ -621,7 +611,8 @@ class OrdersService
                 $email->sendDiyContactEmail($emailarr,6,"1322061784@qq.com,wangyuting@kdanmobile.com",$mailedatas);
                 $ordergoodsarr['order_id'] = $order_id;
                 $orderGoods->insertGetId($ordergoodsarr);
-                $orderarr['email']=$data['info']['email'] ?? '';
+                $orderarr['email'] = $data['info']['email'] ?? '';
+                $orderarr['id'] = $order_id ?? 0;
                 $pay = $this->comparePriceCloseAndCreateOrder($orderarr);
             } catch (Exception $e) {
                 return ['code' => 500, 'message' => '创建失败'];
@@ -639,6 +630,7 @@ class OrdersService
         }
         $order_data = $order->_find("id='{$data['order_id']}' and user_id='{$data['user_id']}' and status=0");
         $order_data = $order->objToArr($order_data);
+        $emaildata = unserialize($order_data['user_bill']);
         if (!$order_data) return ['code' => 403, 'msg' => "该订单不存在或已关闭"];
         $order_goodsdata = $orderGoods->_where("order_id='{$order_data['id']}' and order_no='{$order_data['order_no']}' and status=0");
         if (!$order_goodsdata) return ['code' => 403, 'msg' => "该订单商品明细单不存在或已关闭"];
@@ -647,6 +639,7 @@ class OrdersService
             if (!isset($goodadata[$v['goods_id']])) return ['code' => 403, 'msg' => "商品id" . $v['goods_id'] . "已下架"];
         }
         $order_data['pay_type'] = $data['pay_type'];
+        $order_data['email'] = $emaildata['email'];
         $pay = $this->comparePriceCloseAndCreateOrder($order_data);
         return ['code' => 200, 'msg' => "创建订单成功", 'data' => ['order_id' => $order_data['id'], 'pay' => $pay]];
 
@@ -786,7 +779,7 @@ class OrdersService
         $ordernew = new Order();
         $ordergoods = new OrderGoods();
         if (empty($order['page_pay_url'])) {
-            $pay_url_data = $this->generatePayUrl($order['pay_type'], 'ComPDFKit', $order['order_no'], $order['price'],$order['email']);
+            $pay_url_data = $this->generatePayUrl($order['pay_type'], 'ComPDFKit', $order['order_no'], $order['price'],$order['email'],$order['id']);
             if ($order['pay_type'] == 2) {
                 $pay_url_data['id'] = 'ali' . $order['order_no'];
             }elseif ($order['pay_type'] == 1){
@@ -803,13 +796,13 @@ class OrdersService
     }
 
 
-    public function generatePayUrl($payment, $product, $trade_no, $price,$email)
+    public function generatePayUrl($payment, $product, $trade_no, $price,$email,$order_id=0)
     {
         $call_back = $this->headerurl();
         $pay_url_data = [];
         if ($payment == self::$payments['paddle']) {
             $paddle = new PaddleBiz();
-            $pay_url_data = $paddle->createPayLink($trade_no, $product, $price,1,$email);
+            $pay_url_data = $paddle->createPayLink($trade_no, $product, $price,1,$email,$order_id);
         } elseif ($payment == self::$payments['alipay']) {
             $pay_redirect_path = '/resubscribe/payed';
             $return_url = $call_back . $pay_redirect_path;
@@ -838,12 +831,28 @@ class OrdersService
     public static function AlipayNotifyService($trade_no)
     {
         $alipay = new AlipayBiz();
+        $goods = new Goods();
+        $ordergoods = new OrderGoods();
+        $order = new Order();
+        $lisecosdmode = new LicenseModel();
         $order_data = $alipay->findAlipayByOrderNo($trade_no);
+        $orderdata = $order->_find("merchant_no='{$trade_no}'");
+        $orderdata = $order->objToArr($orderdata);
+        $emaildata = unserialize($orderdata['user_bill']);
+        $ordergoods_data = $ordergoods->_where("merchant_no='{$trade_no}'");
+        $goods_data = $goods->_where("1=1");
         try {
             if (!empty($order_data) && $order_data['trade_status'] == 'TRADE_SUCCESS') {
                 Db::table("callback_log")->insert(['info' => 'orderno=' . $trade_no . json_encode($order_data), 'pay_type' => 2]);
-                $order = new Order();
                 $order_goods = new OrderGoods();
+                foreach ($ordergoods_data as $k=>$v){
+                    foreach ($goods_data as $ks=>$vs){
+                        if($v['goods_id']==$vs['id']){
+                            $licensecodedata=LicenseService::buildLicenseCodeData($v['goods_no'], $v['pay_years'], $v['user_id'], $vs['level1'], $vs['level2'], $vs['level3'],  explode($v['appid']), $emaildata['email'],$v['order_id'],$v['id']);
+                            $lisecosdmode->_insert($licensecodedata);
+                        }
+                    }
+                }
                 $order->_update(['status' => 1, 'pay_time' => date("Y-m-d H:i:s")], "merchant_no='{$trade_no}'");
                 $order_goods->_update(['status' => 1, 'pay_time' => date("Y-m-d H:i:s")], "merchant_no='{$trade_no}'");
             } else {
