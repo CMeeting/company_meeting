@@ -361,7 +361,9 @@ class LicenseService
             'period' => $period,
             'type' => 2,
             'status' => 1,
-            'expire_time' => date("Y-m-d H:i:s", strtotime("+" . $period . " year"))
+            'expire_time' => date("Y-m-d H:i:s", strtotime("+" . $period . " year")),
+            'created_at' => date("Y-m-d H:i:s"),
+            'updated_at' => date("Y-m-d H:i:s"),
         ];
     }
 }
