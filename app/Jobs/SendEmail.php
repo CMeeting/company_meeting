@@ -42,6 +42,6 @@ class SendEmail implements ShouldQueue
     {
         \Log::info('开始发送邮件:', ['email'=> $this->arr, 'subject'=>$this->subject]);
         $emailService = new EmailService();
-        $emailService->send_email($this->data,$this->type,$this->subject,$this->type);
+        $emailService->send_email($this->data,$this->arr,$this->subject,$this->type);
     }
 }
