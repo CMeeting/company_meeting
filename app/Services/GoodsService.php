@@ -316,6 +316,9 @@ class GoodsService
                     }
                 }
             }
+//            if(!isset($arr[$k]['Platform'])){
+//                unset($arr[$k]);
+//            }
         }
         return $arr;
 

@@ -307,7 +307,7 @@ class LicenseService
      * @return array
      * @throws \Exception
      */
-    public static function buildLicenseCodeData($ordergoods_no, $period, $user_id, $product_id, $platform_id, $licensetype_id, $app_id, $email){
+    public static function buildLicenseCodeData($ordergoods_no, $period, $user_id, $product_id, $platform_id, $licensetype_id, $app_id, $email,$order_id,$ordergoods_id){
         $license_code_arr = [];
 
         $start_time = time();
@@ -320,13 +320,13 @@ class LicenseService
         $generateService = new GenerateLicenseCodeService();
         if($product == 'ComPDFKit SDK'){
             $license_code_pdf = $generateService->generate('ComPDFKit PDF SDK ', $platform, $license_type, $start_time, $end_time, $app_id, $email);
-            $license_code_arr[] = self::getLicenseCodeData($license_code_pdf, $ordergoods_no, $user_id, $product_id, $platform_id, $licensetype_id, $app_id, $period);
+            $license_code_arr[] = self::getLicenseCodeData($license_code_pdf, $ordergoods_no, $user_id, $product_id, $platform_id, $licensetype_id, $app_id, $period,$order_id,$ordergoods_id);
 
             $license_code_conversion = $generateService->generate('ComPDFKit Conversion SDK ', $platform, $license_type, $start_time, $end_time, $app_id, $email);
-            $license_code_arr[] = self::getLicenseCodeData($license_code_conversion, $ordergoods_no, $user_id, $product_id, $platform_id, $licensetype_id, $app_id, $period);
+            $license_code_arr[] = self::getLicenseCodeData($license_code_conversion, $ordergoods_no, $user_id, $product_id, $platform_id, $licensetype_id, $app_id, $period,$order_id,$ordergoods_id);
         }else{
             $license_code_conversion = $generateService->generate($product, $platform, $license_type, $start_time, $end_time, $app_id, $email);
-            $license_code_arr[] = self::getLicenseCodeData($license_code_conversion, $ordergoods_no, $user_id, $product_id, $platform_id, $licensetype_id, $app_id, $period);
+            $license_code_arr[] = self::getLicenseCodeData($license_code_conversion, $ordergoods_no, $user_id, $product_id, $platform_id, $licensetype_id, $app_id, $period,$order_id,$ordergoods_id);
         }
 
         return $license_code_arr;
@@ -344,10 +344,12 @@ class LicenseService
      * @param $period
      * @return array
      */
-    public static function getLicenseCodeData($license_code, $ordergoods_no, $user_id, $product_id, $platform_id, $licensetype_id, $app_id, $period){
+    public static function getLicenseCodeData($license_code, $ordergoods_no, $user_id, $product_id, $platform_id, $licensetype_id, $app_id, $period,$order_id,$ordergoods_id){
         $license_key = $license_code['key'];
         $license_secret = $license_code['secret'];
         return [
+            'order_id' => $order_id,
+            'ordergoods_id' => $ordergoods_id,
             'goods_no' => $ordergoods_no,
             'user_id' => $user_id,
             'products_id' => $product_id,
@@ -359,7 +361,9 @@ class LicenseService
             'period' => $period,
             'type' => 2,
             'status' => 1,
-            'expire_time' => date("Y-m-d H:i:s", strtotime("+" . $period . " year"))
+            'expire_time' => date("Y-m-d H:i:s", strtotime("+" . $period . " year")),
+            'created_at' => date("Y-m-d H:i:s"),
+            'updated_at' => date("Y-m-d H:i:s"),
         ];
     }
 }

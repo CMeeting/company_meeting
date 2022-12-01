@@ -52,7 +52,6 @@ class OrderController extends BaseController {
     public function getinfo($id){
         $order = new OrdersService();
         $data = $order->data_info($id);
-
         return $this->view('info',['data'=>$data]);
     }
 

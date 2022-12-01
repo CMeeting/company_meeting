@@ -153,7 +153,7 @@ class PaddleBiz
         }
     }
 
-    public function createPayLink($order,$product,$price,$amount=1,$param)
+    public function createPayLink($order,$product,$price,$amount=1,$param,$order_id)
     {
         $price = $price;
         $orderData = [
@@ -163,7 +163,7 @@ class PaddleBiz
             'title'   =>  $product, //产品名称
             'prices' =>  ['USD:' . $price],
             'quantity_variable'   =>  '0', //用户修改更改购买数量配置
-            'return_url'=> 'http://test-compdf.kdan.cn:3026/personal/orders',
+            'return_url'=> 'http://test-compdf.kdan.cn:3026/personal/orders?order_no=paddle'.$order,
             'discountable' => '0',
             'quantity'   =>  $amount ?? '1', //购买数量默认为1个
 //            'expires'   =>  '2021-08-29', //支付链接过期时间
@@ -172,7 +172,7 @@ class PaddleBiz
             'customer_postcode'   =>  '', //客户所在地邮编
             'passthrough'       =>  $order  //原数据可以返回到webhook
         ];
-        
+
         $request =  self::httpCurl($this->CREATE_PAY_LINK,$orderData,'POST');
         return $request['response'];
     }
