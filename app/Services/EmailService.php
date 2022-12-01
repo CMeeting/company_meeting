@@ -74,6 +74,11 @@ class EmailService
             $arrs['info'] = str_replace("应支付的金额",$data['price'],$arrs['info']);
             $arrs['info'] = str_replace("发票下载链接",$data['url'],$arrs['info']);
             $data['info'] = $arrs['info'];
+        }elseif ($type==10){
+            $src='http://test-pdf-pro.kdan.cn:3026/unsubscribe?email='.$arr[0];
+            $html='<a href="'.$src.'" style="text-decoration: none">unsubscribe</a>';
+            $arrs['info'] = str_replace("(插入取消订阅的链接)",$html,$arrs['info']);
+            $data['info'] = $arrs['info'];
         }
         SendEmail::dispatch($data, $arr, $subject, $type);
     }
