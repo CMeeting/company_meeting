@@ -83,6 +83,7 @@ class UserController extends BaseController
         $userService->add($email, $full_name, $password);
 
         //发送邮件
+        $url = env('WEB_HOST') . '/personal';
         $emailModel = Mailmagicboard::getByName('新增用户');
         $emailService = new EmailService();
         $data['title'] = $emailModel->title;
@@ -90,6 +91,7 @@ class UserController extends BaseController
         $data['info'] = str_replace("#@username", $full_name, $data['info']);
         $data['info'] = str_replace("#@mail", $email, $data['info']);
         $data['info'] = str_replace("#@password", $password, $data['info']);
+        $data['info'] = str_replace("#@url", $url, $data['info']);
 
         $emailService->sendDiyContactEmail($data, 0, $email);
 
@@ -143,6 +145,7 @@ class UserController extends BaseController
             //删除token缓存
             JWTService::forgetToken($old_email);
 
+            $url = env('WEB_HOST') . '/unsubscribe';
             $emailService = new EmailService();
             //编辑用户资料提示新邮箱
             $emailModelNew = Mailmagicboard::getByName('编辑用户资料提示新邮箱');
@@ -150,6 +153,7 @@ class UserController extends BaseController
             $data['info'] = $emailModelNew->info;
             $data['info'] = str_replace("#@old_mail", $old_email, $data['info']);
             $data['info'] = str_replace("#@new_mail", $email, $data['info']);
+            $data['info'] = str_replace("#@url", $url, $data['info']);
             $emailService->sendDiyContactEmail($data, 0, $email);
 
             //编辑用户资料提示老邮箱

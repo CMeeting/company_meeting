@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Jobs\SendEmail;
 use Illuminate\Support\Facades\Mail;
 use App\Models\NewsletterlogModel;
 
@@ -74,7 +75,7 @@ class EmailService
             $arrs['info'] = str_replace("发票下载链接",$data['url'],$arrs['info']);
             $data['info'] = $arrs['info'];
         }
-        $res=$this->send_email($data,$arr,$subject,$type);
+        SendEmail::dispatch($data, $arr, $subject, $type);
     }
 
      function send_email($data,$arr,$subject,$type=1){

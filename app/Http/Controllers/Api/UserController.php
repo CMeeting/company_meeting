@@ -52,11 +52,16 @@ class UserController extends Controller
             return $result_password;
         }
 
+        $url = env('WEB_HOST') . '/unsubscribe';
+
         //发送邮件
         $email_model = Mailmagicboard::getByName('注册完成');
         $data['title'] = $email_model->title;
         $data['info'] = $email_model->info;
-        SendEmail::dispatch($data, 0, $email);
+        $data['info'] = str_replace("#@url", $url, $data['info']);
+
+        $emailService = new EmailService();
+        $emailService->sendDiyContactEmail($data, 0, $email);
 
         $user_id = $userService->add($email, $full_name, $password);
 
@@ -184,6 +189,8 @@ class UserController extends Controller
         //删除token
         JWTService::forgetToken($old_email);
 
+        $url = env('WEB_HOST') . '/unsubscribe';
+
         $emailService = new EmailService();
         //变更邮箱新邮箱提醒
         $email_model_new = Mailmagicboard::getByName('变更邮箱新邮箱提醒');
@@ -191,6 +198,7 @@ class UserController extends Controller
         $data['info'] = $email_model_new->info;
         $data['info'] = str_replace("#@old_mail", $old_email, $data['info']);
         $data['info'] = str_replace("#@new_mail", $email, $data['info']);
+        $data['info'] = str_replace("#@url", $url, $data['info']);
         $emailService->sendDiyContactEmail($data, 1, $email);
 
         //变更邮箱旧邮箱提醒

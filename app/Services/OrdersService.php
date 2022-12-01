@@ -269,7 +269,7 @@ class OrdersService
         $is_user = $user->existsEmail($data['email']);
         if (!$is_user) {
             $password = User::getRandStr();
-            $arr['full_name'] = $data['email'];
+            $arr['full_name'] = $data['full_name'];
             $arr['email'] = $data['email'];
             $arr['flag'] = 2;
             $arr['password'] = User::encryptPassword($password);
@@ -283,6 +283,8 @@ class OrdersService
             $data['info'] = str_replace("#@username", $arr['full_name'], $data['info']);
             $data['info'] = str_replace("#@mail", $arr['email'], $data['info']);
             $data['info'] = str_replace("#@password", $password, $data['info']);
+            $url = env('WEB_HOST') . '/personal';
+            $data['info'] = str_replace("#@url", $url, $data['info']);
             $email->sendDiyContactEmail($data, 0, $arr['email']);
             $emailarr['username']=$arr['full_name'];
         } else {
