@@ -196,7 +196,7 @@ class UserService
         $message = [
             'required'=> ['zn'=>'邮箱不能为空', 'en'=>'Email is required.'],
             'format' => ['zn'=>'请输入有效邮箱', 'en'=>'Please enter a valid email address.'],
-            'unique' => ['zn'=>'输入的邮箱已被占用', 'en'=>'The Email is already in use.']
+            'unique' => ['zn'=>'该邮箱已注册', 'en'=>'The Email is already in use.']
         ];
 
         if(!$email){

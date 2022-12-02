@@ -39,7 +39,6 @@
                         <div class="form-group" style="margin-top: 20px;">
                             <div class="col-sm-12 col-sm-offset-2">
                                 <button id="add_user" class="btn btn-primary" type="button" style="margin-right: 30px"><i class="fa fa-check"></i>&nbsp;提交</button>
-                                <a href="{{route('user.list')}}"><button class="btn btn-danger" type="button" style="margin-left: 30px"><i class="layui-icon layui-icon-return"></i>取消</button></a>
                             </div>
                         </div>
                     <div class="clearfix"></div>
@@ -62,7 +61,7 @@
             let e = /^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
             if(!e.test(email)){
                 layer.close(index);
-                layer.msg('邮箱地址不合法', {icon: 2, time: 1000});
+                layer.msg('请输入有效邮箱', {icon: 2, time: 1000});
                 $("#email_input").css('border', '1px solid red')
                 return false;
             }
