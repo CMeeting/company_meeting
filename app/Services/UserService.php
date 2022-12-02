@@ -333,6 +333,10 @@ class UserService
         $payload = ['email' => $email, 'alt'=>time(), 'expire_time' => 24];
         $token = encrypt(json_encode($payload));
 
+        //缓存
+        $expire_time = Carbon::now()->addMinute(24 * 60);
+        \Cache::put($token, $email, $expire_time);
+
         $server .= '?token=' . $token;
         $url = "<a href='$server'>$server_name</a>";
         //发送邮件

@@ -359,8 +359,13 @@ class UserController extends Controller
         $alt = date('Y-m-d', $payload->alt);
         $expire_time = $payload->expire_time;
 
-        //判断链接是否过期
-        if(Carbon::parse($alt)->addHour(intval($expire_time)) < Carbon::now()){
+        //判断链接是否过期 - redis判断
+        if(!Cache::has($token)){
+            return Response::json(['code'=>500, 'message'=>'Expired Token']);
+        }
+
+        //判断链接是否过期 - 解析token判断
+        if(Carbon::parse($alt)->addHour(intval($expire_time))->lt(Carbon::now())){
             return Response::json(['code'=>500, 'message'=>'Expired Token']);
         }
         
@@ -375,6 +380,8 @@ class UserController extends Controller
 
         //删除用户token
         JWTService::forgetToken($email);
+        //删除重置密码token
+        Cache::forget($token);
 
         return Response::json(['code'=>200, 'message'=>'success']);
     }
