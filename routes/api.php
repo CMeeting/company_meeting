@@ -24,6 +24,7 @@ Route::group(['namespace'=>'Api'], function(){
         Route::get('/blogs/getBlogForTags','BlogsController@getBlogForTags');
         Route::post('/subscription','SubscriptionController@subscription_status');
         Route::any('/support','SupportController@getsupport');
+        Route::any('/thefeedback','SupportController@thefeedback');
         Route::get('/changelogs','ChangelogsController@changelogs');
         Route::get('/getgoods','GoodsController@getGoods');
         Route::post('/getgoodsprice','OrderController@getgoodsprice');
