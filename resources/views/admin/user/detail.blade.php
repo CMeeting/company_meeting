@@ -21,9 +21,9 @@
             <a href="{{route('user.list')}}"><button class="btn btn-primary btn-sm back" type="button" style="float: right"><i class="fa fa-chevron-left"></i> 返回列表 </button></a>
         </div>
         <fieldset class="layui-elem-field">
-            <legend>基本信息</legend>
+            <legend style="font-size: 17px">基本信息</legend>
             <div class="layui-field-box">
-                <table class="layui-table" style="width: 800px; margin: 0 auto; height: 100px">
+                <table class="layui-table" style="width: 800px; margin: 0 auto; height: 80px">
                     <tr>
                         <td style="background: #e2e2e2">ID</td>
                         <td>{{$user->id}}</td>
@@ -41,9 +41,16 @@
         </fieldset>
 
         <fieldset class="layui-elem-field">
-            <legend>统计信息</legend>
+            <legend style="font-size: 17px">统计信息</legend>
             <div class="layui-field-box">
-                <table class="layui-table" style="width: 800px; margin: 0 auto; height: 100px">
+                <table class="layui-table" style="width: 800px; margin: 0 auto; height: 80px">
+                    <tr>
+                        <td style="background: #e2e2e2">消费金额</td>
+                        <td style="background: #e2e2e2">订单数量</td>
+                        {{--                        <td style="background: #e2e2e2">优惠券（张）</td>--}}
+                        {{--                        <td style="background: #e2e2e2">退款记录</td>--}}
+                        <td style="background: #e2e2e2">登录次数</td>
+                    </tr>
                     <tr>
                         <td>{{$user->order_amount}}</td>
                         <td>{{$user->order_num}}</td>
@@ -51,19 +58,12 @@
 {{--                        <td>###</td>--}}
                         <td>{{$user->login_times}}</td>
                     </tr>
-                    <tr>
-                        <td style="background: #e2e2e2">消费金额</td>
-                        <td style="background: #e2e2e2">订单数量</td>
-{{--                        <td style="background: #e2e2e2">优惠券（张）</td>--}}
-{{--                        <td style="background: #e2e2e2">退款记录</td>--}}
-                        <td style="background: #e2e2e2">登录次数</td>
-                    </tr>
                 </table>
             </div>
         </fieldset>
 
         <fieldset class="layui-elem-field">
-            <legend>Billing Information</legend>
+            <legend style="font-size: 17px">Billing Information</legend>
             <div class="layui-field-box">
                 <table class="layui-table" style="width: 800px; margin: 0 auto; height: 100px">
                     <tr>
@@ -139,7 +139,7 @@
 
 
         <fieldset class="layui-elem-field">
-            <legend>订单记录</legend>
+            <legend style="font-size: 17px">订单记录</legend>
             <div class="layui-field-box">
                 <table class="layui-table">
                     <colgroup>

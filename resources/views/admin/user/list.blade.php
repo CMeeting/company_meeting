@@ -83,8 +83,8 @@
                         <th class="text-center" style="width: 10%">Full Name</th>
                         <th class="text-center" style="width: 5%">Company</th>
                         <th class="text-center" style="width: 5%">Country</th>
-                        <th class="text-center" style="width: 10%">用户类型</th>
-                        <th class="text-center" style="width: 10%">消费金额</th>
+                        <th class="text-center" style="width: 5%">用户类型</th>
+                        <th class="text-center" style="width: 5%">消费金额</th>
                         <th class="text-center" style="width: 3%">订单数量</th>
                         <th class="text-center" style="width: 8%">注册时间</th>
                         <th class="text-center" style="width: 8%">操作</th>
