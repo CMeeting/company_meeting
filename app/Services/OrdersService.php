@@ -511,7 +511,10 @@ class OrdersService
             ->get()->toArray();
         $classification = $this->assembly_orderclassification();
         foreach ($ordergoodsdata as $ks => $vs) {
-            $ordergoodsdata[$ks]['goodsname'] = $classification[$vs['level1']]['title'] . $classification[$vs['level2']]['title'] . $classification[$vs['level3']]['title'];
+            $level1 = $classification[$vs['level1']]['title'];
+            $level2 = $classification[$vs['level2']]['title'];
+            $level3 = $classification[$vs['level3']]['title'];
+            $ordergoodsdata[$ks]['goodsname'] = $level1 ." for ". $level2 ." (". $level3.")";
             $ordergoodsdata[$ks]['peroid'] = "1 month";
         }
         return ['code' => 200, 'msg' => 'ok', 'data' => $ordergoodsdata];
