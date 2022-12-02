@@ -17,10 +17,10 @@ class SubscriptionController
         $SubscriptionService= new SubscriptionService();
         $param = $request->all();
         if(!isset($param['email'])){
-            return json_encode(['data'=>'','code'=>403,'msg'=>"缺少邮件参数"]);
+            return \Response::json(['data'=>'','code'=>403,'msg'=>"缺少邮件参数"]);
         }
         $data=$SubscriptionService->update_status($param);
-        return json_encode(['data'=>$data,'code'=>200,'msg'=>"success"]);
+        return \Response::json(['data'=>$data,'code'=>200,'msg'=>"success"]);
     }
 
 }

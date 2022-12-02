@@ -654,23 +654,23 @@ class OrdersService
     {
 
         if (isset($parm['type'])) {
-            $wehere = "orders_goods.user_id='{$parm['user_id']}' and (orders_goods.status=1 or orders_goods.status=2) and orders_goods.details_type=1";
+            $wehere = "user_id='{$parm['user_id']}' and type=1";
         } else {
-            $wehere = "orders_goods.user_id='{$parm['user_id']}' and (orders_goods.status=1 or orders_goods.status=2)";
+            $wehere = "user_id='{$parm['user_id']}' and type=2";
         }
-        $orderGoods = new OrderGoods();
+        $orderGoods = new LicenseModel();
         $ordergoodsdata = $orderGoods
-            ->leftJoin('goods', 'orders_goods.goods_id', '=', 'goods.id')
-            ->leftJoin('license_code', 'orders_goods.order_id', '=', 'license_code.order_id')
             ->whereRaw($wehere)
-            ->selectRaw("goods.level1,goods.level2,goods.level3,orders_goods.order_id,orders_goods.goods_id,license_code.uuid as appid,license_code.expire_time,license_code.status,license_code.license_key,license_code.license_secret")
             ->get()->toArray();
         if (!$ordergoodsdata) {
             return ['code' => 403, 'msg' => '没有数据', 'data' => []];
         }
         $classification = $this->assembly_orderclassification();
         foreach ($ordergoodsdata as $ks => $vs) {
-            $ordergoodsdata[$ks]['goodsname'] = $classification[$vs['level1']]['title'] . $classification[$vs['level2']]['title'] . $classification[$vs['level3']]['title'];
+            $level1 = $classification[$vs['products_id']]['title'];
+            $level2 = $classification[$vs['platform_id']]['title'];
+            $level3 = $classification[$vs['licensetype_id']]['title'];
+            $ordergoodsdata[$ks]['goodsname'] = $level1 ." for ". $level2 ." (". $level3.")";
         }
 
         return ['code' => 200, 'msg' => 'ok', 'data' => $ordergoodsdata];
