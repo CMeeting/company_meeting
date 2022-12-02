@@ -273,6 +273,9 @@ class OrdersService
             $arr['created_at'] = date("Y-m-d H:i:s");
             $arr['updated_at'] = date("Y-m-d H:i:s");
             $user_id = Db::table("users")->insertGetId($arr);
+            //自动订阅电子报
+            $subsService = new SubscriptionService();
+            $subsService->update_status(['email'=>$data['email'], 'subscribed'=>1]);
             //发送邮件
             $emailModel = Mailmagicboard::getByName('后台新增订单（用户注册成功邮件）');
             $data['title'] = $emailModel->title;

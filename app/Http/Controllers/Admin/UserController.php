@@ -8,10 +8,10 @@ use App\Models\Mailmagicboard;
 use App\Models\User;
 use App\Services\EmailService;
 use App\Services\JWTService;
+use App\Services\SubscriptionService;
 use App\Services\UserBillingInfoService;
 use App\Services\UserService;
 use Illuminate\Http\Request;
-use Illuminate\Queue\Jobs\Job;
 
 class UserController extends BaseController
 {
@@ -82,6 +82,10 @@ class UserController extends BaseController
         $userService = new UserService();
         $userService->add($email, $full_name, $password);
 
+        //自动订阅电子报
+        $subsService = new SubscriptionService();
+        $subsService->update_status(['email'=>$email, 'subscribed'=>1]);
+
         //发送邮件
         $url = env('WEB_HOST') . '/personal';
         $emailModel = Mailmagicboard::getByName('新增用户');
@@ -145,7 +149,10 @@ class UserController extends BaseController
             //删除token缓存
             JWTService::forgetToken($old_email);
 
-            $url = env('WEB_HOST') . '/unsubscribe';
+            //自动订阅电子报
+            $subsService = new SubscriptionService();
+            $subsService->update_status(['email'=>$email, 'subscribed'=>1]);
+
             $emailService = new EmailService();
             //编辑用户资料提示新邮箱
             $emailModelNew = Mailmagicboard::getByName('编辑用户资料提示新邮箱');
@@ -153,6 +160,7 @@ class UserController extends BaseController
             $data['info'] = $emailModelNew->info;
             $data['info'] = str_replace("#@old_mail", $old_email, $data['info']);
             $data['info'] = str_replace("#@new_mail", $email, $data['info']);
+            $url = env('WEB_HOST') . '/unsubscribe?email=' . $email;
             $data['info'] = str_replace("#@url", $url, $data['info']);
             $emailService->sendDiyContactEmail($data, 0, $email);
 
