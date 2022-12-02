@@ -29,7 +29,7 @@ use App\Models\OrderGoods;
 use App\Services\MailmagicboardService;
 use App\Services\EmailService;
 use Auth;
-
+use Maatwebsite\Excel\Excel;
 
 
 class OrdersService
@@ -182,11 +182,8 @@ class OrdersService
         }
 
         $userExport = new GoodsExport($rows);
-        $fileName = 'export' . DIRECTORY_SEPARATOR . '订单列表' . time() . '.xlsx';
-        \Excel::store($userExport, $fileName);
-
-        //ajax请求 需要返回下载地址，在使用location.href请求下载地址
-        return ['url' => route('download', ['file_name' => $fileName])];
+        $fileName = '订单列表' . time() . '.xlsx';
+        return \Maatwebsite\Excel\Facades\Excel::download($userExport, $fileName);
     }
 
     public function sum_data($param)

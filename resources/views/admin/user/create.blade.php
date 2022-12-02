@@ -23,22 +23,21 @@
                 <a href="{{route('user.list')}}"><button class="btn btn-primary btn-sm back" type="button" style="margin-bottom: 40px"><i class="fa fa-chevron-left"></i> 返回列表 </button></a>
                 <form class="form-horizontal m-t-md" id="form_data" accept-charset="UTF-8" enctype="multipart/form-data" style="width: 600px;overflow: auto;margin: 0 auto;">
                     {!! csrf_field() !!}
-                        <span style="color: red;font-size: 14px">*</span>
-                        <div class="hr-line-dashed m-t-sm m-b-sm" style="position: relative;margin-bottom: 20px;"><span style="font-weight:bold;top: -12px;position: absolute;color:black">Email：</span></div>
+
+                    <div class="hr-line-dashed m-t-sm m-b-sm" style="position: relative;margin-bottom: 20px;"><span style="font-weight:bold;top: -12px;position: absolute;color:black">Email：<font style="color: red;font-size: 14px">*</font></span></div>
                         <div class="form-group" style="padding-left: 18px;">
                             <div class="input-group col-sm-2">
                                 <input id="email_input" type="text" placeholder="*Email" class="form-control" name="email" value="" required data-msg-required="邮箱必填" style="width: 500px"/>
                             </div>
                         </div>
-                        <span style="color: red;font-size: 14px">*</span>
-                        <div class="hr-line-dashed m-t-sm m-b-sm" style="position: relative;margin-bottom: 20px;"><span style="font-weight:bold;top: -12px;position: absolute;color:black">Full Name：</span>></div>
+                        <div class="hr-line-dashed m-t-sm m-b-sm" style="position: relative;margin-bottom: 20px;"><span style="font-weight:bold;top: -12px;position: absolute;color:black">Full Name：<font style="color: red;font-size: 14px">*</font></span></div>
                         <div class="input-group col-sm-2">
                             <input type="text" placeholder="*Full Name" class="form-control" name="full_name" value="" required data-msg-required="Full Name必填" style="width: 500px"/>
                         </div>
 
-                        <div class="form-group" style="margin-top: 20px;">
-                            <div class="col-sm-12 col-sm-offset-2">
-                                <button id="add_user" class="btn btn-primary" type="button" style="margin-right: 30px"><i class="fa fa-check"></i>&nbsp;提交</button>
+                        <div class="form-group" style="margin-top: 20px; margin-left: 0">
+                            <div class="col-sm-12 col-sm-offset-2" style="margin-left: 0">
+                                <button id="add_user" class="btn btn-primary" type="button"><i class="fa fa-check"></i>&nbsp;提交</button>
                             </div>
                         </div>
                     <div class="clearfix"></div>

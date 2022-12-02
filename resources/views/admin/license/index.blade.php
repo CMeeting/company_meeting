@@ -406,17 +406,19 @@
 
         //导出
         html =  '<div style="display: flex; justify-content: left;flex-wrap: wrap; padding: 10px">' +
-            '<div style="margin-bottom: 20px"><label style="margin-right: 10px; width: 50px"><input name="order_id"  type="checkbox"  value="order_id" checked="checked"/>总订单编号</label>' +
+            '<div style="margin-bottom: 10px"><label style="margin-right: 10px; width: 100px"><input name="order_id"  type="checkbox"  value="order_id" checked="checked"/>总订单编号</label>' +
             '<label style="margin-right: 10px; width: 100px"><input name="order_no"  type="checkbox"  value="order_no" checked="checked"/>子订单号</label>' +
             '<label style="margin-right: 10px; width: 100px"><input name="email"  type="checkbox"  value="email" checked="checked"/>用户账号</label>' +
-            '<label style="margin-right: 10px; width: 120px"><input name="name"  type="checkbox"  value="name" checked="checked"/>商品名称</label>' +
-            '<label style="margin-right: 10px; width: 120px"><input name="uuid"  type="checkbox"  value="uuid" checked="checked"/>App ID/Machine ID</label></div>' +
+            '<label style="margin-right: 10px; width: 120px"><input name="name"  type="checkbox"  value="name" checked="checked"/>商品名称</label></div>' +
+
+            '<div style="margin-bottom: 10px"><label style="margin-right: 10px; width: 150px"><input name="uuid"  type="checkbox"  value="uuid" checked="checked"/>App ID/Machine ID</label>' +
             '<label style="margin-right: 10px; width: 100px"><input name="created_at"  type="checkbox"  value="created_at" checked="checked"/>创建时间</label>' +
             '<label style="margin-right: 10px; width: 100px"><input name="expire_time"  type="checkbox"  value="expire_time" checked="checked"/>过期时间</label>' +
-            '<div><label style="margin-right: 10px; width: 50px"><input name="license_key"  type="checkbox"  value="license_key" checked="checked"/>license_key</label>' +
+            '<label style="margin-right: 10px; width: 100px"><input name="license_key"  type="checkbox"  value="license_key" checked="checked"/>license_key</label></div>' +
 
-            '<label style="margin-right: 10px; width: 100px"><input name="type"  type="checkbox"  value="type" checked="checked"/>授权码类型</label></div></div>';
-        '<label style="margin-right: 10px; width: 100px"><input name="status"  type="checkbox"  value="status" checked="checked"/>状态</label></div></div>';
+            '<div><label style="margin-right: 10px; width: 100px"><input name="type"  type="checkbox"  value="type" checked="checked"/>授权码类型</label>' +
+            '<label style="margin-right: 10px; width: 100px"><input name="status"  type="checkbox"  value="status" checked="checked"/>状态</label></div></div>';
+
         $("#export").click(function () {
 
             layer.open({
@@ -454,19 +456,8 @@
                     let expire_start = $('#expire_start').val()
                     let expire_end = $('#expire_end').val()
 
-                    $.ajax({
-                        url: "{{route('license.index')}}",
-                        header: {
-                            contentType: "application/octet-stream"
-                        },
-                        data: "query_type="+ query_type + "&info=" + info + "&level1=" + level1 + "&level2=" + level2 + "&level3=" + level3 + "&type=" + type + "&created_start=" + created_start + "&created_end=" + created_end+ "&expire_start=" + expire_start+ "&expire_end=" + expire_end
-                            + "&field=" + field.join(',') + "&export=1",
-                        type: 'get',
-                        success: function (res) {
-                            //导出
-                            location.href = res.url;
-                        }
-                    });
+                    location.href ="/admin/license/index?query_type="+ query_type + "&info=" + info + "&level1=" + level1 + "&level2=" + level2 + "&level3=" + level3 + "&type=" + type + "&created_start=" + created_start + "&created_end=" + created_end+ "&expire_start=" + expire_start+ "&expire_end=" + expire_end
+                    + "&field=" + field.join(',') + "&export=1";
                 }
             });
         });

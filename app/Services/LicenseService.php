@@ -21,6 +21,7 @@ use App\Models\User;
 use Auth;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\DB;
+use Maatwebsite\Excel\Facades\Excel;
 
 class LicenseService
 {
@@ -178,11 +179,8 @@ class LicenseService
         }
 
         $userExport = new GoodsExport($rows);
-        $fileName = 'export' . DIRECTORY_SEPARATOR . '授权码列表' . time() . '.xlsx';
-        \Excel::store($userExport, $fileName);
-
-        //ajax请求 需要返回下载地址，在使用location.href请求下载地址
-        return ['url' => route('download', ['file_name' => $fileName])];
+        $fileName = '授权码列表' . time() . '.xlsx';
+        return Excel::download($userExport, $fileName);
     }
 
     public function getGoodsClassifications($param = [])

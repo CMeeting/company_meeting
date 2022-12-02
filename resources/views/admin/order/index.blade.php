@@ -386,11 +386,12 @@
                     '<label style="margin-right: 10px; width: 100px"><input name="email"  type="checkbox"  value="email" checked="checked"/>用户账号</label>' +
                     '<label style="margin-right: 10px; width: 120px"><input name="pay_type"  type="checkbox"  value="pay_type" checked="checked"/>支付方式</label>' +
                     '<label style="margin-right: 10px; width: 120px"><input name="price"  type="checkbox"  value="price" checked="checked"/>订单金额</label></div>' +
-                    '<div><label style="margin-right: 10px; width: 50px"><input name="status"  type="checkbox"  value="status" checked="checked"/>订单状态</label>' +
-                    '<div><label style="margin-right: 10px; width: 50px"><input name="type"  type="checkbox"  value="type" checked="checked"/>订单来源</label>' +
-                    '<div><label style="margin-right: 10px; width: 50px"><input name="details_type"  type="checkbox"  value="details_type" checked="checked"/>订单类型</label>' +
+
+                    '<div><label style="margin-right: 10px; width: 100px"><input name="status"  type="checkbox"  value="status" checked="checked"/>订单状态</label>' +
+                    '<label style="margin-right: 10px; width: 100px"><input name="type"  type="checkbox"  value="type" checked="checked"/>订单来源</label>' +
+                    '<label style="margin-right: 10px; width: 100px"><input name="details_type"  type="checkbox"  value="details_type" checked="checked"/>订单类型</label>' +
                     '<label style="margin-right: 10px; width: 100px"><input name="created_at"  type="checkbox"  value="created_at" checked="checked"/>创建时间</label>' +
-                    '<label style="margin-right: 10px; width: 100px"><input name="pay_time"  type="checkbox"  value="pay_time" checked="checked"/>支付时间</label>';
+                    '<label style="margin-right: 10px; width: 100px"><input name="pay_time"  type="checkbox"  value="pay_time" checked="checked"/>支付时间</label></div></div>';
 
                 layer.open({
                     type: 1,
@@ -425,19 +426,9 @@
                         let endpay_at = $('#endpay_at').val()
                         let shelf_at = $('#shelf_at').val()
                         let endshelf_at = $('#endshelf_at').val()
-                        $.ajax({
-                            url: "{{route('order.index')}}",
-                            header: {
-                                contentType: "application/octet-stream"
-                            },
-                            data: "query_type="+ query_type + "info=" + info + "&type=" + type + "&details_type=" + details_type + "&pay_type=" + pay_type +"&shelf_at=" + shelf_at +"&endshelf_at=" + endshelf_at + "&status=" + status + "&pay_at=" + pay_at + "&endpay_at=" + endpay_at
-                                + "&field=" + field.join(',') + "&export=1",
-                            type: 'get',
-                            success: function (res) {
-                                //导出
-                                location.href = res.url;
-                            }
-                        });
+
+                        location.href = "/admin/order/index?query_type="+ query_type + "info=" + info + "&type=" + type + "&details_type=" + details_type + "&pay_type=" + pay_type +"&shelf_at=" + shelf_at +"&endshelf_at=" + endshelf_at + "&status=" + status + "&pay_at=" + pay_at + "&endpay_at=" + endpay_at
+                        + "&field=" + field.join(',') + "&export=1";
                     }
                 });
             });
