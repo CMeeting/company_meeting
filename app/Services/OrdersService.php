@@ -444,7 +444,7 @@ class OrdersService
             ->leftJoin('goods', 'orders_goods.goods_id', '=', 'goods.id')
             ->leftJoin('license_code', 'orders_goods.id', '=', 'license_code.ordergoods_id')
             ->whereRaw("orders_goods.order_id='{$pram['order_id']}'")
-            ->selectRaw("orders_goods.appid,orders_goods.pay_type,orders_goods.status,orders_goods.price,orders_goods.id,goods.level1,goods.level2,goods.level3,license_code.license_key_url,license_code.period,license_code.period,license_code.expire_time,license_code.created_at")
+            ->selectRaw("orders_goods.appid,orders_goods.goods_no,orders_goods.pay_type,orders_goods.status,orders_goods.price,orders_goods.id,goods.level1,goods.level2,goods.level3,license_code.license_key_url,license_code.period,license_code.period,license_code.expire_time,license_code.created_at")
             ->get()->toArray();
         if (!empty($ordergoodsdata)) {
             $classification = $this->assembly_orderclassification();
