@@ -584,7 +584,7 @@ class OrdersService
                 $order_id = $order->insertGetId($orderarr);
                 $ordergoodsarr['order_id'] = $order_id;
                 $ordergoods_id=$orderGoods->insertGetId($ordergoodsarr);
-                $licensecodedata=LicenseService::buildLicenseCodeData($ordergoods_no, $data['period'], $data['user_id'], $data['products_id'], $data['platform_id'], $data['licensetype_id'],  $appid, $data['info']['email'],$order_id,$ordergoods_id);
+                $licensecodedata=LicenseService::buildLicenseCodeData($ordergoods_no, 1, $data['user_id'], $data['products_id'], $data['platform_id'], $data['licensetype_id'],  $appid, $data['info']['email'],$order_id,$ordergoods_id);
                 $lisecosdmode->_insert($licensecodedata);
                 $email->sendDiyContactEmail($emailarr,4,"1322061784@qq.com,wangyuting@kdanmobile.com",$mailedatas);
             } catch (Exception $e) {
