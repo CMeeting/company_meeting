@@ -120,10 +120,11 @@ class OrderController
         $param = $request->all();
         Db::table("callback_log")->insert(['info' => 'paddle='. json_encode($param), 'pay_type' => 1]);
         if(isset($param['alert_name']) && $param['alert_name']=="payment_succeeded" && isset($param['passthrough'])){
-            $orderdata = $order->_find("merchant_no={$param['passthrough']}");
+            $merchant_no='paddle'.$param['passthrough'];
+            $orderdata = $order->_find("merchant_no={$merchant_no}");
             $orderdata = $order->objToArr($orderdata);
             $emaildata = unserialize($orderdata['user_bill']);
-            $ordergoods_data = $ordergoods->_where("merchant_no={$param['passthrough']}");
+            $ordergoods_data = $ordergoods->_where("merchant_no={$merchant_no}");
             $goods_data = $goods->_where("1=1");
             try {
                 DB::table("orders")->whereRaw("order_no='{$param['passthrough']}'")->update(['status' => 1, 'pay_time' => date("Y-m-d H:i:s")]);
