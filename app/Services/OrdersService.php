@@ -452,6 +452,7 @@ class OrdersService
                 $ordergoodsdata[$k]['products'] = isset($classification[$v['level1']]['title']) ? $classification[$v['level1']]['title'] : "";
                 $ordergoodsdata[$k]['platform'] = isset($classification[$v['level2']]['title']) ? $classification[$v['level2']]['title'] : "";
                 $ordergoodsdata[$k]['licensie'] = isset($classification[$v['level3']]['title']) ? $classification[$v['level3']]['title'] : "";
+
                 switch ($v['pay_type']) {
                     case 1:
                         $ordergoodsdata[$k]['payname'] = "paddle";
@@ -516,6 +517,7 @@ class OrdersService
             $level3 = $classification[$vs['level3']]['title'];
             $ordergoodsdata[$ks]['goodsname'] = $level1 ." for ". $level2 ." (". $level3.")";
             $ordergoodsdata[$ks]['peroid'] = "1 month";
+            $ordergoodsdata[$ks]['platform'] = $level2;
         }
         return ['code' => 200, 'msg' => 'ok', 'data' => $ordergoodsdata];
     }
@@ -670,6 +672,7 @@ class OrdersService
             $level1 = $classification[$vs['products_id']]['title'];
             $level2 = $classification[$vs['platform_id']]['title'];
             $level3 = $classification[$vs['licensetype_id']]['title'];
+            $ordergoodsdata[$ks]['platform'] = $level2;
             $ordergoodsdata[$ks]['goodsname'] = $level1 ." for ". $level2 ." (". $level3.")";
         }
 
