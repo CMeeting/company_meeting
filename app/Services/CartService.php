@@ -201,6 +201,7 @@ class CartService
                 }
                 $orderGoods->_insert($arr);
                 $orderdata['email']=isset($data['info']['email'])??'';
+                $orderdata['id']=$order_id;
                 $pay=$orderserve->comparePriceCloseAndCreateOrder($orderdata);
                 DB::table("order_cart")->whereRaw("user_id='{$data['user_id']}'")->delete();
             } catch (Exception $e) {

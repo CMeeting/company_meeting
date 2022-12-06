@@ -128,10 +128,12 @@ class OrderController
             try {
                 DB::table("orders")->whereRaw("order_no='{$param['passthrough']}'")->update(['status' => 1, 'pay_time' => date("Y-m-d H:i:s")]);
                 DB::table("orders_goods")->whereRaw("order_no='{$param['passthrough']}'")->update(['status' => 1, 'pay_time' => date("Y-m-d H:i:s")]);
+                \Log::info($param['passthrough'].":进入回调执行生成授权码");
                 foreach ($ordergoods_data as $k=>$v){
                     foreach ($goods_data as $ks=>$vs){
                         if($v['goods_id']==$vs['id']){
                             $licensecodedata=LicenseService::buildLicenseCodeData($v['goods_no'], $v['pay_years'], $v['user_id'], $vs['level1'], $vs['level2'], $vs['level3'],  explode(",",$v['appid']), $emaildata['email'],$v['order_id'],$v['id']);
+                            \Log::info($param['passthrough'].":进入回调执行生成授权码".json_encode($licensecodedata));
                             $lisecosdmode->_insert($licensecodedata);
                         }
                     }
