@@ -134,8 +134,8 @@ class CartService
     public function get_goods(){
         $goodsfenlei = new Goodsclassification();
         $goods = new Goods();
-        $fenleidata = $goodsfenlei->_where("deleted=0");
-        $goodsdata = $goods->_where("status=1 and deleted=0");
+        $fenleidata = $goodsfenlei->_where("1=1");
+        $goodsdata = $goods->_where("1=1");
         $arr=array();
         foreach ($fenleidata as $k=>$v){
             $arr['fenlei'][$v['id']]=$v;
