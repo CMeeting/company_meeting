@@ -668,15 +668,31 @@ class OrdersService
             return ['code' => 403, 'msg' => '没有数据', 'data' => []];
         }
         $classification = $this->assembly_orderclassification();
+        $arr=[];
         foreach ($ordergoodsdata as $ks => $vs) {
+            $arr[$vs['ordergoods_id']]=$vs;
             $level1 = $classification[$vs['products_id']]['title'];
             $level2 = $classification[$vs['platform_id']]['title'];
             $level3 = $classification[$vs['licensetype_id']]['title'];
-            $ordergoodsdata[$ks]['platform'] = $level2;
-            $ordergoodsdata[$ks]['goodsname'] = $level1 ." for ". $level2 ." (". $level3.")";
+            $arr[$vs['ordergoods_id']]['platform'] = $level2;
+            $arr[$vs['ordergoods_id']]['goodsname'] = $level1 ." for ". $level2 ." (". $level3.")";
+            $arr[$vs['ordergoods_id']]['data'][]=[
+                'name'=>$vs['platform_name'],
+                'key'=>$vs['license_key'],
+                'license_secret'=>$vs['license_key'],
+            ];
+            foreach ($ordergoodsdata as $kk =>$v){
+                  if($v['products_id']==$vs['products_id'] && $v['platform_id']==$vs['platform_id'] && $v['licensetype_id']==$vs['licensetype_id'] && $v['ordergoods_id']==$vs['ordergoods_id'] && $v['platform_name']!=$vs['platform_name']){
+                      $arr[$vs['ordergoods_id']]['data'][]=[
+                          'name'=>$v['platform_name'],
+                          'key'=>$v['license_key'],
+                          'license_secret'=>$v['license_key'],
+                      ];
+                  }
+            }
         }
 
-        return ['code' => 200, 'msg' => 'ok', 'data' => $ordergoodsdata];
+        return ['code' => 200, 'msg' => 'ok', 'data' => $arr];
     }
 
     public function findThirdOrderNotifyHandle($trade_no)
