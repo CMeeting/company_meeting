@@ -668,7 +668,7 @@ class OrdersService
             return ['code' => 403, 'msg' => '没有数据', 'data' => []];
         }
         $classification = $this->assembly_orderclassification();
-        $arr=[];
+        $arr=array();
         foreach ($ordergoodsdata as $ks => $vs) {
             $arr[$vs['ordergoods_id']]=$vs;
             $level1 = $classification[$vs['products_id']]['title'];
@@ -691,7 +691,7 @@ class OrdersService
                   }
             }
         }
-
+        $arr=array_values($arr);
         return ['code' => 200, 'msg' => 'ok', 'data' => $arr];
     }
 
