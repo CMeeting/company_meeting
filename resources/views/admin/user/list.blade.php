@@ -106,6 +106,7 @@
                                 <div class="btn-group">
                                     <a href="{{route('user.detail', $item->uid)}}"><button class="btn btn-primary btn-xs" type="button"><i class="fa fa-paste"></i> 查看</button></a>
                                     <a href="{{route('user.edit', $item->uid)}}"><button class="btn layui-btn-normal btn-xs" type="button"><i class="fa fa-paste"></i> 编辑</button></a>
+                                    <a href="#" onclick="emailBlacklist('{{$item->u_email}}', '{{$item->black_id}}')"><button class="btn layui-btn-normal btn-xs" type="button"><i class="fa fa-paste"></i> 邮箱黑名单</button></a>
                                 </div>
                             </td>
                         </tr>
@@ -202,5 +203,34 @@
                 }
             });
         });
+
+        function emailBlacklist(email, black_id) {
+            let content = '';
+            let type = '';
+            if(!black_id){
+                content = '是否确认将' + email + '加入到黑名单？';
+                type = 'add'
+            }else{
+                content = '是否确认将' + email + '从黑名单中解除？';
+                type = 'del'
+            }
+            layer.open({
+                content:content,
+                btn: ['确认', '取消'],
+                yes: function (index, layero) {
+                    $.ajax({
+                        url:"{{route('emailBlacklist.update')}}",
+                        type:'get',
+                        data:{email:email, type:type},
+                        dataType: "json",
+                        success:function (res) {
+
+                        }
+                    })
+
+                    layer.close(index);
+                }
+            })
+        }
     </script>
 @endsection

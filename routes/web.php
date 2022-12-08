@@ -148,7 +148,6 @@ Route::group(['namespace' => 'Admin','prefix' => 'admin'], function (){
         Route::post('support/changeStatus', 'SupportController@changeStatus')->name('support.changeStatus');//support改变状态
         Route::get('support/softDel/{id?}', 'SupportController@softDel')->name('support.softDel');//support删除
 
-
         //用户管理
         Route::get('user/list', 'UserController@list')->name('user.list'); //用户列表
         Route::get('user/create', 'UserController@create')->name('user.create'); //添加用户页面
@@ -191,6 +190,7 @@ Route::group(['namespace' => 'Admin','prefix' => 'admin'], function (){
         Route::post('license/changeStatus', 'LicenseController@changeStatus')->name('license.changeStatus');
         Route::get('license/info/{id}', 'LicenseController@info')->name('license.info');
 
+        Route::get('emailBlacklist/update', 'EmailBlackListController@store')->name('emailBlacklist.update');//邮箱黑名单
     });
 
     Route::group( ['namespace' => "Count", 'middleware' => ['auth:admin','rbac']],function (){
@@ -233,3 +233,4 @@ Route::group(['namespace' => 'Admin','prefix' => 'admin'], function (){
 Route::group(['namespace'=>'Common', 'middleware' => ['auth:admin','rbac']], function(){
     Route::get('download', 'DownloadController@download')->name('download'); //下载文件
 });
+
