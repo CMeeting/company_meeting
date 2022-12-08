@@ -127,7 +127,8 @@ class OrderController
             $ordergoods_data = $ordergoods->_where("merchant_no='{$merchant_no}'");
             $goods_data = $goods->_where("1=1");
             try {
-                DB::table("orders")->whereRaw("order_no='{$param['passthrough']}'")->update(['status' => 1, 'pay_time' => date("Y-m-d H:i:s")]);
+                $fapiao_url=$this->get_pdfurl($orderdata['id']);
+                DB::table("orders")->whereRaw("order_no='{$param['passthrough']}'")->update(['status' => 1, 'pay_time' => date("Y-m-d H:i:s"),'bill_url'=>$fapiao_url]);
                 DB::table("orders_goods")->whereRaw("order_no='{$param['passthrough']}'")->update(['status' => 1, 'pay_time' => date("Y-m-d H:i:s")]);
                 \Log::info($param['passthrough'].":进入回调执行生成授权码");
                 foreach ($ordergoods_data as $k=>$v){
@@ -146,6 +147,21 @@ class OrderController
             return \Response::json(['code'=>0,'mgs'=>"缺少参数"]);
         }
 
+    }
+
+    public function get_pdfurl($order_id){
+        if(!$order_id)return '';
+        $GoodsService=new OrdersService;
+        $arr = $GoodsService->get_invoice($order_id);
+        $times=time();
+        if (!file_exists(public_path().DIRECTORY_SEPARATOR."pdf".DIRECTORY_SEPARATOR)) mkdir(public_path().DIRECTORY_SEPARATOR."pdf".DIRECTORY_SEPARATOR, 0777);
+        $save=public_path().DIRECTORY_SEPARATOR."pdf".DIRECTORY_SEPARATOR.$times.'.pdf';
+        $host=$GoodsService->headerurl();
+        $url=$host . '/pdf/' . $times.'.pdf';
+        PDF::loadView('pdf.document', ['data'=>$arr], [], [
+            'format' => 'A5-L'
+        ])->save($save);
+        return $url;
     }
 
 }

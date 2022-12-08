@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Admin;
 use Illuminate\Http\Request;
 use App\Services\OrdersService;
 use App\Services\GoodsService;
-
+use PDF;
 class OrderController extends BaseController {
 
 
@@ -31,7 +31,6 @@ class OrderController extends BaseController {
         if($query['export'] == 1){
             return $GoodsService->export($data, $query['field']);
         }
-
         return $this->view('index',['data'=>$data,'query'=>$query,'sum'=>$sum]);
     }
 
@@ -61,6 +60,10 @@ class OrderController extends BaseController {
         $rest=$GoodsService->update_status($param['id']);
         return $rest;
     }
+
+
+
+
 
 
 

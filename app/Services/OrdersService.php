@@ -12,6 +12,7 @@ declare (strict_types=1);
 namespace App\Services;
 
 use App\Export\GoodsExport;
+use PDF;
 use App\Export\UserExport;
 use App\Http\Controllers\Api\biz\AlipayBiz;
 use App\Http\Controllers\Api\biz\PaddleBiz;
@@ -885,8 +886,35 @@ class OrdersService
 
     }
 
+    public function get_invoice($order_id){
+        if(!$order_id)return false;
+        $order = new Order();
+        $ordergoods = new OrderGoods();
+        $data=$order->_find("id='{$order_id}'");
+        $data=$order->objToArr($data);
+        if(!$data)return ['code'=>0,'msg'=>'没有订单数据'];
+        $arr['orderdata']=$data;
+        $goodsdata=DB::table("orders_goods as o")
+            ->leftJoin("goods as g","o.goods_id",'=','g.id')
+            ->whereRaw("o.order_id='{$order_id}'")
+            ->selectRaw("o.*,g.level1,g.level2,g.level3")
+            ->get()
+            ->toArray();
+        $goodsdata=json_decode(json_encode($goodsdata), true);
+        $goodsfeilei = $this->assembly_orderclassification();
+        foreach ($goodsdata as $k=>$v){
+            $level1 = $goodsfeilei[$v['level1']]['title'];
+            $level2 = $goodsfeilei[$v['level2']]['title'];
+            $level3 = $goodsfeilei[$v['level3']]['title'];
+            $goodsdata[$k]['goodsname'] = $level1 ." for ". $level2 ." (". $level3.")";
+        }
+        $arr['ordergoodsdata']=$goodsdata;
 
-    function headerurl()
+        return $arr;
+    }
+
+
+   public function headerurl()
     {
         $http_type = ((isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on') || (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] == 'https')) ? 'https://' : 'http://';
         return $http_type . $_SERVER['HTTP_HOST'];
