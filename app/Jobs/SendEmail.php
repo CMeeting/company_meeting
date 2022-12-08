@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use App\Services\EmailBlacklistService;
 use App\Services\EmailService;
 use Illuminate\Bus\Queueable;
 use Illuminate\Queue\SerializesModels;
@@ -42,6 +43,37 @@ class SendEmail implements ShouldQueue
     {
         \Log::info('开始发送邮件:', ['email'=> $this->arr, 'subject'=>$this->subject]);
         $emailService = new EmailService();
-        $emailService->send_email($this->data,$this->arr,$this->subject,$this->type);
+
+        //邮件黑名单筛选
+        $emails = $this->filterBlackEmail($this->arr);
+
+        $emailService->send_email($this->data,$emails,$this->subject,$this->type);
+    }
+
+    /**
+     * 过滤邮件黑名单
+     * @param $emails
+     * @return array
+     */
+    public function filterBlackEmail($emails){
+        $new_emails = [];
+        $service = new EmailBlacklistService();
+        foreach ($emails as $email){
+            //符合过滤规则  chuge\..*@test\.com
+            $num = preg_match("/chuge\..*@test\.com/", $email);
+            if($num > 0){
+                \Log::info('邮件发送黑名单过滤(符合过滤规则): ' . $email);
+                continue;
+            }
+
+            if($service->exitsEmail($email)){
+                \Log::info('邮件发送黑名单过滤(黑名单数据库): ' . $email);
+                continue;
+            }
+
+            $new_emails[] = $email;
+        }
+
+        return $new_emails;
     }
 }

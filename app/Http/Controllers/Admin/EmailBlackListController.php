@@ -18,7 +18,6 @@ class EmailBlackListController extends BaseController
         $email = $request->input('email');
         $type = $request->input('type');
 
-        dd($email, $type);
         $service = new EmailBlacklistService();
         if($type == 'add'){
             $exits = $service->exitsEmail($email);

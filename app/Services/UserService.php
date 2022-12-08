@@ -37,7 +37,8 @@ class UserService
             }])
             ->selectRaw('SUM(orders.price) as order_amount')
             ->selectRaw('COUNT(orders.id) as order_num')
-            ->select(['users.id as uid', 'users.email as u_email', 'users.full_name as full_name', 'users.order_num', 'users.order_amount','users.type as type', 'users.created_at as register_time'])
+            ->leftJoin('email_blacklist', 'users.email', '=', 'email_blacklist.email')
+            ->select(['users.id as uid', 'users.email as u_email', 'users.full_name as full_name', 'users.order_num', 'users.order_amount','users.type as type', 'users.created_at as register_time', 'email_blacklist.id as black_id'])
             ->groupBy('users.id');
 
         if ($keyword) {

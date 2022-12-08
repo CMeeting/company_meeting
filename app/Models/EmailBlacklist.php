@@ -19,5 +19,5 @@ use Illuminate\Database\Eloquent\Model;
 
 class EmailBlacklist extends Model
 {
-    public static $table = 'email_blacklist';
+    protected $table = 'email_blacklist';
 }
