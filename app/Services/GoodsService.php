@@ -91,7 +91,7 @@ class GoodsService
     function assembly_classification()
     {
         $Goodsclassification = new Goodsclassification();
-        $data = $Goodsclassification->_where("deleted=0");
+        $data = $Goodsclassification->_where("deleted=0",'displayorder');
         $arr = array();
         foreach ($data as $k => $v) {
             $arr[$v['id']] = $v;
@@ -267,7 +267,7 @@ class GoodsService
     {
         $Goodsclassification = new Goodsclassification();
         $goods = new Goods();
-        $data = $Goodsclassification->_where("deleted=0", 'lv');
+        $data = $Goodsclassification->_where("deleted=0", 'lv,displayorder');
         $goodsdata = $goods->whereRaw("deleted=0 and status=1")->orderByRaw('id desc')->get()->toArray();
         if (!empty($goodsdata)) {
             $classification = $this->assembly_classification();

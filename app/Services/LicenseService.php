@@ -315,16 +315,17 @@ class LicenseService
         $platform = GoodsclassificationService::getNameById($platform_id);
         $license_type = GoodsclassificationService::getNameById($licensetype_id);
 
+        $platform_name=$product ." for ". $platform ." (". $license_type.")";
         $generateService = new GenerateLicenseCodeService();
         if($product == 'ComPDFKit SDK'){
             $license_code_pdf = $generateService->generate('ComPDFKit PDF SDK ', $platform, $license_type, $start_time, $end_time, $app_id, $email);
-            $license_code_arr[] = self::getLicenseCodeData($license_code_pdf, $ordergoods_no, $user_id, $product_id, $platform_id, $licensetype_id, $app_id, $period,$order_id,$ordergoods_id);
+            $license_code_arr[] = self::getLicenseCodeData($license_code_pdf, $ordergoods_no, $user_id, $product_id, $platform_id, $licensetype_id, $app_id, $period,$order_id,$ordergoods_id,'ComPDFKit PDF SDK ');
 
             $license_code_conversion = $generateService->generate('ComPDFKit Conversion SDK ', $platform, $license_type, $start_time, $end_time, $app_id, $email);
-            $license_code_arr[] = self::getLicenseCodeData($license_code_conversion, $ordergoods_no, $user_id, $product_id, $platform_id, $licensetype_id, $app_id, $period,$order_id,$ordergoods_id);
+            $license_code_arr[] = self::getLicenseCodeData($license_code_conversion, $ordergoods_no, $user_id, $product_id, $platform_id, $licensetype_id, $app_id, $period,$order_id,$ordergoods_id,'ComPDFKit Conversion SDK ');
         }else{
             $license_code_conversion = $generateService->generate($product, $platform, $license_type, $start_time, $end_time, $app_id, $email);
-            $license_code_arr[] = self::getLicenseCodeData($license_code_conversion, $ordergoods_no, $user_id, $product_id, $platform_id, $licensetype_id, $app_id, $period,$order_id,$ordergoods_id);
+            $license_code_arr[] = self::getLicenseCodeData($license_code_conversion, $ordergoods_no, $user_id, $product_id, $platform_id, $licensetype_id, $app_id, $period,$order_id,$ordergoods_id,$platform_name);
         }
 
         return $license_code_arr;
@@ -342,7 +343,7 @@ class LicenseService
      * @param $period
      * @return array
      */
-    public static function getLicenseCodeData($license_code, $ordergoods_no, $user_id, $product_id, $platform_id, $licensetype_id, $app_id, $period,$order_id,$ordergoods_id){
+    public static function getLicenseCodeData($license_code, $ordergoods_no, $user_id, $product_id, $platform_id, $licensetype_id, $app_id, $period,$order_id,$ordergoods_id,$platform_name=''){
         $license_key = $license_code['key'];
         $license_secret = $license_code['secret'];
         return [
@@ -362,6 +363,7 @@ class LicenseService
             'expire_time' => date("Y-m-d H:i:s", strtotime("+" . $period . " year")),
             'created_at' => date("Y-m-d H:i:s"),
             'updated_at' => date("Y-m-d H:i:s"),
+            'platform_name'=>$platform_name
         ];
     }
 }

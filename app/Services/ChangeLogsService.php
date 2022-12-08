@@ -116,7 +116,7 @@ class ChangeLogsService
             $support=new Support();
             $email = new EmailService();
             $maile = new MailmagicboardService();
-            $mailedatas = $maile->getFindcategorical(28);
+            $mailedatas = $maile->getFindcategorical(52);
             $supportlog=new SupportLog();
             $support->_update(['status'=>4,'updated_at'=>date("Y-m-d H:i:s")],"id in({$param['support']})");
             $datas=[];

@@ -134,8 +134,8 @@ class CartService
     public function get_goods(){
         $goodsfenlei = new Goodsclassification();
         $goods = new Goods();
-        $fenleidata = $goodsfenlei->_where("deleted=0");
-        $goodsdata = $goods->_where("status=1 and deleted=0");
+        $fenleidata = $goodsfenlei->_where("1=1");
+        $goodsdata = $goods->_where("1=1");
         $arr=array();
         foreach ($fenleidata as $k=>$v){
             $arr['fenlei'][$v['id']]=$v;
@@ -201,6 +201,7 @@ class CartService
                 }
                 $orderGoods->_insert($arr);
                 $orderdata['email']=isset($data['info']['email'])??'';
+                $orderdata['id']=$order_id;
                 $pay=$orderserve->comparePriceCloseAndCreateOrder($orderdata);
                 DB::table("order_cart")->whereRaw("user_id='{$data['user_id']}'")->delete();
             } catch (Exception $e) {

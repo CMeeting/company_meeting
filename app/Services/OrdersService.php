@@ -444,7 +444,7 @@ class OrdersService
             ->leftJoin('goods', 'orders_goods.goods_id', '=', 'goods.id')
             ->leftJoin('license_code', 'orders_goods.id', '=', 'license_code.ordergoods_id')
             ->whereRaw("orders_goods.order_id='{$pram['order_id']}'")
-            ->selectRaw("orders_goods.appid,orders_goods.pay_type,orders_goods.status,orders_goods.price,orders_goods.id,goods.level1,goods.level2,goods.level3,license_code.license_key_url,license_code.period,license_code.period,license_code.expire_time,license_code.created_at")
+            ->selectRaw("orders_goods.appid,orders_goods.goods_no,orders_goods.pay_type,orders_goods.status,orders_goods.price,orders_goods.id,goods.level1,goods.level2,goods.level3,license_code.license_key_url,license_code.period,license_code.period,license_code.expire_time,license_code.created_at")
             ->get()->toArray();
         if (!empty($ordergoodsdata)) {
             $classification = $this->assembly_orderclassification();
@@ -452,6 +452,7 @@ class OrdersService
                 $ordergoodsdata[$k]['products'] = isset($classification[$v['level1']]['title']) ? $classification[$v['level1']]['title'] : "";
                 $ordergoodsdata[$k]['platform'] = isset($classification[$v['level2']]['title']) ? $classification[$v['level2']]['title'] : "";
                 $ordergoodsdata[$k]['licensie'] = isset($classification[$v['level3']]['title']) ? $classification[$v['level3']]['title'] : "";
+
                 switch ($v['pay_type']) {
                     case 1:
                         $ordergoodsdata[$k]['payname'] = "paddle";
@@ -516,6 +517,7 @@ class OrdersService
             $level3 = $classification[$vs['level3']]['title'];
             $ordergoodsdata[$ks]['goodsname'] = $level1 ." for ". $level2 ." (". $level3.")";
             $ordergoodsdata[$ks]['peroid'] = "1 month";
+            $ordergoodsdata[$ks]['platform'] = $level2;
         }
         return ['code' => 200, 'msg' => 'ok', 'data' => $ordergoodsdata];
     }
@@ -584,7 +586,7 @@ class OrdersService
                 $order_id = $order->insertGetId($orderarr);
                 $ordergoodsarr['order_id'] = $order_id;
                 $ordergoods_id=$orderGoods->insertGetId($ordergoodsarr);
-                $licensecodedata=LicenseService::buildLicenseCodeData($ordergoods_no, $data['period'], $data['user_id'], $data['products_id'], $data['platform_id'], $data['licensetype_id'],  $appid, $data['info']['email'],$order_id,$ordergoods_id);
+                $licensecodedata=LicenseService::buildLicenseCodeData($ordergoods_no, 1, $data['user_id'], $data['products_id'], $data['platform_id'], $data['licensetype_id'],  $appid, $data['info']['email'],$order_id,$ordergoods_id);
                 $lisecosdmode->_insert($licensecodedata);
                 $email->sendDiyContactEmail($emailarr,4,"1322061784@qq.com,wangyuting@kdanmobile.com",$mailedatas);
             } catch (Exception $e) {
@@ -666,14 +668,31 @@ class OrdersService
             return ['code' => 403, 'msg' => '没有数据', 'data' => []];
         }
         $classification = $this->assembly_orderclassification();
+        $arr=array();
         foreach ($ordergoodsdata as $ks => $vs) {
+            $arr[$vs['ordergoods_id']]=$vs;
             $level1 = $classification[$vs['products_id']]['title'];
             $level2 = $classification[$vs['platform_id']]['title'];
             $level3 = $classification[$vs['licensetype_id']]['title'];
-            $ordergoodsdata[$ks]['goodsname'] = $level1 ." for ". $level2 ." (". $level3.")";
+            $arr[$vs['ordergoods_id']]['platform'] = $level2;
+            $arr[$vs['ordergoods_id']]['goodsname'] = $level1 ." for ". $level2 ." (". $level3.")";
+            $arr[$vs['ordergoods_id']]['data'][]=[
+                'name'=>$vs['platform_name'],
+                'key'=>$vs['license_key'],
+                'license_secret'=>$vs['license_key'],
+            ];
+            foreach ($ordergoodsdata as $kk =>$v){
+                  if($v['products_id']==$vs['products_id'] && $v['platform_id']==$vs['platform_id'] && $v['licensetype_id']==$vs['licensetype_id'] && $v['ordergoods_id']==$vs['ordergoods_id'] && $v['platform_name']!=$vs['platform_name']){
+                      $arr[$vs['ordergoods_id']]['data'][]=[
+                          'name'=>$v['platform_name'],
+                          'key'=>$v['license_key'],
+                          'license_secret'=>$v['license_key'],
+                      ];
+                  }
+            }
         }
-
-        return ['code' => 200, 'msg' => 'ok', 'data' => $ordergoodsdata];
+        $arr=array_values($arr);
+        return ['code' => 200, 'msg' => 'ok', 'data' => $arr];
     }
 
     public function findThirdOrderNotifyHandle($trade_no)
