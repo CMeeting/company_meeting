@@ -358,4 +358,42 @@ class UserService
     public function getLogoutList(){
         return LogoutUser::paginate(10);
     }
+
+    /**
+     * 修改用户类型
+     * @param $type 2：试用订单 3：SaaS订单 4：SDK订单 5：SaaS和SDK订单
+     * @param $user_id
+     */
+    public function changeType($type, $user_id){
+        $user = User::find($user_id);
+
+        $old_type = $user->type;
+        //已经是SaaS和SDK用户不改变类型
+        if($old_type == User::TYPE_5_SAAS_ADN_SDK){
+            return;
+        }
+
+        //订单为SaaS和SDK 则直接更改为 SaaS、SDK用户
+        if($type == User::TYPE_5_SAAS_ADN_SDK){
+            $user->type = $type;
+        }
+
+        if($old_type == User::TYPE_1_FREE){
+            //免费用户直接更改为新类型
+            $user->type = $type;
+        }elseif($old_type == User::TYPE_2_TRY_OUT){
+            if($type > 2){
+                //试用用户，如果是购买则更改为新类型
+                $user->type = $type;
+            }
+        }elseif($old_type == User::TYPE_3_SAAS && $type == User::TYPE_4_SDK){
+            //SaaS用户如果购买了SDK更改为 SaaS、SDK用户
+            $user->type = User::TYPE_5_SAAS_ADN_SDK;
+        }elseif($old_type == User::TYPE_4_SDK && $type == User::TYPE_3_SAAS){
+            //SDK用户如果购买了SaaS更改为 SaaS、SDK用户
+            $user->type = User::TYPE_5_SAAS_ADN_SDK;
+        }
+
+        $user->save();
+    }
 }
