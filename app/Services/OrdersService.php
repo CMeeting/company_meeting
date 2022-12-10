@@ -668,6 +668,7 @@ class OrdersService
         }
         $orderGoods = new LicenseModel();
         $ordergoodsdata = $orderGoods
+            ->orderByRaw("order_id desc")
             ->whereRaw($wehere)
             ->get()->toArray();
         if (!$ordergoodsdata) {
