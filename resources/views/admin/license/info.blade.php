@@ -34,7 +34,7 @@
                 </div>
                 <div class="form-group">
                     <label class="col-sm-4 control-label no-padding-right" for="form-field-1">license_key：</label>
-                    <div class="col-sm-6 col-xs-12" style="padding-top: 0.5%">
+                    <div class="col-sm-6 col-xs-12" style="padding-top: 0.5%;word-break: break-all;">
                         {{$info['license_key']}}
                     </div>
                 </div>
@@ -46,7 +46,7 @@
 {{--                </div>--}}
                     <div class="form-group">
                         <label class="col-sm-4 control-label no-padding-right" for="form-field-1">license_secret：</label>
-                        <div class="col-sm-6 col-xs-12" style="padding-top: 0.5%">
+                        <div class="col-sm-6 col-xs-12" style="padding-top: 0.5%;word-break: break-all;">
                             {{$info['license_secret']}}"
                         </div>
                     </div>
