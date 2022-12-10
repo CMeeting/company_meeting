@@ -170,6 +170,7 @@
                     <tr>
                         <th class="text-center" style="width: 5%">ID</th>
                         <th class="text-center" style="width: 9%">订单编号</th>
+                        <th class="text-center" style="width: 9%">第三方支付单号</th>
                         <th class="text-center" style="width: 9%">用户账号</th>
                         <th class="text-center" style="width: 9%">支付方式</th>
                         <th class="text-center" style="width: 8%">订单金额</th>
@@ -186,6 +187,7 @@
                         <tr id="del_{{$item['id']}}">
                             <td class="text-center">{{$item['id']}}</td>
                             <td class="text-center">{{$item['order_no']}}</td>
+                            <td class="text-center">{{$item['merchant_no']}}</td>
                             <td>{{$item['email']}}</td>
                             <td>
                                     @if($item['pay_type'] == 1)
