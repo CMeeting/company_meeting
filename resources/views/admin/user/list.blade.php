@@ -106,7 +106,7 @@
                                 <div class="btn-group">
                                     <a href="{{route('user.detail', $item->uid)}}"><button class="btn btn-primary btn-xs" type="button"><i class="fa fa-paste"></i> 查看</button></a>
                                     <a href="{{route('user.edit', $item->uid)}}"><button class="btn btn-warm btn-xs" type="button"><i class="fa fa-paste"></i> 编辑</button></a>
-                                    <a href="#" onclick="emailBlacklist('{{$item->u_email}}', '{{$item->black_id}}')"><button class="btn btn-danger btn-xs" type="button"><i class="fa fa-paste"></i> 邮箱黑名单</button></a>
+                                    <a href="#" onclick="emailBlacklist('{{$item->u_email}}', '{{$item->black_id}}')"><button class="btn btn-danger btn-xs" type="button"><i class="fa fa-paste"></i>@if(!$item->black_id) 邮箱黑名单@else 释放黑名单 @endif</button></a>
                                 </div>
                             </td>
                         </tr>
