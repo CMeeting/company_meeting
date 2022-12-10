@@ -141,9 +141,60 @@ return [
             'host' => env('REDIS_HOST', '127.0.0.1'),
             'password' => env('REDIS_PASSWORD', null),
             'port' => env('REDIS_PORT', 6379),
-            'database' => 0,
+            'database' => 3,
         ],
 
     ],
 
+
+//    'redis' => [
+//
+//        'client' => 'predis',
+//
+//        'options' => [
+//            'cluster' => 'redis',
+//        ],
+//
+//        'clusters' => [
+//            'default' => [
+//                [
+//                    'host' => '81.68.234.235',
+//                    'port' => 6371,
+//                    'database' => 0,
+//                    'password' => '1234',
+//                ],
+//                [
+//                    'host' => '81.68.234.235',
+//                    'port' => 6372,
+//                    'database' => 0,
+//                    'password' => '1234',
+//                ],
+//                [
+//                    'host' => '81.68.234.235',
+//                    'port' => 6373,
+//                    'database' => 0,
+//                    'password' => '1234',
+//                ],
+//                [
+//                    'host' => '81.68.234.235',
+//                    'port' => 6374,
+//                    'database' => 0,
+//                    'password' => '1234',
+//                ],
+//                [
+//                    'host' => '81.68.234.235',
+//                    'port' => 6375,
+//                    'database' => 0,
+//                    'password' => '1234',
+//                ],
+//                [
+//                    'host' => '81.68.234.235',
+//                    'port' => 6376,
+//                    'database' => 0,
+//                    'password' => '1234',
+//                ],
+//            ],
+//        ],
+//    ]
 ];
+

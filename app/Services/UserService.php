@@ -335,7 +335,7 @@ class UserService
         $token = encrypt(json_encode($payload));
 
         //缓存
-        $expire_time = Carbon::now()->addMinute(24 * 60);
+        $expire_time = Carbon::now()->addDay();
         \Cache::put($token, $email, $expire_time);
 
         $server .= '?token=' . $token;
