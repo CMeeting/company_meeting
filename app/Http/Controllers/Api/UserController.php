@@ -389,7 +389,7 @@ class UserController extends Controller
         //删除用户token
         JWTService::forgetToken($email);
         //删除重置密码token
-        Cache::forget($token);
+        Cache::forget('forget-password:' . $token);
 
         return Response::json(['code'=>200, 'message'=>'success']);
     }
