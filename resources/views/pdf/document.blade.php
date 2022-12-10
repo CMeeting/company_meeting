@@ -92,7 +92,7 @@
                             </tr>
                             <tr><td height="4"></td></tr>
                             <tr>
-                              <?php $youjian=unserialize($data['orderdata']['order_no']);?>
+                              <?php $youjian=unserialize($data['orderdata']['user_bill']);?>
                               <td style="height:18px;color:#333;font-size:14px;line-height:18px;">{{$youjian['email']}}</td>
                             </tr>
                             <tr><td height="60"></td></tr>
