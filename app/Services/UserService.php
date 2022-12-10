@@ -333,7 +333,7 @@ class UserService
 
         //发送邮件时间
         $payload = ['email' => $email, 'alt'=>time(), 'expire_time' => 24];
-        $token = encrypt(json_encode($payload));
+        $token = 'forget-password:' . encrypt(json_encode($payload));
 
         //缓存
         $expire_time = Carbon::now()->addDay();

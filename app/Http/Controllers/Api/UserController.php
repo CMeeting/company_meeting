@@ -367,12 +367,12 @@ class UserController extends Controller
         $expire_time = $payload->expire_time;
 
         //判断链接是否过期 - redis判断
-        if(!Cache::has($token)){
+        if(!Cache::has('forget-password:' . $token)){
             return Response::json(['code'=>500, 'message'=>'Expired Token']);
         }
 
         //判断链接是否过期 - 解析token判断
-        if(Carbon::parse($alt)->addHour(intval($expire_time))->lt(Carbon::now())){
+        if(Carbon::parse($alt)->addDay()->lt(Carbon::now())){
             return Response::json(['code'=>500, 'message'=>'Expired Token']);
         }
         
