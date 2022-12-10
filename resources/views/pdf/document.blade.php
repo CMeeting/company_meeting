@@ -92,7 +92,8 @@
                             </tr>
                             <tr><td height="4"></td></tr>
                             <tr>
-                              <td style="height:18px;color:#333;font-size:14px;line-height:18px;">1322061784@qq.com</td>
+                              <?php $youjian=unserialize($data['orderdata']['order_no']);?>
+                              <td style="height:18px;color:#333;font-size:14px;line-height:18px;">{{$youjian['email']}}</td>
                             </tr>
                             <tr><td height="60"></td></tr>
                           </tbody>
