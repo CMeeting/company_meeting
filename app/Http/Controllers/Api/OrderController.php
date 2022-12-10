@@ -12,7 +12,7 @@ use App\Services\OrdersService;
 use App\Services\UserService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-
+use PDF;
 
 class OrderController
 {

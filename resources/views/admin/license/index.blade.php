@@ -140,7 +140,7 @@
                         <td class="text-center">{{$item->created_at}}</td>
                         <td class="text-center">{{$item->expire_time}}</td>
 
-                        <td class="text-center">{{$item->license_key}}</td>
+                        <td class="text-center" title="{{$item->license_key}}"><?php echo substr($item->license_key,0,10);?></td>
                         <td class="text-center">{{$item->type}}</td>
                         <td class="text-center">{{$item->statusd}}</td>
                         <td class="text-center">
