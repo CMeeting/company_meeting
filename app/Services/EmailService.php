@@ -21,6 +21,8 @@ class EmailService
             $data['info'] = str_replace("#@mail","1322061784@qq.com",$data['info']);
             $data['info'] = str_replace("#@product","ComPDF产品名称测试",$data['info']);
         }elseif ($type==3){
+            $arrs['info'] = str_replace("(客户的需求编号)",$data['order_no'],$arrs['info']);
+            $arrs['info'] = str_replace("(插入网站中记录客户提交的bug的状态链接)","<a href='http://test-compdf.kdan.cn:3026/support-ticket'>http://test-compdf.kdan.cn:3026/support-ticket</a>",$arrs['info']);
             $data['info'] = $arrs['info'];
         }elseif ($type==4){
             $arrs['info'] = str_replace("#@username",$data['username'],$arrs['info']);

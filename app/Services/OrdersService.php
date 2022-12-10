@@ -593,6 +593,7 @@ class OrdersService
                 $ordergoods_id=$orderGoods->insertGetId($ordergoodsarr);
                 $licensecodedata=LicenseService::buildLicenseCodeData($ordergoods_no, 1, $data['user_id'], $data['products_id'], $data['platform_id'], $data['licensetype_id'],  $appid, $data['info']['email'],$order_id,$ordergoods_id);
                 $lisecosdmode->_insert($licensecodedata);
+                $mailedatas['title'] = str_replace("（产品名）",$emailarr['products'],$mailedatas['title']);
                 $email->sendDiyContactEmail($emailarr,4,$data['info']['email'],$mailedatas);
             } catch (Exception $e) {
                 return ['code' => 500, 'message' => '创建失败'];
