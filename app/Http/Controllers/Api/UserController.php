@@ -344,6 +344,8 @@ class UserController extends Controller
         $userService = new UserService();
 
         $token = $request->input('token');
+        //先去掉forget-password:来解析token
+        $token = str_replace('forget-password:', '', $token);
         $new_password = str_replace(' ', '', $request->input('new_password'));
         $password_confirm = str_replace(' ', '', $request->input('password_confirm'));
 
@@ -364,7 +366,6 @@ class UserController extends Controller
 
         $email = $payload->email;
         $alt = date('Y-m-d', $payload->alt);
-        $expire_time = $payload->expire_time;
 
         //判断链接是否过期 - redis判断
         if(!Cache::has('forget-password:' . $token)){
