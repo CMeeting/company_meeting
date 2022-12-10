@@ -32,13 +32,12 @@ class UserService
     public function getList($keyword, $country, $type, $start_date, $end_date, $export)
     {
         $query = User::leftJoin('user_billing_information as b', 'b.user_id', '=', 'users.id')
-            ->with(['orders' => function ($query){
-                $query->whereIn('status', [1,2]);
-            }])
-            ->selectRaw('SUM(orders.price) as order_amount')
-            ->selectRaw('COUNT(orders.id) as order_num')
+            ->leftJoin('orders', function ($join){
+                $join->on('users.id', '=', 'orders.user_id')
+                    ->whereIn('status', [1, 2]);
+            })
             ->leftJoin('email_blacklist', 'users.email', '=', 'email_blacklist.email')
-            ->select(['users.id as uid', 'users.email as u_email', 'users.full_name as full_name', 'users.order_num', 'users.order_amount','users.type as type', 'users.created_at as register_time', 'email_blacklist.id as black_id'])
+            ->selectRaw('users.id as uid, users.email as u_email, users.full_name as full_name, users.order_num, users.order_amount, users.type as type, users.created_at as register_time, email_blacklist.id as black_id, SUM(orders.price) as order_amount, COUNT(orders.id) as order_num, b.company, b.country')
             ->groupBy('users.id');
 
         if ($keyword) {
@@ -73,6 +72,8 @@ class UserService
         }else{
             return $query->paginate(10);
         }
+
+
     }
 
     /**
