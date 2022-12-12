@@ -52,8 +52,8 @@
                         <td style="background: #e2e2e2">登录次数</td>
                     </tr>
                     <tr>
-                        <td>{{$user->order_amount}}</td>
-                        <td>{{$user->order_num}}</td>
+                        <td>{{$total_info['order_amount']}}</td>
+                        <td>{{$total_info['order_num']}}</td>
 {{--                        <td>###</td>--}}
 {{--                        <td>###</td>--}}
                         <td>{{$user->login_times}}</td>

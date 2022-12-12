@@ -193,13 +193,16 @@ class UserController extends BaseController
         //订单信息
         $orders = $userService->getUserOrders($id);
 
+        //统计信息
+        $total_info = $userService->getOrderTotalByUser($id);
+
         //TODO 后续声明常量
         $status_arr = [0 => '待付款', 1 => '已付款', 2 => '已完成', 3 => '待退款', 4 => '已关闭'];
         $pay_type_arr = [1 => 'paddle', 2 => '支付宝', 3 => '微信', 4 => '不需要支付'];
         $source_arr = [1 => '后台创建', 2 => '用户购买'];
         $details_type_arr = [1 => 'SDK试用', 2 => 'SDK订单', 3 => 'SaaS订单'];
 
-        return $this->view('detail')->with(['user' => $user, 'billing' => $billing, 'orders' => $orders, 'status_arr' => $status_arr, 'pay_type_arr' => $pay_type_arr, 'source_arr' => $source_arr, 'details_type_arr'=>$details_type_arr]);
+        return $this->view('detail')->with(['user' => $user, 'billing' => $billing, 'orders' => $orders, 'total_info'=>$total_info, 'status_arr' => $status_arr, 'pay_type_arr' => $pay_type_arr, 'source_arr' => $source_arr, 'details_type_arr'=>$details_type_arr]);
     }
 
     /**

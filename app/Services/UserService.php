@@ -7,6 +7,7 @@ namespace App\Services;
 use App\Export\UserExport;
 use App\Models\LogoutUser;
 use App\Models\Mailmagicboard;
+use App\Models\Order;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
@@ -395,5 +396,14 @@ class UserService
         }
 
         $user->save();
+    }
+
+    public function getOrderTotalByUser($user_id){
+        return Order::where('user_id', $user_id)
+            ->whereIn('status', [1,2])
+            ->groupBy('user_id')
+            ->selectRaw('sum(price) as order_amount, count(user_id) as order_num')
+            ->first()
+            ->toArray();
     }
 }
