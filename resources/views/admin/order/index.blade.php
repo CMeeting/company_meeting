@@ -187,7 +187,13 @@
                         <tr id="del_{{$item['id']}}">
                             <td class="text-center">{{$item['id']}}</td>
                             <td class="text-center">{{$item['order_no']}}</td>
-                            <td class="text-center">{{$item['merchant_no']}}</td>
+                            <td class="text-center">{{$item['merchant_no']}}
+                                @if($item['pay_type'] == 1)
+                                    {{$item['paddle_no']}}
+                                @else
+                                    {{$item['merchant_no']}}
+                                @endif
+                            </td>
                             <td>{{$item['email']}}</td>
                             <td>
                                     @if($item['pay_type'] == 1)

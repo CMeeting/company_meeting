@@ -73,6 +73,7 @@ class CartService
                    $level1 = $goodsinfo['fenlei'][$v['level1']]['title'];
                    $level2 = $goodsinfo['fenlei'][$v['level2']]['title'];
                    $level3 = $goodsinfo['fenlei'][$v['level3']]['title'];
+                   $list[$k]['price']=round($goodsinfo['goods'][$v['goods_id']]['price']*$v['pay_years'],2);
                    $list[$k]['goodsname'] = $level1 ." for ". $level2 ." (". $level3.")";
                }
            }
@@ -93,6 +94,7 @@ class CartService
                 $level1 = $goodsinfo['fenlei'][$v['level1']]['title'];
                 $level2 = $goodsinfo['fenlei'][$v['level2']]['title'];
                 $level3 = $goodsinfo['fenlei'][$v['level3']]['title'];
+                $list[$k]['price']=$goodsinfo['goods'][$v['goods_id']]['price']*$v['pay_years'];
                 $list[$k]['goodsname'] = $level1 ." for ". $level2 ." (". $level3.")";
             }
         }

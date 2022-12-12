@@ -13,7 +13,6 @@ namespace App\Services;
 
 use App\Export\GoodsExport;
 use PDF;
-use App\Export\UserExport;
 use App\Http\Controllers\Api\biz\AlipayBiz;
 use App\Http\Controllers\Api\biz\PaddleBiz;
 use App\Http\Controllers\Api\biz\WechatPay;
@@ -27,10 +26,6 @@ use App\Models\Goods;
 use Illuminate\Support\Facades\DB;
 use App\Models\User;
 use App\Models\OrderGoods;
-use App\Services\MailmagicboardService;
-use App\Services\EmailService;
-use Auth;
-use Maatwebsite\Excel\Excel;
 
 
 class OrdersService
@@ -535,6 +530,7 @@ class OrdersService
         $orderGoods = new OrderGoods();
         $goods = new goods();
         $userobj = new User();
+        $userserver = new UserService();
         $lisecosdmode= new LicenseModel();
         $orderno = time();
         $goodsfeilei = $this->assembly_orderclassification();
@@ -593,8 +589,11 @@ class OrdersService
                 $ordergoods_id=$orderGoods->insertGetId($ordergoodsarr);
                 $licensecodedata=LicenseService::buildLicenseCodeData($ordergoods_no, 1, $data['user_id'], $data['products_id'], $data['platform_id'], $data['licensetype_id'],  $appid, $data['info']['email'],$order_id,$ordergoods_id);
                 $lisecosdmode->_insert($licensecodedata);
-                $mailedatas['title'] = str_replace("（产品名）",$emailarr['products'],$mailedatas['title']);
-                $email->sendDiyContactEmail($emailarr,4,$data['info']['email'],$mailedatas);
+//                $mailedatas['title'] = str_replace("（产品名）",$emailarr['products'],$mailedatas['title']);
+//                $email->sendDiyContactEmail($emailarr,4,$data['info']['email'],$mailedatas);
+                if($user_info['type']==1){
+                    $userserver->changeType(2,$data['user_id']);
+                }
             } catch (Exception $e) {
                 return ['code' => 500, 'message' => '创建失败'];
             }
@@ -623,7 +622,7 @@ class OrdersService
                 $emailarr['payprice']="$0.00";
                 $emailarr['yesprice']="$".$price;
                 $emailarr['url']="http://test-pdf-pro.kdan.cn:3026/order/checkout";
-                $email->sendDiyContactEmail($emailarr,6,$data['info']['email'],$mailedatas);
+                //$email->sendDiyContactEmail($emailarr,6,$data['info']['email'],$mailedatas);
                 $orderarr['email'] = $data['info']['email'] ?? '';
                 $orderarr['id'] = $order_id ?? 0;
                 $pay = $this->comparePriceCloseAndCreateOrder($orderarr);
@@ -866,6 +865,7 @@ class OrdersService
         $goods = new Goods();
         $ordergoods = new OrderGoods();
         $order = new Order();
+        $userserver = new UserService();
         $lisecosdmode = new LicenseModel();
         $order_data = $alipay->findAlipayByOrderNo($trade_no);
         $orderdata = $order->_find("merchant_no='{$trade_no}'");
@@ -877,6 +877,7 @@ class OrdersService
             if (!empty($order_data) && $order_data['trade_status'] == 'TRADE_SUCCESS') {
                 Db::table("callback_log")->insert(['info' => 'orderno=' . $trade_no . json_encode($order_data), 'pay_type' => 2]);
                 $order_goods = new OrderGoods();
+                $userserver->changeType(4,$orderdata['user_id']);
                 foreach ($ordergoods_data as $k=>$v){
                     foreach ($goods_data as $ks=>$vs){
                         if($v['goods_id']==$vs['id']){
