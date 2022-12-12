@@ -186,7 +186,13 @@
                     @foreach($data as $key => $item)
                         <tr id="del_{{$item['id']}}">
                             <td class="text-center">{{$item['id']}}</td>
-                            <td class="text-center">{{$item['order_no']}}</td>
+                            <td class="text-center">
+                             @if($item['pay_type'] == 1)
+                                    {{$item['paddle_no']}}
+                                @else
+                                    {{$item['order_no']}}
+                                @endif
+                            </td>
                             <td class="text-center">{{$item['merchant_no']}}</td>
                             <td>{{$item['email']}}</td>
                             <td>
