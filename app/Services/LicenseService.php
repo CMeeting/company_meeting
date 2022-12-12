@@ -237,7 +237,7 @@ class LicenseService
 
         if(!isset($goodsid))return ['code' => 500, 'msg' => $classification[$data['level1']]['title'].'-'.$classification[$data['level2']]['title'].'-'.$classification[$data['level3']]['title'].'下没有商品'];
 
-        $licensecodedata=LicenseService::buildLicenseCodeData(0, 1, $data['user_id'], $data['level1'], $data['level2'], $data['level3'],  $data["appid"], $data['email'],0,0);
+        $licensecodedata=LicenseService::buildLicenseCodeData(0, 1, 0, $data['level1'], $data['level2'], $data['level3'],  $data["appid"], $data['email'],0,0);
         foreach ($licensecodedata as $k=>$v){
             $licensecodedata[$k]['user_email'] = $data['email'];
             $licensecodedata[$k]['lise_type'] = 1;
