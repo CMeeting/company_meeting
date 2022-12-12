@@ -229,32 +229,6 @@ class LicenseService
         $lisecosdmode=new LicenseModel();
         $goods_data = $goods->_where("deleted=0 and status=1");
         $classification = $this->assembly_orderclassification();
-        $is_user = $user->existsEmail($data['email']);
-        if (!$is_user) {
-            $password = User::getRandStr();
-            $arr['full_name'] = $data['email'];
-            $arr['email'] = $data['email'];
-            $arr['password'] = User::encryptPassword($password);
-            $arr['flag'] = 3;
-            $arr['type'] = 4;
-            $arr['created_at'] = date("Y-m-d H:i:s");
-            $arr['updated_at'] = date("Y-m-d H:i:s");
-            $user_id = Db::table("users")->insertGetId($arr);
-            //发送邮件
-            $emailService = new EmailService();
-            $emailModel = Mailmagicboard::getByName('后台新增订单（用户注册成功邮件）');
-            $data['title'] = $emailModel->title;
-            $data['info'] = $emailModel->info;
-            $data['info'] = str_replace("#@username", $arr['full_name'], $data['info']);
-            $data['info'] = str_replace("#@mail", $arr['email'], $data['info']);
-            $data['info'] = str_replace("#@password", $password, $data['info']);
-            $emailService->sendDiyContactEmail($data, 0, $arr['email']);
-        } else {
-            $users = DB::table('users')->where('email', $data['email'])->first();
-            $user_id = $users->id;
-        }
-       $lisecosd = str_pad("'".mt_rand(1,9999)."'", 4, '0', STR_PAD_LEFT)."-".str_pad("'".mt_rand(1, 9999)."'", 4, '0', STR_PAD_LEFT)."-".str_pad("'".mt_rand(1, 9999)."'", 4, '0', STR_PAD_LEFT)."-".str_pad("'".mt_rand(1, 9999)."'", 4, '0', STR_PAD_LEFT);
-        $license_secret = str_pad("'".mt_rand(1, 9999)."'", 4, '0', STR_PAD_LEFT)."-".str_pad("'".mt_rand(1, 9999)."'", 4, '0', STR_PAD_LEFT)."-".str_pad("'".mt_rand(1, 9999)."'", 4, '0', STR_PAD_LEFT)."-".str_pad("'".mt_rand(1, 9999)."'", 4, '0', STR_PAD_LEFT);
         foreach ($goods_data as $ks => $vs) {
             if ($data['level1'] == $vs['level1'] && $data['level2'] == $vs['level2'] && $data['level3'] == $vs['level3']) {
                 $goodsid = $vs['id'];
@@ -262,20 +236,13 @@ class LicenseService
         }
 
         if(!isset($goodsid))return ['code' => 500, 'msg' => $classification[$data['level1']]['title'].'-'.$classification[$data['level2']]['title'].'-'.$classification[$data['level3']]['title'].'下没有商品'];
-        $data=[
-            'user_id'=>$user_id,
-            'products_id'=>$data['level1'],
-            'platform_id'=>$data['level2'],
-            'licensetype_id'=>$data['level3'],
-            'license_key'=>$lisecosd,
-            'license_secret'=>$license_secret,
-            'uuid'=>implode(',', $data["appid"]),
-            'period'=>$data['period'],
-            'type'=>2,
-            'status'=>1,
-            'expire_time'=>date("Y-m-d H:i:s",strtotime("+".$data['period']." year"))
-            ];
-         $res=$lisecosdmode->insertGetId($data);
+
+        $licensecodedata=LicenseService::buildLicenseCodeData(0, 1, $data['user_id'], $data['level1'], $data['level2'], $data['level3'],  $data["appid"], $data['email'],0,0);
+        foreach ($licensecodedata as $k=>$v){
+            $licensecodedata[$k]['user_email'] = $data['email'];
+            $licensecodedata[$k]['lise_type'] = 1;
+        }
+        $res=$lisecosdmode->_insert($licensecodedata);
          return ['code' => 1, 'msg' => "添加成功"];
 
     }
