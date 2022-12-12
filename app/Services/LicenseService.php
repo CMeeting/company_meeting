@@ -75,7 +75,7 @@ class LicenseService
         $query = DB::table("license_code as l");
         if ($param['export'] == 1) {
             $data = $query->select("l.id", "o.order_no as order_id", "o.goods_no as order_no", "l.uuid", "l.created_at", "l.expire_time",
-                "u.email", "l.license_key", "l.license_key_url", "l.type", "l.status", "l.products_id", "l.platform_id", "l.licensetype_id")
+                "u.email", "l.license_key", "l.license_key_url", "l.type", "l.status", "l.products_id", "l.platform_id", "l.licensetype_id","l.user_email","l.lise_type")
                 ->whereRaw($where)
                 ->leftJoin("orders_goods as o","l.ordergoods_id", "=", "o.id")
                 ->leftJoin("users as u","u.id", "=", "l.user_id")
@@ -83,7 +83,7 @@ class LicenseService
                 ->get()->toArray();
         }else{
             $data = $query->select("l.id", "o.order_no as order_id", "o.goods_no as order_no", "l.uuid", "l.created_at", "l.expire_time",
-                "u.email", "l.license_key", "l.license_key_url", "l.type", "l.status", "l.products_id", "l.platform_id", "l.licensetype_id")
+                "u.email", "l.license_key", "l.license_key_url", "l.type", "l.status", "l.products_id", "l.platform_id", "l.licensetype_id","l.user_email","l.lise_type")
                 ->whereRaw($where)
                 ->leftJoin("orders_goods as o","l.ordergoods_id", "=", "o.id")
                 ->leftJoin("users as u","u.id", "=", "l.user_id")
@@ -112,6 +112,9 @@ class LicenseService
                     $data[$key]->order_no = $value->order_no ?? '-';
                     $name = $goodsClassifications[$value->products_id] . " for " . $goodsClassifications[$value->platform_id] . " ( " . $goodsClassifications[$value->licensetype_id] . " ) ";
                     $data[$key]->name = $name;
+                    if($value->lise_type==1){
+                        $data[$key]->email = $value->user_email;
+                    }
                 }
             }
         }

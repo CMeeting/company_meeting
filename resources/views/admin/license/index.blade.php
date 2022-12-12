@@ -134,7 +134,11 @@
                     <tr>
                         <td class="text-center">{{$item->order_id}}</td>
                         <td class="text-center">{{$item->order_no}}</td>
+                        @if($item->lise_type==1)
+                         <td class="text-center" title="{{$item->user_email}}">{{$item->user_email}}</td>
+                        @else
                         <td class="text-center" title="{{$item->email}}">{{$item->emaild}}</td>
+                        @endif
                         <td class="text-center" title="{{$item->name}}">{{$item->named}}</td>
                         <td class="text-center" title="{{$item->uuid}}">{{$item->uuidd}}</td>
                         <td class="text-center">{{$item->created_at}}</td>
