@@ -163,7 +163,7 @@ class PaddleBiz
             'title'   =>  'PDF Conversion SDK', //产品名称
             'prices' =>  ['USD:' . $price],
             'quantity_variable'   =>  '0', //用户修改更改购买数量配置
-            'return_url'=> 'http://test-pdf-pro.kdan.cn:3026/order/checkout/payed?out_trade_no=paddle'.$order,
+//            'return_url'=> 'http://test-pdf-pro.kdan.cn:3026/order/checkout/payed?out_trade_no=paddle'.$order,
             'discountable' => '0',
             'quantity'   =>  $amount ?? '1', //购买数量默认为1个
 //            'expires'   =>  '2021-08-29', //支付链接过期时间
