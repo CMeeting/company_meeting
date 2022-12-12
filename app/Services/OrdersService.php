@@ -415,6 +415,16 @@ class OrdersService
         return $ordergoodsdata;
     }
 
+    /**
+     * 获取主订单信息
+     * @param $id
+     * @return \Illuminate\Database\Query\Builder|mixed
+     */
+    public function getOrderInfo($id)
+    {
+        return obj_to_arr(DB::table("orders")->find($id));
+    }
+
     public function update_status($id)
     {
         $order = new Order();

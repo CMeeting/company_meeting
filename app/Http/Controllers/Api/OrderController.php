@@ -112,43 +112,58 @@ class OrderController
 
     }
 
-    public function paddlecallback(Request $request){
+    public function paddlecallback(Request $request)
+    {
         $goods = new Goods();
         $userserver = new UserService();
         $ordergoods = new OrderGoods();
         $order = new Order();
         $lisecosdmode = new LicenseModel();
         $param = $request->all();
-        Db::table("callback_log")->insert(['info' => 'paddle='. json_encode($param), 'pay_type' => 1]);
-        if(isset($param['alert_name']) && $param['alert_name']=="payment_succeeded" && isset($param['passthrough'])){
-            $merchant_no='paddle'.$param['passthrough'];
+        Db::table("callback_log")->insert(['info' => 'paddle=' . json_encode($param), 'pay_type' => 1]);
+        if (isset($param['alert_name']) && $param['alert_name'] == "payment_succeeded" && isset($param['passthrough'])) {
+            $merchant_no = 'paddle' . $param['passthrough'];
             $orderdata = $order->_find("merchant_no='{$merchant_no}'");
             $orderdata = $order->objToArr($orderdata);
             $emaildata = unserialize($orderdata['user_bill']);
             $ordergoods_data = $ordergoods->_where("merchant_no='{$merchant_no}'");
             $goods_data = $goods->_where("1=1");
             try {
-                $fapiao_url=$this->get_pdfurl($orderdata['id']);
-                $userserver->changeType(4,$orderdata['user_id']);
-                DB::table("orders")->whereRaw("order_no='{$param['passthrough']}'")->update(['status' => 1, 'pay_time' => date("Y-m-d H:i:s"),'bill_url'=>$fapiao_url,'paddle_no'=>$param['order_id']]);
-                DB::table("orders_goods")->whereRaw("order_no='{$param['passthrough']}'")->update(['status' => 1, 'pay_time' => date("Y-m-d H:i:s"),'paddle_no'=>$param['order_id']]);
-                \Log::info($param['passthrough'].":进入回调执行生成授权码");
-                foreach ($ordergoods_data as $k=>$v){
-                    foreach ($goods_data as $ks=>$vs){
-                        if($v['goods_id']==$vs['id']){
-                            $licensecodedata=LicenseService::buildLicenseCodeData($v['goods_no'], $v['pay_years'], $v['user_id'], $vs['level1'], $vs['level2'], $vs['level3'],  explode(",",$v['appid']), $emaildata['email'],$v['order_id'],$v['id']);
-                            \Log::info($param['passthrough'].":进入回调执行生成授权码".json_encode($licensecodedata));
+                $fapiao_url = $this->get_pdfurl($orderdata['id']);
+                $bill_no = $this->getBillNo();//发票编号,需要移到服务层
+                $userserver->changeType(4, $orderdata['user_id']);
+                DB::table("orders")->whereRaw("order_no='{$param['passthrough']}'")->update(['status' => 1, 'pay_time' => date("Y-m-d H:i:s"), 'bill_no' => $bill_no, 'bill_url' => $fapiao_url, 'paddle_no' => $param['order_id']]);
+                DB::table("orders_goods")->whereRaw("order_no='{$param['passthrough']}'")->update(['status' => 1, 'pay_time' => date("Y-m-d H:i:s"), 'paddle_no' => $param['order_id']]);
+                \Log::info($param['passthrough'] . ":进入回调执行生成授权码");
+                foreach ($ordergoods_data as $k => $v) {
+                    foreach ($goods_data as $ks => $vs) {
+                        if ($v['goods_id'] == $vs['id']) {
+                            $licensecodedata = LicenseService::buildLicenseCodeData($v['goods_no'], $v['pay_years'], $v['user_id'], $vs['level1'], $vs['level2'], $vs['level3'], explode(",", $v['appid']), $emaildata['email'], $v['order_id'], $v['id']);
+                            \Log::info($param['passthrough'] . ":进入回调执行生成授权码" . json_encode($licensecodedata));
                             $lisecosdmode->_insert($licensecodedata);
                         }
                     }
                 }
-            }catch (\Exception $e) {
+            } catch (\Exception $e) {
                 error('paddle', $e->getMessage(), 200);
             }
-        }else{
-            return \Response::json(['code'=>0,'mgs'=>"缺少参数"]);
+        } else {
+            return \Response::json(['code' => 0, 'mgs' => "缺少参数"]);
         }
+    }
 
+    /**
+     * 获取新的发票编号(需要将方法移到服务层)
+     * @return mixed|string
+     */
+    public function getBillNo()
+    {
+        $rand_str = time() . get_rand_str(4);
+        $info = Order::where("bill_no", $rand_str)->find();
+        if ($info) {
+            $rand_str = $this->getBillNo();
+        }
+        return $rand_str;
     }
 
     public function get_pdfurl($order_id){

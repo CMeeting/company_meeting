@@ -60,6 +60,25 @@ if (!function_exists('obj_to_arr')) {
 }
 
 /**
+ * 字符串转数组
+ * @return mixed
+ */
+if (!function_exists('get_rand_str')) {
+    function get_rand_str($length)
+    {
+        //字符组合
+        $str = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+        $len = strlen($str) - 1;
+        $randstr = '';
+        for ($i = 0; $i < $length; $i++) {
+            $num = mt_rand(0, $len);
+            $randstr .= $str[$num];
+        }
+        return $randstr;
+    }
+}
+
+/**
  * @return mixed
  */
 if (!function_exists('route_class')) {

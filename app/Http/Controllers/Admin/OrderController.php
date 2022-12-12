@@ -48,10 +48,17 @@ class OrderController extends BaseController {
     }
 
 
-    public function getinfo($id){
+    /**
+     * 订单详情
+     * @param $id
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
+    public function getinfo($id)
+    {
         $order = new OrdersService();
         $data = $order->data_info($id);
-        return $this->view('info',['data'=>$data]);
+        $info = $order->getOrderInfo($id);//获取发票信息
+        return $this->view('info', ['data' => $data, 'info' => $info]);
     }
 
     public function updatestatus(Request $request){
