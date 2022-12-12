@@ -130,7 +130,7 @@ class OrderController
             $goods_data = $goods->_where("1=1");
             try {
                 $fapiao_url = $this->get_pdfurl($orderdata['id']);
-                $bill_no = $this->getBillNo();//发票编号,需要移到服务层
+                $bill_no = "111222";//$this->getBillNo();//发票编号,需要移到服务层
                 $userserver->changeType(4, $orderdata['user_id']);
                 DB::table("orders")->whereRaw("order_no='{$param['passthrough']}'")->update(['status' => 1, 'pay_time' => date("Y-m-d H:i:s"), 'bill_no' => $bill_no, 'bill_url' => $fapiao_url, 'paddle_no' => $param['order_id']]);
                 DB::table("orders_goods")->whereRaw("order_no='{$param['passthrough']}'")->update(['status' => 1, 'pay_time' => date("Y-m-d H:i:s"), 'paddle_no' => $param['order_id']]);
