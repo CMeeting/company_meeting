@@ -567,7 +567,7 @@ class OrdersService
         $user_info =$userobj->objToArr($user_info);
         $emailarr['username']=$user_info['full_name'];
         $emailarr['products']=$goodsfeilei[$data['products_id']]['title'].$goodsfeilei[$data['platform_id']]['title'].$goodsfeilei[$data['licensetype_id']]['title'];
-        $ordergoods_no = chr(rand(65, 90)) . time();
+        $ordergoods_no = chr(rand(65, 90)) .chr(rand(65, 90)) .chr(rand(65, 90)) . time();
         $emailarr['orderno']=$orderno;
         $orderarr = [
             'order_no' => $orderno,
