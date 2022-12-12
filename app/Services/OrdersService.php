@@ -480,7 +480,20 @@ class OrdersService
         $data['list'] = $ordergoodsdata;
         $data['fapiao']=$data['bill_url'];
         return ['code' => 200, 'msg' => 'ok', 'data' => $data];
+    }
 
+    /**
+     * 获取新的发票编号(需要将方法移到服务层)
+     * @return mixed|string
+     */
+    public function getBillNo()
+    {
+        $rand_str = "S" . time() . get_rand_str(4);
+        $info = Order::where("bill_no", $rand_str)->get();
+        if (count($info) > 0) {
+            $rand_str = $this->getBillNo();
+        }
+        return $rand_str;
     }
 
 
