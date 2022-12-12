@@ -659,6 +659,70 @@ class OrdersService
         }
     }
 
+
+    public function runrepurchase($pram){
+        $order = new Order();
+        $orderGoods = new OrderGoods();
+        $data=$order->_find("id='{$pram['id']}' and user_id='{$pram['user_id']}'");
+        $data=$order->objToArr($data);
+        if(!$data)return ['code'=>403,'msg'=>'订单不存在'];
+        $goodsdata=$this->assembly_ordergoods();
+        $ordergoods=$orderGoods->_where("order_id='{$pram['id']}' and user_id='{$pram['user_id']}'");
+        $arr = [];
+        $orderno=time();
+        $sumprice = 0;
+        $goodstotal = 0;
+        foreach ($ordergoods as $k=>$v){
+            if (!$goodsdata[$v['goods_id']]) {
+                return ['code' => 403, 'msg' => "商品ID：".$v['goods_id']."该商品不存在或已下架"];
+            }
+            $ordergoods_no = chr(rand(65, 90)) .chr(rand(65, 90)) .chr(rand(65, 90)) . time();
+            $price = $v['pay_years']*$goodsdata[$v['goods_id']]['price'];
+            $arr[] = [
+                'goods_no' => $ordergoods_no,
+                'pay_type' => $data['pay_type'],
+                'order_no'=>$orderno,
+                'status' => 0,
+                'type' => 2,
+                'details_type' => 2,
+                'price' => $price,
+                'user_id' => $v['user_id'],
+                'appid' => $v["appid"],
+                'goods_id' => $v['id'],
+                'pay_years' => $v['pay_years'],
+                'created_at' => date("Y-m-d H:i:s"),
+                'updated_at' => date("Y-m-d H:i:s")
+            ];
+            $goodstotal++;
+            $sumprice += $price;
+        }
+        $orderdata = [
+            'order_no' => $orderno,
+            'pay_type' => $data['pay_type'],
+            'status' => 0,
+            'type' => 2,
+            'details_type' => 2,
+            'price' => $sumprice,
+            'user_id' => $data['user_id'],
+            'user_bill'=>serialize($pram['info']),
+            'goodstotal' => $goodstotal
+        ];
+        try {
+            $order_id = $order->insertGetId($orderdata);
+            foreach ($arr as $k => $v) {
+                $arr[$k]['order_id'] = $order_id;
+                $arr[$k]['order_no'] = $orderno;
+            }
+            $orderGoods->_insert($arr);
+            $orderdata['email']=$pram['info']['email']??'';
+            $orderdata['id']=$order_id;
+            $pay=$this->comparePriceCloseAndCreateOrder($orderdata);
+        } catch (Exception $e) {
+            return ['code' => 500, 'message' => '创建失败'];
+        }
+        return ['code' => 200, 'msg' => "创建订单成功",'data'=>['order_id'=>$order_id,'pay'=>$pay]];
+    }
+
     public function noorderpay($data)
     {
         $order = new Order();

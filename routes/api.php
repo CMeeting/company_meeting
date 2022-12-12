@@ -44,6 +44,7 @@ Route::group(['middleware'=>'jwt.auth', 'namespace'=>'Api'], function(){
     Route::post('/createorder','OrderController@createorder');
     Route::post('/createcatorder','OrdercartController@createcatorder');
     Route::post('/noorderpay','OrderController@noorderpay');
+    Route::post('/repurchase','OrderController@repurchase');
 });
 
 //用户管理
