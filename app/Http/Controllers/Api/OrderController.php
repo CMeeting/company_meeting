@@ -130,7 +130,8 @@ class OrderController
             $goods_data = $goods->_where("1=1");
             try {
                 $fapiao_url = $this->get_pdfurl($orderdata['id']);
-                $bill_no = "111222";//$this->getBillNo();//发票编号,需要移到服务层
+                $orders_service = new OrdersService();
+                $bill_no = $orders_service->getBillNo();//发票编号,需要移到服务层
                 $userserver->changeType(4, $orderdata['user_id']);
                 DB::table("orders")->whereRaw("order_no='{$param['passthrough']}'")->update(['status' => 1, 'pay_time' => date("Y-m-d H:i:s"), 'bill_no' => $bill_no, 'bill_url' => $fapiao_url, 'paddle_no' => $param['order_id']]);
                 DB::table("orders_goods")->whereRaw("order_no='{$param['passthrough']}'")->update(['status' => 1, 'pay_time' => date("Y-m-d H:i:s"), 'paddle_no' => $param['order_id']]);
@@ -150,20 +151,6 @@ class OrderController
         } else {
             return \Response::json(['code' => 0, 'mgs' => "缺少参数"]);
         }
-    }
-
-    /**
-     * 获取新的发票编号(需要将方法移到服务层)
-     * @return mixed|string
-     */
-    public function getBillNo()
-    {
-        $rand_str = time() . get_rand_str(4);
-        $info = Order::where("bill_no", $rand_str)->find();
-        if ($info) {
-            $rand_str = $this->getBillNo();
-        }
-        return $rand_str;
     }
 
     public function get_pdfurl($order_id){
