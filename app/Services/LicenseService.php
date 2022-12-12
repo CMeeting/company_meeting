@@ -26,6 +26,9 @@ use Maatwebsite\Excel\Facades\Excel;
 class LicenseService
 {
 
+    const LICENSE_TYPE_1_SDK_TRY = 1;
+    const LICENSE_TYPE_2_SDK = 2;
+
     public function __construct()
     {
 
@@ -274,7 +277,7 @@ class LicenseService
      * @param $email
      * @param $order_id
      * @param $ordergoods_id
-     * @param $period_type
+     * @param string $period_unit
      * @return array
      * @throws \Exception
      */
@@ -290,15 +293,23 @@ class LicenseService
 
         $platform_name=$product ." for ". $platform ." (". $license_type.")";
         $generateService = new GenerateLicenseCodeService();
+
+        //如果 $period_unit是月份则是试用
+        if($period_unit == 'year'){
+            $type = self::LICENSE_TYPE_2_SDK;
+        }else{
+            $type = self::LICENSE_TYPE_1_SDK_TRY;
+        }
+
         if($product == 'ComPDFKit SDK'){
             $license_code_pdf = $generateService->generate('ComPDFKit PDF SDK', $platform, $license_type, $start_time, $end_time, $app_id, $email);
-            $license_code_arr[] = self::getLicenseCodeData($license_code_pdf, $ordergoods_no, $user_id, $product_id, $platform_id, $licensetype_id, $app_id, $period, $end_time,$order_id,$ordergoods_id,'ComPDFKit PDF SDK ');
+            $license_code_arr[] = self::getLicenseCodeData($license_code_pdf, $ordergoods_no, $user_id, $product_id, $platform_id, $licensetype_id, $app_id, $period, $end_time,$order_id,$ordergoods_id, $type, 'ComPDFKit PDF SDK');
 
             $license_code_conversion = $generateService->generate('ComPDFKit Conversion SDK', $platform, $license_type, $start_time, $end_time, $app_id, $email);
-            $license_code_arr[] = self::getLicenseCodeData($license_code_conversion, $ordergoods_no, $user_id, $product_id, $platform_id, $licensetype_id, $app_id, $period, $end_time, $order_id,$ordergoods_id,'ComPDFKit Conversion SDK ');
+            $license_code_arr[] = self::getLicenseCodeData($license_code_conversion, $ordergoods_no, $user_id, $product_id, $platform_id, $licensetype_id, $app_id, $period, $end_time, $order_id,$ordergoods_id, $type, 'ComPDFKit Conversion SDK');
         }else{
             $license_code_conversion = $generateService->generate($product, $platform, $license_type, $start_time, $end_time, $app_id, $email);
-            $license_code_arr[] = self::getLicenseCodeData($license_code_conversion, $ordergoods_no, $user_id, $product_id, $platform_id, $licensetype_id, $app_id, $period, $end_time, $order_id,$ordergoods_id,$platform_name);
+            $license_code_arr[] = self::getLicenseCodeData($license_code_conversion, $ordergoods_no, $user_id, $product_id, $platform_id, $licensetype_id, $app_id, $period, $end_time, $order_id,$ordergoods_id, $type, $platform_name);
         }
 
         return $license_code_arr;
@@ -317,10 +328,11 @@ class LicenseService
      * @param $end_time
      * @param $order_id
      * @param $ordergoods_id
+     * @param $type
      * @param $platform_name
      * @return array
      */
-    public static function getLicenseCodeData($license_code, $ordergoods_no, $user_id, $product_id, $platform_id, $licensetype_id, $app_id, $period, $end_time, $order_id,$ordergoods_id,$platform_name=''){
+    public static function getLicenseCodeData($license_code, $ordergoods_no, $user_id, $product_id, $platform_id, $licensetype_id, $app_id, $period, $end_time, $order_id,$ordergoods_id, $type, $platform_name=''){
         $license_key = $license_code['key'];
         $license_secret = $license_code['secret'];
         return [
@@ -335,7 +347,7 @@ class LicenseService
             'license_secret' => $license_secret,
             'uuid' => implode(',', $app_id),
             'period' => $period,
-            'type' => 2,
+            'type' => $type,
             'status' => 1,
             'expire_time' => date("Y-m-d H:i:s", $end_time),
             'created_at' => date("Y-m-d H:i:s"),

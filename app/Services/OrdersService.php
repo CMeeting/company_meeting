@@ -682,7 +682,6 @@ class OrdersService
 
     public function get_license($parm)
     {
-
         if (isset($parm['type'])) {
             $wehere = "user_id='{$parm['user_id']}' and type=1";
         } else {
