@@ -443,6 +443,7 @@ class OrdersService
     {
         $order = new Order();
         $orderGoods = new OrderGoods();
+        $LicenseModel = new LicenseModel();
         $data = $order->_find("user_id='{$pram['user_id']}' and id='{$pram['order_id']}'");
         $data = $order->objToArr($data);
         if (!$data) {
@@ -450,17 +451,20 @@ class OrdersService
         }
         $ordergoodsdata = $orderGoods
             ->leftJoin('goods', 'orders_goods.goods_id', '=', 'goods.id')
-            ->leftJoin('license_code', 'orders_goods.id', '=', 'license_code.ordergoods_id')
             ->whereRaw("orders_goods.order_id='{$pram['order_id']}'")
-            ->selectRaw("orders_goods.appid,orders_goods.goods_no,orders_goods.pay_type,orders_goods.status,orders_goods.price,orders_goods.id,goods.level1,goods.level2,goods.level3,license_code.license_key_url,license_code.period,license_code.period,license_code.expire_time,license_code.created_at")
+            ->selectRaw("orders_goods.appid,orders_goods.goods_no,orders_goods.pay_type,orders_goods.status,orders_goods.price,orders_goods.id,goods.level1,goods.level2,goods.level3,orders_goods.pay_years period")
+            ->groupByRaw()
             ->get()->toArray();
         if (!empty($ordergoodsdata)) {
             $classification = $this->assembly_orderclassification();
             foreach ($ordergoodsdata as $k => $v) {
-                $ordergoodsdata[$k]['products'] = isset($classification[$v['level1']]['title']) ? $classification[$v['level1']]['title'] : "";
-                $ordergoodsdata[$k]['platform'] = isset($classification[$v['level2']]['title']) ? $classification[$v['level2']]['title'] : "";
-                $ordergoodsdata[$k]['licensie'] = isset($classification[$v['level3']]['title']) ? $classification[$v['level3']]['title'] : "";
-
+                 $ordergoodsdata[$k]['products'] = isset($classification[$v['level1']]['title']) ? $classification[$v['level1']]['title'] : "";
+                 $ordergoodsdata[$k]['platform'] = isset($classification[$v['level2']]['title']) ? $classification[$v['level2']]['title'] : "";
+                 $ordergoodsdata[$k]['licensie'] = isset($classification[$v['level3']]['title']) ? $classification[$v['level3']]['title'] : "";
+                 $license_code=$LicenseModel->_find("ordergoods_id=".$v['id']);
+                 $license_code=$LicenseModel->objToArr($license_code);
+                $ordergoodsdata[$k]['expire_time']=$license_code['expire_time'];
+                $ordergoodsdata[$k]['created_at']=$license_code['created_at'];
                 switch ($v['pay_type']) {
                     case 1:
                         $ordergoodsdata[$k]['payname'] = "paddle";
@@ -751,7 +755,7 @@ class OrdersService
                 ->toArray();
             foreach ($goods_data as $k=>$v){
                 $emailarr['products']=$goodsfeilei[$v->level1]['title'].$goodsfeilei[$v->level2]['title'].$goodsfeilei[$v->level3]['title'];
-                $emailarr['order_id']=$v->order_id;
+                $emailarr['order_id']=$v->order_no;
                 $emailarr['pay_years']=$v->pay_years;
                 $emailarr['goodsprice']="$".$v->goodsprice;
                 $emailarr['taxes']="$0.00";
