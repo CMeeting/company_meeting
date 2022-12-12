@@ -159,8 +159,8 @@ class PaddleBiz
         $orderData = [
             'vendor_id'         =>  $this->config['vendor_id'],
             'vendor_auth_code'  =>  $this->config['vendor_auth_code'],
-            'product_id'   =>  14228, //产品ID
-            'title'   =>  $product, //产品名称
+            'product_id'   =>  41223, //产品ID
+            'title'   =>  'PDF Conversion SDK', //产品名称
             'prices' =>  ['USD:' . $price],
             'quantity_variable'   =>  '0', //用户修改更改购买数量配置
             'return_url'=> 'http://test-pdf-pro.kdan.cn:3026/order/checkout/payed?out_trade_no=paddle'.$order,
