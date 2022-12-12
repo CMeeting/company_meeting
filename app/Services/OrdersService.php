@@ -597,7 +597,7 @@ class OrdersService
             $gooodsdata = $orderGoods->_find("user_id='{$data['user_id']}' and appid='{$data['appid']}' and details_type='{$data['details_type']}' and status=2 and goods_id='{$goods_data['id']}'");
             $gooodsdata = $orderGoods->objToArr($gooodsdata);
             if ($gooodsdata) {
-                return ['code' => 403, 'msg' => "该APPID在当前商品已存在试用订单"];
+                return ['code' => 403, 'msg' => "`该APPID在当前商品已存在试用订单`"];
             }
             $orderarr['status'] = 2;
             $orderarr['pay_type'] = 4;
@@ -760,6 +760,7 @@ class OrdersService
                 $emailarr['noorderprice']="$0.00";
                 $emailarr['pay_time']=$v->pay_time;
                 $emailarr['url']="http://test-pdf-pro.kdan.cn:3026/order/checkout";
+                $emailarr['fapiao']=$data['bill_url'];
                 $email->sendDiyContactEmail($emailarr,7,$emaildata['email'],$mailedatas);
             }
         }
