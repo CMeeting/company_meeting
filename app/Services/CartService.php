@@ -134,8 +134,10 @@ class CartService
             if (!$goods_data) {
                 return ['code' => 403, 'msg' => "商品ID：".$v['goods_id']."该商品不存在或已下架"];
             }
+            $ordergoods_no = chr(rand(65, 90)) .chr(rand(65, 90)) .chr(rand(65, 90)) . time();
             $price = $v['pay_years']*$goods_data['price'];
             $arr[] = [
+                'goods_no' => $ordergoods_no,
                 'pay_type' => $data['pay_type'],
                 'order_no'=>$orderno,
                 'status' => 0,
