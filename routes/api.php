@@ -32,7 +32,6 @@ Route::group(['namespace' => 'Api'], function () {
     Route::get('/wechatNotify', 'OrderController@wechatNotify');
     Route::get('/emailtest', 'EmailtestContr@emailtest');
     Route::post('/paddlecallback', 'OrderController@paddlecallback');
-    Route::get('/newOrder', 'OrderController@newOrder');
 });
 
 Route::group(['middleware' => 'jwt.auth', 'namespace' => 'Api'], function () {
@@ -46,6 +45,7 @@ Route::group(['middleware' => 'jwt.auth', 'namespace' => 'Api'], function () {
     Route::post('/createcatorder', 'OrdercartController@createcatorder');
     Route::post('/noorderpay', 'OrderController@noorderpay');
     Route::post('/repurchase', 'OrderController@repurchase');
+    Route::post('/newOrder', 'OrderController@newOrder');
 });
 
 //用户管理
