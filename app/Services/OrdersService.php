@@ -35,18 +35,47 @@ class OrdersService
 
     }
 
-    public function checkUserOrder($user_id, $order_no)
+    public function checkAndCreate($user_id, $order_no, $login_user_email)
     {
         if (!$order_no) {
             return ["code" => 201, "msg" => "订单号不能为空！"];
         }
+
         $where = ["status" => 1, "user_id" => $user_id, "order_no" => $order_no];
         $result = DB::table("orders")->where($where)->first();
         if (!$result) {
-            return ["code" => 401, "msg" => "该用户没有购买过该订单！"];
+            return ["code" => 301, "msg" => "该用户没有购买过该订单！"];
         }
+
+        $where = " o.status = 1 and o.type = 2 and o.details_type != 1 and o.user_id = " . $user_id . " and o.order_no = '" . $order_no . "'";
+        $result = DB::table("orders as o")
+            ->leftJoin("orders_goods as og", "o.order_no", "=", "og.order_no")
+            ->leftJoin("goods as g", "g.id", "=", "og.goods_id")
+            ->select("o.user_bill", "og.appid", "og.pay_years", "og.details_type", "og.pay_type", "og.goods_id", "g.status", "g.deleted",
+                "g.level1 as product_id", "g.level2 as platform_id", "g.level3 as license_type_id")
+            ->whereRaw($where)
+            ->get();
+        $data = obj_to_arr($result);
+
+        if (count($data) == 1) {
+            $info = current($data);
+            $param = ["products_id" => $info['product_id'], "platform_id" => $info['platform_id'], "licensetype_id" => $info["license_type_id"],
+                "pay_years" => $info["pay_years"], "details_type" => $info["details_type"], "pay_type" => $info["pay_type"], "user_id" => $user_id,
+                "login_user_email" => $login_user_email, "s" => "//api/createorder", "appid" => [$info["appid"]],
+                "info"=>unserialize($info["user_bill"])];
+//            echo"<pre>";
+//            print_r($param);die;
+            return $this->createorder($param);
+        } else {
+            foreach ($data as $key => $value) {
+                if ($value['status'] != 1 || $value['deleted'] == 1) {
+                    return ["code" => 301, "msg" => $value["goods_id"] . "商品已下架或不存在"];
+                }
+            }
+        }
+
         echo "<pre>";
-        print_r($result);
+        print_r($data);
         die;
     }
 
@@ -566,7 +595,7 @@ class OrdersService
     public function createorder($data)
     {
         $order = new Order();
-        $email = new EmailService();
+//        $email = new EmailService();
         $maile = new MailmagicboardService();
         $orderGoods = new OrderGoods();
         $goods = new goods();

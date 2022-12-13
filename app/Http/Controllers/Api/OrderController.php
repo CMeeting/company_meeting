@@ -80,14 +80,15 @@ class OrderController
     public function newOrder(Request $request)
     {
         $order = new OrdersService();
-//        $current_user = UserService::getCurrentUser($request);
-//        $user_id = $current_user->id;
-        $user_id = 1;
+        $current_user = UserService::getCurrentUser($request);
+        $user_id = $current_user->id;
+//        $user_id = 1;
+        $login_user_email = $request->input("login_user_email", "");
         $order_no = $request->input("order_no", '');//父级订单id
         Log::info("用户ID：[" . $user_id . "]重新创建订单,原订单号[" . $order_no . "]");
-        $result = $order->checkUserOrder($user_id, $order_no);//判断用户是否存在此订单，并判断订单对应的商品是否下架
+        $result = $order->checkAndCreate($user_id, $order_no, $login_user_email);//判断用户是否存在此订单，并判断订单对应的商品是否下架
         if ($result['code'] != 200) {
-            Log::info("用户ID：[" . $user_id . "]重新创建订单失败,原订单号[" . $order_no . "]失败原因：" . json_encode($result,JSON_UNESCAPED_UNICODE));
+            Log::info("用户ID：[" . $user_id . "]重新创建订单失败,原订单号[" . $order_no . "]失败原因：" . json_encode($result, JSON_UNESCAPED_UNICODE));
             return \Response::json($result);
         }
     }
