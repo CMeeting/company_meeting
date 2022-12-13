@@ -35,6 +35,13 @@ class OrdersService
 
     }
 
+    /**
+     * Renew直接获取订单信息并生成新的支付链接（弃用）
+     * @param $user_id
+     * @param $order_no
+     * @param $login_user_email
+     * @return array
+     */
     public function checkAndCreate($user_id, $order_no, $login_user_email)
     {
         if (!$order_no) {
@@ -56,27 +63,23 @@ class OrdersService
             ->whereRaw($where)
             ->get();
         $data = obj_to_arr($result);
-
-        if (count($data) == 1) {
+        if (count($data) == 1) {//一个商品
             $info = current($data);
+            if ($info['status'] != 1 || $info['deleted'] == 1) {
+                return ["code" => 301, "msg" => $info["goods_id"] . "商品已下架或不存在"];
+            }
             $param = ["products_id" => $info['product_id'], "platform_id" => $info['platform_id'], "licensetype_id" => $info["license_type_id"],
                 "pay_years" => $info["pay_years"], "details_type" => $info["details_type"], "pay_type" => $info["pay_type"], "user_id" => $user_id,
                 "login_user_email" => $login_user_email, "s" => "//api/createorder", "appid" => [$info["appid"]],
                 "info"=>unserialize($info["user_bill"])];
-//            echo"<pre>";
-//            print_r($param);die;
             return $this->createorder($param);
-        } else {
+        } else {//多个商品
             foreach ($data as $key => $value) {
                 if ($value['status'] != 1 || $value['deleted'] == 1) {
                     return ["code" => 301, "msg" => $value["goods_id"] . "商品已下架或不存在"];
                 }
             }
         }
-
-        echo "<pre>";
-        print_r($data);
-        die;
     }
 
     public static $payments = ['paddle' => 1, 'alipay' => 2, 'wxpay' => 3];

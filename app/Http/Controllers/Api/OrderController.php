@@ -77,12 +77,16 @@ class OrderController
         return \Response::json($data);
     }
 
+    /**
+     * renew直接生成支付链接（弃用）
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function newOrder(Request $request)
     {
         $order = new OrdersService();
         $current_user = UserService::getCurrentUser($request);
         $user_id = $current_user->id;
-//        $user_id = 1;
         $login_user_email = $request->input("login_user_email", "");
         $order_no = $request->input("order_no", '');//父级订单id
         Log::info("用户ID：[" . $user_id . "]重新创建订单,原订单号[" . $order_no . "]");
