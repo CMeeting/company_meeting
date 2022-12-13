@@ -37,6 +37,18 @@ class CartService
         }elseif (isset($data['delid'])){
             $rest = $cart->_delete([["id","=",$data['delid']]]);
         } else {
+            //app_id去空
+            $data['appid'] = array_filter($data['appid']);
+            //如果appid数量大于1则是machine_id需要校验是否重复
+            $appid_num = count($data['appid']);
+            if($appid_num > 1){
+                if(count(array_unique($data['appid'])) != $appid_num){
+                    return ['code'=>500,'msg'=>'machine_id cannot be repeated'];
+                }
+            }elseif($appid_num == 0){
+                return ['code'=>500,'msg'=>'app_id cannot be empty'];
+            }
+
             $appid=implode(",",$data['appid']);
             if(!isset($data['goods_id'])){
                 $goods_data = $goods->_find("level1='{$data['products_id']}' and level2='{$data['platform_id']}' and level3='{$data['licensetype_id']}' and deleted=0 and status=1");
