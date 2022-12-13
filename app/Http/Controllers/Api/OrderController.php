@@ -12,6 +12,7 @@ use App\Services\OrdersService;
 use App\Services\UserService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use PDF;
 
 class OrderController
@@ -59,12 +60,18 @@ class OrderController
     }
 
 
-    public function createorder(Request $request){
+    /**
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function createorder(Request $request)
+    {
         $order = new OrdersService();
         $current_user = UserService::getCurrentUser($request);
         $user_id = $current_user->id;
         $param = $request->all();
         $param['user_id'] = $user_id;
+        Log::info("创建订单请求参数：" . json_encode($param));
         $data = $order->createorder($param);
         return \Response::json($data);
     }
@@ -113,16 +120,17 @@ class OrderController
     }
 
 
-    public function repurchase(Request $request){
+    public function repurchase(Request $request)
+    {
         $current_user = UserService::getCurrentUser($request);
         $user_id = $current_user->id;
         $param = $request->all();
-        if(!isset($param['id']) || !isset($param['pay_type']) || !isset($param['info'])){
-            return \Response::json(['code'=>403,'mgs'=>"缺少必要参数"]);
+        if (!isset($param['id']) || !isset($param['pay_type']) || !isset($param['info'])) {
+            return \Response::json(['code' => 403, 'mgs' => "缺少必要参数"]);
         }
         $param['user_id'] = $user_id;
         $order = new OrdersService();
-        $rest=$order->runrepurchase($param);
+        $rest = $order->runrepurchase($param);
         return \Response::json($rest);
     }
 
