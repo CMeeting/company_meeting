@@ -251,9 +251,10 @@
                 success: function (data) {
                     if (data.code == 200) {
                         layer.close(index);
-                        layer.msg("添加成功", {time: 1500, anim: 6});
-                        $(".reset").click();
-                        $(".back").click();
+                        layer.msg("添加成功", {time: 1500, anim: 6}, function(){
+                            $(".reset").click();
+                            $(".back").click();
+                        });
                     } else {
                         layer.close(index);
                         layer.msg(data.msg, {time: 1500, anim: 6});
