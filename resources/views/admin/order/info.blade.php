@@ -57,7 +57,7 @@
                         @foreach($data as $key => $item)
                             <tr id="del_{{$item['id']}}">
                                 <td class="text-center">{{$item['goods_no']}}</td>
-                                <td class="text-center">{{$item['products']}}{{$item['platform']}}{{$item['licensie']}}</td>
+                                <td class="text-center">{{$item['products']}}&nbsp;for&nbsp;{{$item['platform']}}&nbsp;({{$item['licensie']}})</td>
                                 <td>{{$item['appid']}}</td>
                                 <td>{{$item['created_at']}}</td>
                                 <td>{{$item['email']}}</td>
@@ -151,7 +151,7 @@
                         @foreach($data as $key => $item)
                             <?php $sum+=$item['price'] ;?>
                         <tr id="de">
-                            <td class="text-center">{{$item['products']}}{{$item['platform']}}{{$item['licensie']}}</td>
+                            <td class="text-center">{{$item['products']}}&nbsp;for&nbsp;{{$item['platform']}}&nbsp;({{$item['licensie']}})</td>
                             <td class="text-center">{{$item['appid']}}</td>
                             <td class="text-center">{{$item['licensie']}}</td>
                             <td class="text-center">{{$item['pay_years']}}/years</td>
