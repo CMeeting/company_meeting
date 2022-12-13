@@ -91,6 +91,7 @@ class OrderController
             Log::info("用户ID：[" . $user_id . "]重新创建订单失败,原订单号[" . $order_no . "]失败原因：" . json_encode($result, JSON_UNESCAPED_UNICODE));
             return \Response::json($result);
         }
+        return \Response::json($result);
     }
 
     public function getgoodsprice(Request $request){
