@@ -181,7 +181,7 @@ class CartService
             'goodstotal' => $goodstotal
         ];
         try {
-            DB::transaction();
+            DB::beginTransaction();
             Log::info("用户ID：[" . $data["user_id"] . "]创建购物车主订单：" . json_encode($orderdata, JSON_UNESCAPED_UNICODE));
             $order_id = $order->insertGetId($orderdata);
             foreach ($arr as $k => $v) {
