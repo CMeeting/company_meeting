@@ -123,7 +123,7 @@
                             <tr id="de">
                                 <td class="text-center">电子普通发票</td>
                                 <td class="text-center">{{$info["bill_no"]}}</td>
-                                <td class="text-center"><a target="_blank" href="{{$info['bill_url']}}">发票下载</a></td>
+                                <td class="text-center"><a target="_blank" href="{{$info['bill_url']}}" download="invoice.pdf">发票下载</a></td>
 {{--                                <td><img id="u14137_img" class="img " src="https://d1icd6shlvmxi6.cloudfront.net/gsc/WQDX7J/6e/72/53/6e7253e7811947a28db93473e52d0d73/images/查看订单/u14137.svg"></td>--}}
                             </tr>
                         </tbody>
