@@ -517,9 +517,9 @@ class OrdersService
         foreach ($data as $k => $v) {
             foreach ($ordergoodsdata as $ks => $vs) {
                 if ($v['order_no'] == $vs['order_id']) {
-                        $level1 = $classification[$vs['level1']]['title'];
-                        $level2 = $classification[$vs['level2']]['title'];
-                        $level3 = $classification[$vs['level3']]['title'];
+                        $level1 = $classification[$vs['level1']]['title'] ?? '';
+                        $level2 = $classification[$vs['level2']]['title'] ?? '';
+                        $level3 = $classification[$vs['level3']]['title'] ?? '';
                         $data[$k]['list'][] = $level1 ." for ". $level2 ." (". $level3.")";
                 }
             }
