@@ -19,6 +19,7 @@ use Illuminate\Support\Facades\DB;
 use App\Models\OrderGoods;
 use App\Services\OrdersService;
 use Auth;
+use Illuminate\Support\Facades\Log;
 
 class CartService
 {
@@ -129,29 +130,31 @@ class CartService
     }
 
 
-    public function createorder($data){
+    public function createorder($data)
+    {
         $order = new Order();
         $cart = new cart();
         $orderGoods = new OrderGoods();
         $orderserve = new OrdersService();
         $goods = new goods();
-        $orderno=time();
-        $list=$cart->_where("user_id='{$data['user_id']}'");
+        $orderno = time();
+        $list = $cart->_where("user_id='{$data['user_id']}'");
+        Log::info("用户ID：[" . $data["user_id"] . "]购物车信息：" . json_encode($list, JSON_UNESCAPED_UNICODE));
         $arr = [];
-        $sumprice = 0;
-        $goodstotal = 0;
-        foreach ($list as $k=>$v){
-            $goods_data = $goods->_find("level1='{$v['level1']}' and level2='{$v['level2']}' and level3='{$v['level3']}' and deleted=0 and status=1");
-            $goods_data = $goods->objToArr($goods_data);
+        $sumprice = $goodstotal = 0;
+        foreach ($list as $k => $v) {
+            $goods_data = obj_to_arr($goods->_find("level1='{$v['level1']}' and level2='{$v['level2']}' and level3='{$v['level3']}' and deleted=0 and status=1"));
+//            $goods_data = $goods->objToArr($goods_data);
             if (!$goods_data) {
-                return ['code' => 403, 'msg' => "商品ID：".$v['goods_id']."该商品不存在或已下架"];
+                Log::info("用户ID：[" . $data["user_id"] . "]该商品不存在或已下架：" . json_encode($v, JSON_UNESCAPED_UNICODE));
+                return ['code' => 403, 'msg' => "商品ID：" . $v['goods_id'] . "该商品不存在或已下架"];
             }
-            $ordergoods_no = chr(rand(65, 90)) .chr(rand(65, 90)) .chr(rand(65, 90)) . time();
-            $price = $v['pay_years']*$goods_data['price'];
+            $ordergoods_no = chr(rand(65, 90)) . chr(rand(65, 90)) . chr(rand(65, 90)) . time();
+            $price = $v['pay_years'] * $goods_data['price'];
             $arr[] = [
                 'goods_no' => $ordergoods_no,
                 'pay_type' => $data['pay_type'],
-                'order_no'=>$orderno,
+                'order_no' => $orderno,
                 'status' => 0,
                 'type' => 2,
                 'details_type' => 2,
@@ -174,25 +177,29 @@ class CartService
             'details_type' => 2,
             'price' => $sumprice,
             'user_id' => $data['user_id'],
-            'user_bill'=>serialize($data['info']),
+            'user_bill' => serialize($data['info']),
             'goodstotal' => $goodstotal
         ];
-            try {
-                $order_id = $order->insertGetId($orderdata);
-                foreach ($arr as $k => $v) {
-                    $arr[$k]['order_id'] = $order_id;
-                    $arr[$k]['order_no'] = $orderno;
-                }
-                $orderGoods->_insert($arr);
-                $orderdata['email']=$data['info']['email']??'';
-                $orderdata['id']=$order_id;
-                $pay=$orderserve->comparePriceCloseAndCreateOrder($orderdata);
-                DB::table("order_cart")->whereRaw("user_id='{$data['user_id']}'")->delete();
-            } catch (Exception $e) {
-                return ['code' => 500, 'message' => '创建失败'];
+        try {
+            DB::transaction();
+            Log::info("用户ID：[" . $data["user_id"] . "]创建购物车主订单：" . json_encode($orderdata, JSON_UNESCAPED_UNICODE));
+            $order_id = $order->insertGetId($orderdata);
+            foreach ($arr as $k => $v) {
+                $arr[$k]['order_id'] = $order_id;
+                $arr[$k]['order_no'] = $orderno;
             }
-            return ['code' => 200, 'msg' => "创建订单成功",'data'=>['order_id'=>$order_id,'pay'=>$pay]];
+            Log::info("用户ID：[" . $data["user_id"] . "]创建购物车子订单：" . json_encode($arr, JSON_UNESCAPED_UNICODE));
+            $orderGoods->_insert($arr);
+            $orderdata['email'] = $data['info']['email'] ?? '';
+            $orderdata['id'] = $order_id;
+            $pay = $orderserve->comparePriceCloseAndCreateOrder($orderdata);
+            DB::table("order_cart")->whereRaw("user_id='{$data['user_id']}'")->delete();
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return ['code' => 500, 'message' => '创建失败'];
         }
-
-
+        DB::commit();
+        Log::info("用户ID：[" . $data["user_id"] . "]创建购物车订单成功：" . json_encode($arr, JSON_UNESCAPED_UNICODE));
+        return ['code' => 200, 'msg' => "创建订单成功", 'data' => ['order_id' => $order_id, 'pay' => $pay]];
+    }
 }

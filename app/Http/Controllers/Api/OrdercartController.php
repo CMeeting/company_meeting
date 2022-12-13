@@ -39,8 +39,8 @@ class OrdercartController
         $user_id = $current_user->id;
         $param = $request->all();
         $param['user_id'] = $user_id;
-        $data = $cart->createorder($param);
         Log::info("用户ID：[" . $user_id . "]创建订单请求参数：" . json_encode($param, JSON_UNESCAPED_UNICODE));
+        $data = $cart->createorder($param);
         return \Response::json($data);
     }
 
