@@ -195,6 +195,11 @@ class UserController extends BaseController
 
         //统计信息
         $total_info = $userService->getOrderTotalByUser($id);
+        if($total_info){
+            $total_info = $total_info->toArray();
+        }else{
+            $total_info = ['order_amount' => 0.00, 'order_num' => 0];
+        }
 
         //TODO 后续声明常量
         $status_arr = [0 => '待付款', 1 => '已付款', 2 => '已完成', 3 => '待退款', 4 => '已关闭'];
