@@ -251,7 +251,7 @@
                 success: function (data) {
                     if (data.code == 200) {
                         layer.close(index);
-                        layer.msg("添加成功", {time: 1500, anim: 1});
+                        layer.msg("添加成功", {time: 1500, anim: 6});
                         $(".reset").click();
                         $(".back").click();
                     } else {
