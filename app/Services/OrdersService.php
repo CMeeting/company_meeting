@@ -35,6 +35,21 @@ class OrdersService
 
     }
 
+    public function checkUserOrder($user_id, $order_no)
+    {
+        if (!$order_no) {
+            return ["code" => 201, "msg" => "订单号不能为空！"];
+        }
+        $where = ["status" => 1, "user_id" => $user_id, "order_no" => $order_no];
+        $result = DB::table("orders")->where($where)->first();
+        if (!$result) {
+            return ["code" => 401, "msg" => "该用户没有购买过该订单！"];
+        }
+        echo "<pre>";
+        print_r($result);
+        die;
+    }
+
     public static $payments = ['paddle' => 1, 'alipay' => 2, 'wxpay' => 3];
 
     public function data_list($param)

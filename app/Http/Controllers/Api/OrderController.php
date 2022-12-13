@@ -61,6 +61,7 @@ class OrderController
 
 
     /**
+     * 创建订单
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
@@ -71,9 +72,24 @@ class OrderController
         $user_id = $current_user->id;
         $param = $request->all();
         $param['user_id'] = $user_id;
-        Log::info("创建订单请求参数：" . json_encode($param));
+        Log::info("用户ID：[" . $user_id . "]创建订单请求参数：" . json_encode($param,JSON_UNESCAPED_UNICODE));
         $data = $order->createorder($param);
         return \Response::json($data);
+    }
+
+    public function newOrder(Request $request)
+    {
+        $order = new OrdersService();
+//        $current_user = UserService::getCurrentUser($request);
+//        $user_id = $current_user->id;
+        $user_id = 1;
+        $order_no = $request->input("order_no", '');//父级订单id
+        Log::info("用户ID：[" . $user_id . "]重新创建订单,原订单号[" . $order_no . "]");
+        $result = $order->checkUserOrder($user_id, $order_no);//判断用户是否存在此订单，并判断订单对应的商品是否下架
+        if ($result['code'] != 200) {
+            Log::info("用户ID：[" . $user_id . "]重新创建订单失败,原订单号[" . $order_no . "]失败原因：" . json_encode($result,JSON_UNESCAPED_UNICODE));
+            return \Response::json($result);
+        }
     }
 
     public function getgoodsprice(Request $request){

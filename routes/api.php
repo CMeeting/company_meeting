@@ -16,39 +16,40 @@ use Illuminate\Http\Request;
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
-Route::group(['namespace'=>'Api'], function(){
-        Route::get('/sdkIndex','DocumentationController@sdkIndex')->name('documentation.sdkIndex');
-        Route::get('/sdkInfo','DocumentationController@sdkInfo')->name('documentation.sdkInfo');
-        Route::get('/blogs/bloglist','BlogsController@blogList');
-        Route::get('/blogs/blogdetail','BlogsController@blogDetail');
-        Route::get('/blogs/getBlogForTags','BlogsController@getBlogForTags');
-        Route::post('/subscription','SubscriptionController@subscription_status');
-        Route::any('/support','SupportController@getsupport');
-        Route::any('/thefeedback','SupportController@thefeedback');
-        Route::get('/changelogs','ChangelogsController@changelogs');
-        Route::get('/getgoods','GoodsController@getGoods');
-        Route::post('/getgoodsprice','OrderController@getgoodsprice');
-        Route::get('/notify','OrderController@notify');
-        Route::get('/wechatNotify','OrderController@wechatNotify');
-        Route::get('/emailtest','EmailtestContr@emailtest');
-        Route::post('/paddlecallback','OrderController@paddlecallback');
+Route::group(['namespace' => 'Api'], function () {
+    Route::get('/sdkIndex', 'DocumentationController@sdkIndex')->name('documentation.sdkIndex');
+    Route::get('/sdkInfo', 'DocumentationController@sdkInfo')->name('documentation.sdkInfo');
+    Route::get('/blogs/bloglist', 'BlogsController@blogList');
+    Route::get('/blogs/blogdetail', 'BlogsController@blogDetail');
+    Route::get('/blogs/getBlogForTags', 'BlogsController@getBlogForTags');
+    Route::post('/subscription', 'SubscriptionController@subscription_status');
+    Route::any('/support', 'SupportController@getsupport');
+    Route::any('/thefeedback', 'SupportController@thefeedback');
+    Route::get('/changelogs', 'ChangelogsController@changelogs');
+    Route::get('/getgoods', 'GoodsController@getGoods');
+    Route::post('/getgoodsprice', 'OrderController@getgoodsprice');
+    Route::get('/notify', 'OrderController@notify');
+    Route::get('/wechatNotify', 'OrderController@wechatNotify');
+    Route::get('/emailtest', 'EmailtestContr@emailtest');
+    Route::post('/paddlecallback', 'OrderController@paddlecallback');
+    Route::get('/newOrder', 'OrderController@newOrder');
 });
 
-Route::group(['middleware'=>'jwt.auth', 'namespace'=>'Api'], function(){
-    Route::post('/cart','OrdercartController@cart');
-    Route::get('/getcart','OrdercartController@getcart');
-    Route::post('/getorderinfo','OrderController@getorderinfo');
-    Route::get('/getorderlist','OrderController@getorderlist');
-    Route::post('/get_license','OrderController@getlicense');
-    Route::post('/getordertryoutlist','OrderController@getordertryoutlist');
-    Route::post('/createorder','OrderController@createorder');
-    Route::post('/createcatorder','OrdercartController@createcatorder');
-    Route::post('/noorderpay','OrderController@noorderpay');
-    Route::post('/repurchase','OrderController@repurchase');
+Route::group(['middleware' => 'jwt.auth', 'namespace' => 'Api'], function () {
+    Route::post('/cart', 'OrdercartController@cart');
+    Route::get('/getcart', 'OrdercartController@getcart');
+    Route::post('/getorderinfo', 'OrderController@getorderinfo');
+    Route::get('/getorderlist', 'OrderController@getorderlist');
+    Route::post('/get_license', 'OrderController@getlicense');
+    Route::post('/getordertryoutlist', 'OrderController@getordertryoutlist');
+    Route::post('/createorder', 'OrderController@createorder');
+    Route::post('/createcatorder', 'OrdercartController@createcatorder');
+    Route::post('/noorderpay', 'OrderController@noorderpay');
+    Route::post('/repurchase', 'OrderController@repurchase');
 });
 
 //用户管理
-Route::group(['prefix'=>'user', 'namespace'=>'Api'], function (){
+Route::group(['prefix' => 'user', 'namespace' => 'Api'], function () {
     //注册
     Route::post('register', 'UserController@register');
     //登录
@@ -58,7 +59,7 @@ Route::group(['prefix'=>'user', 'namespace'=>'Api'], function (){
     //修改密码 - 通过邮箱修改
     Route::post('change-password-by-email', 'UserController@changePasswordByEmail');
 
-    Route::group(['middleware'=>'jwt.auth'], function (){
+    Route::group(['middleware' => 'jwt.auth'], function () {
         //修改密码 - 用户中心修改
         Route::post('change-password', 'UserController@changePassword');
         //修改邮箱
