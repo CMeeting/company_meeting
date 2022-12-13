@@ -403,7 +403,6 @@ class UserService
             ->whereIn('status', [1,2])
             ->groupBy('user_id')
             ->selectRaw('sum(price) as order_amount, count(user_id) as order_num')
-            ->first()
-            ->toArray();
+            ->first();
     }
 }

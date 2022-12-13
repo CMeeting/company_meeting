@@ -416,7 +416,7 @@ class OrdersService
                         $emailarr['payprice']="$".$v['price'];
                         $emailarr['noorderprice']="$0.00";
                         $lisecosdata = LicenseService::buildLicenseCodeData($arr[$k]['goods_no'], $arr[$k]['pay_years'], $user_id, $data['level1'][$k], $data['level2'][$k], $data['level3'][$k],  $appid[$k], $data['email'],$order_id,$ordergoods_id);
-                        $lisecosdmode->insertGetId($lisecosdata);
+                        $lisecosdmode->_insert($lisecosdata);
                     }else{
                         $emailarr['payprice']="$0.00";
                         $emailarr['noorderprice']="$".$v['price'];
