@@ -106,7 +106,7 @@
                     </table>
 
 
-                    @if($info['details_type'] != 1 && $info['status'] != 0)
+                    @if($info['details_type'] != 1 && $info['status'] != 0 && $info['type'] != 1)
                         <div class="form-group">
                             <label for="form-field-1" style="margin-left: 15px;"> 发票信息：</label>
                         </div>
