@@ -708,6 +708,16 @@ class OrdersService
         }
     }
 
+    public function gitinfo($pram)
+    {
+        $order = new Order();
+        $data = $order->_find("id='{$pram['id']}' and user_id='{$pram['user_id']}'");
+        $data = $order->objToArr($data);
+        if(!$data)return['code'=>403,'msg'=>'没有该订单'];
+        $info=unserialize($data['user_bill']);
+        return['code'=>200,'msg'=>'ok','data'=>$info];
+    }
+
     public function runrepurchase($pram)
     {
         $order = new Order();

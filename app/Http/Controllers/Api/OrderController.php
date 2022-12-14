@@ -142,6 +142,19 @@ class OrderController
     }
 
 
+    public function rewinfo(Request $request){
+        $current_user = UserService::getCurrentUser($request);
+        $user_id = $current_user->id;
+        $param = $request->all();
+        if (!isset($param['id'])) {
+            return \Response::json(['code' => 403, 'mgs' => "缺少必要参数"]);
+        }
+        $param['user_id'] = $user_id;
+        $order = new OrdersService();
+        $rest = $order->gitinfo($param);
+        return \Response::json($rest);
+    }
+
     public function repurchase(Request $request)
     {
         $current_user = UserService::getCurrentUser($request);
