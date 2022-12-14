@@ -191,7 +191,7 @@ class OrderController
                 }
                 return \Response::json(['code'=>200,'msg'=>"接收成功"]);
             } catch (\Exception $e) {
-                error('paddle', $e->getMessage(), 200);
+                return \Response::json(['code' => 0, 'mgs' => $e->getMessage()]);
             }
         } else {
             return \Response::json(['code' => 0, 'mgs' => "缺少参数"]);

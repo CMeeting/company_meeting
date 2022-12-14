@@ -736,7 +736,7 @@ class OrdersService
                 'price' => $price,
                 'user_id' => $v['user_id'],
                 'appid' => $v["appid"],
-                'goods_id' => $v['id'],
+                'goods_id' => $v['goods_id'],
                 'pay_years' => $v['pay_years'],
                 'created_at' => date("Y-m-d H:i:s"),
                 'updated_at' => date("Y-m-d H:i:s")
