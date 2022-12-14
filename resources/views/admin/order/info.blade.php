@@ -106,28 +106,30 @@
                     </table>
 
 
-                    <div class="form-group">
-                        <label for="form-field-1" style="margin-left: 15px;"> 发票信息：</label>
-                    </div>
-                    <table class="table table-striped table-bordered table-hover m-t-md"
-                           style="word-wrap:break-word; word-break:break-all;text-align: center">
-                        <thead>
-                        <tr>
-                            <th class="text-center" style="width: 5%">发票类型</th>
-                            <th class="text-center" style="width: 9%">发票编号</th>
-                            <th class="text-center" style="width: 9%">下载</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-
-                            <tr id="de">
-                                <td class="text-center">电子普通发票</td>
-                                <td class="text-center">{{$info["bill_no"]}}</td>
-                                <td class="text-center"><a target="_blank" href="{{$info['bill_url']}}" download="invoice.pdf">发票下载</a></td>
-{{--                                <td><img id="u14137_img" class="img " src="https://d1icd6shlvmxi6.cloudfront.net/gsc/WQDX7J/6e/72/53/6e7253e7811947a28db93473e52d0d73/images/查看订单/u14137.svg"></td>--}}
+                    @if($info['details_type'] != 1 && $info['status'] != 0)
+                        <div class="form-group">
+                            <label for="form-field-1" style="margin-left: 15px;"> 发票信息：</label>
+                        </div>
+                        <table class="table table-striped table-bordered table-hover m-t-md"
+                               style="word-wrap:break-word; word-break:break-all;text-align: center">
+                            <thead>
+                            <tr>
+                                <th class="text-center" style="width: 5%">发票类型</th>
+                                <th class="text-center" style="width: 9%">发票编号</th>
+                                <th class="text-center" style="width: 9%">下载</th>
                             </tr>
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody>
+
+                                <tr id="de">
+                                    <td class="text-center">电子普通发票</td>
+                                    <td class="text-center">{{$info["bill_no"]}}</td>
+                                    <td class="text-center"><a target="_blank" href="{{$info['bill_url']}}" download="invoice.pdf">发票下载</a></td>
+    {{--                                <td><img id="u14137_img" class="img " src="https://d1icd6shlvmxi6.cloudfront.net/gsc/WQDX7J/6e/72/53/6e7253e7811947a28db93473e52d0d73/images/查看订单/u14137.svg"></td>--}}
+                                </tr>
+                            </tbody>
+                        </table>
+                    @endif
 
 
 
