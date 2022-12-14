@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Jobs\SendEmail;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Mail;
 use App\Models\NewsletterlogModel;
 
@@ -86,7 +87,7 @@ class EmailService
         }elseif ($type==11){
             $data['info'] = $arrs['info'];
         }
-        SendEmail::dispatch($data, $arr, $subject, $type);
+        SendEmail::dispatch($data, $arr, $subject, $type)->delay(Carbon::now()->addMinutes(2));
     }
 
      function send_email($data,$arr,$subject,$type=1){
