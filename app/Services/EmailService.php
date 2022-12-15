@@ -81,7 +81,7 @@ class EmailService
             $arrs['info'] = str_replace("税收金额","$0.00",$arrs['info']);
             $arrs['info'] = str_replace("已支付的金额",$data['payprice'],$arrs['info']);
             $arrs['info'] = str_replace("未付金额",$data['noorderprice'],$arrs['info']);
-            $arrs['info'] = str_replace("对应产品的购买页面",$data['url'],$arrs['info']);
+            $arrs['info'] = str_replace("对应产品的支付页面",$data['url'],$arrs['info']);
             $arrs['info'] = str_replace("应支付的金额",$data['price'],$arrs['info']);
             $arrs['info'] = str_replace("发票下载链接",$data['url'],$arrs['info']);
             $data['info'] = $arrs['info'];

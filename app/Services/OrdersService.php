@@ -14,6 +14,7 @@ namespace App\Services;
 use App\Export\GoodsExport;
 use PDF;
 use App\Http\Controllers\Api\biz\AlipayBiz;
+use App\Http\Controllers\Api\OrderController;
 use App\Http\Controllers\Api\biz\PaddleBiz;
 use App\Http\Controllers\Api\biz\WechatPay;
 use App\Http\extend\wechat\example\WxPayConfig;
@@ -351,6 +352,7 @@ class OrdersService
         $classification = $this->assembly_orderclassification();
         $sarr=[];
         $parcudt=[];
+        $info=['email'=>$user_email];
         foreach ($data['level1'] as $k => $v) {
             $goodsid=0;
             foreach ($goods_data as $ks => $vs) {
@@ -366,11 +368,11 @@ class OrdersService
                 $sarr[]=$mailedatas;
             }else{
                 $mailedatas = $maile->getFindcategorical(60);
-                $mailedatas['title'] = str_replace("...（产品名）",$a,$mailedatas['title']);
+                $mailedatas['title'] = str_replace("(产品名)",$a,$mailedatas['title']);
                 $sarr[]=$mailedatas;
             }
             if (!$goodsid) return ['code' => 500, 'msg' => $classification[$v]['title'] . '-' . $classification[$data['level2'][$k]]['title'] . '-' . $classification[$data['level3'][$k]]['title'] . '下没有商品'];
-            $ordergoods_no = chr(rand(65, 90)) . time();
+            $ordergoods_no = chr(rand(65, 90)) .chr(rand(65, 90)) . time();
             $s = $k + 1;
 
             $appid[]=$data["appid$s"];
@@ -391,7 +393,7 @@ class OrdersService
             $goodstotal++;
             $sumprice += $price;
         }
-        $orderno = time();
+        $orderno = chr(rand(65, 90)) .chr(rand(65, 90)) .time();
         $orderdata = [
             'pay_type' => $pay_type,
             'order_no' => $orderno,
@@ -399,6 +401,7 @@ class OrdersService
             'type' => 1,
             'details_type' => 2,
             'price' => $sumprice,
+            'user_bill'=>serialize($info),
             'user_id' => $user_id,
             'goodstotal' => $goodstotal
         ];
@@ -421,12 +424,16 @@ class OrdersService
                         $emailarr['noorderprice']="$0.00";
                         $lisecosdata = LicenseService::buildLicenseCodeData($arr[$k]['goods_no'], $arr[$k]['pay_years'], $user_id, $data['level1'][$k], $data['level2'][$k], $data['level3'][$k],  $appid[$k], $data['email'],$order_id,$ordergoods_id);
                         $lisecosdmode->_insert($lisecosdata);
+                        $OrderController=new OrderController();
+                        $fapiao=$OrderController->get_pdfurl($order_id);
+                        $order->_update(['bill_url'=>$fapiao],"id='{$order_id}'");
+                        $emailarr['url']=$fapiao;
                     }else{
                         $emailarr['payprice']="$0.00";
                         $emailarr['noorderprice']="$".$v['price'];
+                        $emailarr['url']="http://test-pdf-pro.kdan.cn:3026/order/checkout";//跳转到购买页面替换地址
                     }
                     $emailarr['yesprice']="$".$price;
-                    $emailarr['url']="http://test-pdf-pro.kdan.cn:3026/order/checkout";
                 }
                 $email->sendDiyContactEmail($emailarr,9,$user_email,$sarr[$k]);
             }
@@ -1032,6 +1039,9 @@ class OrdersService
             if (!empty($order_data) && $order_data['trade_status'] == 'TRADE_SUCCESS') {
                 Db::table("callback_log")->insert(['info' => 'orderno=' . $trade_no . json_encode($order_data), 'pay_type' => 2]);
                 $order_goods = new OrderGoods();
+                $OrderController=new OrderController();
+                $fapiao=$OrderController->get_pdfurl($orderdata['id']);
+                $order->_update(['bill_url'=>$fapiao],"id='{$orderdata['id']}'");
                 $userserver->changeType(4,$orderdata['user_id']);
                 foreach ($ordergoods_data as $k=>$v){
                     foreach ($goods_data as $ks=>$vs){
@@ -1052,7 +1062,6 @@ class OrdersService
     public function get_invoice($order_id){
         if(!$order_id)return false;
         $order = new Order();
-        $ordergoods = new OrderGoods();
         $data=$order->_find("id='{$order_id}'");
         $data=$order->objToArr($data);
         if(!$data)return ['code'=>0,'msg'=>'没有订单数据'];
