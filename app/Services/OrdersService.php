@@ -613,7 +613,7 @@ class OrdersService
         $userobj = new User();
         $userserver = new UserService();
         $lisecosdmode= new LicenseModel();
-        $orderno = time();
+        $orderno = chr(rand(65, 90)) . chr(rand(65, 90)) . chr(rand(65, 90)) .time();
         $goodsfeilei = $this->assembly_orderclassification();
         $emailarr=[];
         $goods_data = $goods->_find("level1='{$data['products_id']}' and level2='{$data['platform_id']}' and level3='{$data['licensetype_id']}' and deleted=0 and status=1");
@@ -736,7 +736,7 @@ class OrdersService
         $goodsdata = $this->assembly_ordergoods();
         $ordergoods = $orderGoods->_where("order_id='{$pram['id']}' and user_id='{$pram['user_id']}'");
         $arr = [];
-        $orderno = time();
+        $orderno = chr(rand(65, 90)) . chr(rand(65, 90)) . chr(rand(65, 90)) .time();
         $sumprice = $goodstotal = 0;
         foreach ($ordergoods as $k => $v) {
             if (!$goodsdata[$v['goods_id']]) {
@@ -822,14 +822,16 @@ class OrdersService
     public function get_license($parm)
     {
         if (isset($parm['type'])) {
-            $wehere = "user_id='{$parm['user_id']}' and type=1";
+            $wehere = "license_code.user_id='{$parm['user_id']}' and license_code.type=1";
         } else {
-            $wehere = "user_id='{$parm['user_id']}' and type=2";
+            $wehere = "license_code.user_id='{$parm['user_id']}' and license_code.type=2";
         }
         $orderGoods = new LicenseModel();
         $ordergoodsdata = $orderGoods
-            ->orderByRaw("order_id desc")
+            ->leftJoin("orders_goods as g","license_code.ordergoods_id",'=','g.id')
+            ->orderByRaw("license_code.order_id desc")
             ->whereRaw($wehere)
+            ->selectRaw("license_code.*,g.order_no")
             ->get()->toArray();
         if (!$ordergoodsdata) {
             return ['code' => 403, 'msg' => '没有数据', 'data' => []];
@@ -982,7 +984,7 @@ class OrdersService
                 'third_order_no' => $pay_url_data['id'] ?? '',
                 'page_pay_url' => $pay_url_data['url'],
             ];
-            $ordernew->_update(['merchant_no' => $pay_url_data['id']?? ''], "order_no='{$order['order_no']}'");
+            $ordernew->_update(['merchant_no' => $pay_url_data['id']?? '','pay_url'=>$pay_url_data['url']], "order_no='{$order['order_no']}'");
             $ordergoods->_update(['merchant_no' => $pay_url_data['id']?? ''], "order_no='{$order['order_no']}'");
         }
         return $newOrderData;
