@@ -359,7 +359,7 @@ class OrdersService
                     $price = $vs['price'];
                 }
             }
-            $a=$classification[$v]['title'] . '-' . $classification[$data['level2'][$k]]['title'] . '-' . $classification[$data['level3'][$k]]['title'];
+            $a=$classification[$v]['title'] ." for ". $classification[$data['level2'][$k]]['title'] ." (". $classification[$data['level3'][$k]]['title'].")";
             $parcudt[]=$a;
             if($data['status']==1){
                 $mailedatas = $maile->getFindcategorical(59);
@@ -429,13 +429,6 @@ class OrdersService
                     $emailarr['url']="http://test-pdf-pro.kdan.cn:3026/order/checkout";
                 }
                 $email->sendDiyContactEmail($emailarr,9,$user_email,$sarr[$k]);
-            }
-            if ($data['status'] == 1) {
-                $user_info = $user->_find("id='{$user_id}'");
-                $user_info = $user->objToArr($user_info);
-                $userprice = $user_info['order_amount'] + $sumprice;
-                $userorder = $user_info['order_num'] + 1;
-                $user->_update(['order_amount' => $userprice, 'order_num' => $userorder], "id='{$user_id}'");
             }
         } catch (Exception $e) {
             return ['code' => 500, 'message' => 'Invalid Token'];
@@ -606,7 +599,7 @@ class OrdersService
     public function createorder($data)
     {
         $order = new Order();
-//        $email = new EmailService();
+        $email = new EmailService();
         $maile = new MailmagicboardService();
         $orderGoods = new OrderGoods();
         $goods = new goods();
@@ -670,8 +663,8 @@ class OrdersService
                 $ordergoods_id=$orderGoods->insertGetId($ordergoodsarr);
                 $licensecodedata=LicenseService::buildLicenseCodeData($ordergoods_no, 1, $data['user_id'], $data['products_id'], $data['platform_id'], $data['licensetype_id'],  $appid, $data['info']['email'],$order_id,$ordergoods_id, 'month');
                 $lisecosdmode->_insert($licensecodedata);
-//                $mailedatas['title'] = str_replace("（产品名）",$emailarr['products'],$mailedatas['title']);
-//                $email->sendDiyContactEmail($emailarr,4,$data['info']['email'],$mailedatas);
+                $mailedatas['title'] = str_replace("（产品名）",$emailarr['products'],$mailedatas['title']);
+                $email->sendDiyContactEmail($emailarr,4,$data['info']['email'],$mailedatas);
                 if($user_info['type']==1){
                     $userserver->changeType(2,$data['user_id']);
                 }
@@ -703,7 +696,7 @@ class OrdersService
                 $emailarr['payprice']="$0.00";
                 $emailarr['yesprice']="$".$price;
                 $emailarr['url']="http://test-pdf-pro.kdan.cn:3026/order/checkout";
-                //$email->sendDiyContactEmail($emailarr,6,$data['info']['email'],$mailedatas);
+                $email->sendDiyContactEmail($emailarr,6,$data['info']['email'],$mailedatas);
                 $orderarr['email'] = $data['info']['email'] ?? '';
                 $orderarr['id'] = $order_id ?? 0;
                 $pay = $this->comparePriceCloseAndCreateOrder($orderarr);
@@ -889,9 +882,9 @@ class OrdersService
                 ->get()
                 ->toArray();
             foreach ($goods_data as $k=>$v){
-                $emailarr['products']=$goodsfeilei[$v->level1]['title'].$goodsfeilei[$v->level2]['title'].$goodsfeilei[$v->level3]['title'];
+                $emailarr['products']= $goodsfeilei[$v->level1]['title'] ." for ". $goodsfeilei[$v->level2]['title'] ." (". $goodsfeilei[$v->level3]['title'].")";
                 $emailarr['order_id']=$v->order_no;
-                $emailarr['pay_years']=$v->pay_years;
+                $emailarr['pay_years']=$v->pay_years."years/".$goodsfeilei[$v->level3]['title'];
                 $emailarr['goodsprice']="$".$v->goodsprice;
                 $emailarr['taxes']="$0.00";
                 $emailarr['price']="$".$v->price;

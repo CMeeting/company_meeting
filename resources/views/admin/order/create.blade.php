@@ -117,7 +117,7 @@
                         <div class="col-md-offset-3 col-md-9">
 
                             <a class="btn dropdown-toggle ladda-button" style="background: deepskyblue"
-                               data-style="zoom-in" onclick="submits()">
+                               data-style="zoom-in" id="baochun" onclick="submits()">
                                 保&nbsp;&nbsp;存
                             </a>
                             &nbsp;&nbsp;&nbsp;&nbsp;
@@ -175,20 +175,24 @@
         }
 
         function submits() {
+            layer.load();
             var dd=2;
             var index = layer.load();
             if(!$("#email").val()){
+                layer.closeAll('loading');
                 layer.close(index);
                 layer.msg("请输入用户邮箱", {time: 1500, anim: 6});
                 return false;
             }
             var e= /^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
             if(!e.test($("#email").val())){
+                layer.closeAll('loading');
                 layer.close(index);
                 layer.msg('邮件地址不合法', {time: 1500, anim: 6});
                 return false;
             }
             if(!$("#full_name").val()){
+                layer.closeAll('loading');
                 layer.close(index);
                 layer.msg("请输入Full Name", {time: 1500, anim: 6});
                 return false;
@@ -197,12 +201,14 @@
             $(".province").each(function (){
                 if(!$(this).val() || $(this).val()==0){
                     dd=1;
+                    layer.closeAll('loading');
                     layer.close(index);
                     layer.msg("请选择Products", {time: 1500, anim: 6});
                     return false;
                 }
             })
             if(dd==1){
+                layer.closeAll('loading');
                 return false;
             }
             $(".city").each(function (){
@@ -214,22 +220,26 @@
                 }
             })
             if(dd==1){
+                layer.closeAll('loading');
                 return false;
             }
             $(".town").each(function (){
                 if(!$(this).val() || $(this).val()==0){
                     dd=1;
+                    layer.closeAll('loading');
                     layer.close(index);
                     layer.msg("请选择License Type", {time: 1500, anim: 6});
                     return false;
                 }
             })
             if(dd==1){
+                layer.closeAll('loading');
                 return false;
             }
             $(".maidian").each(function (){
                 if(!$(this).val() || $(this).val()==""){
                     dd=1;
+                    layer.closeAll('loading');
                     layer.close(index);
                     layer.msg("有APPID/Machine ID为空", {time: 1500, anim: 6});
                     return false;
@@ -237,10 +247,10 @@
             })
 
             if(dd==1){
+                layer.closeAll('loading');
                 return false;
             }
             var form_data = new FormData($("#forms")[0]);
-            layer.close(index);
 
             $.ajax({
                 url: "{{route('order.createrun')}}",
@@ -250,12 +260,14 @@
                 data: form_data,
                 success: function (data) {
                     if (data.code == 200) {
+                        layer.closeAll('loading');
                         layer.close(index);
                         layer.msg("添加成功", {time: 1500, anim: 6}, function(){
                             $(".reset").click();
                             $(".back").click();
                         });
                     } else {
+                        layer.closeAll('loading');
                         layer.close(index);
                         layer.msg(data.msg, {time: 1500, anim: 6});
                         return false;
