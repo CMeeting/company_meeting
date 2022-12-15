@@ -561,7 +561,7 @@ class OrdersService
         $ordergoodsdata = $orderGoods
             ->leftJoin('goods', 'orders_goods.goods_id', '=', 'goods.id')
             ->whereRaw("orders_goods.user_id='{$parm['user_id']}' and orders_goods.details_type!=1")
-            ->selectRaw("goods.level1,goods.level2,goods.level3,orders_goods.order_no as order_id")
+            ->selectRaw("goods.level1,goods.level2,goods.level3,orders_goods.order_no as order_id, goods.status as goods_status")
             ->get()->toArray();
         $classification = $this->assembly_orderclassification();
         foreach ($data as $k => $v) {
@@ -570,10 +570,11 @@ class OrdersService
                         $level1 = $classification[$vs['level1']]['title'] ?? '';
                         $level2 = $classification[$vs['level2']]['title'] ?? '';
                         $level3 = $classification[$vs['level3']]['title'] ?? '';
-                        $data[$k]['list'][] = $level1 ." for ". $level2 ." (". $level3.")";
+                        $data[$k]['list'][] = ['product_name'=> $level1 ." for ". $level2 ." (". $level3.")" , 'status'=>$vs['goods_status']];
                 }
             }
         }
+
         return ['code' => 200, 'msg' => 'ok', 'data' => $data];
     }
 
@@ -786,15 +787,21 @@ class OrdersService
 
     public function noorderpay($data)
     {
-        $order = new Order();
         $orderGoods = new OrderGoods();
         if (!isset($data['pay_type'])) {
             return ['code' => 403, 'msg' => "请选择支付方式"];
         }
-        $order_data = $order->_find("id='{$data['order_id']}' and user_id='{$data['user_id']}' and status=0");
-        $order_data = $order->objToArr($order_data);
-        $emaildata = unserialize($order_data['user_bill']);
-        if (!$order_data) return ['code' => 403, 'msg' => "该订单不存在或已关闭"];
+
+        $order_model = Order::where('id', $data['order_id'])->where('user_id', $data['user_id'])->where('status', 0)->first();
+        if(!$order_model){
+            return ['code' => 403, 'msg' => "该订单不存在或已关闭"];
+        }
+        //更新订单的账单信息
+        $order_model->user_bill = serialize($data['user_bill']);
+        $order_model->save();
+
+        $order_data = $order_model->toArray();
+        $emaildata = $data['user_bill'];
         $order_goodsdata = $orderGoods->_where("order_id='{$order_data['id']}' and order_no='{$order_data['order_no']}' and status=0");
         if (!$order_goodsdata) return ['code' => 403, 'msg' => "该订单商品明细单不存在或已关闭"];
         $goodadata = $this->assembly_ordergoods();
