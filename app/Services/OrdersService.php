@@ -565,12 +565,16 @@ class OrdersService
             ->get()->toArray();
         $classification = $this->assembly_orderclassification();
         foreach ($data as $k => $v) {
+            $data[$k]['good_status'] = 1;
             foreach ($ordergoodsdata as $ks => $vs) {
                 if ($v['order_no'] == $vs['order_id']) {
                         $level1 = $classification[$vs['level1']]['title'] ?? '';
                         $level2 = $classification[$vs['level2']]['title'] ?? '';
                         $level3 = $classification[$vs['level3']]['title'] ?? '';
                         $data[$k]['list'][] = ['product_name'=> $level1 ." for ". $level2 ." (". $level3.")" , 'status'=>$vs['goods_status']];
+                        if($vs['goods_status'] == 0){
+                            $data[$k]['good_status'] = 0;
+                        }
                 }
             }
         }
