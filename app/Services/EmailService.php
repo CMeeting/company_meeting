@@ -25,14 +25,17 @@ class EmailService
             $arrs['info'] = str_replace("(客户的需求编号)",$data['order_no'],$arrs['info']);
             $arrs['info'] = str_replace("(插入网站中记录客户提交的bug的状态链接)","<a href='http://test-compdf.kdan.cn:3026/support-ticket'>http://test-compdf.kdan.cn:3026/support-ticket</a>",$arrs['info']);
             $data['info'] = $arrs['info'];
+            $data['id'] = $arrs['id'];
         }elseif ($type==4){
             $arrs['info'] = str_replace("#@username",$data['username'],$arrs['info']);
             $arrs['info'] = str_replace("#@products",$data['products'],$arrs['info']);
             $data['info'] = $arrs['info'];
+            $data['id'] = $arrs['id'];
         }elseif ($type==5){
             $arrs['info'] = str_replace("产品下单页面链接",$data['url'],$arrs['info']);
             $arrs['info'] = str_replace("销售邮箱",$data['email'],$arrs['info']);
             $data['info'] = $arrs['info'];
+            $data['id'] = $arrs['id'];
         }elseif ($type==6){
             $arrs['info'] = str_replace("(人名)",$data['username'],$arrs['info']);
             $arrs['info'] = str_replace("(订单号) has failed.",$data['orderno'],$arrs['info']);
@@ -44,6 +47,7 @@ class EmailService
             $arrs['info'] = str_replace("应支付的金额",$data['yesprice'],$arrs['info']);
             $arrs['info'] = str_replace("对应产品的购买页面",$data['url'],$arrs['info']);
             $data['info'] = $arrs['info'];
+            $data['id'] = $arrs['id'];
         }elseif($type==7){
             $arrs['info'] = str_replace("具体ID号",$data['order_id'],$arrs['info']);
             $arrs['info'] = str_replace("具体时间",$data['pay_time'],$arrs['info']);
@@ -58,12 +62,14 @@ class EmailService
             $url="<a href='".$data['fapiao']."'>Download invoices</a>";
             $arrs['info'] = str_replace("发票下载链接",$url,$arrs['info']);
             $data['info'] = $arrs['info'];
+            $data['id'] = $arrs['id'];
         }elseif ($type==8){
             $arrs['info'] = str_replace("(具体的订单号)","test123",$arrs['info']);
             $arrs['info'] = str_replace("(具体日期)","2022/11/22",$arrs['info']);
             $arrs['info'] = str_replace("(对方的账号信息)","xiaochaomen",$arrs['info']);
             $arrs['info'] = str_replace("登录ComPDFKit用户账户的链接",$data['url'],$arrs['info']);
             $data['info'] = $arrs['info'];
+            $data['id'] = $arrs['id'];
         }elseif ($type==9){
             $arrs['info'] = str_replace("具体ID号",$data['order_id'],$arrs['info']);
             $arrs['info'] = str_replace("具体时间",$data['pay_time'],$arrs['info']);
@@ -79,18 +85,37 @@ class EmailService
             $arrs['info'] = str_replace("应支付的金额",$data['price'],$arrs['info']);
             $arrs['info'] = str_replace("发票下载链接",$data['url'],$arrs['info']);
             $data['info'] = $arrs['info'];
+            $data['id'] = $arrs['id'];
         }elseif ($type==10){
             $src='http://test-pdf-pro.kdan.cn:3026/unsubscribe?email='.$arr[0];
             $html='<a href="'.$src.'" style="text-decoration: none">unsubscribe</a>';
             $arrs['info'] = str_replace("(插入取消订阅的链接)",$html,$arrs['info']);
             $data['info'] = $arrs['info'];
+            $data['id'] = $arrs['id'];
         }elseif ($type==11){
             $data['info'] = $arrs['info'];
+            $data['id'] = $arrs['id'];
         }
-        SendEmail::dispatch($data, $arr, $subject, $type)->delay(Carbon::now()->addMinutes(2));
+        SendEmail::dispatch($data, $arr, $subject, $type)->delay(Carbon::now()->addMinute());
+//        self::send_email($data, $arr, $subject, $type);
     }
 
      function send_email($data,$arr,$subject,$type=1){
+         //根据邮件设置不同的邮件发送账号
+         $no_reply = [34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 49, 54, 58, 59];
+         $service = [46, 47, 48, 50, 51, 52, 55, 56, 57, 60];
+         $news = [53];
+
+         if(in_array($data['id'], $no_reply)){
+             MailHelperService::setAccount('no_reply');
+         }elseif(in_array($data['id'], $service)){
+             MailHelperService::setAccount('service');
+         }elseif(in_array($data['id'], $news)){
+             MailHelperService::setAccount('news');
+         }else{
+             MailHelperService::setAccount('no_reply');
+         }
+
          $maile = new NewsletterlogModel();
          foreach ($arr as $k=>$v){
               Mail::send('email',//模板文件

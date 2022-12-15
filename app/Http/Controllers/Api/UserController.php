@@ -63,6 +63,7 @@ class UserController extends Controller
         $data['info'] = $email_model->info;
         $url = env('WEB_HOST') . '/unsubscribe?email=' . $email;
         $data['info'] = str_replace("#@url", $url, $data['info']);
+        $data['id'] = $email_model->id;
 
         $emailService = new EmailService();
         $emailService->sendDiyContactEmail($data, 0, $email);
@@ -206,6 +207,7 @@ class UserController extends Controller
         $data['info'] = str_replace("#@new_mail", $email, $data['info']);
         $url = env('WEB_HOST') . '/unsubscribe?email=' . $email;
         $data['info'] = str_replace("#@url", $url, $data['info']);
+        $data['id'] = $email_model_new->id;
         $emailService->sendDiyContactEmail($data, 1, $email);
 
         //变更邮箱旧邮箱提醒
@@ -213,6 +215,7 @@ class UserController extends Controller
         $data['title'] = $email_model_old->title;
         $data['info'] = $email_model_old->info;
         $data['info'] = str_replace("#@new_mail", $email, $data['info']);
+        $data['id'] = $email_model_old->id;
         $emailService->sendDiyContactEmail($data, 1, $old_email);
 
         return Response::json(['code'=>200, 'message'=>'success']);

@@ -96,6 +96,7 @@ class UserController extends BaseController
         $data['info'] = str_replace("#@mail", $email, $data['info']);
         $data['info'] = str_replace("#@password", $password, $data['info']);
         $data['info'] = str_replace("#@url", $url, $data['info']);
+        $data['id'] = $emailModel->id;
 
         $emailService->sendDiyContactEmail($data, 0, $email);
 
@@ -162,6 +163,7 @@ class UserController extends BaseController
             $data['info'] = str_replace("#@new_mail", $email, $data['info']);
             $url = env('WEB_HOST') . '/unsubscribe?email=' . $email;
             $data['info'] = str_replace("#@url", $url, $data['info']);
+            $data['id'] = $emailModelNew->id;
             $emailService->sendDiyContactEmail($data, 0, $email);
 
             //编辑用户资料提示老邮箱
@@ -169,6 +171,7 @@ class UserController extends BaseController
             $data['title'] = $emailModelOld->title;
             $data['info'] = $emailModelOld->info;
             $data['info'] = str_replace("#@new_mail", $email, $data['info']);
+            $data['id'] = $emailModelOld->id;
             $emailService->sendDiyContactEmail($data, 0, $old_email);
         }
 

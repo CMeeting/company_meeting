@@ -347,6 +347,7 @@ class UserService
         $emailService = new EmailService();
         $data['title'] = $email_model->title;
         $data['info'] = $email_model->info;
+        $data['id'] = $email_model->id;
         $data['info'] = str_replace("#@url", $url, $data['info']);
 
         $emailService->sendDiyContactEmail($data, 0, $email);
