@@ -414,7 +414,7 @@ class OrdersService
                 $ordergoods_id = $orderGoods->insertGetId($arr[$k]);
                 if ($ordergoods_id) {
                     $emailarr['products']=$parcudt[$k];
-                    $emailarr['order_id']=$order_id;
+                    $emailarr['order_id']=$orderno;
                     $emailarr['pay_time']=date("Y-m-d H:i:s");
                     $emailarr['goodsprice']="$".$v['price']/$v['pay_years'];
                     $emailarr['pay_years']=$v['pay_years'];
