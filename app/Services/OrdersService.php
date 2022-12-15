@@ -417,7 +417,7 @@ class OrdersService
                     $emailarr['order_id']=$orderno;
                     $emailarr['pay_time']=date("Y-m-d H:i:s");
                     $emailarr['goodsprice']="$".$v['price']/$v['pay_years'];
-                    $emailarr['pay_years']=$v['pay_years'];
+                    $emailarr['pay_years']=$v['pay_years']." years/".$parcudt[$k];
                     $emailarr['price']="$".$v['price'];
                     if($data['status']==1){
                         $emailarr['payprice']="$".$v['price'];
