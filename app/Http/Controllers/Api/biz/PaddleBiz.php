@@ -176,6 +176,8 @@ class PaddleBiz
         ];
 
         $request =  self::httpCurl($this->CREATE_PAY_LINK,$orderData,'POST');
+
+        \Log::info('请求paddle支付链接结果：', ['result' => $request, 'order_data'=>$orderData]);
         return $request['response'];
     }
 
