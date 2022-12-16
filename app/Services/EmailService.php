@@ -89,7 +89,7 @@ class EmailService
         }elseif ($type==10){
             $src='http://test-pdf-pro.kdan.cn:3026/unsubscribe?email='.$arr[0];
             $html='<a href="'.$src.'" style="text-decoration: none">unsubscribe</a>';
-            $arrs['info'] = str_replace("(插入取消订阅的链接)",$html,$arrs['info']);
+            $arrs['info'] = str_replace("#@url",$html,$arrs['info']);
             $data['info'] = $arrs['info'];
             $data['id'] = $arrs['id'];
         }elseif ($type==11){
