@@ -31,7 +31,7 @@ class Kernel extends ConsoleKernel
         // $schedule->command('inspire')
         //          ->hourly();
 
-        $schedule->command('command:close:order')->dailyAt('7:10');
+        $schedule->command('command:close:order')->dailyAt('7:25');
     }
 
     /**
@@ -43,6 +43,6 @@ class Kernel extends ConsoleKernel
     {
         $this->load(__DIR__.'/Commands');
 
-        require base_path('route、hp');
+        require base_path('routes/console.php');
     }
 }
