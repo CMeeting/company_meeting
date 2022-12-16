@@ -4,6 +4,7 @@ namespace App\Console;
 
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
+use Psy\Command\Command;
 
 class Kernel extends ConsoleKernel
 {
@@ -16,6 +17,7 @@ class Kernel extends ConsoleKernel
         //
         Commands\RemoveExportFile::class,
         Commands\RenameFlagsFilename::class,
+        Commands\CloseOrder::class,
     ];
 
     /**
@@ -28,6 +30,8 @@ class Kernel extends ConsoleKernel
     {
         // $schedule->command('inspire')
         //          ->hourly();
+
+        $schedule->command('command:close:order')->dailyAt('23:59');
     }
 
     /**

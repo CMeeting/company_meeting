@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\biz;
 use app\api\model\Product;
 use App\Http\extend\core\helper\LogHelper;
 use App\Http\extend\core\helper\SysHelper;
+use Carbon\Carbon;
 
 require_once dirname(dirname(dirname(__DIR__))) . '/extend/paypal/rest-api-sdk-php/sample/common.php';
 class PaddleBiz
@@ -155,7 +156,8 @@ class PaddleBiz
 
     public function createPayLink($order,$product,$price,$amount=1,$param,$order_id)
     {
-        $price = $price;
+        //设置支付链接过期时间为当前时间加七天后的那一天59分
+        $expires = Carbon::now()->addDays(7)->format('Y-m-d');
         $orderData = [
             'vendor_id'         =>  $this->config['vendor_id'],
             'vendor_auth_code'  =>  $this->config['vendor_auth_code'],
@@ -166,7 +168,7 @@ class PaddleBiz
 //            'return_url'=> 'http://test-pdf-pro.kdan.cn:3026/order/checkout/payed?out_trade_no=paddle'.$order,
             'discountable' => '0',
             'quantity'   =>  $amount ?? '1', //购买数量默认为1个
-//            'expires'   =>  '2021-08-29', //支付链接过期时间
+            'expires'   =>  $expires, //支付链接过期时间
             'customer_email'   =>  $param, //客户邮箱
             'customer_country'   =>   '', //客户所在国家
             'customer_postcode'   =>  '', //客户所在地邮编

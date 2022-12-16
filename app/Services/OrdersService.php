@@ -836,7 +836,7 @@ class OrdersService
         if (!$ordergoodsdata) {
             return ['code' => 403, 'msg' => '没有数据', 'data' => []];
         }
-        $classification = $this->assembly_orderclassification();
+        $classification = $this->assembly_ordercassification();
         $arr=array();
         foreach ($ordergoodsdata as $ks => $vs) {
             $arr[$vs['ordergoods_id']]=$vs;

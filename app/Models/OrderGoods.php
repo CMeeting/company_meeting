@@ -11,6 +11,12 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * Class OrderGoods
+ * @package App\Models
+ *  * @mixin       \Eloquent
+ */
+
 class OrderGoods extends Model
 {
 
