@@ -486,18 +486,20 @@ class OrdersService
         return ['code' => 0];
     }
 
-
     public function get_orderinfo($pram)
     {
         $order = new Order();
         $orderGoods = new OrderGoods();
+
         $LicenseModel = new LicenseModel();
         $data = $order->_find("user_id='{$pram['user_id']}' and id='{$pram['order_id']}'");
+
         $data = $order->objToArr($data);
-        $data['user_bill'] = $data['user_bill'] ? unserialize($data['user_bill']) : '';
         if (!$data) {
             return ['code' => 403, 'msg' => "订单不存在或不是该用户订单"];
         }
+
+        $data['user_bill'] = $data['user_bill'] ? unserialize($data['user_bill']) : '';
         $ordergoodsdata = $orderGoods
             ->leftJoin('goods', 'orders_goods.goods_id', '=', 'goods.id')
             ->whereRaw("orders_goods.order_id='{$pram['order_id']}'")
@@ -531,7 +533,7 @@ class OrdersService
             }
         }
         $data['list'] = $ordergoodsdata;
-        $data['fapiao']=$data['bill_url'];
+        $data['fapiao']=$data['bill_url'] ?? '';
         return ['code' => 200, 'msg' => 'ok', 'data' => $data];
     }
 
