@@ -431,7 +431,7 @@ class OrdersService
                     }else{
                         $emailarr['payprice']="$0.00";
                         $emailarr['noorderprice']="$".$v['price'];
-                        $emailarr['url']="http://test-pdf-pro.kdan.cn:3026/order/checkout";//跳转到购买页面替换地址
+                        $emailarr['url']= env('WEB_HOST') . '/personal/orders/checkout?order_id=' . $order_id . '&type=1';//跳转到购买页面替换地址
                     }
                     $emailarr['yesprice']="$".$price;
                 }
