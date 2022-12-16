@@ -31,7 +31,7 @@ class Kernel extends ConsoleKernel
         // $schedule->command('inspire')
         //          ->hourly();
 
-        $schedule->command('command:close:order')->dailyAt('16:55');
+        $schedule->command('command:close:order')->dailyAt('9:10');
     }
 
     /**
