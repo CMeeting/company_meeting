@@ -52,6 +52,6 @@ class CloseOrder extends Command
         //将子订单关闭
         OrderGoods::whereIn('order_id', $order_id_arr)->update(['closetime'=>$now, 'status'=>4]);
         \Log::info('关闭订单', ['order_id'=>$order_id_arr]);
-        \Log::info('----关闭订单开始执行----', ['end_time'=>Carbon::now()->format('Y-m-d H:i:s')]);
+        \Log::info('----关闭订单执行完成----', ['end_time'=>Carbon::now()->format('Y-m-d H:i:s')]);
     }
 }
