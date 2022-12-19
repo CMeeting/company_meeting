@@ -7,10 +7,13 @@ use App\Models\Goods;
 use App\Models\LicenseModel;
 use App\Models\Order;
 use App\Models\OrderGoods;
+use App\Services\EmailService;
 use App\Services\LicenseService;
+use App\Services\MailmagicboardService;
 use App\Services\OrdersService;
 use App\Services\UserService;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use PDF;
@@ -226,4 +229,56 @@ class OrderController
         return $url;
     }
 
+    /**
+     * 关闭paddle支付弹窗，发送支付失败邮件
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function sendPaymentFailedEmail(Request $request){
+        //防止Paddle支付成功，还没有回调我们的接口导致我们查询订单状态为未支付
+        sleep(3);
+
+        $order_id = $request->input('order_id');
+        $user = UserService::getCurrentUser($request);
+        $mail_template = new MailmagicboardService();
+        $order_service = new OrdersService();
+        $mail_service = new EmailService();
+
+        $goods_class = $order_service->assembly_orderclassification();
+        $email_info = $mail_template->getFindcategorical(40);
+
+        $order = Order::find($order_id);
+        if(!$order || $order->status != 0){
+            return \Response::json(['code'=>200, 'message'=>'订单不存在或订单已支付']);
+        }
+
+        $bill_info = unserialize($order->user_bill);
+        $email = $bill_info['email'];
+
+        $goods_data = DB::table("orders_goods as o")
+            ->leftJoin("goods as g","o.goods_id",'=','g.id')
+            ->whereRaw("o.order_id='{$order_id}'")
+            ->selectRaw("o.*,g.level1,g.level2,g.level3,g.price as goodsprice")
+            ->get()
+            ->toArray();
+
+        foreach ($goods_data as $value){
+            $value = collect($value)->toArray();
+            $email_arr['username'] = $user->full_name;
+            $email_arr['orderno'] = $value['order_no'];
+            $email_arr['products'] = $goods_class[$value['level1']]['title'] ." for ". $goods_class[$value['level2']]['title'] ." (". $goods_class[$value['level3']]['title'].")";
+            $email_arr['order_id'] = $value['order_no'];
+            $email_arr['pay_years'] = $value['pay_years'] . "years/".$goods_class[$value['level3']]['title'];
+            $email_arr['goodsprice'] = "$" . $value['goodsprice'];
+            $email_arr['taxes'] = "$0.00";
+            $email_arr['price']="$" . $value['price'];
+            $email_arr['yesprice']="$" . $value['price'];
+            $email_arr['payprice'] = "$0.00";
+            $email_arr['pay_time'] = $value['pay_time'];
+            $email_arr['url']= env('WEB_HOST') . '/personal/orders/checkout?order_id=' . $order_id . '&type=1';//跳转到购买页面替换地址
+            $mail_service->sendDiyContactEmail($email_arr,6, $email, $email_info);
+        }
+
+        return \Response::json(['code'=>200, 'message'=>'发送成功']);
+    }
 }

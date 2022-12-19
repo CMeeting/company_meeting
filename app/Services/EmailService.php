@@ -10,6 +10,42 @@ use App\Models\NewsletterlogModel;
 class EmailService
 {
 
+    function send_email($data,$arr,$subject,$type=1){
+         //根据邮件设置不同的邮件发送账号
+         $no_reply = [34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 49, 54, 58, 59];
+         $service = [46, 47, 48, 50, 51, 52, 55, 56, 57, 60];
+         $news = [53];
+
+         if(in_array($data['id'], $no_reply)){
+             MailHelperService::setAccount('no_reply');
+         }elseif(in_array($data['id'], $service)){
+             MailHelperService::setAccount('service');
+         }elseif(in_array($data['id'], $news)){
+             MailHelperService::setAccount('news');
+         }else{
+             MailHelperService::setAccount('no_reply');
+         }
+
+         $maile = new NewsletterlogModel();
+         foreach ($arr as $k=>$v){
+              Mail::send('email',//模板文件
+                 ['info' => $data['info']],//模板页面的内容
+                 function ($obj) use($v, $subject) {
+                     //用邮件对象执行发送的功能
+                     try{
+                         $obj->to($v)->subject($subject);
+                     }catch (\Exception $e){
+                         \Log::info("$v:邮件发送异常", $e->getMessage());
+                         throw new \Exception("邮件发送失败");
+                     }
+                 }
+             );
+              if($type==2){
+                  $maile->_update(['status'=>1,'updated_at'=>date("Y-m-d H:i:s")],"association_id='{$data['id']}' and mail='$v' and status!=1");
+              }
+         }
+     }
+
     public function sendDiyContactEmail($data,$type=1,$email='',$arrs=array())
     {
         $subject = isset($data['title'])?$data['title']:$arrs['title'];//邮件标题
@@ -98,42 +134,6 @@ class EmailService
         SendEmail::dispatch($data, $arr, $subject, $type)->delay(Carbon::now()->addMinute());
 //        self::send_email($data, $arr, $subject, $type);
     }
-
-     function send_email($data,$arr,$subject,$type=1){
-         //根据邮件设置不同的邮件发送账号
-         $no_reply = [34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 49, 54, 58, 59];
-         $service = [46, 47, 48, 50, 51, 52, 55, 56, 57, 60];
-         $news = [53];
-
-         if(in_array($data['id'], $no_reply)){
-             MailHelperService::setAccount('no_reply');
-         }elseif(in_array($data['id'], $service)){
-             MailHelperService::setAccount('service');
-         }elseif(in_array($data['id'], $news)){
-             MailHelperService::setAccount('news');
-         }else{
-             MailHelperService::setAccount('no_reply');
-         }
-
-         $maile = new NewsletterlogModel();
-         foreach ($arr as $k=>$v){
-              Mail::send('email',//模板文件
-                 ['info' => $data['info']],//模板页面的内容
-                 function ($obj) use($v, $subject) {
-                     //用邮件对象执行发送的功能
-                     try{
-                         $obj->to($v)->subject($subject);
-                     }catch (\Exception $e){
-                         \Log::info("$v:邮件发送异常", $e->getMessage());
-                         throw new \Exception("邮件发送失败");
-                     }
-                 }
-             );
-              if($type==2){
-                  $maile->_update(['status'=>1,'updated_at'=>date("Y-m-d H:i:s")],"association_id='{$data['id']}' and mail='$v' and status!=1");
-              }
-         }
-     }
 
 
 

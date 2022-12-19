@@ -47,6 +47,7 @@ Route::group(['middleware' => ['jwt.auth', 'cors'], 'namespace' => 'Api'], funct
     Route::post('/repurchase', 'OrderController@repurchase');
     Route::post('/newOrder', 'OrderController@newOrder');
     Route::post('/rewinfo', 'OrderController@rewinfo');
+    Route::post('/send-payment-failed-email', 'OrderController@sendPaymentFailedEmail');
 });
 
 //用户管理
