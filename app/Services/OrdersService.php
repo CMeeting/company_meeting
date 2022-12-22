@@ -358,7 +358,7 @@ class OrdersService
             foreach ($goods_data as $ks => $vs) {
                 if ($v == $vs['level1'] && $data['level2'][$k] == $vs['level2'] && $data['level3'][$k] == $vs['level3']) {
                     $goodsid = $vs['id'];
-                    $price = $vs['price'];
+                    $price = $vs['price']*$data['period'][$k];
                 }
             }
             $a=$classification[$v]['title'] ." for ". $classification[$data['level2'][$k]]['title'] ." (". $classification[$data['level3'][$k]]['title'].")";
@@ -416,7 +416,8 @@ class OrdersService
                     $emailarr['products']=$parcudt[$k];
                     $emailarr['order_id']=$orderno;
                     $emailarr['pay_time']=date("Y-m-d H:i:s");
-                    $emailarr['goodsprice']="$".$v['price']/$v['pay_years'];
+                    //$emailarr['goodsprice']="$".$v['price']/$v['pay_years'];
+                    $emailarr['goodsprice']="$".$v['price'];
                     $emailarr['pay_years']=$v['pay_years']." years/".$parcudt[$k];
                     $emailarr['price']="$".$v['price'];
                     if($data['status']==1){
@@ -626,7 +627,7 @@ class OrdersService
         $user_info =$userobj->_find("id='{$data['user_id']}'");
         $user_info =$userobj->objToArr($user_info);
         $emailarr['username']=$user_info['full_name'];
-        $emailarr['products']=$goodsfeilei[$data['products_id']]['title'].$goodsfeilei[$data['platform_id']]['title'].$goodsfeilei[$data['licensetype_id']]['title'];
+        $emailarr['products']= $goodsfeilei[$data['products_id']]['title'] ." for ". $goodsfeilei[$data['platform_id']]['title'] ." (". $goodsfeilei[$data['licensetype_id']]['title'].")";
         $ordergoods_no = chr(rand(65, 90)) .chr(rand(65, 90)) .chr(rand(65, 90)) . time();
         $emailarr['orderno']=$orderno;
         $orderarr = [
