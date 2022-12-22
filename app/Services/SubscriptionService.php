@@ -13,7 +13,7 @@ class SubscriptionService
 
     }
 
-    public function update_status($data){
+    public function update_status($data, $send_email = true){
         $Subscription =new Subscription();
         $email = new EmailService();
         $maile = new MailmagicboardService();
@@ -29,17 +29,27 @@ class SubscriptionService
                   'email'=>$data['email'],
                   'subscribed'=>'active',
               ];
-            $email->sendDiyContactEmail([], 10, $data['email'],$mailedatas);
+
+              if($send_email){
+                  $email->sendDiyContactEmail([], 10, $data['email'],$mailedatas);
+              }
+
             return ['data'=>$arr,'code'=>200,'msg'=>"ok"];
         }else{
            if($is_find['status']==$status){
                $bool=$Subscription->update(['updated_at'=>date("Y-m-d H:i:s")],"id=".$is_find['id']);
-               $email->sendDiyContactEmail([], 10, $data['email'],$mailedatas);
+
+               if($send_email){
+                   $email->sendDiyContactEmail([], 10, $data['email'],$mailedatas);
+               }
+
                return ['data'=>'','code'=>200,'msg'=>"该邮箱已是订阅状态，已更新订阅时间"];
            }else{
                $bool=$Subscription->update(['updated_at'=>date("Y-m-d H:i:s"),'status'=>$status],"id=".$is_find['id']);
                $subscribed=$status?"active":"cancel";
-               if($status)$email->sendDiyContactEmail([], 10, $data['email'],$mailedatas);
+               if($status && $send_email){
+                   $email->sendDiyContactEmail([], 10, $data['email'],$mailedatas);
+               }
                $arr=[
                    'email'=>$data['email'],
                    'subscribed'=>$subscribed,
