@@ -144,7 +144,7 @@
                             <th class="text-center" style="width: 9%">APP ID/Machine ID</th>
                             <th class="text-center" style="width: 9%">License Type</th>
                             <th class="text-center" style="width: 9%">Period</th>
-                            <th class="text-center" style="width: 9%">License Key</th>
+{{--                            <th class="text-center" style="width: 9%">License Key</th>--}}
                             <th class="text-center" style="width: 9%">小计</th>
                         </tr>
                         </thead>
@@ -157,10 +157,11 @@
                             <td class="text-center">{{$item['appid']}}</td>
                             <td class="text-center">{{$item['licensie']}}</td>
                             <td class="text-center">{{$item['pay_years']}}/years</td>
-                            <td class="text-center">XML</td>
+{{--                            <td class="text-center">XML</td>--}}
                             <td class="text-center">${{$item['price']}}</td>
                         </tr>
                         @endforeach
+                        <?php $sum=round($sum,2);?>
                         <tr><td colspan="5"></td><td>合计：${{$sum}}</td></tr>
                         </tbody>
                     </table>

@@ -115,6 +115,7 @@
                     <td style="height: 36px;color:#666;"> Discount</td>
                     <td style="height: 36px;color:#666;text-align: right;padding-right: 12px;">Amount</td>
                   </tr>
+                  <?php $sums=0.00;?>
                     @foreach($data['ordergoodsdata'] as $key => $item)
                   <tr style="height: 85px;font-size:14px;color:#333;">
                     <td style="width:280px;height: 85px;border-bottom: 1px solid #DADADA;">
@@ -143,6 +144,7 @@
                     <td style="font-family:Helvetica;border-bottom: 1px solid #DADADA;font-size:14px;color:#333;">
                       USD{{$item['price']}}
                     </td>
+                    <?php $sums=round($sums+$item['price'],2)?>
                   </tr>
                   @endforeach
                 </table>
@@ -152,7 +154,7 @@
             <tr><td style="height: 30px;"></td></tr>
 
             <tr style="text-align:right">
-              <td style="font-size:18px;color:#333;font-weight:bold;line-height:22px;text-align:right"><span style="color:#666;font-size:14px;">Total&nbsp;&nbsp;&nbsp;&nbsp;</span>{{count($data['ordergoodsdata'])}}</td>
+              <td style="font-size:18px;color:#333;font-weight:bold;line-height:22px;text-align:right"><span style="color:#666;font-size:14px;">Total&nbsp;&nbsp;&nbsp;&nbsp;</span>{{$sums}}</td>
             </tr>
 
             <tr><td height="36"></td></tr>
@@ -177,7 +179,7 @@
 										<tr><td height="10"></td></tr>
 										<tr>
 				              <td style="padding: 20px;padding-top:0;color: #666;">
-				                If you have any questions, please contact <a target="_blank" href="mailto:support@ComPDFKit.com" style="color: #3285E3;">support@ComPDFKit.com</a>.
+				                If you have any questions, please contact <a target="_blank" href="mailto:support@compdf.com" style="color: #3285E3;">support@compdf.com</a>.
 				              </td>
 										</tr>
 									</tbody>
