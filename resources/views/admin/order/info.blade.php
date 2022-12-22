@@ -162,7 +162,7 @@
                         </tr>
                         @endforeach
                         <?php $sum=round($sum,2);?>
-                        <tr><td colspan="5"></td><td>合计：${{$sum}}</td></tr>
+                        <tr><td colspan="4"></td><td>合计：${{$sum}}</td></tr>
                         </tbody>
                     </table>
 
