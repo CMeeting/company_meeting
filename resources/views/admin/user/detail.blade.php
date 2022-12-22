@@ -81,7 +81,7 @@
                     <tr>
                         <td style="background: #e2e2e2">Country</td>
                         <td>{{array_get($billing, 'country')}}</td>
-                        <td style="background: #e2e2e2">Province/state</td>
+                        <td style="background: #e2e2e2">State/Province</td>
                         <td>{{array_get($billing, 'province')}}</td>
                     </tr>
                     <tr>
@@ -93,7 +93,7 @@
                     <tr>
                         <td style="background: #e2e2e2">Address</td>
                         <td>{{array_get($billing, 'address')}}</td>
-                        <td style="background: #e2e2e2">Zip</td>
+                        <td style="background: #e2e2e2">Zip/Postal code</td>
                         <td>{{array_get($billing, 'zip')}}</td>
                     </tr>
                 </table>
