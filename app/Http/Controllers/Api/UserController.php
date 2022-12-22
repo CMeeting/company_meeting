@@ -55,7 +55,7 @@ class UserController extends Controller
 
         //自动订阅电子报
         $subsService = new SubscriptionService();
-        $subsService->update_status(['email'=>$email, 'subscribed'=>1]);
+        $subsService->update_status(['email'=>$email, 'subscribed'=>1], false);
 
         //发送邮件
         $email_model = Mailmagicboard::getByName('注册完成');
