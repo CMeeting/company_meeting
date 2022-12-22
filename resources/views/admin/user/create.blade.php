@@ -21,7 +21,7 @@
             </div>
             <div class="ibox-content">
                 <a href="{{route('user.list')}}"><button class="btn btn-primary btn-sm back" type="button" style="margin-bottom: 40px"><i class="fa fa-chevron-left"></i> 返回列表 </button></a>
-                <form class="form-horizontal m-t-md" id="form_data" accept-charset="UTF-8" enctype="multipart/form-data" style="width: 600px;overflow: auto;margin: 0 auto;">
+                <form class="form-horizontal m-t-md" id="form_data" accept-charset="UTF-8" enctype="multipart/form-data" style="width: 600px;margin: 0 auto;">
                     {!! csrf_field() !!}
 
                     <div class="hr-line-dashed m-t-sm m-b-sm" style="position: relative;margin-bottom: 20px;"><span style="font-weight:bold;top: -12px;position: absolute;color:black">Email：<font style="color: red;font-size: 14px">*</font></span></div>
@@ -35,10 +35,8 @@
                             <input type="text" placeholder="*Full Name" class="form-control" name="full_name" value="" required data-msg-required="Full Name必填" style="width: 500px"/>
                         </div>
 
-                        <div class="form-group" style="margin-top: 20px; margin-left: 0">
-                            <div class="col-sm-12 col-sm-offset-2" style="margin-left: 0">
-                                <button id="add_user" class="btn btn-primary" type="button"><i class="fa fa-check"></i>&nbsp;提交</button>
-                            </div>
+                        <div class="form-group" style="margin-top: 20px; margin-left: 33%">
+                            <button id="add_user" class="btn btn-primary" type="button"><i class="fa fa-check"></i>&nbsp;提交</button>
                         </div>
                     <div class="clearfix"></div>
                 </form>
