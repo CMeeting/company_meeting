@@ -196,7 +196,7 @@ class UserController extends Controller
 
         //自动订阅电子报
         $subsService = new SubscriptionService();
-        $subsService->update_status(['email'=>$email, 'subscribed'=>1]);
+        $subsService->update_status(['email'=>$email, 'subscribed'=>1], false);
 
         $emailService = new EmailService();
         //变更邮箱新邮箱提醒
