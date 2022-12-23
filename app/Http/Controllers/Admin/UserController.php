@@ -87,7 +87,7 @@ class UserController extends BaseController
         $subsService->update_status(['email'=>$email, 'subscribed'=>1], false);
 
         //发送邮件
-        $url = env('WEB_HOST') . '/personal';
+        $url = env('WEB_HOST') . '/personal/password';
         $emailModel = Mailmagicboard::getByName('新增用户');
         $emailService = new EmailService();
         $data['title'] = $emailModel->title;
