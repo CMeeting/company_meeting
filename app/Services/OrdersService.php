@@ -851,14 +851,14 @@ class OrdersService
             $arr[$vs['ordergoods_id']]['data'][]=[
                 'name'=>$vs['platform_name'],
                 'key'=>$vs['license_key'],
-                'license_secret'=>$vs['license_key'],
+                'license_secret'=>$vs['license_secret'],
             ];
             foreach ($ordergoodsdata as $kk =>$v){
                   if($v['products_id']==$vs['products_id'] && $v['platform_id']==$vs['platform_id'] && $v['licensetype_id']==$vs['licensetype_id'] && $v['ordergoods_id']==$vs['ordergoods_id'] && $v['platform_name']!=$vs['platform_name']){
                       $arr[$vs['ordergoods_id']]['data'][]=[
                           'name'=>$v['platform_name'],
                           'key'=>$v['license_key'],
-                          'license_secret'=>$v['license_key'],
+                          'license_secret'=>$v['license_secret'],
                       ];
                   }
             }
