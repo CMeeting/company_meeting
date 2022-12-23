@@ -139,7 +139,13 @@ class CartService
         $goods = new goods();
         $orderno = time();
         $list = $cart->_where("user_id='{$data['user_id']}'");
+
         Log::info("用户ID：[" . $data["user_id"] . "]购物车信息：" . json_encode($list, JSON_UNESCAPED_UNICODE));
+
+        if(empty($list)){
+            return ['code' => 500, 'message' => '购物车为空'];
+        }
+
         $arr = [];
         $sumprice = $goodstotal = 0;
         foreach ($list as $k => $v) {
