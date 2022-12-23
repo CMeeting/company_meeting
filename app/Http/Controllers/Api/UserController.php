@@ -285,7 +285,8 @@ class UserController extends Controller
                 'phone_number.required' => 'Phone Number is required',
                 'phone_number.numeric' => 'Phone Number Numbers Only',
                 'address.required' => 'Address is required',
-                'zip.required' => 'Zip is required',]
+                'zip.required' => 'Zip is required',
+            ]
         );
 
         if($validate->fails()){
@@ -306,6 +307,51 @@ class UserController extends Controller
         $userBillingInfoService = new UserBillingInfoService();
 
         $userBillingInfoService->store($current_user->id, $first_name, $last_name, $email, $phone_number, $company, $country, $province, $city, $address, $zip);
+
+        return Response::json(['code'=>200, 'message'=>'Success']);
+    }
+
+    /**
+     * 试用修改账单信息
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function editBillingInfoFromTrial(Request $request){
+        $current_user = UserService::getCurrentUser($request);
+
+        $validate = \Validator::make($request->all(), [
+            'first_name'=>'required',
+            'last_name'=>'required',
+            'email'=>'required|email',
+            'company'=>'required',
+            'country'=>'required',
+            'phone_number'=>'required|numeric',
+        ], [
+                'first_name.required' => 'First Name is required.',
+                'last_name.required' => 'Last Name is required.',
+                'email.required' => 'Email is required.',
+                'email.email' => 'Please enter a valid email address.',
+                'company.required' => 'Company is required',
+                'country.required' => 'Country is required',
+                'phone_number.required' => 'Phone Number is required',
+                'phone_number.numeric' => 'Phone Number Numbers Only',
+            ]
+        );
+
+        if($validate->fails()){
+            return Response::json(['code'=>500, 'message'=>$validate->messages()->first()]);
+        }
+
+        $first_name = ltrim(rtrim($request->input('first_name')));
+        $last_name = ltrim(rtrim($request->input('last_name')));
+        $email = trim($request->input('email'));
+        $company = $request->input('company');
+        $country = $request->input('country');
+        $phone_number = $request->input('phone_number');
+
+        $userBillingInfoService = new UserBillingInfoService();
+
+        $userBillingInfoService->store($current_user->id, $first_name, $last_name, $email, $phone_number, $company, $country);
 
         return Response::json(['code'=>200, 'message'=>'Success']);
     }

@@ -352,7 +352,6 @@ class OrdersService
         $classification = $this->assembly_orderclassification();
         $sarr=[];
         $parcudt=[];
-        $info=['email'=>$user_email];
         foreach ($data['level1'] as $k => $v) {
             $goodsid=0;
             foreach ($goods_data as $ks => $vs) {
@@ -401,7 +400,6 @@ class OrdersService
             'type' => 1,
             'details_type' => 2,
             'price' => $sumprice,
-            'user_bill'=>serialize($info),
             'user_id' => $user_id,
             'goodstotal' => $goodstotal
         ];

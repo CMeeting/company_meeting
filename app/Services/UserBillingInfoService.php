@@ -31,7 +31,7 @@ class UserBillingInfoService
      * @param $address
      * @param $zip
      */
-    public function store($user_id, $first_name, $last_name, $email, $phone_number, $company, $country, $province, $city, $address, $zip){
+    public function store($user_id, $first_name, $last_name, $email, $phone_number, $company, $country, $province = '', $city = '', $address ='', $zip = ''){
         $model = UserBillingInformation::where('user_id', $user_id)->first();
         if(!$model instanceof UserBillingInformation){
             $model = new UserBillingInformation();
@@ -44,10 +44,23 @@ class UserBillingInfoService
         $model->phone_number = $phone_number;
         $model->company = $company;
         $model->country = $country;
-        $model->province = $province;
-        $model->city = $city;
-        $model->address = $address;
-        $model->zip = $zip;
+
+        if($province){
+            $model->province = $province;
+        }
+
+        if($city){
+            $model->city = $city;
+        }
+
+        if($address){
+            $model->address = $address;
+        }
+
+        if($zip){
+            $model->zip = $zip;
+        }
+
         $model->save();
     }
 }
