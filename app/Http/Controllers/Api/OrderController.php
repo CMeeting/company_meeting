@@ -268,7 +268,12 @@ class OrderController
             $email_arr['orderno'] = $value['order_no'];
             $email_arr['products'] = $goods_class[$value['level1']]['title'] ." for ". $goods_class[$value['level2']]['title'] ." (". $goods_class[$value['level3']]['title'].")";
             $email_arr['order_id'] = $value['order_no'];
-            $email_arr['pay_years'] = $value['pay_years'] . "years/".$goods_class[$value['level3']]['title'];
+            if($value['pay_years'] > 1){
+                $unity = 'Year';
+            }else{
+                $unity = 'Years';
+            }
+            $email_arr['pay_years'] = $value['pay_years'] . "$unity/".$goods_class[$value['level3']]['title'];
             $email_arr['goodsprice'] = "$" . $value['goodsprice'];
             $email_arr['taxes'] = "$0.00";
             $email_arr['price']="$" . $value['price'];
