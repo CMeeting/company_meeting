@@ -257,7 +257,7 @@
                             </td>
                         </tr>
                     @endforeach
-                    <tr><td colspan="11">当前总订单数:{{$sum['sumcount']}}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;当前所有状态订单金额:{{$sum['price']}}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;当前待支付订单数:{{$sum['sumnostatus']}}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;当前已支付订单数:{{$sum['sumyesstatus']}}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;当前已完成订单数:{{$sum['sumwcstatus']}}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;当前已关闭订单数:{{$sum['sumgbstatus']}}</td></tr>
+                    <tr><td colspan="12">当前总订单数:{{$sum['sumcount']}}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;当前所有状态订单金额:{{$sum['price']}}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;当前待支付订单数:{{$sum['sumnostatus']}}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;当前已支付订单数:{{$sum['sumyesstatus']}}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;当前已完成订单数:{{$sum['sumwcstatus']}}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;当前已关闭订单数:{{$sum['sumgbstatus']}}</td></tr>
                     </tbody>
                 </table>
                 {{$data->appends(['info' => isset($query['info'])?$query['info']:'','query_type'=>isset($query['query_type'])?$query['query_type']:'','status'=>isset($query['status'])?$query['status']:'','start_date'=>isset($query['start_date'])?$query['start_date']:'','end_date'=>isset($query['end_date'])?$query['end_date']:'','level1'=>isset($query['level1'])?$query['level1']:'','level2'=>isset($query['level2'])?$query['level2']:'','level3'=>isset($query['level3'])?$query['level3']:''])->links()}}
