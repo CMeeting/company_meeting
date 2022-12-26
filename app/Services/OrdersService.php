@@ -399,6 +399,7 @@ class OrdersService
             'status' => $data['status'],
             'type' => 1,
             'details_type' => 2,
+            'user_bill' => serialize(['email'=>$user_email]),
             'price' => $sumprice,
             'user_id' => $user_id,
             'goodstotal' => $goodstotal
@@ -555,7 +556,7 @@ class OrdersService
     {
         $order = new Order();
         $orderGoods = new OrderGoods();
-        $data = $order->_where("user_id='{$parm['user_id']}' and details_type!=1", "id DESC", "id,order_no,status,created_at,price");
+        $data = $order->_where("user_id='{$parm['user_id']}' and details_type!=1", "id DESC", "id,order_no,status,created_at,price,isrenwe");
         if (!$data) {
             return ['code' => 403, 'msg' => '当前没有订单数据', 'data' => []];
         }
@@ -781,6 +782,7 @@ class OrdersService
                 $arr[$k]['order_no'] = $orderno;
             }
             $orderGoods->_insert($arr);
+            $order->_update(['isrenwe'=>1],"id='{$pram['id']}'");
             $orderdata['email'] = $pram['info']['email'] ?? '';
             $orderdata['id'] = $order_id;
             $pay = $this->comparePriceCloseAndCreateOrder($orderdata);

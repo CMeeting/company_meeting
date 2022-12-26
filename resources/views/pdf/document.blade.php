@@ -12,7 +12,7 @@
             <tr>
               <td style="padding-bottom: 43px">
                 <a target="_blank" href="http://test-pdf-pro.kdan.cn:3026/">
-                  <img height="30" src="http://img2.3png.com/c6473288afbfe242dcf021820766db6abf3a.png" alt="invoice-logo">
+                  <img height="30" src="/logo.png" alt="invoice-logo">
                 </a>
               </td>
             </tr>
@@ -100,6 +100,23 @@
                         </table>
                       </td>
                     </tr>
+                    <tr bgcolor="#F8F8F8">
+                    <td style="padding:12px 0 6px 12px;border-radius:4px 0px 0px 0px;">
+                      <table border="0" cellpadding="0" cellspacing="0" width="100%">
+                        <tbody>
+                        <tr>
+                          <td style="color:#999;font-size:12px;line-height:14px;">Addres</td>
+                        </tr>
+                        <tr>
+                          <td height="4"></td>
+                        </tr>
+                        <tr>
+                          <td style="height:18px;color:#333;font-size:14px;line-height:18px;">362 Upper Paya Lebar Road, #03-08 Da Jin Factory Building, Singapore</td>
+                        </tr>
+                        </tbody>
+                      </table>
+                    </td>
+                  </tr>
                   </tbody>
                 </table>
               </td>
@@ -121,7 +138,7 @@
                     <td style="width:280px;height: 85px;border-bottom: 1px solid #DADADA;">
                       <table>
                         <tr>
-                          <td rowspan="2" style="padding-left:12px;"><img src="http://img2.3png.com/c6473288afbfe242dcf021820766db6abf3a.png" alt="mail-logo" style="width: 42px; height: 42px;"></td>
+                          <td rowspan="2" style="padding-left:12px;"><img src="/logo.png" alt="mail-logo" style="width: 42px; height: 42px;"></td>
                           <td style="width:280px;font-size:14px;font-weight:bold;text-align: left;line-height:17px;color:#333;">{{$item['goodsname']}}</td>
                         </tr>
                         <tr>
@@ -172,7 +189,7 @@
 										<tr>
 										  <td style="padding: 20px;padding-bottom:0;">
 				                <a target="_blank" href="http://test-pdf-pro.kdan.cn:3026/">
-				                  <img height="16" src="http://img2.3png.com/c6473288afbfe242dcf021820766db6abf3a.png" alt="invoice-logo">
+				                  <img height="16" src="/logo.png" alt="invoice-logo">
 				                </a>
 				              </td>
 										</tr>
