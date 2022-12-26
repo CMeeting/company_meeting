@@ -110,9 +110,9 @@
                 <table cellpadding="0" cellspacing="0" width="600" style="border-collapse: collapse; fong-weight: 500; text-align: center;">
                   <tr style="background:rgba(245,245,245,1);font-size: 12px;">
                     <td style="height: 36px;padding-left: 12px;color:#666;text-align: left;">Service</td>
-                    <td style="height: 36px;color:#666;">Quantity</td>
+                    <td style="height: 36px;color:#666;">Years</td>
                     <td style="height: 36px;color:#666;">Unit Price</td>
-                    <td style="height: 36px;color:#666;"> Discount</td>
+                    <td style="height: 36px;color:#666;">Discount</td>
                     <td style="height: 36px;color:#666;text-align: right;padding-right: 12px;">Amount</td>
                   </tr>
                   <?php $sums=0.00;?>
