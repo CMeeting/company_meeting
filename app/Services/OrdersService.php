@@ -397,6 +397,7 @@ class OrdersService
             'pay_type' => $pay_type,
             'order_no' => $orderno,
             'status' => $data['status'],
+            'bill_no'=>$this->getBillNo(),
             'type' => 1,
             'details_type' => 2,
             'user_bill' => serialize(['email'=>$user_email]),
@@ -705,7 +706,7 @@ class OrdersService
                 $emailarr['payprice']="$0.00";
                 $emailarr['yesprice']="$".$price;
                 $emailarr['url']="http://test-pdf-pro.kdan.cn:3026/order/checkout";
-//                $email->sendDiyContactEmail($emailarr,6,$data['info']['email'],$mailedatas);
+                $email->sendDiyContactEmail($emailarr,6,$data['info']['email'],$mailedatas);
                 $orderarr['email'] = $data['info']['email'] ?? '';
                 $orderarr['id'] = $order_id ?? 0;
                 $pay = $this->comparePriceCloseAndCreateOrder($orderarr);
@@ -987,7 +988,8 @@ class OrdersService
                 'third_order_no' => $pay_url_data['id'] ?? '',
                 'page_pay_url' => $pay_url_data['url'],
             ];
-            $ordernew->_update(['merchant_no' => $pay_url_data['id']?? '','pay_url'=>$pay_url_data['url']], "order_no='{$order['order_no']}'");
+            $bill_no = $this->getBillNo();
+            $ordernew->_update(['merchant_no' => $pay_url_data['id']?? '','pay_url'=>$pay_url_data['url'],'bill_no'=>$bill_no], "order_no='{$order['order_no']}'");
             $ordergoods->_update(['merchant_no' => $pay_url_data['id']?? ''], "order_no='{$order['order_no']}'");
         }
         return $newOrderData;

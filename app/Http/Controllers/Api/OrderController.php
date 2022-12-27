@@ -191,9 +191,8 @@ class OrderController
             try {
                 $fapiao_url = $this->get_pdfurl($orderdata['id']);
                 $orders_service = new OrdersService();
-                $bill_no = $orders_service->getBillNo();//发票编号,需要移到服务层
                 $userserver->changeType(4, $orderdata['user_id']);
-                DB::table("orders")->whereRaw("order_no='{$param['passthrough']}'")->update(['status' => 1, 'pay_time' => date("Y-m-d H:i:s"), 'bill_no' => $bill_no, 'bill_url' => $fapiao_url, 'paddle_no' => $param['order_id']]);
+                DB::table("orders")->whereRaw("order_no='{$param['passthrough']}'")->update(['status' => 1, 'pay_time' => date("Y-m-d H:i:s"), 'bill_url' => $fapiao_url, 'paddle_no' => $param['order_id']]);
                 DB::table("orders_goods")->whereRaw("order_no='{$param['passthrough']}'")->update(['status' => 1, 'pay_time' => date("Y-m-d H:i:s"), 'paddle_no' => $param['order_id']]);
                 \Log::info($param['passthrough'] . ":进入回调执行生成授权码");
                 foreach ($ordergoods_data as $k => $v) {
