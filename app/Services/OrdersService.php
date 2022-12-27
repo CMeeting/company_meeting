@@ -704,6 +704,7 @@ class OrdersService
                 $emailarr['pay_years']=$data['pay_years'];
                 $emailarr['price']="$".$price;
                 $emailarr['payprice']="$0.00";
+                $emailarr['taxes']="$0.00";
                 $emailarr['yesprice']="$".$price;
                 $emailarr['url']="http://test-pdf-pro.kdan.cn:3026/order/checkout";
                 $email->sendDiyContactEmail($emailarr,6,$data['info']['email'],$mailedatas);
