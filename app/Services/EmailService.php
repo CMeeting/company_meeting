@@ -153,11 +153,12 @@ class EmailService
             $arrs['info'] = str_replace("#@order_no","KG1672047508",$arrs['info']);
             $arrs['info'] = str_replace("#@product","ComPDFKit PDF SDK for iOS (Professional License)",$arrs['info']);
             $arrs['info'] = str_replace("#@pay_years","1Year/Permanent License", $arrs['info']);
-            $arrs['info'] = str_replace("#@subtotal","$12000.00",$arrs['info']);
+            $arrs['info'] = str_replace("#@subtotal","$0.00",$arrs['info']);
             $arrs['info'] = str_replace("#@paid_price","$12000.00",$arrs['info']);
+            $arrs['info'] = str_replace("#@tax","$0.00",$arrs['info']);
             $arrs['info'] = str_replace("#@total_amount","$12000.00",$arrs['info']);
             $arrs['info'] = str_replace("#@paid_price","$0.00",$arrs['info']);
-            $arrs['info'] = str_replace("#@balance_due","$0.00",$arrs['info']);
+            $arrs['info'] = str_replace("#@balance_due","$12000.00",$arrs['info']);
             $arrs['info'] = str_replace("对应产品的购买页面","www.baidu.com",$arrs['info']);
 
             $subject=str_replace("#@order_no","KG1672047508",$subject);
