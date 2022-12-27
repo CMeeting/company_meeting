@@ -273,7 +273,7 @@ class OrderController
             }else{
                 $unity = 'Year';
             }
-            $email_arr['pay_years'] = $value['pay_years'] . "$unity/".$goods_class[$value['level3']]['title'];
+            $email_arr['pay_years'] = $value['pay_years'] . "$unity";
             $email_arr['goodsprice'] = "$" . $value['goodsprice'];
             $email_arr['taxes'] = "$0.00";
             $email_arr['price']="$" . $value['price'];

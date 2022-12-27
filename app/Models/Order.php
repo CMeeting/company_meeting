@@ -21,4 +21,7 @@ class Order extends Model
 {
 
     protected $table = 'orders';
+
+    const STATUS_0_UNPAID = 0;
+    const DETAILS_STATUS_1_TRIAL = 1;
 }
