@@ -134,7 +134,10 @@ class EmailService
             $data['info'] = $arrs['info'];
             $data['id'] = $arrs['id'];
         }elseif ($type==16){
+            $arrs['info'] = str_replace("+具体订单号","test",$arrs['info']);
+            $arrs['info'] = str_replace("具体时间","2022-12-31",$arrs['info']);
             $arrs['info'] = str_replace("(人名)","test",$arrs['info']);
+            $arrs['info'] = str_replace("发票下载链接","www.baidu.com",$arrs['info']);
             $arrs['info'] = str_replace("+ 产品订单号","KG16720475123",$arrs['info']);
             $arrs['info'] = str_replace("支付链接","www.baidu.com",$arrs['info']);
             $arrs['info'] = str_replace("具体订单编号","KG1672047508",$arrs['info']);
