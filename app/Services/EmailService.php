@@ -161,6 +161,11 @@ class EmailService
             $arrs['info'] = str_replace("#@balance_due","$12000.00",$arrs['info']);
             $arrs['info'] = str_replace("对应产品的购买页面","www.baidu.com",$arrs['info']);
 
+            $arrs['info'] = str_replace("(具体的订单号)","KG1672047508",$arrs['info']);
+            $arrs['info'] = str_replace("(具体日期)","2022-12-06",$arrs['info']);
+            $arrs['info'] = str_replace("(对方的账号信息)","liwenkai@kdanmobile.com",$arrs['info']);
+            $arrs['info'] = str_replace("登录ComPDFKit用户账户的链接","www.baidu.com",$arrs['info']);
+
             $subject=str_replace("#@order_no","KG1672047508",$subject);
             $subject=str_replace("+具体订单号","KG1672047508",$subject);
             $subject=str_replace("+订单号","KG1672047508",$subject);
