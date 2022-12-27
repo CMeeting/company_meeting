@@ -285,4 +285,13 @@ class OrderController
 
         return \Response::json(['code'=>200, 'message'=>'发送成功']);
     }
+
+    public function testemail(Request $request){
+        $email = new EmailService();
+        $maile = new MailmagicboardService();
+        $param = $request->all();
+        $mailedatas = $maile->getFindcategorical($param['id']);
+        $email->sendDiyContactEmail([], 16, "wangyuting@kdanmobile.com",$mailedatas);
+        return \Response::json(['code'=>200,'msg'=>"success"]);
+    }
 }

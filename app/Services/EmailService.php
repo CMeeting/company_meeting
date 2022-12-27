@@ -74,7 +74,7 @@ class EmailService
             $data['id'] = $arrs['id'];
         }elseif ($type==6){
             $arrs['info'] = str_replace("(人名)",$data['username'],$arrs['info']);
-            $arrs['info'] = str_replace("(订单号) has failed.",$data['orderno'],$arrs['info']);
+            $arrs['info'] = str_replace("(订单号)",$data['orderno'],$arrs['info']);
             $arrs['info'] = str_replace("具体ID号",$data['order_id'],$arrs['info']);
             $arrs['info'] = str_replace("具体产品名",$data['products'],$arrs['info']);
             $arrs['info'] = str_replace("购买时长",$data['pay_years'], $arrs['info']);
@@ -131,6 +131,39 @@ class EmailService
             $data['info'] = $arrs['info'];
             $data['id'] = $arrs['id'];
         }elseif ($type==11){
+            $data['info'] = $arrs['info'];
+            $data['id'] = $arrs['id'];
+        }elseif ($type==16){
+            $arrs['info'] = str_replace("(人名)","test",$arrs['info']);
+            $arrs['info'] = str_replace("+ 产品订单号","KG16720475123",$arrs['info']);
+            $arrs['info'] = str_replace("支付链接","www.baidu.com",$arrs['info']);
+            $arrs['info'] = str_replace("具体订单编号","KG1672047508",$arrs['info']);
+            $arrs['info'] = str_replace("具体产品名","ComPDFKit PDF SDK for iOS (Professional License)",$arrs['info']);
+            $arrs['info'] = str_replace("购买时长","1Year/Permanent License", $arrs['info']);
+            $arrs['info'] = str_replace("总金额","$12000.00",$arrs['info']);
+            $arrs['info'] = str_replace("已支付的金额","$12000.00",$arrs['info']);
+            $arrs['info'] = str_replace("应支付的金额","$12000.00",$arrs['info']);
+            $arrs['info'] = str_replace("产品费用","$0.00",$arrs['info']);
+            $arrs['info'] = str_replace("税收金额","$0.00",$arrs['info']);
+            $arrs['info'] = str_replace("对应产品的购买页面","www.baidu.com",$arrs['info']);
+
+            $arrs['info'] = str_replace("#@full_name","test",$arrs['info']);
+            $arrs['info'] = str_replace("#@order_no","KG16720475123",$arrs['info']);
+            $arrs['info'] = str_replace("#@url","www.baidu.com",$arrs['info']);
+            $arrs['info'] = str_replace("#@order_no","KG1672047508",$arrs['info']);
+            $arrs['info'] = str_replace("#@product","ComPDFKit PDF SDK for iOS (Professional License)",$arrs['info']);
+            $arrs['info'] = str_replace("#@pay_years","1Year/Permanent License", $arrs['info']);
+            $arrs['info'] = str_replace("#@subtotal","$12000.00",$arrs['info']);
+            $arrs['info'] = str_replace("#@paid_price","$12000.00",$arrs['info']);
+            $arrs['info'] = str_replace("#@total_amount","$12000.00",$arrs['info']);
+            $arrs['info'] = str_replace("#@paid_price","$0.00",$arrs['info']);
+            $arrs['info'] = str_replace("#@balance_due","$0.00",$arrs['info']);
+            $arrs['info'] = str_replace("对应产品的购买页面","www.baidu.com",$arrs['info']);
+
+            $subject=str_replace("#@order_no","KG1672047508",$subject);
+            $subject=str_replace("+具体订单号","KG1672047508",$subject);
+            $subject=str_replace("+订单号","KG1672047508",$subject);
+            $subject=str_replace("订单号","KG1672047508",$subject);
             $data['info'] = $arrs['info'];
             $data['id'] = $arrs['id'];
         }

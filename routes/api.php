@@ -25,6 +25,7 @@ Route::group(['namespace' => 'Api'], function () {
     Route::post('/subscription', 'SubscriptionController@subscription_status');
     Route::any('/support', 'SupportController@getsupport');
     Route::any('/thefeedback', 'SupportController@thefeedback');
+    Route::any('/testemail', 'OrderController@testemail');
     Route::get('/changelogs', 'ChangelogsController@changelogs');
     Route::get('/getgoods', 'GoodsController@getGoods');
     Route::post('/getgoodsprice', 'OrderController@getgoodsprice');
