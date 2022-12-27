@@ -267,7 +267,7 @@ class GoodsService
     {
         $Goodsclassification = new Goodsclassification();
         $goods = new Goods();
-        $data = $Goodsclassification->_where("deleted=0", 'lv,displayorder');
+        $data = $Goodsclassification->_where("deleted=0 and status=1", 'lv,displayorder');
         $goodsdata = $goods->whereRaw("deleted=0 and status=1")->orderByRaw('id desc')->get()->toArray();
         if (!empty($goodsdata)) {
             $classification = $this->assembly_classification();
