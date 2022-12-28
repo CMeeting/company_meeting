@@ -71,7 +71,7 @@ class OrderRenewNotice extends Command
                 $template = Mailmagicboard::find(43);
             }elseif($one_at == $now){
                 $send_mail = true;
-                $alert_id['ten'][] = $order_id;
+                $alert_id['one'][] = $order_id;
                 $template = Mailmagicboard::find(44);
             }
 
