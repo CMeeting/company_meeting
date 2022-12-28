@@ -31,7 +31,17 @@ class Kernel extends ConsoleKernel
         // $schedule->command('inspire')
         //          ->hourly();
 
+        //订单关闭脚本
         $schedule->command('command:close:order')->dailyAt('15:59');
+
+        //未支付订单提醒
+        $schedule->command('command:unpaid:order:notice')->hourly();
+
+        //试用订单到期提醒
+        $schedule->command('command:trial:order:notice')->hourly();
+
+        //订单到期续订提醒
+        $schedule->command('command:order:renew:notice')->hourly();
     }
 
     /**
