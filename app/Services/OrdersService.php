@@ -750,7 +750,7 @@ class OrdersService
             $price = $v['pay_years'] * $goodsdata[$v['goods_id']]['price'];
             $arr[] = [
                 'goods_no' => $ordergoods_no,
-                'pay_type' => $data['pay_type'],
+                'pay_type' => $pram['pay_type'],
                 'order_no' => $orderno,
                 'status' => 0,
                 'type' => 2,
@@ -769,7 +769,7 @@ class OrdersService
         }
         $orderdata = [
             'order_no' => $orderno,
-            'pay_type' => $data['pay_type'],
+            'pay_type' => $pram['pay_type'],
             'status' => 0,
             'type' => 2,
             'details_type' => 2,
@@ -982,7 +982,6 @@ class OrdersService
         $ordergoods = new OrderGoods();
         if (empty($order['page_pay_url'])) {
             $pay_url_data = $this->generatePayUrl($order['pay_type'], 'ComPDFKit', $order['order_no'], $order['price'],$order['email'],$order['id']);
-            dump($pay_url_data);exit();
             if ($order['pay_type'] == 2) {
                 $pay_url_data['id'] = 'ali' . $order['order_no'];
             }elseif ($order['pay_type'] == 1){
