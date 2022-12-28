@@ -127,6 +127,7 @@ class UnpaidOrderNotice extends Command
             }
         }
 
+        print_r(['three'=>$three_arr, 'seven'=>$seven_arr]);
         \Log::info('待付款发送邮件订单', ['three'=>$three_arr, 'seven'=>$seven_arr]);
 
         \Log::info('-----待付款邮件发送脚本执行完成-----', ['end_at'=>Carbon::now()->format('Y-m-d H:i:s')]);

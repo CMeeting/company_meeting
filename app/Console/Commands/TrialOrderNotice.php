@@ -107,6 +107,8 @@ class TrialOrderNotice extends Command
                 }
             }
         }
+
+        print_r($order_id_arr);
         \Log::info('试用提醒订单', $order_id_arr);
 
         \Log::info('-----试用订单到期提醒邮件发送脚本执行完成-----', ['end_at'=>Carbon::now()->format('Y-m-d H:i:s')]);

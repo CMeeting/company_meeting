@@ -91,6 +91,7 @@ class OrderRenewNotice extends Command
             }
         }
 
+        print_r($alert_id);
         \Log::info('提醒订单#子订单号', $alert_id);
         \Log::info('-----订单到期续订提醒邮件发送脚本执行完成-----', ['end_at'=>Carbon::now()->format('Y-m-d H:i:s')]);
     }
