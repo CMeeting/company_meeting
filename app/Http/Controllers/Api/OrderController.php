@@ -203,7 +203,7 @@ class OrderController
                                 if(in_array($v['renwe_goodsid'],$ids))continue; //判断当前子订单ID已添加过序列码则跳过循环
                                 array_push($ids,$vs['ordergoods_id']);//把当前添加授权码的子订单ID添加到数组内，避免重复添加多条授权码
 
-                                $licensecodedata = LicenseService::buildLicenseCodeData($v['goods_no'], $v['pay_years'], $v['user_id'], $vs['products_id'], $vs['platform_id'], $vs['licensetype_id'], explode(",", $v['appid']), $emaildata['email'], $v['order_id'], $v['id'],'year',$vs['expire_time']);
+                                $licensecodedata = LicenseService::buildLicenseCodeData($v['goods_no'], $v['pay_years'], $v['user_id'], $vs['products_id'], $vs['platform_id'], $vs['licensetype_id'], explode(",", $v['appid']), $emaildata['email'], $v['order_id'], $v['id'],'year',$vs['created_at']);
                                 \Log::info($param['passthrough'] . ":续订订单进入回调执行生成授权码" . json_encode($licensecodedata));
                                 $lisecosdmode->_insert($licensecodedata);
                             }
