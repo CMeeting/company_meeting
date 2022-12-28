@@ -99,6 +99,7 @@ class TrialOrderNotice extends Command
                     $platform_id = $goods['level2'];
                     $license_id = $goods['level3'];
                     $url = env('WEB_HOST') . "/order/product?productsid=$product_id&platformid=$platform_id&licensieid=$license_id";
+                    $data['id'] = $template->id;
                     $data['title'] = $template->title;
                     $data['info'] = $template->info;
                     $data['info'] = str_replace('#@url', $url, $data['info']);

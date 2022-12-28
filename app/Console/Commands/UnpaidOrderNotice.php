@@ -85,6 +85,7 @@ class UnpaidOrderNotice extends Command
                     ->toArray();
                 foreach ($goods_data as $value){
                     $value = collect($value)->toArray();
+                    $data['id'] = $email_template->id;
                     $data['title'] = $email_template->title;
                     $data['title'] = str_replace('#@order_no', $order['order_no'], $data['title']);
 

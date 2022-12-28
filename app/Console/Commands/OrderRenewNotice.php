@@ -76,6 +76,7 @@ class OrderRenewNotice extends Command
             }
 
             if($send_mail){
+                $data['id'] = $template->id;
                 $data['title'] = $template->title;
                 $data['title'] = str_replace('#@order_no', $order_no, $data['title']);
 
