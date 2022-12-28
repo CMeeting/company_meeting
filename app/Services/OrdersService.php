@@ -982,6 +982,7 @@ class OrdersService
         $ordergoods = new OrderGoods();
         if (empty($order['page_pay_url'])) {
             $pay_url_data = $this->generatePayUrl($order['pay_type'], 'ComPDFKit', $order['order_no'], $order['price'],$order['email'],$order['id']);
+            dump($pay_url_data);exit();
             if ($order['pay_type'] == 2) {
                 $pay_url_data['id'] = 'ali' . $order['order_no'];
             }elseif ($order['pay_type'] == 1){
