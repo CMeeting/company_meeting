@@ -96,6 +96,7 @@ class EmailService
             $arrs['info'] = str_replace("税收金额",$data['taxes'],$arrs['info']);
             $arrs['info'] = str_replace("总金额",$data['price'],$arrs['info']);
             $arrs['info'] = str_replace("已支付的金额",$data['payprice'],$arrs['info']);
+            $arrs['info'] = str_replace("应支付的金额",$data['payprice'],$arrs['info']);
             $arrs['info'] = str_replace("未付金额",$data['noorderprice'],$arrs['info']);
             $arrs['info'] = str_replace("(产品名)",$data['products'],$arrs['info']);
             $url="<a href='".$data['fapiao']."'>Download invoices</a>";
