@@ -21,7 +21,7 @@
                 <table class="payment-info" cellpadding="0" cellspacing="0" width="600">
 
                   <tr style="display: block;margin-top: 10px;">
-                    <td align="left" style="width:250px;padding-left: 40%;color:rgba(102,102,102,1);" class="label">
+                    <td align="left" style="width:250px;padding-left: 45%;color:rgba(102,102,102,1);" class="label">
                       Email:
                     </td>
                     <td class="content" style="max-width:350px;color:rgba(51,51,51,1);text-align:right;margin-right:12px;word-break:break-all;word-wrap:break-word;">
@@ -31,7 +31,7 @@
                   </tr>
                   <tr><td style="height: 15px;"></td></tr>
                   <tr style="display: block;margin-top: 10px;">
-                    <td align="left" style="width:400px;padding-left: 40%;color:rgba(102,102,102,1);" class="label">
+                    <td align="left" style="width:400px;padding-left: 45%;color:rgba(102,102,102,1);" class="label">
                       Purchased Date:
                     </td>
                     <td class="content" style="max-width:350px;color:rgba(51,51,51,1);text-align:right;margin-right:12px;word-break:break-all;word-wrap:break-word;">{{$data['orderdata']['created_at']}}
@@ -39,7 +39,7 @@
                   </tr>
                   <tr><td style="height: 15px;"></td></tr>
                   <tr style="display: block;margin-top: 10px;">
-                    <td align="left" style="width:400px;padding-left: 40%;color:rgba(102,102,102,1);" class="label">
+                    <td align="left" style="width:400px;padding-left: 45%;color:rgba(102,102,102,1);" class="label">
                       Order Number:
                     </td>
                     <td class="content" style="max-width:350px;color:rgba(51,51,51,1);text-align:right;margin-right:12px;word-break:break-all;word-wrap:break-word;">{{$data['orderdata']['order_no']}}
@@ -47,7 +47,7 @@
                   </tr>
                   <tr><td style="height: 15px;"></td></tr>
                   <tr style="display: block;margin-top: 10px;">
-                    <td align="left" style="width:400px;padding-left: 40%;color:rgba(102,102,102,1);" class="label">
+                    <td align="left" style="width:400px;padding-left: 45%;color:rgba(102,102,102,1);" class="label">
                       Invoice Date:
                     </td>
                     <td class="content" style="max-width:350px;color:rgba(51,51,51,1);text-align:right;margin-right:12px;word-break:break-all;word-wrap:break-word;">{{date("Y-m-d H:i:s")}}
@@ -55,7 +55,7 @@
                   </tr>
                   <tr><td style="height: 15px;"></td></tr>
                   <tr style="display: block;margin-top: 10px;">
-                    <td align="left" style="width:450px;padding-left: 40%;color:rgba(102,102,102,1);" class="label">
+                    <td align="left" style="width:450px;padding-left: 45%;color:rgba(102,102,102,1);" class="label">
                       Invoice Number:
                     </td>
                     <td class="content" style="max-width:350px;color:rgba(51,51,51,1);text-align:right;margin-right:12px;word-break:break-all;word-wrap:break-word;">{{$data['orderdata']['bill_no']}}
@@ -63,8 +63,8 @@
                   </tr>
                   <tr><td style="height: 15px;"></td></tr>
                   <tr style="display: block;margin-top: 10px;">
-                    <td align="left" style="width:400px;padding-left: 40%;color:rgba(102,102,102,1);" class="label">
-                      Addres:
+                    <td align="left" style="width:400px;padding-left: 45%;color:rgba(102,102,102,1);" class="label">
+                      Address:
                     </td>
                     <td class="content" style="max-width:350px;color:rgba(51,51,51,1);text-align:right;margin-right:12px;word-break:break-all;word-wrap:break-word;">362 Upper Paya Lebar Road, #03-08 Da Jin Factory Building, Singapore
                     </td>
@@ -75,7 +75,7 @@
             <tr><td style="height: 60px;"></td></tr>
             <tr>
               <td>
-                <table cellpadding="0" cellspacing="0" width="600" style="border-collapse: collapse; fong-weight: 500; text-align: center;">
+                <table cellpadding="0" cellspacing="0" width="100%" style="border-collapse: collapse; fong-weight: 500; text-align: center;width: 100%">
                   <tr style="background:rgba(245,245,245,1);font-size: 12px;">
                     <td style="height: 36px;padding-left: 12px;color:#666;text-align: left;">Service</td>
                     <td style="height: 36px;color:#666;">Years</td>
@@ -89,7 +89,7 @@
                     <td style="width:280px;height: 85px;border-bottom: 1px solid #DADADA;">
                       <table>
                         <tr>
-                          <td rowspan="2" style="padding-left:12px;"><img src="/logo.png" alt="mail-logo" style="width: 42px; height: 42px;"></td>
+                          <td rowspan="2" style="padding-left:12px;"><img src="/Logo.png" alt="mail-logo" style="width: 42px; height: 42px;"></td>
                           <td style="width:280px;font-size:14px;font-weight:bold;text-align: left;line-height:17px;color:#333;">{{$item['goodsname']}}</td>
                         </tr>
                         <tr>
