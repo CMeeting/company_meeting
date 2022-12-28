@@ -288,8 +288,9 @@ class LicenseService
             $start_time = time();
             $end_time = strtotime("+" . $period . " $period_unit");
         }else{
+            $start_time2=$start_time;
             $start_time = strtotime($start_time);
-            $end_time = strtotime(date("Y-m-d H:i:s", strtotime("$start_time +". $period*2 . " $period_unit")));
+            $end_time = strtotime(date("Y-m-d H:i:s", strtotime("$start_time2 +". $period*2 . " $period_unit")));
         }
 
         $product = GoodsclassificationService::getNameById($product_id);
