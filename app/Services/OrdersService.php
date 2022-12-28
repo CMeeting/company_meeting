@@ -777,7 +777,7 @@ class OrdersService
             'user_id' => $data['user_id'],
             'user_bill' => serialize($pram['info']),
             'goodstotal' => $goodstotal,
-            'isrenwe_id'=>$pram['id']
+            'renwe_id'=>$pram['id']
         ];
         try {
             $order_id = $order->insertGetId($orderdata);
