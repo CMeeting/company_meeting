@@ -131,6 +131,24 @@
                         </table>
                     @endif
 
+                    @if($info['type'] != 1)
+                        <?php $zhangdan=unserialize($info['user_bill']);?>
+                        <div class="form-group">
+                            <label for="form-field-1" style="margin-left: 15px;"> 账单信息：</label>
+                        </div>
+                        <table class="table table-striped table-bordered table-hover m-t-md"
+                               style="word-wrap:break-word; word-break:break-all;text-align: center">
+                        <tbody>
+                            @foreach($zhangdan as $k=>$v)
+                                    <tr id="de">
+                                        <td class="text-center">{{$k}}</td>
+                                        <td class="text-center">{{$v}}</td>
+                                    </tr>
+                            @endforeach
+
+                            </tbody>
+                        </table>
+                    @endif
 
 
                     <div class="form-group">

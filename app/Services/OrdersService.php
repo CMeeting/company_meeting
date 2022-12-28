@@ -371,7 +371,7 @@ class OrdersService
                 $sarr[]=$mailedatas;
             }
             if (!$goodsid) return ['code' => 500, 'msg' => $classification[$v]['title'] . '-' . $classification[$data['level2'][$k]]['title'] . '-' . $classification[$data['level3'][$k]]['title'] . '下没有商品'];
-            $ordergoods_no = chr(rand(65, 90)) .chr(rand(65, 90)) . time();
+            $ordergoods_no = chr(rand(65, 90)) .chr(rand(65, 90)) .chr(rand(65, 90)). time();
             $s = $k + 1;
 
             $appid[]=$data["appid$s"];
@@ -392,7 +392,7 @@ class OrdersService
             $goodstotal++;
             $sumprice += $price;
         }
-        $orderno = chr(rand(65, 90)) .chr(rand(65, 90)) .time();
+        $orderno = chr(rand(65, 90)) .chr(rand(65, 90)) .chr(rand(65, 90)) .time();
         $orderdata = [
             'pay_type' => $pay_type,
             'order_no' => $orderno,
@@ -760,6 +760,7 @@ class OrdersService
                 'appid' => $v["appid"],
                 'goods_id' => $v['goods_id'],
                 'pay_years' => $v['pay_years'],
+                'renwe_goodsid'=>$v['id'],
                 'created_at' => date("Y-m-d H:i:s"),
                 'updated_at' => date("Y-m-d H:i:s")
             ];
@@ -775,7 +776,8 @@ class OrdersService
             'price' => $sumprice,
             'user_id' => $data['user_id'],
             'user_bill' => serialize($pram['info']),
-            'goodstotal' => $goodstotal
+            'goodstotal' => $goodstotal,
+            'isrenwe_id'=>$pram['id']
         ];
         try {
             $order_id = $order->insertGetId($orderdata);
@@ -791,7 +793,7 @@ class OrdersService
         } catch (Exception $e) {
             return ['code' => 500, 'message' => '创建失败'];
         }
-        return ['code' => 200, 'msg' => "创建订单成功", 'data' => ['order_id' => $order_id, 'pay' => $pay]];
+        return ['code' => 200, 'msg' => "创建续订订单成功", 'data' => ['order_id' => $order_id, 'pay' => $pay]];
     }
 
     public function noorderpay($data)

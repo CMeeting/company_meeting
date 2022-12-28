@@ -190,17 +190,33 @@ class OrderController
             $goods_data = $goods->_where("1=1");
             try {
                 $fapiao_url = $this->get_pdfurl($orderdata['id']);
-                $orders_service = new OrdersService();
                 $userserver->changeType(4, $orderdata['user_id']);
                 DB::table("orders")->whereRaw("order_no='{$param['passthrough']}'")->update(['status' => 1, 'pay_time' => date("Y-m-d H:i:s"), 'bill_url' => $fapiao_url, 'paddle_no' => $param['order_id']]);
                 DB::table("orders_goods")->whereRaw("order_no='{$param['passthrough']}'")->update(['status' => 1, 'pay_time' => date("Y-m-d H:i:s"), 'paddle_no' => $param['order_id']]);
                 \Log::info($param['passthrough'] . ":进入回调执行生成授权码");
-                foreach ($ordergoods_data as $k => $v) {
-                    foreach ($goods_data as $ks => $vs) {
-                        if ($v['goods_id'] == $vs['id']) {
-                            $licensecodedata = LicenseService::buildLicenseCodeData($v['goods_no'], $v['pay_years'], $v['user_id'], $vs['level1'], $vs['level2'], $vs['level3'], explode(",", $v['appid']), $emaildata['email'], $v['order_id'], $v['id']);
-                            \Log::info($param['passthrough'] . ":进入回调执行生成授权码" . json_encode($licensecodedata));
-                            $lisecosdmode->_insert($licensecodedata);
+                if($orderdata['renwe_id']){   //续订订单
+                    $ids=[];
+                    $lisedata=$lisecosdmode->_where("order_id=".$orderdata['renwe_id']); //查出续订的父订单所有序列码
+                    foreach ($ordergoods_data as $k => $v) {            //循环当前子订单
+                        foreach ($lisedata as $ks => $vs) {             //循环嵌套续订父订单的所有序列码
+                            if ($v['renwe_goodsid'] == $vs['ordergoods_id']) {   //判断当前子订单的父级明细订单与序列码绑定的子订单ID一致
+                                if(in_array($v['renwe_goodsid'],$ids))continue; //判断当前子订单ID已添加过序列码则跳过循环
+                                array_push($ids,$vs['ordergoods_id']);//把当前添加授权码的子订单ID添加到数组内，避免重复添加多条授权码
+
+                                $licensecodedata = LicenseService::buildLicenseCodeData($v['goods_no'], $v['pay_years'], $v['user_id'], $vs['products_id'], $vs['platform_id'], $vs['licensetype_id'], explode(",", $v['appid']), $emaildata['email'], $v['order_id'], $v['id'],'year',$vs['expire_time']);
+                                \Log::info($param['passthrough'] . ":续订订单进入回调执行生成授权码" . json_encode($licensecodedata));
+                                $lisecosdmode->_insert($licensecodedata);
+                            }
+                        }
+                    }
+                }else{                        //正常购买订单
+                    foreach ($ordergoods_data as $k => $v) {
+                        foreach ($goods_data as $ks => $vs) {
+                            if ($v['goods_id'] == $vs['id']) {
+                                $licensecodedata = LicenseService::buildLicenseCodeData($v['goods_no'], $v['pay_years'], $v['user_id'], $vs['level1'], $vs['level2'], $vs['level3'], explode(",", $v['appid']), $emaildata['email'], $v['order_id'], $v['id']);
+                                \Log::info($param['passthrough'] . ":进入回调执行生成授权码" . json_encode($licensecodedata));
+                                $lisecosdmode->_insert($licensecodedata);
+                            }
                         }
                     }
                 }

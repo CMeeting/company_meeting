@@ -137,7 +137,7 @@ class CartService
         $orderGoods = new OrderGoods();
         $orderserve = new OrdersService();
         $goods = new goods();
-        $orderno = time();
+        $orderno = chr(rand(65, 90)) . chr(rand(65, 90)) . chr(rand(65, 90)) .time();
         $list = $cart->_where("user_id='{$data['user_id']}'");
 
         Log::info("用户ID：[" . $data["user_id"] . "]购物车信息：" . json_encode($list, JSON_UNESCAPED_UNICODE));

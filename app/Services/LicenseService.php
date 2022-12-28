@@ -281,11 +281,16 @@ class LicenseService
      * @return array
      * @throws \Exception
      */
-    public static function buildLicenseCodeData($ordergoods_no, $period, $user_id, $product_id, $platform_id, $licensetype_id, $app_id, $email,$order_id,$ordergoods_id, $period_unit = 'year'){
+    public static function buildLicenseCodeData($ordergoods_no, $period, $user_id, $product_id, $platform_id, $licensetype_id, $app_id, $email,$order_id,$ordergoods_id, $period_unit = 'year',$start_time=0){
         $license_code_arr = [];
 
-        $start_time = time();
-        $end_time = strtotime("+" . $period . " $period_unit");
+        if(!$start_time){
+            $start_time = time();
+            $end_time = strtotime("+" . $period . " $period_unit");
+        }else{
+            $start_time = strtotime($start_time);
+            $end_time = strtotime(date("Y-m-d H:i:s", strtotime($start_time.' +'. $period . " $period_unit")));
+        }
 
         $product = GoodsclassificationService::getNameById($product_id);
         $platform = GoodsclassificationService::getNameById($platform_id);
