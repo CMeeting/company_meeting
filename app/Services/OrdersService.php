@@ -371,7 +371,7 @@ class OrdersService
                 $sarr[]=$mailedatas;
             }
             if (!$goodsid) return ['code' => 500, 'msg' => $classification[$v]['title'] . '-' . $classification[$data['level2'][$k]]['title'] . '-' . $classification[$data['level3'][$k]]['title'] . '下没有商品'];
-            $ordergoods_no = chr(rand(65, 90)) .chr(rand(65, 90)) . time();
+            $ordergoods_no = chr(rand(65, 90)) .chr(rand(65, 90)) .chr(rand(65, 90)). time();
             $s = $k + 1;
 
             $appid[]=$data["appid$s"];
@@ -392,7 +392,7 @@ class OrdersService
             $goodstotal++;
             $sumprice += $price;
         }
-        $orderno = chr(rand(65, 90)) .chr(rand(65, 90)) .time();
+        $orderno = chr(rand(65, 90)) .chr(rand(65, 90)) .chr(rand(65, 90)) .time();
         $orderdata = [
             'pay_type' => $pay_type,
             'order_no' => $orderno,
@@ -750,7 +750,7 @@ class OrdersService
             $price = $v['pay_years'] * $goodsdata[$v['goods_id']]['price'];
             $arr[] = [
                 'goods_no' => $ordergoods_no,
-                'pay_type' => $data['pay_type'],
+                'pay_type' => $pram['pay_type'],
                 'order_no' => $orderno,
                 'status' => 0,
                 'type' => 2,
@@ -760,6 +760,7 @@ class OrdersService
                 'appid' => $v["appid"],
                 'goods_id' => $v['goods_id'],
                 'pay_years' => $v['pay_years'],
+                'renwe_goodsid'=>$v['id'],
                 'created_at' => date("Y-m-d H:i:s"),
                 'updated_at' => date("Y-m-d H:i:s")
             ];
@@ -768,14 +769,15 @@ class OrdersService
         }
         $orderdata = [
             'order_no' => $orderno,
-            'pay_type' => $data['pay_type'],
+            'pay_type' => $pram['pay_type'],
             'status' => 0,
             'type' => 2,
             'details_type' => 2,
             'price' => $sumprice,
             'user_id' => $data['user_id'],
             'user_bill' => serialize($pram['info']),
-            'goodstotal' => $goodstotal
+            'goodstotal' => $goodstotal,
+            'renwe_id'=>$pram['id']
         ];
         try {
             $order_id = $order->insertGetId($orderdata);
@@ -791,7 +793,7 @@ class OrdersService
         } catch (Exception $e) {
             return ['code' => 500, 'message' => '创建失败'];
         }
-        return ['code' => 200, 'msg' => "创建订单成功", 'data' => ['order_id' => $order_id, 'pay' => $pay]];
+        return ['code' => 200, 'msg' => "创建续订订单成功", 'data' => ['order_id' => $order_id, 'pay' => $pay]];
     }
 
     public function noorderpay($data)
@@ -874,7 +876,6 @@ class OrdersService
         $order = new Order();
         $email = new EmailService();
         $maile = new MailmagicboardService();
-        $mailedatas = $maile->getFindcategorical(39);
         $data = $order->_find("merchant_no='{$trade_no}'");
         $data = $order->objToArr($data);
         if (empty($data)) {
@@ -889,6 +890,12 @@ class OrdersService
         $goodsfeilei = $this->assembly_orderclassification();
         //组装邮件内容发送邮件
         if($data['status']==1||$data['status']==2){
+            if($data['renwe_id']){
+                $mailedatas = $maile->getFindcategorical(63);
+                $mailedatas['title'] = str_replace("+订单号",$data['order_no'],$mailedatas['title']);
+            }else{
+                $mailedatas = $maile->getFindcategorical(39);
+            }
             $goods_data=DB::table("orders_goods as o")
                 ->leftJoin("goods as g","o.goods_id",'=','g.id')
                 ->whereRaw("o.order_id='{$data['id']}'")
@@ -1051,11 +1058,27 @@ class OrdersService
                 $fapiao=$OrderController->get_pdfurl($orderdata['id']);
                 $order->_update(['bill_url'=>$fapiao],"id='{$orderdata['id']}'");
                 $userserver->changeType(4,$orderdata['user_id']);
-                foreach ($ordergoods_data as $k=>$v){
-                    foreach ($goods_data as $ks=>$vs){
-                        if($v['goods_id']==$vs['id']){
-                            $licensecodedata=LicenseService::buildLicenseCodeData($v['goods_no'], $v['pay_years'], $v['user_id'], $vs['level1'], $vs['level2'], $vs['level3'],  explode(",",$v['appid']), $emaildata['email'],$v['order_id'],$v['id']);
-                            $lisecosdmode->_insert($licensecodedata);
+                if($orderdata['renwe_id']){   //续订订单
+                    $ids=[];
+                    $lisedata=$lisecosdmode->_where("order_id=".$orderdata['renwe_id']); //查出续订的父订单所有序列码
+                    foreach ($ordergoods_data as $k => $v) {            //循环当前子订单
+                        foreach ($lisedata as $ks => $vs) {             //循环嵌套续订父订单的所有序列码
+                            if ($v['renwe_goodsid'] == $vs['ordergoods_id']) {   //判断当前子订单的父级明细订单与序列码绑定的子订单ID一致
+                                if(in_array($v['renwe_goodsid'],$ids))continue; //判断当前子订单ID已添加过序列码则跳过循环
+                                array_push($ids,$vs['ordergoods_id']);//把当前添加授权码的子订单ID添加到数组内，避免重复添加多条授权码
+
+                                $licensecodedata = LicenseService::buildLicenseCodeData($v['goods_no'], $v['pay_years'], $v['user_id'], $vs['products_id'], $vs['platform_id'], $vs['licensetype_id'], explode(",", $v['appid']), $emaildata['email'], $v['order_id'], $v['id'],'year',$vs['created_at']);
+                                $lisecosdmode->_insert($licensecodedata);
+                            }
+                        }
+                    }
+                }else{
+                    foreach ($ordergoods_data as $k=>$v){
+                        foreach ($goods_data as $ks=>$vs){
+                            if($v['goods_id']==$vs['id']){
+                                $licensecodedata=LicenseService::buildLicenseCodeData($v['goods_no'], $v['pay_years'], $v['user_id'], $vs['level1'], $vs['level2'], $vs['level3'],  explode(",",$v['appid']), $emaildata['email'],$v['order_id'],$v['id']);
+                                $lisecosdmode->_insert($licensecodedata);
+                            }
                         }
                     }
                 }
