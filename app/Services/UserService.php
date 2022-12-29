@@ -44,7 +44,7 @@ class UserService
         if ($keyword) {
             $query->where(function ($item) use ($keyword) {
                 $item->where('users.id', intval($keyword))
-                    ->orWhere('b.country', $keyword)
+                    ->orWhere('b.company', $keyword)
                     ->orWhere('users.email', $keyword)
                     ->orWhere('users.full_name', $keyword);
             });
