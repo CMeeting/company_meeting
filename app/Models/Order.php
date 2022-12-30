@@ -24,4 +24,6 @@ class Order extends Model
 
     const STATUS_0_UNPAID = 0;
     const DETAILS_STATUS_1_TRIAL = 1;
+
+    const TYPE_2_USER_BUY = 2;
 }

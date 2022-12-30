@@ -59,7 +59,7 @@ class UnpaidOrderNotice extends Command
         $now = Carbon::now()->format('Y-m-d H');
         //去除八天以前的，减少数量
         $end_date = Carbon::now()->subDays(8)->format('Y-m-d H:i:s');
-        $orders = Order::where('status', Order::STATUS_0_UNPAID)->where('created_at', '>=', $end_date)->get()->toArray();
+        $orders = Order::where('status', Order::STATUS_0_UNPAID)->where('type', Order::TYPE_2_USER_BUY)->where('created_at', '>=', $end_date)->get()->toArray();
         foreach ($orders as $order){
             $order_id = $order['id'];
             $created_at = $order['created_at'];
