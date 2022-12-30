@@ -174,7 +174,11 @@
                             <td class="text-center">{{$item['products']}}&nbsp;for&nbsp;{{$item['platform']}}&nbsp;({{$item['licensie']}})</td>
                             <td class="text-center">{{$item['appid']}}</td>
                             <td class="text-center">{{$item['licensie']}}</td>
+                            @($item['pay_years']>1)
                             <td class="text-center">{{$item['pay_years']}}/years</td>
+                            @else
+                            <td class="text-center">{{$item['pay_years']}}/year</td>
+                            @endif
 {{--                            <td class="text-center">XML</td>--}}
                             <td class="text-center">${{$item['price']}}</td>
                         </tr>
