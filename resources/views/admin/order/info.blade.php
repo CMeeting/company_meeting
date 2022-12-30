@@ -194,7 +194,7 @@
                         <thead>
                         <tr>
                             <th class="text-center" style="width: 5%">商品合计</th>
-                            <th class="text-center" style="width: 35%">折扣金额</th>
+                            <th class="text-center" style="width: 10%">折扣金额</th>
                             <th class="text-center" style="width: 9%">扣税</th>
                             <th class="text-center" style="width: 9%">订单总金额</th>
                             <th class="text-center" style="width: 9%">应付款金额</th>
