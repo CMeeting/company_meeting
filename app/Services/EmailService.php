@@ -99,7 +99,7 @@ class EmailService
             $arrs['info'] = str_replace("应支付的金额",$data['payprice'],$arrs['info']);
             $arrs['info'] = str_replace("未付金额",$data['noorderprice'],$arrs['info']);
             $arrs['info'] = str_replace("(产品名)",$data['products'],$arrs['info']);
-            $url="<a href='".$data['fapiao']."'>Download invoices</a>";
+            $url="<a href='".$data['fapiao']."'>Download invoicess</a>";
             $arrs['info'] = str_replace("发票下载链接",$url,$arrs['info']);
             $data['info'] = $arrs['info'];
             $data['id'] = $arrs['id'];
