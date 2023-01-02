@@ -146,7 +146,7 @@ class EmailService
             $arrs['info'] = str_replace("支付链接","www.baidu.com",$arrs['info']);
             $arrs['info'] = str_replace("具体订单编号","KG1672047508",$arrs['info']);
             $arrs['info'] = str_replace("具体产品名","ComPDFKit PDF SDK for iOS (Professional License)",$arrs['info']);
-            $arrs['info'] = str_replace("购买时长","1Year/Permanent License", $arrs['info']);
+            $arrs['info'] = str_replace("购买时长","1Year", $arrs['info']);
             $arrs['info'] = str_replace("总金额","$12000.00",$arrs['info']);
             $arrs['info'] = str_replace("已支付的金额","$12000.00",$arrs['info']);
             $arrs['info'] = str_replace("应支付的金额","$12000.00",$arrs['info']);
@@ -159,7 +159,7 @@ class EmailService
             $arrs['info'] = str_replace("#@url","www.baidu.com",$arrs['info']);
             $arrs['info'] = str_replace("#@order_no","KG1672047508",$arrs['info']);
             $arrs['info'] = str_replace("#@product","ComPDFKit PDF SDK for iOS (Professional License)",$arrs['info']);
-            $arrs['info'] = str_replace("#@pay_years","1Year/Permanent License", $arrs['info']);
+            $arrs['info'] = str_replace("#@pay_years","1Year", $arrs['info']);
             $arrs['info'] = str_replace("#@subtotal","$0.00",$arrs['info']);
             $arrs['info'] = str_replace("#@paid_price","$12000.00",$arrs['info']);
             $arrs['info'] = str_replace("#@tax","$0.00",$arrs['info']);
