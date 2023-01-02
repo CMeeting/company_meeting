@@ -16,20 +16,22 @@ class JWTService
 {
     //头部信息
     private static $header = [
-        'alg' => 'sha256',
+        'alg' => 'HS256',
         'type' => 'JWT'
     ];
 
     //jwt秘钥
-    private static $jwt_key = 'compdfkitjwtkeydev';
+    private static $jwt_key = 'wwwcompdfkitsaascom-wwwcompdfkitsaascom';
 
-    //token加密iv
+    //token加密iv 弃用
     private static $iv = 'compdfkitivdev';
 
-    //token加密方式
-    private static $method = 'DES-EDE-CFB';
+    //token加密方式 弃用
+    private static $method1 = 'DES-EDE-CFB';
 
-    //token加密key
+    private static $method = 'sha256';
+
+    //token加密key 弃用
     private static $token_key = 'wwwcompdfkitsaascom-wwwcompdfkitsaascom';
 
     /**
@@ -78,7 +80,7 @@ class JWTService
      * @return string|string[]
      */
     private static function signature($input){
-        $signature = hash_hmac(self::$header['alg'], $input, self::$jwt_key);
+        $signature = hash_hmac(self::$method, $input, self::$jwt_key, true);
         return self::base64UrlEncode($signature);
     }
 
@@ -89,7 +91,7 @@ class JWTService
      */
     public static function encryptToken($token){
         $str = User::getRandStr(5);
-        return openssl_encrypt($token . $str, self::$method, self::$token_key, OPENSSL_ZERO_PADDING, self::$iv);
+        return openssl_encrypt($token . $str, self::$method1, self::$token_key, OPENSSL_ZERO_PADDING, self::$iv);
     }
 
     /**
@@ -98,7 +100,7 @@ class JWTService
      * @return false|string
      */
     public static function decryptToken($str){
-        $result = openssl_decrypt($str, self::$method, self::$token_key, OPENSSL_ZERO_PADDING, self::$iv);
+        $result = openssl_decrypt($str, self::$method1, self::$token_key, OPENSSL_ZERO_PADDING, self::$iv);
         //去掉拼接的字符串
         return substr($result, 0, -5);
     }
