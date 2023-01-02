@@ -700,7 +700,7 @@ class OrdersService
                 $order_id = $order->insertGetId($orderarr);
                 $ordergoodsarr['order_id'] = $order_id;
                 $orderGoods->insertGetId($ordergoodsarr);
-                $emailarr['order_id']=$order_id;
+                $emailarr['order_id']=$orderno;
                 $emailarr['pay_years']=$data['pay_years'];
                 $emailarr['price']="$".$price;
                 $emailarr['payprice']="$0.00";
