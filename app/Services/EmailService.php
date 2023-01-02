@@ -35,7 +35,7 @@ class EmailService
                      try{
                          $obj->to($v)->subject($subject);
                      }catch (\Exception $e){
-                         \Log::info("$v:邮件发送异常", $e->getMessage());
+                         \Log::info("$v:邮件发送异常", [$e->getMessage()]);
                          throw new \Exception("邮件发送失败");
                      }
                  }
@@ -137,7 +137,6 @@ class EmailService
         }elseif ($type==12){
             $arrs['info'] = str_replace("订单号",$data['order_no'],$arrs['info']);
             $data['info'] = $arrs['info'];
-            $data['id'] = $arrs['id'];
         }elseif ($type==16){
             $arrs['info'] = str_replace("+具体订单号","test",$arrs['info']);
             $arrs['info'] = str_replace("具体时间","2022-12-31",$arrs['info']);
