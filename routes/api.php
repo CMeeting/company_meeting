@@ -33,6 +33,7 @@ Route::group(['namespace' => 'Api'], function () {
     Route::get('/wechatNotify', 'OrderController@wechatNotify');
     Route::get('/emailtest', 'EmailtestContr@emailtest');
     Route::post('/paddlecallback', 'OrderController@paddlecallback');
+    Route::get('/invoicemice', 'OrderController@invoicemice');
 });
 
 Route::group(['middleware' => ['jwt.auth', 'cors'], 'namespace' => 'Api'], function () {

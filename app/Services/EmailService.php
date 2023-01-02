@@ -99,7 +99,7 @@ class EmailService
             $arrs['info'] = str_replace("应支付的金额",$data['payprice'],$arrs['info']);
             $arrs['info'] = str_replace("未付金额",$data['noorderprice'],$arrs['info']);
             $arrs['info'] = str_replace("(产品名)",$data['products'],$arrs['info']);
-            $url="<a href='".$data['fapiao']."'>Download invoices</a>";
+            $url="<a href='".$data['fapiao']."'>Download invoicess</a>";
             $arrs['info'] = str_replace("发票下载链接",$url,$arrs['info']);
             $data['info'] = $arrs['info'];
             $data['id'] = $arrs['id'];
@@ -134,6 +134,9 @@ class EmailService
         }elseif ($type==11){
             $data['info'] = $arrs['info'];
             $data['id'] = $arrs['id'];
+        }elseif ($type==12){
+            $arrs['info'] = str_replace("订单号",$data['order_no'],$arrs['info']);
+            $data['info'] = $arrs['info'];
         }elseif ($type==16){
             $arrs['info'] = str_replace("+具体订单号","test",$arrs['info']);
             $arrs['info'] = str_replace("具体时间","2022-12-31",$arrs['info']);
@@ -143,7 +146,7 @@ class EmailService
             $arrs['info'] = str_replace("支付链接","www.baidu.com",$arrs['info']);
             $arrs['info'] = str_replace("具体订单编号","KG1672047508",$arrs['info']);
             $arrs['info'] = str_replace("具体产品名","ComPDFKit PDF SDK for iOS (Professional License)",$arrs['info']);
-            $arrs['info'] = str_replace("购买时长","1Year/Permanent License", $arrs['info']);
+            $arrs['info'] = str_replace("购买时长","1Year", $arrs['info']);
             $arrs['info'] = str_replace("总金额","$12000.00",$arrs['info']);
             $arrs['info'] = str_replace("已支付的金额","$12000.00",$arrs['info']);
             $arrs['info'] = str_replace("应支付的金额","$12000.00",$arrs['info']);
@@ -156,7 +159,7 @@ class EmailService
             $arrs['info'] = str_replace("#@url","www.baidu.com",$arrs['info']);
             $arrs['info'] = str_replace("#@order_no","KG1672047508",$arrs['info']);
             $arrs['info'] = str_replace("#@product","ComPDFKit PDF SDK for iOS (Professional License)",$arrs['info']);
-            $arrs['info'] = str_replace("#@pay_years","1Year/Permanent License", $arrs['info']);
+            $arrs['info'] = str_replace("#@pay_years","1Year", $arrs['info']);
             $arrs['info'] = str_replace("#@subtotal","$0.00",$arrs['info']);
             $arrs['info'] = str_replace("#@paid_price","$12000.00",$arrs['info']);
             $arrs['info'] = str_replace("#@tax","$0.00",$arrs['info']);

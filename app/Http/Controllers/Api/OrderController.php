@@ -302,6 +302,21 @@ class OrderController
         return \Response::json(['code'=>200, 'message'=>'发送成功']);
     }
 
+    public function invoicemice(Request $request){
+        $param = $request->all();
+        $email = new EmailService();
+        $maile = new MailmagicboardService();
+        $mailedatas = $maile->getFindcategorical(64);
+        $Ordermodel = new Order();
+        if(!isset($param['id'])){
+            return \Response::json(['code'=>403,'msg'=>"缺少订单ID"]);
+        }
+        $order_data = $Ordermodel->_find("id='{$param['id']}'");
+        $order_data = $Ordermodel->objToArr($order_data);
+        $user_eemaildata = unserialize($order_data['user_bill']);
+        $email->sendDiyContactEmail($order_data, 12, $user_eemaildata['email'],$mailedatas);
+        return \Response::json(['code'=>200,'msg'=>"success"]);
+    }
     public function testemail(Request $request){
         $email = new EmailService();
         $maile = new MailmagicboardService();

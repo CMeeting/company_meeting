@@ -174,7 +174,11 @@
                             <td class="text-center">{{$item['products']}}&nbsp;for&nbsp;{{$item['platform']}}&nbsp;({{$item['licensie']}})</td>
                             <td class="text-center">{{$item['appid']}}</td>
                             <td class="text-center">{{$item['licensie']}}</td>
+                            @($item['pay_years']>1)
                             <td class="text-center">{{$item['pay_years']}}/years</td>
+                            @else
+                            <td class="text-center">{{$item['pay_years']}}/year</td>
+                            @endif
 {{--                            <td class="text-center">XML</td>--}}
                             <td class="text-center">${{$item['price']}}</td>
                         </tr>
@@ -197,7 +201,11 @@
                             <th class="text-center" style="width: 10%">折扣金额</th>
                             <th class="text-center" style="width: 9%">扣税</th>
                             <th class="text-center" style="width: 9%">订单总金额</th>
+                            @if($data[0]['status'] == 1||$data[0]['status'] == 2)
+                            <th class="text-center" style="width: 9%">已付款金额</th>
+                            @else
                             <th class="text-center" style="width: 9%">应付款金额</th>
+                            @endif
                         </tr>
                         </thead>
                         <tbody>

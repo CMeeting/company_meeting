@@ -905,7 +905,11 @@ class OrdersService
             foreach ($goods_data as $k=>$v){
                 $emailarr['products']= $goodsfeilei[$v->level1]['title'] ." for ". $goodsfeilei[$v->level2]['title'] ." (". $goodsfeilei[$v->level3]['title'].")";
                 $emailarr['order_id']=$v->order_no;
-                $emailarr['pay_years']=$v->pay_years."years/".$goodsfeilei[$v->level3]['title'];
+              if($v->pay_years>1){
+                $emailarr['pay_years']=$v->pay_years."years";
+              }else{
+                $emailarr['pay_years']=$v->pay_years."year";
+              }
                 $emailarr['goodsprice']="$".$v->goodsprice;
                 $emailarr['taxes']="$0.00";
                 $emailarr['price']="$".$v->price;

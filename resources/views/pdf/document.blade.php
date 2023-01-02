@@ -2,13 +2,13 @@
   <head>
     <title>ComPDFKit - Your Invoice</title>
     <meta charset='utf-8'/>
-    <meta name="viewport" content="width=device-width,initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
   </head>
   <body style="margin: 0; padding: 0;font-family:Helvetica;">
     <table border="0" cellpadding="0" cellspacing="0" width="100%">
       <tr>
-        <td style="padding: 36px 34px;">
-          <table align="center" border="0" cellpadding="0" cellspacing="0" width="600" style="border-collapse: collapse;">
+        <td style="">
+          <table align="center" border="0" cellpadding="0" cellspacing="0" width="100%" style="border-collapse: collapse;width:100%">
             <tr>
               <td style="padding-bottom: 43px">
                 <a target="_blank" href="http://test-pdf-pro.kdan.cn:3026/">
@@ -18,13 +18,13 @@
             </tr>
             <tr>
               <td align="right">
-                <table class="payment-info" cellpadding="0" cellspacing="0" width="600">
+                <table class="payment-info" cellpadding="0" cellspacing="0" width="100%" style="width:100%">
 
                   <tr style="display: block;margin-top: 10px;">
                     <td align="left" style="width:250px;padding-left: 45%;color:rgba(102,102,102,1);" class="label">
                       Email:
                     </td>
-                    <td class="content" style="max-width:350px;color:rgba(51,51,51,1);text-align:right;margin-right:12px;word-break:break-all;word-wrap:break-word;">
+                    <td class="content" style="color:rgba(51,51,51,1);text-align:right;margin-right:12px;word-break:break-all;word-wrap:break-word;">
                       <?php $youjian=unserialize($data['orderdata']['user_bill']);?>
                       {{$youjian['email']}}
                     </td>
@@ -34,7 +34,7 @@
                     <td align="left" style="width:400px;padding-left: 45%;color:rgba(102,102,102,1);" class="label">
                       Purchased Date:
                     </td>
-                    <td class="content" style="max-width:350px;color:rgba(51,51,51,1);text-align:right;margin-right:12px;word-break:break-all;word-wrap:break-word;">{{$data['orderdata']['created_at']}}
+                    <td class="content" style="color:rgba(51,51,51,1);text-align:right;margin-right:12px;word-break:break-all;word-wrap:break-word;">{{$data['orderdata']['created_at']}}
                     </td>
                   </tr>
                   <tr><td style="height: 15px;"></td></tr>
@@ -42,7 +42,7 @@
                     <td align="left" style="width:400px;padding-left: 45%;color:rgba(102,102,102,1);" class="label">
                       Order Number:
                     </td>
-                    <td class="content" style="max-width:350px;color:rgba(51,51,51,1);text-align:right;margin-right:12px;word-break:break-all;word-wrap:break-word;">{{$data['orderdata']['order_no']}}
+                    <td class="content" style="color:rgba(51,51,51,1);text-align:right;margin-right:12px;word-break:break-all;word-wrap:break-word;">{{$data['orderdata']['order_no']}}
                     </td>
                   </tr>
                   <tr><td style="height: 15px;"></td></tr>
@@ -50,7 +50,7 @@
                     <td align="left" style="width:400px;padding-left: 45%;color:rgba(102,102,102,1);" class="label">
                       Invoice Date:
                     </td>
-                    <td class="content" style="max-width:350px;color:rgba(51,51,51,1);text-align:right;margin-right:12px;word-break:break-all;word-wrap:break-word;">{{date("Y-m-d H:i:s")}}
+                    <td class="content" style="color:rgba(51,51,51,1);text-align:right;margin-right:12px;word-break:break-all;word-wrap:break-word;">{{date("Y-m-d H:i:s")}}
                     </td>
                   </tr>
                   <tr><td style="height: 15px;"></td></tr>
@@ -58,7 +58,7 @@
                     <td align="left" style="width:450px;padding-left: 45%;color:rgba(102,102,102,1);" class="label">
                       Invoice Number:
                     </td>
-                    <td class="content" style="max-width:350px;color:rgba(51,51,51,1);text-align:right;margin-right:12px;word-break:break-all;word-wrap:break-word;">{{$data['orderdata']['bill_no']}}
+                    <td class="content" style="color:rgba(51,51,51,1);text-align:right;margin-right:12px;word-break:break-all;word-wrap:break-word;">{{$data['orderdata']['bill_no']}}
                     </td>
                   </tr>
                   <tr><td style="height: 15px;"></td></tr>
@@ -66,7 +66,7 @@
                     <td align="left" style="width:400px;padding-left: 45%;color:rgba(102,102,102,1);" class="label">
                       Address:
                     </td>
-                    <td class="content" style="max-width:350px;color:rgba(51,51,51,1);text-align:right;margin-right:12px;word-break:break-all;word-wrap:break-word;">362 Upper Paya Lebar Road, #03-08 Da Jin Factory Building, Singapore
+                    <td class="content" style="color:rgba(51,51,51,1);text-align:right;margin-right:12px;word-break:break-all;word-wrap:break-word;">362 Upper Paya Lebar Road, #03-08 Da Jin Factory Building, Singapore
                     </td>
                   </tr>
                 </table>
