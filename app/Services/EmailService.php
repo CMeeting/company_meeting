@@ -77,7 +77,12 @@ class EmailService
             $arrs['info'] = str_replace("(订单号)",$data['orderno'],$arrs['info']);
             $arrs['info'] = str_replace("具体ID号",$data['order_id'],$arrs['info']);
             $arrs['info'] = str_replace("具体产品名",$data['products'],$arrs['info']);
-            $arrs['info'] = str_replace("购买时长",$data['pay_years'], $arrs['info']);
+            if($data['pay_years']>1){
+                $arrs['info'] = str_replace("购买时长",$data['pay_years']."years", $arrs['info']);
+            }else{
+                $arrs['info'] = str_replace("购买时长",$data['pay_years']."year", $arrs['info']);
+            }
+            
             $arrs['info'] = str_replace("总金额",$data['price'],$arrs['info']);
             $arrs['info'] = str_replace("已支付的金额",$data['payprice'],$arrs['info']);
             $arrs['info'] = str_replace("应支付的金额",$data['yesprice'],$arrs['info']);
@@ -99,7 +104,7 @@ class EmailService
             $arrs['info'] = str_replace("应支付的金额",$data['payprice'],$arrs['info']);
             $arrs['info'] = str_replace("未付金额",$data['noorderprice'],$arrs['info']);
             $arrs['info'] = str_replace("(产品名)",$data['products'],$arrs['info']);
-            $url="<a href='".$data['fapiao']."'>Download invoicess</a>";
+            $url="<a href='".$data['fapiao']."'>Download invoice</a>";
             $arrs['info'] = str_replace("发票下载链接",$url,$arrs['info']);
             $data['info'] = $arrs['info'];
             $data['id'] = $arrs['id'];
