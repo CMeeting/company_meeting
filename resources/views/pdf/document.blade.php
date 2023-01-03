@@ -63,6 +63,14 @@
                   </tr>
                   <tr><td style="height: 15px;"></td></tr>
                   <tr style="display: block;margin-top: 10px;">
+                    <td align="left" style="width:450px;padding-left: 45%;color:rgba(102,102,102,1);" class="label">
+                    Taxes:
+                    </td>
+                    <td class="content" style="color:rgba(51,51,51,1);text-align:right;margin-right:12px;word-break:break-all;word-wrap:break-word;">{{$data['orderdata']['tax']}}
+                    </td>
+                  </tr>
+                  <tr><td style="height: 15px;"></td></tr>
+                  <tr style="display: block;margin-top: 10px;">
                     <td align="left" style="width:400px;padding-left: 45%;color:rgba(102,102,102,1);" class="label">
                       Address:
                     </td>

@@ -18,6 +18,7 @@ use App\Http\Controllers\Api\OrderController;
 use App\Http\Controllers\Api\biz\PaddleBiz;
 use App\Http\Controllers\Api\biz\WechatPay;
 use App\Http\extend\wechat\example\WxPayConfig;
+use App\Services\CommonService;
 use App\Models\Goodsclassification;
 use App\Models\LicenseModel;
 use App\Http\extend\core\helper\ObjectHelper;
@@ -673,7 +674,7 @@ class OrdersService
                 $ordergoods_id=$orderGoods->insertGetId($ordergoodsarr);
                 $licensecodedata=LicenseService::buildLicenseCodeData($ordergoods_no, 1, $data['user_id'], $data['products_id'], $data['platform_id'], $data['licensetype_id'],  $appid, $data['info']['email'],$order_id,$ordergoods_id, 'month');
                 $lisecosdmode->_insert($licensecodedata);
-                $mailedatas['title'] = str_replace("（产品名）",$emailarr['products'],$mailedatas['title']);
+
                 $email->sendDiyContactEmail($emailarr,4,$data['info']['email'],$mailedatas);
                 if($user_info['type']==1){
                     $userserver->changeType(2,$data['user_id']);
@@ -702,7 +703,7 @@ class OrdersService
                 $orderGoods->insertGetId($ordergoodsarr);
                 $emailarr['order_id']=$orderno;
                 $emailarr['pay_years']=$data['pay_years'];
-                $emailarr['price']="$".$price;
+                $emailarr['price']="$".$price; 
                 $emailarr['payprice']="$0.00";
                 $emailarr['taxes']="$0.00";
                 $emailarr['yesprice']="$".$price;
@@ -906,16 +907,16 @@ class OrdersService
                 $emailarr['products']= $goodsfeilei[$v->level1]['title'] ." for ". $goodsfeilei[$v->level2]['title'] ." (". $goodsfeilei[$v->level3]['title'].")";
                 $emailarr['order_id']=$v->order_no;
               if($v->pay_years>1){
-                $emailarr['pay_years']=$v->pay_years."years";
+                $emailarr['pay_years']=$v->pay_years."Years";
               }else{
-                $emailarr['pay_years']=$v->pay_years."year";
+                $emailarr['pay_years']=$v->pay_years."Year";
               }
-                $emailarr['goodsprice']="$".$v->goodsprice;
-                $emailarr['taxes']="$0.00";
+                $emailarr['goodsprice']="$".$v->price;
+                $emailarr['taxes']="$".$data['tax'];
                 $emailarr['price']="$".$v->price;
                 $emailarr['payprice']="$".$v->price;
                 $emailarr['noorderprice']="$0.00";
-                $emailarr['pay_time']=$v->pay_time;
+                $emailarr['pay_time']=CommonService::formatDate($v->pay_time);
                 $emailarr['url']="http://test-pdf-pro.kdan.cn:3026/order/checkout";
                 $emailarr['fapiao']=$data['bill_url'];
                 $email->sendDiyContactEmail($emailarr,7,$emaildata['email'],$mailedatas);
