@@ -5,6 +5,7 @@ namespace App\Console\Commands;
 use App\Models\Mailmagicboard;
 use App\Models\OrderGoods;
 use App\Models\User;
+use App\Services\CommonService;
 use App\Services\EmailService;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
@@ -82,7 +83,8 @@ class OrderRenewNotice extends Command
 
                 $data['info'] = $template->info;
                 $data['info'] = str_replace('#@order_no', $order_no, $data['info']);
-                $data['info'] = str_replace('#@end_at', $end_at->format('Y-m-d'), $data['info']);
+                $end_at_format = CommonService::formatDate($end_at->format('Y-m-d H:i:s'));
+                $data['info'] = str_replace('#@end_at', $end_at_format, $data['info']);
                 $data['info'] = str_replace('#@email', $user->email, $data['info']);
                 $url = env('WEB_HOST') . '/login';
                 $data['info'] = str_replace('#@url', $url, $data['info']);
