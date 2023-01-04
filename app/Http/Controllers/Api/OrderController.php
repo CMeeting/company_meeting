@@ -297,7 +297,7 @@ class OrderController
                 $unity = 'Year';
             }
            $html.='<tr><td>Order item '.$i.'(ID：'.$value['goods_no'].'）</td>';
-           $html.='<td>'.$prrducts.'</td>';
+           $html.='<tr><td>'.$prrducts.'</td></tr>';
            $html.='<tr><td>Purchase Period：'.$value['pay_years'].$unity.'</td>';
            $i++;
         }
