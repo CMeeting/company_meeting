@@ -12,8 +12,8 @@ class EmailService
 
     function send_email($data,$arr,$subject,$type=1){
          //根据邮件设置不同的邮件发送账号
-         $no_reply = [34, 35, 36, 37, 38, 39, 41, 42, 43, 44, 45, 49, 54, 58, 59, 61, 62, 63];
-         $service = [46, 47, 48, 50, 51, 52, 40, 55, 56, 57, 60];
+         $no_reply = [34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 49, 54, 58, 59, 61, 62, 63];
+         $service = [46, 47, 48, 50, 51, 52, 55, 56, 57, 60];
          $news = [53];
 
          if(in_array($data['id'], $no_reply)){
@@ -76,7 +76,7 @@ class EmailService
             $arrs['info'] = str_replace("(人名)",$data['username'],$arrs['info']);
             $arrs['info'] = str_replace("(订单号)",$data['orderno'],$arrs['info']);
             $arrs['info'] = str_replace("具体ID号",$data['order_id'],$arrs['info']);
-            $arrs['info'] = str_replace("具体产品名",$data['products'],$arrs['info']);   
+            $arrs['info'] = str_replace("具体产品名",$data['products'],$arrs['info']);
             $arrs['info'] = str_replace("总金额",$data['price'],$arrs['info']);
             $arrs['info'] = str_replace("已支付的金额",$data['payprice'],$arrs['info']);
             $arrs['info'] = str_replace("应支付的金额",$data['yesprice'],$arrs['info']);
@@ -95,7 +95,7 @@ class EmailService
             $arrs['info'] = str_replace("税收金额",$data['taxes'],$arrs['info']);
             $arrs['info'] = str_replace("总金额",$data['price'],$arrs['info']);
             $arrs['info'] = str_replace("已支付的金额",$data['payprice'],$arrs['info']);
-            $arrs['info'] = str_replace("应支付的金额",$data['payprice'],$arrs['info']);
+            $arrs['info'] = str_replace("应支付的金额","$0.00",$arrs['info']);
             $arrs['info'] = str_replace("未付金额",$data['noorderprice'],$arrs['info']);
             $arrs['info'] = str_replace("(产品名)",$data['products'],$arrs['info']);
             $url="<a href='".$data['fapiao']."'>Download invoice</a>";

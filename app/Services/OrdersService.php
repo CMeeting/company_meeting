@@ -903,24 +903,34 @@ class OrdersService
                 ->selectRaw("o.*,g.level1,g.level2,g.level3,g.price as goodsprice")
                 ->get()
                 ->toArray();
-            foreach ($goods_data as $k=>$v){
-                $emailarr['products']= $goodsfeilei[$v->level1]['title'] ." for ". $goodsfeilei[$v->level2]['title'] ." (". $goodsfeilei[$v->level3]['title'].")";
-                $emailarr['order_id']=$v->order_no;
-              if($v->pay_years>1){
-                $emailarr['pay_years']=$v->pay_years."Years";
-              }else{
-                $emailarr['pay_years']=$v->pay_years."Year";
-              }
-                $emailarr['goodsprice']="$".$v->price;
-                $emailarr['taxes']="$".$data['tax'];
-                $emailarr['price']="$".$v->price;
-                $emailarr['payprice']="$".$v->price;
-                $emailarr['noorderprice']="$0.00";
-                $emailarr['pay_time']=CommonService::formatDate($v->pay_time);
-                $emailarr['url']="http://test-pdf-pro.kdan.cn:3026/order/checkout";
-                $emailarr['fapiao']=$data['bill_url'];
-                $email->sendDiyContactEmail($emailarr,7,$emaildata['email'],$mailedatas);
+                $html='<table style="margin-top:0px;">';
+        
+        $emailarr['order_id'] = $data['order_no'];
+        $emailarr['goodsprice'] = "$" . $data['price'];
+        $emailarr['taxes']="$".$data['tax'];
+        $emailarr['price']="$" .$data['price']+$data['tax'];
+        $emailarr['payprice']="$" . $data['price']+$data['tax'];
+        $emailarr['noorderprice'] = "$0.00";
+        $emailarr['pay_time'] = CommonService::formatDate($data['pay_time']);
+        $emailarr['url']="http://test-pdf-pro.kdan.cn:3026/order/checkout";
+        $emailarr['fapiao']=$data['bill_url'];
+        $i=1;
+        foreach ($goods_data as $value){
+            $value = collect($value)->toArray();
+            $prrducts=$goodsfeilei[$value['level1']]['title'] ." for ". $goodsfeilei[$value['level2']]['title'] ." (". $goodsfeilei[$value['level3']]['title'].")";
+            if($value['pay_years'] > 1){
+                $unity = 'Years';
+            }else{
+                $unity = 'Year';
             }
+           $html.='<tr><td>&nbsp;-Order item '.$i.'(ID：'.$value['goods_no'].'）</td>';
+           $html.='<tr><td>&nbsp;&nbsp;&nbsp;'.$prrducts.'</td></tr>';
+           $html.='<tr><td>&nbsp;&nbsp;&nbsp;Purchase Period：'.$value['pay_years'].$unity.'</td>';
+           $i++;
+        }
+        $html.='</table>';
+        $emailarr['products'] = $html;
+        $email->sendDiyContactEmail($emailarr,7,$emaildata['email'],$mailedatas);
         }
         return $data;
     }
