@@ -276,7 +276,7 @@ class OrderController
             ->selectRaw("o.*,g.level1,g.level2,g.level3,g.price as goodsprice")
             ->get()
             ->toArray();
-        $html='<table>';
+        $html='<table border="1">';
         $email_arr['username'] = $user->full_name;
         $email_arr['orderno'] = $order->order_no;
         $email_arr['order_id'] = $order->order_no;
