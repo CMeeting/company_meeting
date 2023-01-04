@@ -357,7 +357,6 @@ class OrdersService
             $sarr=$mailedatas;
         }
         $classification = $this->assembly_orderclassification();
-        $sarr=[];
         $parcudt=[];
         foreach ($data['level1'] as $k => $v) {
             $goodsid=0;
