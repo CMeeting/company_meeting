@@ -276,7 +276,7 @@ class OrderController
             ->selectRaw("o.*,g.level1,g.level2,g.level3,g.price as goodsprice")
             ->get()
             ->toArray();
-        $html='<table border="1">';
+        $html='<table style="margin-top:0px">';
         $email_arr['username'] = $user->full_name;
         $email_arr['orderno'] = $order->order_no;
         $email_arr['order_id'] = $order->order_no;
@@ -296,9 +296,9 @@ class OrderController
             }else{
                 $unity = 'Year';
             }
-           $html.='<tr><td>Order item '.$i.'(ID：'.$value['goods_no'].'）</td>';
-           $html.='<tr><td>'.$prrducts.'</td></tr>';
-           $html.='<tr><td>Purchase Period：'.$value['pay_years'].$unity.'</td>';
+           $html.='<tr><td>&nbsp;-Order item '.$i.'(ID：'.$value['goods_no'].'）</td>';
+           $html.='<tr><td>&nbsp;&nbsp;&nbsp;'.$prrducts.'</td></tr>';
+           $html.='<tr><td>&nbsp;&nbsp;&nbsp;Purchase Period：'.$value['pay_years'].$unity.'</td>';
            $i++;
         }
         $html.='</table>';
