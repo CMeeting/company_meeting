@@ -908,8 +908,9 @@ class OrdersService
         $emailarr['order_id'] = $data['order_no'];
         $emailarr['goodsprice'] = "$" . $data['price'];
         $emailarr['taxes']="$".$data['tax'];
-        $emailarr['price']="$" .$data['price']+$data['tax'];
-        $emailarr['payprice']="$" . $data['price']+$data['tax'];
+        $sumprice=floatval($data['price'])+floatval($data['tax']);
+        $emailarr['price']="$" .$sumprice;
+        $emailarr['payprice']="$" . $sumprice;
         $emailarr['noorderprice'] = "$0.00";
         $emailarr['pay_time'] = CommonService::formatDate($data['pay_time']);
         $emailarr['url']="http://test-pdf-pro.kdan.cn:3026/order/checkout";
