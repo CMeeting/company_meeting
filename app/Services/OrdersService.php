@@ -708,7 +708,7 @@ class OrdersService
                 $emailarr['taxes']="$0.00";
                 $emailarr['yesprice']="$".$price;
                 $emailarr['url']="http://test-pdf-pro.kdan.cn:3026/order/checkout";
-                $email->sendDiyContactEmail($emailarr,6,$data['info']['email'],$mailedatas);
+                //$email->sendDiyContactEmail($emailarr,6,$data['info']['email'],$mailedatas);
                 $orderarr['email'] = $data['info']['email'] ?? '';
                 $orderarr['id'] = $order_id ?? 0;
                 $pay = $this->comparePriceCloseAndCreateOrder($orderarr);
