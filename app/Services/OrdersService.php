@@ -348,8 +348,13 @@ class OrdersService
         $goodstotal = 0;
         if ($data['status'] == 1) {
             $pay_type = 4;
+            $mailedatas = $maile->getFindcategorical(59);
+            $sarr=$mailedatas;
         } else {
             $pay_type = 0;
+            $mailedatas = $maile->getFindcategorical(60);
+            // $mailedatas['title'] = str_replace("(产品名)",$a,$mailedatas['title']);
+            $sarr=$mailedatas;
         }
         $classification = $this->assembly_orderclassification();
         $sarr=[];
@@ -364,14 +369,7 @@ class OrdersService
             }
             $a=$classification[$v]['title'] ." for ". $classification[$data['level2'][$k]]['title'] ." (". $classification[$data['level3'][$k]]['title'].")";
             $parcudt[]=$a;
-            if($data['status']==1){
-                $mailedatas = $maile->getFindcategorical(59);
-                $sarr[]=$mailedatas;
-            }else{
-                $mailedatas = $maile->getFindcategorical(60);
-                $mailedatas['title'] = str_replace("(产品名)",$a,$mailedatas['title']);
-                $sarr[]=$mailedatas;
-            }
+            
             if (!$goodsid) return ['code' => 500, 'msg' => $classification[$v]['title'] . '-' . $classification[$data['level2'][$k]]['title'] . '-' . $classification[$data['level3'][$k]]['title'] . '下没有商品'];
             $ordergoods_no = chr(rand(65, 90)) .chr(rand(65, 90)) .chr(rand(65, 90)). time();
             $s = $k + 1;
@@ -407,7 +405,20 @@ class OrdersService
             'user_id' => $user_id,
             'goodstotal' => $goodstotal
         ];
-
+        $emailarr['products']=$parcudt[$k];
+        $emailarr['order_id']=$orderno;
+        $emailarr['pay_time']=CommonService::formatDate(date("Y-m-d H:i:s"));
+        $emailarr['goodsprice']="$".$sumprice;
+        $emailarr['price']="$".$sumprice;
+        if($data['status']==1){
+            $emailarr['payprice']="$".$sumprice;
+            $emailarr['noorderprice']="$0.00";
+        }else{
+            $emailarr['payprice']="$0.00";
+            $emailarr['noorderprice']="$".$sumprice;
+        }
+        $html='<table style="margin-top:0px;">';
+        $i=1;
         try {
             $order_id = $order->insertGetId($orderdata);
             foreach ($arr as $k => $v) {
@@ -415,16 +426,17 @@ class OrdersService
                 $arr[$k]['order_no'] = $orderno;
                 $ordergoods_id = $orderGoods->insertGetId($arr[$k]);
                 if ($ordergoods_id) {
-                    $emailarr['products']=$parcudt[$k];
-                    $emailarr['order_id']=$orderno;
-                    $emailarr['pay_time']=date("Y-m-d H:i:s");
-                    //$emailarr['goodsprice']="$".$v['price']/$v['pay_years'];
-                    $emailarr['goodsprice']="$".$v['price'];
-                    $emailarr['pay_years']=$v['pay_years']." years/".$parcudt[$k];
-                    $emailarr['price']="$".$v['price'];
+                    if($v['pay_years'] > 1){
+                        $unity = 'Years';
+                    }else{
+                        $unity = 'Year';
+                    }
+                    $products=$parcudt[$k];
+                    $html.='<tr><td>&nbsp;-Order item '.$i.'(ID：'.$v['goods_no'].'）</td>';
+                    $html.='<tr><td>&nbsp;&nbsp;&nbsp;'.$products.'</td></tr>';
+                    $html.='<tr><td>&nbsp;&nbsp;&nbsp;Purchase Period：'.$v['pay_years'].$unity.'</td>';
+                    $i++;
                     if($data['status']==1){
-                        $emailarr['payprice']="$".$v['price'];
-                        $emailarr['noorderprice']="$0.00";
                         $lisecosdata = LicenseService::buildLicenseCodeData($arr[$k]['goods_no'], $arr[$k]['pay_years'], $user_id, $data['level1'][$k], $data['level2'][$k], $data['level3'][$k],  $appid[$k], $data['email'],$order_id,$ordergoods_id);
                         $lisecosdmode->_insert($lisecosdata);
                         $OrderController=new OrderController();
@@ -432,14 +444,15 @@ class OrdersService
                         $order->_update(['bill_url'=>$fapiao],"id='{$order_id}'");
                         $emailarr['url']=$fapiao;
                     }else{
-                        $emailarr['payprice']="$0.00";
-                        $emailarr['noorderprice']="$".$v['price'];
                         $emailarr['url']= env('WEB_HOST') . '/personal/orders/checkout?order_id=' . $order_id . '&type=1';//跳转到购买页面替换地址
                     }
                     $emailarr['yesprice']="$".$price;
                 }
-                $email->sendDiyContactEmail($emailarr,9,$user_email,$sarr[$k]);
+            $i++;
             }
+            $html.='</table>';
+            $emailarr['products']=$html;
+            $email->sendDiyContactEmail($emailarr,9,$user_email,$sarr);
         } catch (Exception $e) {
             return ['code' => 500, 'message' => 'Invalid Token'];
         }
@@ -904,8 +917,7 @@ class OrdersService
                 ->selectRaw("o.*,g.level1,g.level2,g.level3,g.price as goodsprice")
                 ->get()
                 ->toArray();
-                $html='<table style="margin-top:0px;">';
-        
+        $html='<table style="margin-top:0px;">';
         $emailarr['order_id'] = $data['order_no'];
         $emailarr['goodsprice'] = "$" . $data['price'];
         $emailarr['taxes']="$".$data['tax'];
