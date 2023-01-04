@@ -191,7 +191,7 @@ class OrderController
             try {
                 $fapiao_url = $this->get_pdfurl($orderdata['id']);
                 $userserver->changeType(4, $orderdata['user_id']);
-                DB::table("orders")->whereRaw("order_no='{$param['passthrough']}'")->update(['status' => 1, 'pay_time' => date("Y-m-d H:i:s"), 'bill_url' => $fapiao_url, 'paddle_no' => $param['order_id']]);
+                DB::table("orders")->whereRaw("order_no='{$param['passthrough']}'")->update(['status' => 1, 'pay_time' => date("Y-m-d H:i:s"), 'bill_url' => $fapiao_url, 'paddle_no' => $param['order_id'],'tax'=>$param['payment_tax']]);
                 DB::table("orders_goods")->whereRaw("order_no='{$param['passthrough']}'")->update(['status' => 1, 'pay_time' => date("Y-m-d H:i:s"), 'paddle_no' => $param['order_id']]);
                 \Log::info($param['passthrough'] . ":进入回调执行生成授权码");
                 if($orderdata['renwe_id']){   //续订订单
@@ -276,29 +276,34 @@ class OrderController
             ->selectRaw("o.*,g.level1,g.level2,g.level3,g.price as goodsprice")
             ->get()
             ->toArray();
-
+        $html='<table style="margin-top:0px;">';
+        $email_arr['username'] = $user->full_name;
+        $email_arr['orderno'] = $order->order_no;
+        $email_arr['order_id'] = $order->order_no;
+        $email_arr['goodsprice'] = "$" . $order->price;
+        $email_arr['taxes'] = "$0.00";
+        $email_arr['price']="$" . $order->price;
+        $email_arr['yesprice']="$" . $order->price;
+        $email_arr['payprice'] = "$0.00";
+        $email_arr['pay_time'] = $order->pay_time;
+        $email_arr['url']= env('WEB_HOST') . '/personal/orders/checkout?order_id=' . $order_id . '&type=1';//跳转到购买页面替换地址
+        $i=1;
         foreach ($goods_data as $value){
             $value = collect($value)->toArray();
-            $email_arr['username'] = $user->full_name;
-            $email_arr['orderno'] = $value['order_no'];
-            $email_arr['products'] = $goods_class[$value['level1']]['title'] ." for ". $goods_class[$value['level2']]['title'] ." (". $goods_class[$value['level3']]['title'].")";
-            $email_arr['order_id'] = $value['order_no'];
+            $prrducts=$goods_class[$value['level1']]['title'] ." for ". $goods_class[$value['level2']]['title'] ." (". $goods_class[$value['level3']]['title'].")";
             if($value['pay_years'] > 1){
                 $unity = 'Years';
             }else{
                 $unity = 'Year';
             }
-            $email_arr['pay_years'] = $value['pay_years'] . "$unity";
-            $email_arr['goodsprice'] = "$" . $value['goodsprice'];
-            $email_arr['taxes'] = "$0.00";
-            $email_arr['price']="$" . $value['price'];
-            $email_arr['yesprice']="$" . $value['price'];
-            $email_arr['payprice'] = "$0.00";
-            $email_arr['pay_time'] = $value['pay_time'];
-            $email_arr['url']= env('WEB_HOST') . '/personal/orders/checkout?order_id=' . $order_id . '&type=1';//跳转到购买页面替换地址
-            $mail_service->sendDiyContactEmail($email_arr,6, $email, $email_info);
+           $html.='<tr><td>&nbsp;-Order item '.$i.'(ID：'.$value['goods_no'].'）</td>';
+           $html.='<tr><td>&nbsp;&nbsp;&nbsp;'.$prrducts.'</td></tr>';
+           $html.='<tr><td>&nbsp;&nbsp;&nbsp;Purchase Period：'.$value['pay_years'].$unity.'</td>';
+           $i++;
         }
-
+        $html.='</table>';
+        $email_arr['products'] = $html;
+        $mail_service->sendDiyContactEmail($email_arr,6, $email, $email_info);
         return \Response::json(['code'=>200, 'message'=>'发送成功']);
     }
 
