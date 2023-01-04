@@ -90,7 +90,7 @@ class EmailService
             $arrs['info'] = str_replace("具体ID号",$data['order_id'],$arrs['info']);
             $arrs['info'] = str_replace("具体时间",$data['pay_time'],$arrs['info']);
             $arrs['info'] = str_replace("具体产品名",$data['products'],$arrs['info']);
-            $arrs['info'] = str_replace("购买时长",$data['pay_years'],$arrs['info']);
+            // $arrs['info'] = str_replace("购买时长",$data['pay_years'],$arrs['info']);
             $arrs['info'] = str_replace("产品费用",$data['goodsprice'],$arrs['info']);
             $arrs['info'] = str_replace("税收金额",$data['taxes'],$arrs['info']);
             $arrs['info'] = str_replace("总金额",$data['price'],$arrs['info']);
