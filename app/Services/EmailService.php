@@ -76,13 +76,7 @@ class EmailService
             $arrs['info'] = str_replace("(人名)",$data['username'],$arrs['info']);
             $arrs['info'] = str_replace("(订单号)",$data['orderno'],$arrs['info']);
             $arrs['info'] = str_replace("具体ID号",$data['order_id'],$arrs['info']);
-            $arrs['info'] = str_replace("具体产品名",$data['products'],$arrs['info']);
-            if($data['pay_years']>1){
-                $arrs['info'] = str_replace("购买时长",$data['pay_years']."years", $arrs['info']);
-            }else{
-                $arrs['info'] = str_replace("购买时长",$data['pay_years']."year", $arrs['info']);
-            }
-            
+            $arrs['info'] = str_replace("具体产品名",$data['products'],$arrs['info']);   
             $arrs['info'] = str_replace("总金额",$data['price'],$arrs['info']);
             $arrs['info'] = str_replace("已支付的金额",$data['payprice'],$arrs['info']);
             $arrs['info'] = str_replace("应支付的金额",$data['yesprice'],$arrs['info']);
