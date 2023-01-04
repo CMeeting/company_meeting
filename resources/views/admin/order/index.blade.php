@@ -187,7 +187,7 @@
                         <tr id="del_{{$item['id']}}">
                             <td class="text-center">{{$item['id']}}</td>
                             <td class="text-center">{{$item['order_no']}}</td>
-                            <td class="text-center">{{$item['merchant_no']}}
+                            <td class="text-center">
                                 @if($item['pay_type'] == 1)
                                     {{$item['paddle_no']}}
                                 @else
@@ -204,7 +204,7 @@
                                             <span class="ladda-label">微信</span>
                                     @elseif($item['pay_type'] == 4)
                                         <span class="ladda-label">无需支付</span>
-                                    @else
+                                    @elseif($item['type'] == 1 && $item['status']==0)
                                             <span class="ladda-label">未支付</span>
                                     @endif
 
