@@ -83,47 +83,51 @@ class UnpaidOrderNotice extends Command
                     ->selectRaw("o.*,g.level1,g.level2,g.level3,g.price as goodsprice")
                     ->get()
                     ->toArray();
+
+                $i = 1;
+                $html='<table style="margin-top:0px;">';
                 foreach ($goods_data as $value){
                     $value = collect($value)->toArray();
-                    $data['id'] = $email_template->id;
-                    $data['title'] = $email_template->title;
-                    $data['title'] = str_replace('#@order_no', $order['order_no'], $data['title']);
-
-                    $data['info'] = $email_template->info;
-                    $data['info'] = str_replace('#@full_name', $user->full_name, $data['info']);
-
-                    $url = env('WEB_HOST') . '/personal/orders/checkout?order_id=' . $order['id'] . '&type=1';
-                    $data['info'] = str_replace('#@url', $url, $data['info']);
-
-                    $data['info'] = str_replace('#@order_no', $order['order_no'], $data['info']);
-
-                    $product = $goods_class[$value['level1']]['title'] ." for ". $goods_class[$value['level2']]['title'] ." (". $goods_class[$value['level3']]['title'].")";
-                    $data['info'] = str_replace('#@product', $product, $data['info']);
-
+                    $prrducts=$goods_class[$value['level1']]['title'] ." for ". $goods_class[$value['level2']]['title'] ." (". $goods_class[$value['level3']]['title'].")";
                     if($value['pay_years'] > 1){
                         $unity = 'Years';
                     }else{
                         $unity = 'Year';
                     }
-                    $pay_years = $value['pay_years'] . $unity;
-                    $data['info'] = str_replace('#@pay_years', $pay_years, $data['info']);
-
-                    $subtotal = '$' . $value['price'];
-                    $data['info'] = str_replace('#@subtotal', $subtotal, $data['info']);
-
-                    $tax = '$0.00';
-                    $data['info'] = str_replace('#@tax', $tax, $data['info']);
-
-                    $total_amount = '$' . $value['price'];
-                    $data['info'] = str_replace('#@total_amount', $total_amount, $data['info']);
-
-                    $paid_price = '$0.00';
-                    $data['info'] = str_replace('#@paid_price', $paid_price, $data['info']);
-
-                    $balance_due = '$' . $value['price'];
-                    $data['info'] = str_replace('#@balance_due', $balance_due, $data['info']);
-                    $email_service->sendDiyContactEmail($data, 0, $user->email);
+                    $html.='<tr><td>&nbsp;-Order item '.$i.'(ID：'.$value['goods_no'].'）</td>';
+                    $html.='<tr><td>&nbsp;&nbsp;&nbsp;'.$prrducts.'</td></tr>';
+                    $html.='<tr><td>&nbsp;&nbsp;&nbsp;Purchase Period：'.$value['pay_years'].$unity.'</td>';
+                    $i++;
                 }
+                $html .= '</table>';
+
+                $data['id'] = $email_template->id;
+                $data['title'] = $email_template->title;
+                $data['title'] = str_replace('#@order_no', $order['order_no'], $data['title']);
+
+                $data['info'] = $email_template->info;
+                $data['info'] = str_replace('#@full_name', $user->full_name, $data['info']);
+
+                $url = env('WEB_HOST') . '/personal/orders/checkout?order_id=' . $order['id'] . '&type=1';
+                $url_info = "<a href='$url'>$url</a>";
+                $data['info'] = str_replace('#@url', $url_info, $data['info']);
+
+                $data['info'] = str_replace('#@order_no', $order['order_no'], $data['info']);
+
+                $data['info'] = str_replace('#@product', $html, $data['info']);
+
+                $subtotal = '$' . $order['price'];
+                $data['info'] = str_replace('#@subtotal', $subtotal, $data['info']);
+
+                $total_amount = '$' . $order['price'];
+                $data['info'] = str_replace('#@total_amount', $total_amount, $data['info']);
+
+                $paid_price = '$0.00';
+                $data['info'] = str_replace('#@paid_price', $paid_price, $data['info']);
+
+                $balance_due = '$' . $order['price'];
+                $data['info'] = str_replace('#@balance_due', $balance_due, $data['info']);
+                $email_service->sendDiyContactEmail($data, 0, $user->email);
             }
         }
 

@@ -88,6 +88,7 @@ class UserController extends BaseController
 
         //发送邮件
         $url = env('WEB_HOST') . '/login';
+        $url_info = "<a href='$url'>$url</a>";
         $emailModel = Mailmagicboard::getByName('新增用户');
         $emailService = new EmailService();
         $data['title'] = $emailModel->title;
@@ -95,7 +96,7 @@ class UserController extends BaseController
         $data['info'] = str_replace("#@username", $full_name, $data['info']);
         $data['info'] = str_replace("#@mail", $email, $data['info']);
         $data['info'] = str_replace("#@password", $password, $data['info']);
-        $data['info'] = str_replace("#@url", $url, $data['info']);
+        $data['info'] = str_replace("#@url", $url_info, $data['info']);
         $data['id'] = $emailModel->id;
 
         $emailService->sendDiyContactEmail($data, 0, $email);

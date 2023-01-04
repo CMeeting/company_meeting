@@ -87,7 +87,8 @@ class OrderRenewNotice extends Command
                 $data['info'] = str_replace('#@end_at', $end_at_format, $data['info']);
                 $data['info'] = str_replace('#@email', $user->email, $data['info']);
                 $url = env('WEB_HOST') . '/login';
-                $data['info'] = str_replace('#@url', $url, $data['info']);
+                $url_info = "<a href='$url'>$url</a>";
+                $data['info'] = str_replace('#@url', $url_info, $data['info']);
 
                 $email_service->sendDiyContactEmail($data, 0, $user->email);
             }

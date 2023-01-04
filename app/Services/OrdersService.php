@@ -329,7 +329,8 @@ class OrdersService
             $data['info'] = str_replace("#@mail", $arr['email'], $data['info']);
             $data['info'] = str_replace("#@password", $password, $data['info']);
             $url = env('WEB_HOST') . '/login';
-            $data['info'] = str_replace("#@url", $url, $data['info']);
+            $url_info = "<a href='$url'>$url</a>";
+            $data['info'] = str_replace("#@url", $url_info, $data['info']);
             $data['id'] = $emailModel->id;
             $email->sendDiyContactEmail($data, 0, $arr['email']);
             $emailarr['username']=$arr['full_name'];
