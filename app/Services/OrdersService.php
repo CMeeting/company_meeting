@@ -447,7 +447,6 @@ class OrdersService
                     }
                     $emailarr['yesprice']="$".$price;
                 }
-            $i++;
             }
             $html.='</table>';
             $emailarr['products']=$html;
