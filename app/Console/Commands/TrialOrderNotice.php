@@ -51,7 +51,7 @@ class TrialOrderNotice extends Command
         $order_service = new OrdersService();
         $goods_class = $order_service->assembly_orderclassification();
         //去除一个月以前的，缩小范围
-        $end_at = Carbon::now()->subDays(31)->format('Y-m-d H:i:s');
+        $end_at = Carbon::now()->subDays(32)->format('Y-m-d H:i:s');
         $orders = Order::where('details_type', Order::DETAILS_STATUS_1_TRIAL)->where('created_at', '>=', $end_at)->get()->toArray();
 
         //精确到小时，每小时跑一次脚本，防止重复发送
