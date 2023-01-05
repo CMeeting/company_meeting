@@ -3,7 +3,7 @@
 namespace App\Services;
 
 
-use App\Models\base\PlatformVersion;
+use App\Models\PlatformVersion;
 use Illuminate\Support\Facades\DB;
 
 class ApiChangeLogsService

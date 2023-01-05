@@ -6,7 +6,7 @@
  * and open the template in the editor.
  */
 
-namespace App\Models\base;
+namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 /**
  * Description of Order
