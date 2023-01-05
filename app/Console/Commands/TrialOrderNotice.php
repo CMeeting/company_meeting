@@ -61,6 +61,10 @@ class TrialOrderNotice extends Command
             $order_id = $order['id'];
             $created_at = $order['created_at'];
             $user = User::find($order['user_id']);
+            if(!$user){
+                \Log::info('试用订单提醒邮件发送失败，用户已注销', ['id'=>$order['user_id']]);
+                continue;
+            }
             //加一个小时 14:59购买，应该是三点钟提醒
             $week_at = Carbon::parse($created_at)->addMonth()->subDays(7)->addHour()->format('Y-m-d H');
             $three_at = Carbon::parse($created_at)->addMonth()->subDays(3)->addHour()->format('Y-m-d H');
