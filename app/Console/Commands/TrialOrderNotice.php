@@ -62,10 +62,10 @@ class TrialOrderNotice extends Command
             $created_at = $order['created_at'];
             $user = User::find($order['user_id']);
             //加一个小时 14:59购买，应该是三点钟提醒
-            $week_at = Carbon::parse($created_at)->addDays(23)->addHour()->format('Y-m-d H');
-            $three_at = Carbon::parse($created_at)->addDays(27)->addHour()->format('Y-m-d H');
-            $one_at = Carbon::parse($created_at)->addDays(29)->addHour()->format('Y-m-d H');
-            $last_at = Carbon::parse($created_at)->addDays(30)->addHour()->format('Y-m-d H');
+            $week_at = Carbon::parse($created_at)->addMonth()->subDays(7)->addHour()->format('Y-m-d H');
+            $three_at = Carbon::parse($created_at)->addMonth()->subDays(3)->addHour()->format('Y-m-d H');
+            $one_at = Carbon::parse($created_at)->addMonth()->subDay()->addHour()->format('Y-m-d H');
+            $last_at = Carbon::parse($created_at)->addMonth()->addHour()->format('Y-m-d H');
 
             if($week_at == $now){
                 $send_email = true;
