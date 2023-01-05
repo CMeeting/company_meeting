@@ -51,9 +51,9 @@ class OrderRenewNotice extends Command
             $send_mail = false;
             $order_id = $order_good['id'];
             $order_no = $order_good['order']['order_no'];
-            $created_at = $order_good['created_at'];
+            $pay_time = $order_good['pay_time'];
             $year = $order_good['pay_years'];
-            $end_at = Carbon::parse($created_at)->addYears($year);
+            $end_at = Carbon::parse($pay_time)->addYears($year);
 
             $month_at = (clone $end_at)->subMonth()->format('Y-m-d H');
             $ten_at = (clone $end_at)->subDays(10)->format('Y-m-d H');

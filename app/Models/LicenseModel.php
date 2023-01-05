@@ -9,9 +9,13 @@
 
 namespace App\Models;
 
-use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * @mixin       \Eloquent
+ * Class LicenseModel
+ * @package App\Models
+ */
 class LicenseModel extends Model
 {
     protected $table = 'license_code';

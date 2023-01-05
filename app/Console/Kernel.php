@@ -40,6 +40,9 @@ class Kernel extends ConsoleKernel
         //试用订单到期提醒
         $schedule->command('command:trial:order:notice')->hourly();
 
+        //序列码过期状态改变
+        $schedule->command('command:expire:license:code')->hourly();
+
         //订单到期续订提醒
         $schedule->command('command:order:renew:notice')->hourly();
     }
