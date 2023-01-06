@@ -130,7 +130,7 @@ class EmailService
             $data['id'] = $arrs['id'];
         }elseif ($type==10){
             $src='http://test-pdf-pro.kdan.cn:3026/unsubscribe?email='.$arr[0];
-            $url="<a href='".$src."'>".$src."</a>";
+            $url="<a href='".$src."'>unsubscribe</a>";
             $arrs['info'] = str_replace("#@url",$url,$arrs['info']);
             $data['info'] = $arrs['info'];
             $data['id'] = $arrs['id'];
