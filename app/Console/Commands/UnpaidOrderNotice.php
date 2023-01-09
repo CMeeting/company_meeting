@@ -94,9 +94,9 @@ class UnpaidOrderNotice extends Command
                     }else{
                         $unity = 'Year';
                     }
-                    $html.='<tr><td>&nbsp;-Order item '.$i.'(ID：'.$value['goods_no'].'）</td>';
+                    $html.='<tr><td>&nbsp;- Order Item '.$i.' (ID:'.$value['goods_no'].'）</td>';
                     $html.='<tr><td>&nbsp;&nbsp;&nbsp;'.$prrducts.'</td></tr>';
-                    $html.='<tr><td>&nbsp;&nbsp;&nbsp;Purchase Period：'.$value['pay_years'].$unity.'</td>';
+                    $html.='<tr><td>&nbsp;&nbsp;&nbsp;Purchase Period:'.$value['pay_years'].$unity.'</td>';
                     $i++;
                 }
                 $html .= '</table>';

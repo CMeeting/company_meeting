@@ -431,9 +431,9 @@ class OrdersService
                         $unity = 'Year';
                     }
                     $products=$parcudt[$k];
-                    $html.='<tr><td>&nbsp;-Order item '.$i.'(ID：'.$v['goods_no'].'）</td>';
+                    $html.='<tr><td>&nbsp;- Order Item '.$i.' (ID:'.$v['goods_no'].'）</td>';
                     $html.='<tr><td>&nbsp;&nbsp;&nbsp;'.$products.'</td></tr>';
-                    $html.='<tr><td>&nbsp;&nbsp;&nbsp;Purchase Period：'.$v['pay_years'].$unity.'</td>';
+                    $html.='<tr><td>&nbsp;&nbsp;&nbsp;Purchase Period:'.$v['pay_years'].$unity.'</td>';
                     $i++;
                     if($data['status']==1){
                         $lisecosdata = LicenseService::buildLicenseCodeData($arr[$k]['goods_no'], $arr[$k]['pay_years'], $user_id, $data['level1'][$k], $data['level2'][$k], $data['level3'][$k],  $appid[$k], $data['email'],$order_id,$ordergoods_id);
@@ -935,9 +935,9 @@ class OrdersService
             }else{
                 $unity = 'Year';
             }
-           $html.='<tr><td>&nbsp;-Order item '.$i.'(ID：'.$value['goods_no'].'）</td>';
+           $html.='<tr><td>&nbsp;- Order Item '.$i.' (ID:'.$value['goods_no'].'）</td>';
            $html.='<tr><td>&nbsp;&nbsp;&nbsp;'.$prrducts.'</td></tr>';
-           $html.='<tr><td>&nbsp;&nbsp;&nbsp;Purchase Period：'.$value['pay_years'].$unity.'</td>';
+           $html.='<tr><td>&nbsp;&nbsp;&nbsp;Purchase Period:'.$value['pay_years'].$unity.'</td>';
            $i++;
         }
         $html.='</table>';

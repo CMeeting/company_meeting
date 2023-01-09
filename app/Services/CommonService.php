@@ -14,7 +14,7 @@ class CommonService
         $month  = $date_obj->month;
         $month_index = $month-1;
         $month_en = $months[$month_index];
-        $format = $date_obj->format('d, Y, H：i');
+        $format = $date_obj->format('d, Y, H:i');
 
         return $month_en . ' ' . $format;
     }
