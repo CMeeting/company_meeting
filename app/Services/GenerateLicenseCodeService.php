@@ -11,102 +11,102 @@ Class GenerateLicenseCodeService
     /**
      * PDF平台
      */
-    const LICENSE_PLATFORM_IOS = 1;
-    const LICENSE_PLATFORM_AND = 2;
-    const LICENSE_PLATFORM_WIN = 4;
-    const LICENSE_PLATFORM_MAC = 8;
-    const LICENSE_PLATFORM_LINUX = 10;
+    const LICENSE_PLATFORM_IOS = 0x01;
+    const LICENSE_PLATFORM_AND = 0x02;
+    const LICENSE_PLATFORM_WIN = 0x04;
+    const LICENSE_PLATFORM_MAC = 0x08;
+    const LICENSE_PLATFORM_LINUX = 0x10;
 
     /**
      * 权限编码
      */
     /** Viewer 阅读器 **/
     // 编辑大纲
-    const LICENSE_VIEWER_OUTLINE = 1;
+    const LICENSE_VIEWER_OUTLINE = 0x01;
     // 编辑书签
-    const LICENSE_VIEWER_BOOKMARK = 2;
+    const LICENSE_VIEWER_BOOKMARK = 0x02;
     // 渲染模式
-    const LICENSE_VIEWER_RENDER = 4;
+    const LICENSE_VIEWER_RENDER = 0x04;
     // 文本搜索
-    const LICENSE_VIEWER_SEARCH = 8;
+    const LICENSE_VIEWER_SEARCH = 0x08;
 
     /** Annotations 注释 **/
     // 添加Note注释
-    const LICENSE_ANNOT_NOTE = 1;
+    const LICENSE_ANNOT_NOTE = 0x01;
     // 添加Link注释
-    const LICENSE_ANNOT_LINK = 2;
+    const LICENSE_ANNOT_LINK = 0x02;
     // 添加FreeText注释
-    const LICENSE_ANNOT_FREETEXT = 4;
+    const LICENSE_ANNOT_FREETEXT = 0x04;
     // 添加Shape（Square、Circle、Line）注释
-    const LICENSE_ANNOT_SHAPE = 8;
+    const LICENSE_ANNOT_SHAPE = 0x08;
     // 添加Markup（Highlight、StrikeOut、Underline、Squiggly）注释
     const LICENSE_ANNOT_MARKUP = 0x10;
     // 添加标准Stamp注释
-    const LICENSE_ANNOT_STAMP_S = 20;
+    const LICENSE_ANNOT_STAMP_S = 0x20;
     // 添加自定义Stamp注释
-    const LICENSE_ANNOT_STAMP_C = 40;
+    const LICENSE_ANNOT_STAMP_C = 0x40;
     // 添加Ink注释
-    const LICENSE_ANNOT_INK = 80;
+    const LICENSE_ANNOT_INK = 0x80;
     // 添加Sound注释
-    const LICENSE_ANNOT_SOUND = 100;
+    const LICENSE_ANNOT_SOUND = 0x100;
     // 删除注释
     const LICENSE_ANNOT_DELETE = 0x200;
     // Flatten注释
-    const LICENSE_ANNOT_FLATTEN = 400;
+    const LICENSE_ANNOT_FLATTEN = 0x400;
     // 导入、导出注释
-    const LICENSE_ANNOT_XFDF = 800;
+    const LICENSE_ANNOT_XFDF = 0x800;
 
     /** Forms 表单 **/
     // 添加、删除、编辑Form
-    const LICENSE_FORM = 1;
+    const LICENSE_FORM = 0x01;
     // 填写Form
-    const LICENSE_FORM_FILL = 2;
+    const LICENSE_FORM_FILL = 0x02;
 
     /** Document editor 文件编辑器 **/
     // Split、Extract、Merge、Delete、Insert、Crop、Move、Rotate、Replace、Exchange页面
-    const LICENSE_EDITOR_PAGE = 1;
+    const LICENSE_EDITOR_PAGE = 0x01;
     // 提取图片
-    const LICENSE_EDITOR_EXTRACT = 2;
+    const LICENSE_EDITOR_EXTRACT = 0x02;
     // 编辑文档属性
-    const LICENSE_EDITOR_INFO = 4;
+    const LICENSE_EDITOR_INFO = 0x04;
     // PDF转图片
-    const LICENSE_EDITOR_CONVERT = 8;
+    const LICENSE_EDITOR_CONVERT = 0x08;
 
    /** Security 安全 **/
     // 密码加密、文档权限设置
-    const LICENSE_SECURITY_ENCRYPT = 1;
+    const LICENSE_SECURITY_ENCRYPT = 0x01;
     // 解密、移除权限
-    const LICENSE_SECURITY_DECRYPT = 2;
+    const LICENSE_SECURITY_DECRYPT = 0x02;
     // 获取、创建、编辑、删除水印
-    const LICENSE_SECURITY_WATERMARK = 4;
+    const LICENSE_SECURITY_WATERMARK = 0x04;
     // 标记密文
-    const LICENSE_SECURITY_REDACTION = 8;
+    const LICENSE_SECURITY_REDACTION = 0x08;
     // 页眉页脚
-    const LICENSE_SECURITY_HEADERFOOTER = 10;
+    const LICENSE_SECURITY_HEADERFOOTER = 0x10;
     // 贝茨码
-    const LICENSE_SECURITY_BATES = 20;
+    const LICENSE_SECURITY_BATES = 0x20;
     // 背景
-    const LICENSE_SECURITY_BACKGROUND = 40;
+    const LICENSE_SECURITY_BACKGROUND = 0x40;
 
     /** Text Edit 文本编辑 **/
     // 文本编辑
-    const LICENSE_EDIT_TEXT = 1;
+    const LICENSE_EDIT_TEXT = 0x01;
     // 图片编辑
-    const LICENSE_EDIT_IMAGE = 2;
+    const LICENSE_EDIT_IMAGE = 0x02;
 
     /** Conversion 转化 **/
     // PDF/A
-    const LICENSE_CONVERSION_PDFA = 1;
+    const LICENSE_CONVERSION_PDFA = 0x01;
 
     /** 转档相关功能 */
-    const LICENSE_CONVERT_WORD = 1;
-    const LICENSE_CONVERT_EXCEL = 2;
-    const LICENSE_CONVERT_TABLE = 4;
-    const LICENSE_CONVERT_PPT = 8;
-    const LICENSE_CONVERT_CSV = 10;
-    const LICENSE_CONVERT_TXT = 20;
-    const LICENSE_CONVERT_IMG = 40;
-    const LICENSE_CONVERT_RTF = 80;
+    const LICENSE_CONVERT_WORD = 0x01;
+    const LICENSE_CONVERT_EXCEL = 0x02;
+    const LICENSE_CONVERT_TABLE = 0x04;
+    const LICENSE_CONVERT_PPT = 0x08;
+    const LICENSE_CONVERT_CSV = 0x10;
+    const LICENSE_CONVERT_TXT = 0x20;
+    const LICENSE_CONVERT_IMG = 0x40;
+    const LICENSE_CONVERT_RTF = 0x80;
 
     //PDF标准版套餐功能
     const PDF_SDK_STANDARD_FUNCTION = [
