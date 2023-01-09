@@ -118,7 +118,8 @@ class LicenseController extends BaseController
 
         $generate = new GenerateLicenseCodeService();
         $result = $generate->verify($key, $secret, $id, $plat, $os, $time);
-        return \Response::json(['code'=>200, 'message'=>'success', 'result'=>['result'=>$result]]);
+        $result_arr = explode('\n', $result);
+        return \Response::json(['code'=>200, 'message'=>'success', 'result'=>$result_arr]);
     }
 
 }
