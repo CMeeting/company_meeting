@@ -40,7 +40,7 @@ Class GenerateLicenseCodeService
     // 添加Shape（Square、Circle、Line）注释
     const LICENSE_ANNOT_SHAPE = 8;
     // 添加Markup（Highlight、StrikeOut、Underline、Squiggly）注释
-    const LICENSE_ANNOT_MARKUP = 10;
+    const LICENSE_ANNOT_MARKUP = 0x10;
     // 添加标准Stamp注释
     const LICENSE_ANNOT_STAMP_S = 20;
     // 添加自定义Stamp注释
@@ -50,7 +50,7 @@ Class GenerateLicenseCodeService
     // 添加Sound注释
     const LICENSE_ANNOT_SOUND = 100;
     // 删除注释
-    const LICENSE_ANNOT_DELETE = 200;
+    const LICENSE_ANNOT_DELETE = 0x200;
     // Flatten注释
     const LICENSE_ANNOT_FLATTEN = 400;
     // 导入、导出注释
