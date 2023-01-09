@@ -83,6 +83,12 @@ class LicenseController extends BaseController
         }
     }
 
+    /**
+     * 生成序列码
+     * @param Request $request
+     * @return array
+     * @throws \Exception
+     */
     public function generateLicenseCode(Request $request){
         $product = $request->input('product');
         $license_type = $request->input('license_type');
@@ -94,6 +100,25 @@ class LicenseController extends BaseController
 
         $generate = new GenerateLicenseCodeService();
         return $generate->generate($product, $platform, $license_type, $start_time, $end_time, $ids, $email);
+    }
+
+    /**
+     * 验证序列码
+     * @param Request $request
+     * @return false|string
+     */
+    public function verifyLicenseCode(Request $request){
+        $key = $request->input('key');
+        $secret = $request->input('secret');
+        $id = $request->input('id');
+        $plat = $request->input('plat');
+        $os = $request->input('os');
+
+        $time  = time();
+
+        $generate = new GenerateLicenseCodeService();
+        $result = $generate->verify($key, $secret, $id, $plat, $os, $time);
+        return \Response::json(['code'=>200, 'message'=>'success', 'result'=>['result'=>$result]]);
     }
 
 }

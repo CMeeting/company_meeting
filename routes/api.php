@@ -85,5 +85,7 @@ Route::group(['prefix' => 'user', 'namespace' => 'Api'], function () {
     });
 });
 
-
+//测试生成序列码
 Route::post('generate-license-code', 'Admin\LicenseController@generateLicenseCode');
+//测试验证序列码
+Route::post('verify', 'Admin\LicenseController@verify');

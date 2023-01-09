@@ -412,4 +412,30 @@ Class GenerateLicenseCodeService
 
         return '';
     }
+
+    /**
+     * 序列码有效性验证
+     * @param $key
+     * @param $secret
+     * @param $id
+     * @param $plat
+     * @param $os
+     * @param $time
+     * @return false|string
+     */
+    public function verify($key, $secret, $id, $plat, $os, $time){
+        $platform = $this->getPlatformCode($plat);
+
+        //用相对路径，绝对路径在容器里面执行会找不到命令。容器的实际执行目录会有卷的名称 /etc/nginx/volumes/php_compdf_server/public
+        $license_demo_path = '..' . DIRECTORY_SEPARATOR . 'licensedemo';
+        $filename = $license_demo_path . DIRECTORY_SEPARATOR . 'licensefile' . DIRECTORY_SEPARATOR . 'verify' . '_' . time() . '.xml';
+
+        $command = $license_demo_path . DIRECTORY_SEPARATOR. "LicenseDemo -key \"$key\" -secret \"$secret\" -id \"$id\" -plat \"$platform\" -os \"$os\" -curTime \"$time\" -output \"$filename\"";
+
+        \Log::info('验证序列码命令:' . $command);
+        exec($command, $result);
+        \Log::info('验证序列码结果：', $result);
+
+        return file_get_contents($filename);
+    }
 }
