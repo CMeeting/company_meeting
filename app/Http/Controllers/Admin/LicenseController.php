@@ -105,7 +105,6 @@ class LicenseController extends BaseController
     /**
      * 验证序列码
      * @param Request $request
-     * @return false|string
      */
     public function verifyLicenseCode(Request $request){
         $key = $request->input('key');
@@ -118,8 +117,8 @@ class LicenseController extends BaseController
 
         $generate = new GenerateLicenseCodeService();
         $result = $generate->verify($key, $secret, $id, $plat, $os, $time);
-        $result_arr = explode('\n', $result);
-        return \Response::json(['code'=>200, 'message'=>'success', 'result'=>$result_arr]);
+        echo $result;
+        die;
     }
 
 }
