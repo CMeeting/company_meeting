@@ -82,13 +82,15 @@ class UserService
      * @param $email
      * @param $full_name
      * @param $password
+     * @param $source
      */
-    public function add($email, $full_name, $password)
+    public function add($email, $full_name, $password, $source)
     {
         $user = New User();
         $user->email = $email;
         $user->full_name = $full_name;
         $user->password = $password;
+        $user->source = $source;
 
         $user->save();
 
@@ -328,9 +330,14 @@ class UserService
      * 发送修改密码的邮件
      * @param $email
      * @param $name
+     * @param $source
      */
-    public function sendChangePasswordEmail($email, $name){
-        $server_name = $server = env('WEB_HOST') . '/reset/password';
+    public function sendChangePasswordEmail($email, $name, $source = User::SOURCE_1_SDK){
+        if($source == User::SOURCE_1_SDK){
+            $server_name = $server = env('WEB_HOST') . '/reset/password';
+        }else{
+            $server_name = $server = env('WEB_HOST_SAAS') . '/user/password';
+        }
 
         //发送邮件时间
         $payload = ['email' => $email, 'alt'=>time(), 'expire_time' => 24];
