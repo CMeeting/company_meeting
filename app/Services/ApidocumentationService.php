@@ -105,7 +105,7 @@ class Apidocumentationservice
         if($source == User::SOURCE_2_SAAS){
             return $PlatformVersion->selects("deleted=0 and enabled=1 and name='SaaS'","id,name,lv,pid,seotitel,h1title","lv,displayorder");
         }else{
-            return $PlatformVersion->selects("deleted=0 and enabled=1","id,name,lv,pid,seotitel,h1title","lv,displayorder");
+            return $PlatformVersion->selects("deleted=0 and enabled=1 and name!='SaaS'","id,name,lv,pid,seotitel,h1title","lv,displayorder");
         }
 
     }
