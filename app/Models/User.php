@@ -17,6 +17,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property    $order_num      订单数量
  * @property    $order_amount   消费金额
  * @property    $login_times    登录次数
+ * @property    $source         来源 1：SDK 2:SaaS
  * @property    $created_at
  * @property    $updated_at
  * @mixin       \Eloquent
@@ -33,6 +34,9 @@ class User extends Model
 
     const CODE_1_YES = 1;
     const CODE_0_NO = 0;
+
+    const SOURCE_1_SDK = 1;
+    const SOURCE_2_SAAS = 2;
 
     public static $typeArr = [
         1 => '免费用户',
