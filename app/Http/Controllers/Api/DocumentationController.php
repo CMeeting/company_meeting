@@ -7,6 +7,7 @@
  */
 
 namespace App\Http\Controllers\Api;
+use App\Models\User;
 use App\Services\ApidocumentationService;
 use App\Services\SdkclassificationService;
 use Illuminate\Http\Request;
@@ -21,6 +22,7 @@ class DocumentationController
      public function sdkIndex(Request $request){
         $Apidocumentationservice= new ApidocumentationService();
          $param = $request->all();
+         $param['source'] = $request->input('source', User::SOURCE_1_SDK);
          if(!$param || !isset($param['platformname'])){
              return json_encode(['data'=>'','code'=>403,'msg'=>"缺少参数"]);
          }
