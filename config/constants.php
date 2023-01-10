@@ -11,6 +11,7 @@ return [
     #白名单
     "white_list" => [
         "shuwei@kdanmobile.com", "wangyuting@kdanmobile.com"
-    ]
+    ],
+    "white_users_list" => [1, 7],
 
 ];

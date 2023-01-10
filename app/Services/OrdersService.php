@@ -1037,7 +1037,11 @@ class OrdersService
         $pay_url_data = [];
         #20230110 支付白名单添加 方便测试线上支付测试
         if (in_array($email, config("constants.white_list"))) {
-            $price = 1;
+            $orders = Order::where("order_no", $trade_no)->first()->toArray();
+            $user_id = $orders['user_id'];
+            if (in_array($user_id, config("constants.white_users_list"))) {
+                $price = 1;
+            }
         }
         if ($payment == self::$payments['paddle']) {
             $paddle = new PaddleBiz();
