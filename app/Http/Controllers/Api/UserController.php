@@ -35,6 +35,7 @@ class UserController extends Controller
         $full_name = trim($request->input('full_name'));
         $email = trim($request->input('email'));
         $password = str_replace(' ', '', $request->input('password'));
+        $source = intval($request->input('source', User::SOURCE_1_SDK));
 
         $userService = new UserService();
 
@@ -68,7 +69,7 @@ class UserController extends Controller
         $emailService = new EmailService();
         $emailService->sendDiyContactEmail($data, 0, $email);
 
-        $user_id = $userService->add($email, $full_name, $password);
+        $user_id = $userService->add($email, $full_name, $password, $source);
 
         //['email'=>'test@gmail.com', 'iat'=>'签发时间', 'jti'=>'token唯一标识']
         $jti = JWTService::getJTI();
@@ -103,7 +104,7 @@ class UserController extends Controller
         //缓存token
         JWTService::saveToken($email, $jti);
 
-        $payload = ['email' => $email, 'iat' => time(), 'jti'=>$jti];
+        $payload = ['email' => $email, 'iat' => time(), 'jti'=>$jti, 'id'=>$user->id];
         $token = JWTService::getToken($payload);
 
         //增加登录次数
@@ -363,6 +364,7 @@ class UserController extends Controller
      */
     public function forgetPassword(Request $request){
         $email = $request->input('email');
+        $source = $request->input('source');
 
         if(!trim($email)){
             return Response::json(['code'=>500, 'message'=>'Required']);
@@ -378,7 +380,7 @@ class UserController extends Controller
         }
 
         $userService = new UserService();
-        $userService->sendChangePasswordEmail($email, '忘记密码');
+        $userService->sendChangePasswordEmail($email, '忘记密码', $source);
 
         return ['code'=>200, 'message'=>'Success.'];
     }
