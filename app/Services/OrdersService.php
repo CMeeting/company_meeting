@@ -1035,6 +1035,10 @@ class OrdersService
     {
         $call_back = $this->headerurl();
         $pay_url_data = [];
+        #20230110 支付白名单添加 方便测试线上支付测试
+        if (in_array($email, config("constants.white_list"))) {
+            $price = 1;
+        }
         if ($payment == self::$payments['paddle']) {
             $paddle = new PaddleBiz();
             $pay_url_data = $paddle->createPayLink($trade_no, $product, $price,1,$email,$order_id);

@@ -8,4 +8,9 @@ return [
 
     #订单
 
+    #白名单
+    "white_list" => [
+        "shuwei@kdanmobile.com", "wangyuting@kdanmobile.com"
+    ]
+
 ];
