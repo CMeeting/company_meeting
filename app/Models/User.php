@@ -31,6 +31,7 @@ class User extends Model
     const TYPE_3_SAAS = 3;
     const TYPE_4_SDK = 4;
     const TYPE_5_SAAS_ADN_SDK = 5;
+    const TYPE_6_SAAS_TRY_OUT = 6;
 
     const CODE_1_YES = 1;
     const CODE_0_NO = 0;
@@ -43,7 +44,8 @@ class User extends Model
         2 => '试用用户',
         3 => 'SaaS用户',
         4 => 'SDK用户',
-        5 => 'SaaS、SDK用户'
+        5 => 'SaaS、SDK用户',
+        6 => 'SaaS试用用户'
     ];
 
     protected $table = 'users';
