@@ -92,6 +92,10 @@ class UserService
         $user->password = $password;
         $user->source = $source;
 
+        if($source == User::SOURCE_2_SAAS){
+            $user->type = User::TYPE_6_SAAS_TRY_OUT;
+        }
+
         $user->save();
 
         return $user->id;

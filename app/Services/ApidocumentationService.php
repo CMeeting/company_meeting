@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Models\DocumentationModel as PlatformVersion;
 use App\Models\SdkclassificationModel as SdkClassification;
 use App\Models\SdkarticleModel as SdKArticle;
+use App\Models\User;
 
 class Apidocumentationservice
 {
@@ -16,9 +17,10 @@ class Apidocumentationservice
      */
     public function getdata($param)
     {
+        $source = $param['source'];
         $data=[];
         $PlatformVersion = new PlatformVersion();
-        $versiondata=$this->getVersion();
+        $versiondata=$this->getVersion($source);
         //组装平台版本数据
         $Platform=$PlatformVersion->finds("name like '".$param['platformname']."' and deleted=0 and enabled=1 and lv=1","displayorder");
         if(!$Platform){
@@ -48,6 +50,7 @@ class Apidocumentationservice
      */
     public function getInfo($param){
         $data=[];
+        $source = $param['source'];
         $SdKArticle_data = new SdKArticle();
         $PlatformVersion = new PlatformVersion();
         $SdkClassification = new SdkClassification();
@@ -69,7 +72,7 @@ class Apidocumentationservice
             $classificationids=$this->sele_classificationid($SdKArticle['classification_ids'],$Classification);
 
             $PlatformVersion = new PlatformVersion();
-            $versiondata=$this->getVersion();
+            $versiondata=$this->getVersion($source);
             //组装平台版本数据
             $Platform=$PlatformVersion->finds("id =".$SdKArticle['platformid']." and deleted=0 and enabled=1","displayorder");
             $newversion=$PlatformVersion->finds("pid=".$SdKArticle['platformid']." and id =".$SdKArticle['version']." and deleted=0 and enabled=1","displayorder");
@@ -97,9 +100,14 @@ class Apidocumentationservice
     }
 
 
-    function getVersion(){
+    function getVersion($source){
         $PlatformVersion = new PlatformVersion();
-        return $PlatformVersion->selects("deleted=0 and enabled=1","id,name,lv,pid,seotitel,h1title","lv,displayorder");
+        if($source == User::SOURCE_2_SAAS){
+            return $PlatformVersion->selects("deleted=0 and enabled=1 and name='SaaS'","id,name,lv,pid,seotitel,h1title","lv,displayorder");
+        }else{
+            return $PlatformVersion->selects("deleted=0 and enabled=1 and name!='SaaS'","id,name,lv,pid,seotitel,h1title","lv,displayorder");
+        }
+
     }
     function getClassification($ids){
         $SdkClassification = new SdkClassification();
