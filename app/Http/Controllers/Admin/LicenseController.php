@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Services\GenerateLicenseCodeService;
 use App\Services\LicenseService;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Services\GoodsService;
 
@@ -112,8 +113,9 @@ class LicenseController extends BaseController
         $id = $request->input('id');
         $plat = $request->input('plat');
         $os = $request->input('os');
+        $date = $request->input('date');
 
-        $time  = time();
+        $time = Carbon::parse($date)->startOfDay()->timestamp;
 
         $generate = new GenerateLicenseCodeService();
         $result = $generate->verify($key, $secret, $id, $plat, $os, $time);

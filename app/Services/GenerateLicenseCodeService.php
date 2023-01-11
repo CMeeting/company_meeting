@@ -107,6 +107,7 @@ Class GenerateLicenseCodeService
     const LICENSE_CONVERT_TXT = 0x20;
     const LICENSE_CONVERT_IMG = 0x40;
     const LICENSE_CONVERT_RTF = 0x80;
+    const LICENSE_CONVERT_HTML = 0x100;
 
     //PDF标准版套餐功能
     const PDF_SDK_STANDARD_FUNCTION = [
@@ -116,7 +117,6 @@ Class GenerateLicenseCodeService
         ],
         'annotations' => [
             self::LICENSE_ANNOT_NOTE,
-            self::LICENSE_ANNOT_LINK,
             self::LICENSE_ANNOT_SHAPE,
             self::LICENSE_ANNOT_MARKUP,
             self::LICENSE_ANNOT_DELETE,
@@ -217,33 +217,39 @@ Class GenerateLicenseCodeService
     ];
 
     //转档标准版套餐功能
+    //转档标准版套餐功能
+
     const CONVERSION_SDK_STANDARD_FUNCTION = [
+        self::LICENSE_CONVERT_RTF,
         self::LICENSE_CONVERT_TXT,
         self::LICENSE_CONVERT_CSV,
         self::LICENSE_CONVERT_IMG,
         self::LICENSE_CONVERT_WORD,
         self::LICENSE_CONVERT_TABLE,
+        self::LICENSE_CONVERT_HTML,
     ];
-
-    //转档标准版套餐功能
     const CONVERSION_SDK_PROFESSIONAL_FUNCTION = [
-        self::LICENSE_CONVERT_TXT,
-        self::LICENSE_CONVERT_CSV,
-        self::LICENSE_CONVERT_IMG,
-        self::LICENSE_CONVERT_WORD,
-        self::LICENSE_CONVERT_TABLE,
-        self::LICENSE_CONVERT_PPT
-    ];
-
-    //转档标准版套餐功能
-    const CONVERSION_SDK_ENTERPRISE_FUNCTION = [
+        self::LICENSE_CONVERT_RTF,
         self::LICENSE_CONVERT_TXT,
         self::LICENSE_CONVERT_CSV,
         self::LICENSE_CONVERT_IMG,
         self::LICENSE_CONVERT_WORD,
         self::LICENSE_CONVERT_TABLE,
         self::LICENSE_CONVERT_PPT,
-        self::LICENSE_CONVERT_EXCEL
+        self::LICENSE_CONVERT_HTML,
+    ];
+
+    //转档标准版套餐功能
+    const CONVERSION_SDK_ENTERPRISE_FUNCTION = [
+        self::LICENSE_CONVERT_RTF,
+        self::LICENSE_CONVERT_TXT,
+        self::LICENSE_CONVERT_CSV,
+        self::LICENSE_CONVERT_IMG,
+        self::LICENSE_CONVERT_WORD,
+        self::LICENSE_CONVERT_TABLE,
+        self::LICENSE_CONVERT_PPT,
+        self::LICENSE_CONVERT_EXCEL,
+        self::LICENSE_CONVERT_HTML,
     ];
 
     /**
