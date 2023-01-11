@@ -115,7 +115,7 @@ class LicenseController extends BaseController
         $os = $request->input('os');
         $date = $request->input('date');
 
-        $time = Carbon::parse($date)->startOfDay()->timestamp;
+        $time = Carbon::parse($date)->timestamp;
 
         $generate = new GenerateLicenseCodeService();
         $result = $generate->verify($key, $secret, $id, $plat, $os, $time);
