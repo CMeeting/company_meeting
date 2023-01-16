@@ -103,9 +103,9 @@ class Apidocumentationservice
     function getVersion($source){
         $PlatformVersion = new PlatformVersion();
         if($source == User::SOURCE_2_SAAS){
-            return $PlatformVersion->selects("deleted=0 and enabled=1 and (name='SaaS' or name = 'API Reference')","id,name,lv,pid,seotitel,h1title","lv,displayorder");
+            return $PlatformVersion->selects("deleted=0 and enabled=1 and (name='docs' or name = 'API Reference')","id,name,lv,pid,seotitel,h1title","lv,displayorder");
         }else{
-            return $PlatformVersion->selects("deleted=0 and enabled=1 and name!='SaaS'","id,name,lv,pid,seotitel,h1title","lv,displayorder");
+            return $PlatformVersion->selects("deleted=0 and enabled=1 and name!='docs'","id,name,lv,pid,seotitel,h1title","lv,displayorder");
         }
 
     }
