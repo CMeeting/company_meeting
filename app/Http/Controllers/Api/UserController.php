@@ -78,7 +78,7 @@ class UserController extends Controller
         $payload = ['email' => $email, 'iat' => time(), 'jti'=>$jti, 'id'=>$user_id];
         $token = JWTService::getToken($payload);
 
-        return Response::json(['code'=>200, 'message'=>'success', 'data'=>['token'=>$token]]);
+        return Response::json(['code'=>200, 'message'=>'success', 'data'=>['token'=>$token, 'email'=>$email, 'full_name'=>$full_name]]);
     }
 
     /**
@@ -111,7 +111,7 @@ class UserController extends Controller
         $user->login_times += 1;
         $user->save();
 
-        return Response::json(['code'=>200, 'message'=>'success', 'data'=>['token'=>$token]]);
+        return Response::json(['code'=>200, 'message'=>'success', 'data'=>['token'=>$token, 'email'=>$user->email, 'full_name'=>$user->full_name]]);
     }
 
     /**
