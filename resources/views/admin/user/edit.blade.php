@@ -14,6 +14,16 @@
     <script src="/tinymce/js/tinymce/tinymce.min.js"></script>
     <link rel="stylesheet" href="/layui/css/layui.css" media="all">
     <script src="{{loadEdition('/layui/layui.js')}}"></script>
+    <script src="{{loadEdition('/js/jquery.min.js')}}"></script>
+    <script src="/js/bootstrap/bootstrap.min.js"></script>
+    <script src="/js/bootstrap/countrypicker.min.js"></script>
+    <script src="/js/bootstrap/bootstrap-select.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
+
+    <link rel="stylesheet" href="/layui/css/layui.css" media="all">
+    <link rel="stylesheet" href="/layui/css/layui.css" media="all">
+    <link rel="stylesheet" href="/css/bootstrap/bootstrap.min.css"/>
+    <link rel="stylesheet" href="/css/bootstrap/bootstrap-select.css"/>
 
     <div class="row">
         <div class="col-sm-12">
@@ -22,7 +32,7 @@
             </div>
             <div class="ibox-content">
                 <a href="javascript:history.back(-1)"><button class="btn btn-primary btn-sm back" type="button" style="margin-bottom: 40px"><i class="fa fa-chevron-left"></i> 返回列表 </button></a>
-                <form class="form-horizontal m-t-md" id="form_data" accept-charset="UTF-8" enctype="multipart/form-data" style="width: 600px;overflow: auto;margin: 0 auto;">
+                <form class="form-horizontal m-t-md" id="form_data" accept-charset="UTF-8" enctype="multipart/form-data" style="width: 600px;margin: 0 auto;">
                     {!! csrf_field() !!}
                     <span style="color: red;font-size: 14px">*</span>
                     <div class="hr-line-dashed m-t-sm m-b-sm" style="position: relative;margin-bottom: 20px;"><span style="font-weight:bold;top: -12px;position: absolute;color:black">Email：</span></div>
@@ -33,8 +43,26 @@
                     </div>
                     <span style="color: red;font-size: 14px">*</span>
                     <div class="hr-line-dashed m-t-sm m-b-sm" style="position: relative;margin-bottom: 20px;"><span style="font-weight:bold;top: -12px;position: absolute;color:black">Full Name：</span>></div>
-                    <div class="input-group col-sm-2">
-                        <input type="text" placeholder="*Full Name" class="form-control" name="full_name" value="{{$row->full_name}}" required data-msg-required="Full Name必填" style="width: 500px"/>
+                    <div class="form-group" style="padding-left: 18px;">
+                        <div class="input-group col-sm-2">
+                            <input type="text" placeholder="*Full Name" class="form-control" name="full_name" value="{{$row->full_name ?? ''}}" required data-msg-required="Full Name必填" style="width: 500px"/>
+                        </div>
+                    </div>
+
+                    <span style="color: red;font-size: 14px">*</span>
+                    <div class="hr-line-dashed m-t-sm m-b-sm" style="position: relative;margin-bottom: 20px;"><span style="font-weight:bold;top: -12px;position: absolute;color:black">Company：</span>></div>
+                    <div class="form-group" style="padding-left: 18px;">
+                        <div class="input-group col-sm-2">
+                            <input type="text" placeholder="*Company" class="form-control" name="company" value="{{$company}}" required data-msg-required="Company必填" style="width: 500px"/>
+                        </div>
+                    </div>
+
+                    <span style="color: red;font-size: 14px">*</span>
+                    <div class="hr-line-dashed m-t-sm m-b-sm" style="position: relative;margin-bottom: 20px;"><span style="font-weight:bold;top: -12px;position: absolute;color:black">Country：</span>></div>
+                    <div class="form-group" style="padding-left: 18px;">
+                        <div class="form-group" style="padding-left: 18px;width: 500px">
+                            <select id="country" name="country" class="selectpicker countrypicker" data-live-search="true" data-default="{{$country}}" data-flag="true"></select>
+                        </div>
                     </div>
 
                     <div class="form-group" style="margin-top: 20px;">
@@ -73,6 +101,20 @@
             if(full_name == '' || full_name == null){
                 layer.close(index);
                 layer.msg('Full Name必填', {icon: 2, time: 1000});
+                return false;
+            }
+
+            let company = form_data.get('company').trim()
+            if(company == '' || company == null){
+                layer.close(index);
+                layer.msg('Company必填', {icon: 2, time: 1000});
+                return false;
+            }
+
+            let country = form_data.get('country').trim()
+            if(country == '' || country == null || country == 'All'){
+                layer.close(index);
+                layer.msg('country必选', {icon: 2, time: 1000});
                 return false;
             }
 

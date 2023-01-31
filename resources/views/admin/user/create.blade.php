@@ -12,8 +12,18 @@
     </style>
     <script src="{{loadEdition('/js/jquery.min.js')}}"></script>
     <script src="/tinymce/js/tinymce/tinymce.min.js"></script>
-    <link rel="stylesheet" href="/layui/css/layui.css" media="all">
+    <script src="{{loadEdition('/js/jquery.min.js')}}"></script>
     <script src="{{loadEdition('/layui/layui.js')}}"></script>
+    <script src="/js/bootstrap/bootstrap.min.js"></script>
+    <script src="/js/bootstrap/countrypicker.min.js"></script>
+    <script src="/js/bootstrap/bootstrap-select.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
+
+    <link rel="stylesheet" href="/layui/css/layui.css" media="all">
+    <link rel="stylesheet" href="/layui/css/layui.css" media="all">
+    <link rel="stylesheet" href="/css/bootstrap/bootstrap.min.css"/>
+    <link rel="stylesheet" href="/css/bootstrap/bootstrap-select.css"/>
+
     <div class="row">
         <div class="col-sm-12">
             <div class="ibox-title">
@@ -30,9 +40,25 @@
                                 <input id="email_input" type="text" placeholder="*Email" class="form-control" name="email" value="" required data-msg-required="邮箱必填" style="width: 500px"/>
                             </div>
                         </div>
+
                         <div class="hr-line-dashed m-t-sm m-b-sm" style="position: relative;margin-bottom: 20px;"><span style="font-weight:bold;top: -12px;position: absolute;color:black">Full Name：<font style="color: red;font-size: 14px">*</font></span></div>
-                        <div class="input-group col-sm-2">
-                            <input type="text" placeholder="*Full Name" class="form-control" name="full_name" value="" required data-msg-required="Full Name必填" style="width: 500px"/>
+                        <div class="form-group" style="padding-left: 18px;">
+                            <div class="input-group col-sm-2">
+                                <input type="text" placeholder="*Full Name" class="form-control" name="full_name" value="" required data-msg-required="Full Name必填" style="width: 500px"/>
+                            </div>
+                        </div>
+
+
+                        <div class="hr-line-dashed m-t-sm m-b-sm" style="position: relative;margin-bottom: 20px;"><span style="font-weight:bold;top: -12px;position: absolute;color:black">Company：<font style="color: red;font-size: 14px">*</font></span></div>
+                        <div class="form-group" style="padding-left: 18px;">
+                            <div class="input-group col-sm-2">
+                                <input type="text" placeholder="*Company" class="form-control" name="company" value="" required data-msg-required="Company必填" style="width: 500px"/>
+                            </div>
+                        </div>
+
+                        <div class="hr-line-dashed m-t-sm m-b-sm" style="position: relative;margin-bottom: 20px;"><span style="font-weight:bold;top: -12px;position: absolute;color:black">Country：<font style="color: red;font-size: 14px">*</font></span></div>
+                        <div class="form-group" style="padding-left: 18px;width: 500px">
+                            <select id="country" name="country" class="selectpicker countrypicker" data-live-search="true" data-default="" data-flag="true"></select>
                         </div>
 
                         <div class="form-group" style="margin-top: 20px; margin-left: 33%">
@@ -67,6 +93,20 @@
             if(full_name == '' || full_name == null){
                 layer.close(index);
                 layer.msg('Full Name必填', {icon: 2, time: 1000});
+                return false;
+            }
+
+            let company = form_data.get('company').trim()
+            if(company == '' || company == null){
+                layer.close(index);
+                layer.msg('Company必填', {icon: 2, time: 1000});
+                return false;
+            }
+
+            let country = form_data.get('country').trim()
+            if(country == '' || country == null || country == 'All'){
+                layer.close(index);
+                layer.msg('country必选', {icon: 2, time: 1000});
                 return false;
             }
 

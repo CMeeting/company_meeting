@@ -63,4 +63,23 @@ class UserBillingInfoService
 
         $model->save();
     }
+
+    /**
+     * 后天添加编辑用户 增加公司，国家信息
+     * @param $user_id
+     * @param $company
+     * @param $country
+     */
+    public function addFromRegister($user_id, $company, $country){
+        $model = UserBillingInformation::where('user_id', $user_id)->first();
+        if(!$model instanceof UserBillingInformation){
+            $model = new UserBillingInformation();
+        }
+
+        $model->user_id = $user_id;
+        $model->company = $company;
+        $model->country = $country;
+
+        $model->save();
+    }
 }

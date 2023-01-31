@@ -6,6 +6,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Models\Mailmagicboard;
 use App\Models\User;
+use App\Models\UserBillingInformation;
 use App\Services\EmailService;
 use App\Services\JWTService;
 use App\Services\SubscriptionService;
@@ -16,9 +17,10 @@ use Illuminate\Http\Request;
 class UserController extends BaseController
 {
     /**
-     * 列表
      * @param Request $request
-     * @return  mixed
+     * @return array|\Illuminate\Contracts\View\Factory|\Illuminate\View\View|\Symfony\Component\HttpFoundation\BinaryFileResponse
+     * @throws \PhpOffice\PhpSpreadsheet\Exception
+     * @throws \PhpOffice\PhpSpreadsheet\Writer\Exception
      */
     public function list(Request $request)
     {
@@ -63,6 +65,8 @@ class UserController extends BaseController
     {
         $email = trim($request->input('email'));
         $full_name = trim($request->input('full_name'));
+        $company = trim($request->input('company'));
+        $country = trim($request->input('country'));
 
         $userService = new UserService();
 
@@ -80,11 +84,15 @@ class UserController extends BaseController
         $password = User::getRandStr();
 
         $userService = new UserService();
-        $userService->add($email, $full_name, $password, User::SOURCE_1_SDK);
+        $user_id = $userService->add($email, $full_name, $password, User::SOURCE_1_SDK);
 
         //自动订阅电子报
         $subsService = new SubscriptionService();
         $subsService->update_status(['email'=>$email, 'subscribed'=>1], false);
+
+        //增加公司，国家信息
+        $bill = new UserBillingInfoService();
+        $bill->addFromRegister($user_id, $company, $country);
 
         //发送邮件
         $url = env('WEB_HOST') . '/login';
@@ -114,7 +122,16 @@ class UserController extends BaseController
         $userService = new UserService();
         $user = $userService->getById($id);
 
-        return $this->view('edit')->with(['row' => $user]);
+        $bill_service = new UserBillingInfoService();
+        $bill_info = $bill_service->getByUserId($id);
+
+        $company = $country = '';
+        if($bill_info instanceof UserBillingInformation){
+            $company = $bill_info->company;
+            $country = $bill_info->country;
+        }
+
+        return $this->view('edit')->with(['row' => $user, 'company'=>$company, 'country'=>$country]);
     }
 
     /**
@@ -126,10 +143,9 @@ class UserController extends BaseController
     public function update($id, Request $request)
     {
         $email = trim($request->input('email'));
-        $full_name = $request->input('full_name');
-
-        $full_name = ltrim($full_name);
-        $full_name = rtrim($full_name);
+        $full_name = trim($request->input('full_name'));
+        $company = trim($request->input('company'));
+        $country = trim($request->input('country'));
 
         $userService = new UserService();
 
@@ -144,9 +160,13 @@ class UserController extends BaseController
         }
 
         $old_email = User::find($id)->email;
-
         $userService->update($id, $email, $full_name);
 
+        //修改公司，国家信息
+        $bill = new UserBillingInfoService();
+        $bill->addFromRegister($id, $company, $country);
+
+        //邮箱变更发送提醒邮件，登录失效
         if($old_email != $email){
             //删除token缓存
             JWTService::forgetToken($old_email);
