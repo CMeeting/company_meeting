@@ -24,10 +24,11 @@ class PaddleBiz
     protected $config = [];
     protected $sand_product_id = ['mac' => '14228', 'windows' => '21566'];
     protected $product_id = ['mac' => '720301', 'windows' => '748380'];
+    protected $paddle_product_id;
 
     public function __construct($data = null)
     {
-        $this->sandbox = true;
+        $this->sandbox = env('APP_SANDBOX');
         $pem = $this->sandbox ? 'sendbox_public_key.pem' : 'public_key.pem'; //沙箱pem:sendbox_public_key.pem,正式pem：public_key.pem
         $this->public_key_string = file_get_contents(dirname(dirname(dirname(__DIR__))).'/extend/paddle/'. $pem);
         if($this->sandbox){
@@ -35,11 +36,13 @@ class PaddleBiz
                 'vendor_id'         =>  2760,
                 'vendor_auth_code'  =>  'a618d381d6e20acd36bb0f130586779e98641137a9f649b878'
             ];
+            $this->paddle_product_id = 14228;
         }else{
             $this->config=[
-                'vendor_id'         =>  134050,
-                'vendor_auth_code'  =>  'be91e8545f1c2902f7ebd79c7217b2d7699c9a3f0b67b51d5b'
+                'vendor_id'         =>  163166,
+                'vendor_auth_code'  =>  '51c14ff3f80e6bdf48e5a039f42190fb1ead14afd03843b0c5'
             ];
+            $this->paddle_product_id = 806454;
         }
         $this->data = $data;
         $sand_box_str = $this->sandbox ? 'sandbox-' : '';
@@ -161,7 +164,7 @@ class PaddleBiz
         $orderData = [
             'vendor_id'         =>  $this->config['vendor_id'],
             'vendor_auth_code'  =>  $this->config['vendor_auth_code'],
-            'product_id'   =>  14228, //产品ID
+            'product_id'   =>  $this->paddle_product_id, //产品ID
             'title'   =>  $product, //产品名称
             'prices' =>  ['USD:' . $price],
             'quantity_variable'   =>  '0', //用户修改更改购买数量配置
