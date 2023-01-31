@@ -19,10 +19,10 @@ class EmailtestContr
          $emailarr=[];
          $emailarr['email']="support@compdf.com";
          if($param['type']==8){
-             $emailarr['url']="http://test-pdf-pro.kdan.cn:3026/login";
+             $emailarr['url']=env('WEB_HOST')."/login";
              $mailedatas['title'] = str_replace("订单号","test123",$mailedatas['title']);
          }else{
-             $emailarr['url']="http://test-pdf-pro.kdan.cn:3026/order/checkout";
+             $emailarr['url']=env('WEB_HOST')."/order/checkout";
          }
          $email->sendDiyContactEmail($emailarr,$param['type'],"1322061784@qq.com,pengjianyong@kdanmobile.com,shuwei@kdanmobile.com,wangyuting@kdanmobile.com",$mailedatas);
 

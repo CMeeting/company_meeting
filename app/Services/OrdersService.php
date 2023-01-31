@@ -719,7 +719,7 @@ class OrdersService
                 $emailarr['payprice']="$0.00";
                 $emailarr['taxes']="$0.00";
                 $emailarr['yesprice']="$".$price;
-                $emailarr['url']="http://test-pdf-pro.kdan.cn:3026/order/checkout";
+                $emailarr['url']=env('WEB_HOST')."/order/checkout";
                 //$email->sendDiyContactEmail($emailarr,6,$data['info']['email'],$mailedatas);
                 $orderarr['email'] = $data['info']['email'] ?? '';
                 $orderarr['id'] = $order_id ?? 0;
@@ -924,7 +924,7 @@ class OrdersService
         $emailarr['payprice']="$" . $sumprice;
         $emailarr['noorderprice'] = "$0.00";
         $emailarr['pay_time'] = CommonService::formatDate($data['pay_time']);
-        $emailarr['url']="http://test-pdf-pro.kdan.cn:3026/order/checkout";
+        $emailarr['url']=env('WEB_HOST')."/order/checkout";
         $emailarr['fapiao']=$data['bill_url'];
         $i=1;
         foreach ($goods_data as $value){
