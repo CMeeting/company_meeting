@@ -88,7 +88,7 @@ class OrdersService
 
     public function data_list($param)
     {
-        $where = "1=1";
+        $where = "details_type!=3";
         if ($param['info']) {
             $where .= " and {$param['query_type']}='{$param['info']}'";
         }
@@ -133,6 +133,53 @@ class OrdersService
 
         return $data;
     }
+
+    public function data_saaslist($param)
+    {
+        $where = "details_type=3";
+        if ($param['info']) {
+            $where .= " and {$param['query_type']}='{$param['info']}'";
+        }
+        if ($param['status']) {
+            $param['status'] = $param['status'] - 1;
+            $where .= " and orders.status={$param['status']}";
+        }
+        if ($param['pay_type']) {
+            $param['pay_type'] = $param['pay_type'] - 1;
+            $where .= " and orders.pay_type={$param['pay_type']}";
+        }
+
+        if ($param['type']) {
+            $where .= " and orders.type={$param['type']}";
+        }
+
+//        if (isset($param['pay_at']) && $param['pay_at'] && isset($param['endpay_at']) && $param['endpay_at']) {
+//            $where .= " AND orders.pay_time BETWEEN '" . $param['pay_at'] . "' AND '" . $param['endpay_at'] . "'";
+//        } elseif (isset($param['pay_at']) && $param['pay_at'] && empty($param['endpay_at'])) {
+//            $where .= " AND orders.pay_time >= '" . $param['pay_at'] . "'";
+//        } elseif (isset($param['endpay_at']) && $param['endpay_at'] && empty($param['pay_at'])) {
+//            $where .= " AND orders.pay_time <= '" . $param['endpay_at'] . "'";
+//        }
+
+        if (isset($param['shelf_at']) && $param['shelf_at'] && isset($param['endshelf_at']) && $param['endshelf_at']) {
+            $where .= " AND orders.created_at BETWEEN '" . $param['shelf_at'] . "' AND '" . $param['endshelf_at'] . "'";
+        } elseif (isset($param['shelf_at']) && $param['shelf_at'] && empty($param['endshelf_at'])) {
+            $where .= " AND orders.created_at >= '" . $param['shelf_at'] . "'";
+        } elseif (isset($param['endshelf_at']) && $param['endshelf_at'] && empty($param['shelf_at'])) {
+            $where .= " AND orders.created_at <= '" . $param['endshelf_at'] . "'";
+        }
+
+        $goods = new Order();
+
+        if ($param['export'] == 1) {
+            return $goods->leftJoin('users', 'orders.user_id', '=', 'users.id')->whereRaw($where)->orderByRaw('orders.id desc')->selectRaw("orders.*,users.email")->get()->toArray();
+        } else {
+            $data = $goods->leftJoin('users', 'orders.user_id', '=', 'users.id')->whereRaw($where)->orderByRaw('orders.id desc')->selectRaw("orders.*,users.email")->paginate(10);
+        }
+
+        return $data;
+    }
+
 
     public function export($list, $field)
     {
@@ -233,7 +280,7 @@ class OrdersService
 
     public function sum_data($param)
     {
-        $where = "1=1";
+        $where = "details_type!=3";
         if ($param['info']) {
             $where .= " and {$param['query_type']}='{$param['info']}'";
         }
@@ -248,6 +295,70 @@ class OrdersService
             $where .= " and orders.pay_type={$param['pay_type']}";
         }
 
+        if (isset($param['pay_at']) && $param['pay_at'] && isset($param['endpay_at']) && $param['endpay_at']) {
+            $where .= " AND orders.pay_time BETWEEN '" . $param['pay_at'] . "' AND '" . $param['endpay_at'] . "'";
+        } elseif (isset($param['pay_at']) && $param['pay_at'] && empty($param['endpay_at'])) {
+            $where .= " AND orders.pay_time >= '" . $param['pay_at'] . "'";
+        } elseif (isset($param['endpay_at']) && $param['endpay_at'] && empty($param['pay_at'])) {
+            $where .= " AND orders.pay_time <= '" . $param['endpay_at'] . "'";
+        }
+        if (isset($param['shelf_at']) && $param['shelf_at'] && isset($param['endshelf_at']) && $param['endshelf_at']) {
+            $where .= " AND orders.created_at BETWEEN '" . $param['shelf_at'] . "' AND '" . $param['endshelf_at'] . "'";
+        } elseif (isset($param['shelf_at']) && $param['shelf_at'] && empty($param['endshelf_at'])) {
+            $where .= " AND orders.created_at >= '" . $param['shelf_at'] . "'";
+        } elseif (isset($param['endshelf_at']) && $param['endshelf_at'] && empty($param['shelf_at'])) {
+            $where .= " AND orders.created_at <= '" . $param['endshelf_at'] . "'";
+        }
+        $goods = new Order();
+        $data = $goods->leftJoin('users', 'orders.user_id', '=', 'users.id')->whereRaw($where)->get()->toArray();
+        $arr = [];
+        $price = 0;
+        $sumcount = 0;
+        $sumnostatus = 0;
+        $sumyesstatus = 0;
+        $sumgbstatus = 0;
+        $sumwcstatus = 0;
+        foreach ($data as $k => $v) {
+            $sumcount++;
+            $price += $v['price'];
+            switch ($v['status']) {
+                case 0:
+                    $sumnostatus++;
+                    break;
+                case 1:
+                    $sumyesstatus++;
+                    break;
+                case 2:
+                    $sumwcstatus++;
+                    break;
+                case 4:
+                    $sumgbstatus++;
+                    break;
+            }
+        }
+        $arr['price'] = $price;
+        $arr['sumcount'] = $sumcount;
+        $arr['sumnostatus'] = $sumnostatus;
+        $arr['sumyesstatus'] = $sumyesstatus;
+        $arr['sumwcstatus'] = $sumwcstatus;
+        $arr['sumgbstatus'] = $sumgbstatus;
+        return $arr;
+    }
+
+
+    public function sum_saasdata($param)
+    {
+        $where = "details_type=3";
+        if ($param['info']) {
+            $where .= " and {$param['query_type']}='{$param['info']}'";
+        }
+        if ($param['type']) {
+            $where .= " and orders.type={$param['type']}";
+        }
+        if ($param['pay_type']) {
+            $param['pay_type'] = $param['pay_type'] - 1;
+            $where .= " and orders.pay_type={$param['pay_type']}";
+        }
         if (isset($param['pay_at']) && $param['pay_at'] && isset($param['endpay_at']) && $param['endpay_at']) {
             $where .= " AND orders.pay_time BETWEEN '" . $param['pay_at'] . "' AND '" . $param['endpay_at'] . "'";
         } elseif (isset($param['pay_at']) && $param['pay_at'] && empty($param['endpay_at'])) {

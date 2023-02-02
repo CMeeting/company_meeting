@@ -35,17 +35,17 @@
                 <h5>Order</h5>
                 <button id="export" class="btn layui-btn-primary btn-sm" type="button" style="float: right;margin-left: 5px"><i class="fa fa-paste"></i>导出数据</button>
                 <a style="float: right;margin-left: 5px" href="{{route('order.create')}}" link-url="javascript:void(0)">
-                    <button class="btn btn-primary btn-sm" type="button"><i class="fa fa-plus-circle"></i> 添加 Order</button>
+                    <button class="btn btn-primary btn-sm" type="button"><i class="fa fa-plus-circle"></i> 添加 SaasOrder</button>
                 </a>
             </div>
             <div style="width: 100%;padding-bottom: 15px;padding-top: 10px;background: #fbfffa">
-                <a class="ab" style="background: #b4b7b3"   href="{{route('order.index')}}">SKD</a>
-                <a class="ab" href="{{route('order.saasindex')}}">SaaS</a>
+                <a class="ab"  href="{{route('order.index')}}">SKD</a>
+                <a class="ab" style="background: #b4b7b3" href="{{route('order.saasindex')}}">SaaS</a>
             </div>
             <div class="ibox-content">
 
                 <div class="col-xs-10 col-sm-11 margintop5" style="margin-bottom: 5px">
-                    <form name="admin_list_sea" class="form-search" method="get" action="{{route('order.index')}}">
+                    <form name="admin_list_sea" class="form-search" method="get" action="{{route('order.saasindex')}}">
                         <div class="input-group">
 
                             <div class="input-group-btn" style="display: block;">
@@ -94,15 +94,6 @@
                             </div>
                             <div class="col-md-4 col-lg-3 col-sm-6 col-xs-12">
                                 <div class="form-group">
-                                    <select id="details_type" class="form-control"  name="details_type" tabindex="1">
-                                        <option value="">订单类型</option>
-                                        <option value="1" @if(isset($query)&&$query['details_type']==1) selected @endif>SDK试用</option>
-                                        <option value="2" @if(isset($query)&&$query['details_type']==2) selected @endif>SDK订单</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="col-md-4 col-lg-3 col-sm-6 col-xs-12">
-                                <div class="form-group">
                                     <select id="type" class="form-control"  name="type" tabindex="1">
                                         <option value="">订单来源</option>
                                         <option value="1" @if(isset($query)&&$query['type']==1) selected @endif>后台创建</option>
@@ -123,16 +114,16 @@
                                        value="@if(isset($query)){{$query['endshelf_at']}}@endif"/>
                             </div>
 
-                            <div class="input-group-btn" style="display: inline-block;width: 150px;">
-                                <input type="text" name="pay_at" class="form-control"
-                                       style="display: inline-block;width: 160px;" id="pay_at" placeholder="支付时间--开始"
-                                       value="@if(isset($query)){{$query['pay_at']}}@endif"/>
-                            </div>
-                            <div class="input-group-btn" style="display: inline-block;width: 150px;">
-                                <input type="text" name="endpay_at" class="form-control"
-                                       style="display: inline-block;width: 160px;" id="endpay_at" placeholder="支付时间--结束"
-                                       value="@if(isset($query)){{$query['endpay_at']}}@endif"/>
-                            </div>
+{{--                            <div class="input-group-btn" style="display: inline-block;width: 150px;">--}}
+{{--                                <input type="text" name="pay_at" class="form-control"--}}
+{{--                                       style="display: inline-block;width: 160px;" id="pay_at" placeholder="支付时间--开始"--}}
+{{--                                       value="@if(isset($query)){{$query['pay_at']}}@endif"/>--}}
+{{--                            </div>--}}
+{{--                            <div class="input-group-btn" style="display: inline-block;width: 150px;">--}}
+{{--                                <input type="text" name="endpay_at" class="form-control"--}}
+{{--                                       style="display: inline-block;width: 160px;" id="endpay_at" placeholder="支付时间--结束"--}}
+{{--                                       value="@if(isset($query)){{$query['endpay_at']}}@endif"/>--}}
+{{--                            </div>--}}
 
                             <span class="input-group-btn" style="display: inline-block;">
                                                     <button type="submit" class="btn btn-purple btn-sm"
@@ -174,15 +165,13 @@
                     <tr>
                         <th class="text-center" style="width: 5%">ID</th>
                         <th class="text-center" style="width: 9%">订单编号</th>
-                        <th class="text-center" style="width: 9%">第三方支付单号</th>
                         <th class="text-center" style="width: 9%">用户账号</th>
-                        <th class="text-center" style="width: 9%">支付方式</th>
-                        <th class="text-center" style="width: 8%">订单金额</th>
-                        <th class="text-center" style="width: 6%">订单状态</th>
-                        <th class="text-center" style="width: 6%">订单来源</th>
+                        <th class="text-center" style="width: 11%">套餐类型</th>
+                        <th class="text-center" style="width: 8%">档位</th>
+                        <th class="text-center" style="width: 9%">订单金额</th>
+                        <th class="text-center" style="width: 6%">支付方式</th>
                         <th class="text-center" style="width: 6%">订单类型</th>
-                        <th class="text-center" style="width: 11%">创建时间</th>
-                        <th class="text-center" style="width: 11%">支付时间</th>
+                        <th class="text-center" style="width: 11%">订单状态</th>
                         <th class="text-center" style="width: 10%">操作</th>
                     </tr>
                     </thead>
@@ -191,14 +180,10 @@
                         <tr id="del_{{$item['id']}}">
                             <td class="text-center">{{$item['id']}}</td>
                             <td class="text-center">{{$item['order_no']}}</td>
-                            <td class="text-center">
-                                @if($item['pay_type'] == 1)
-                                    {{$item['paddle_no']}}
-                                @else
-                                    {{$item['merchant_no']}}
-                                @endif
-                            </td>
                             <td>{{$item['email']}}</td>
+                            <td>套餐</td>
+                            <td>档位</td>
+                            <td>{{$item['price']}}</td>
                             <td>
                                     @if($item['pay_type'] == 1)
                                             <span class="ladda-label">paddle</span>
@@ -213,7 +198,16 @@
                                     @endif
 
                             </td>
-                            <td>{{$item['price']}}</td>
+                            <td>
+                                @if($item['type'] == 1)
+                                    <span class="ladda-label">后台创建</span>
+                                @elseif($item['type'] == 2)
+                                    <span class="ladda-label">用户购买</span>
+                                @else
+                                    <span class="ladda-label">未知</span>
+                                @endif
+
+                            </td>
                             <td>
                                 @if($item['status'] == 1)
                                     <span class="ladda-label">已支付</span>
@@ -228,30 +222,7 @@
                                 @endif
 
                             </td>
-                            <td>
-                                @if($item['type'] == 1)
-                                    <span class="ladda-label">后台创建</span>
-                                @elseif($item['type'] == 2)
-                                    <span class="ladda-label">用户购买</span>
-                                @else
-                                    <span class="ladda-label">未知</span>
-                                @endif
 
-                            </td>
-                            <td>
-                                @if($item['details_type'] == 1)
-                                    <span class="ladda-label">SDK试用</span>
-                                @elseif($item['details_type'] == 2)
-                                    <span class="ladda-label">SDK订单</span>
-                                @elseif($item['details_type'] == 3)
-                                    <span class="ladda-label">SaaS订单</span>
-                                @else
-                                    <span class="ladda-label">未知</span>
-                                @endif
-
-                            </td>
-                            <td>{{$item['created_at']}}</td>
-                            <td>{{$item['pay_time']}}</td>
                             <td class="text-center">
                                 <div class="btn-group">
                                     <a class="btn  btn-xs" style="text-decoration: none;color: #f6fff8;background: #0b94ea" title="预览 " href="{{route('order.getinfo',$item['id'])}}">
@@ -264,7 +235,7 @@
                     <tr><td colspan="12">当前总订单数:{{$sum['sumcount']}}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;当前所有状态订单金额:{{$sum['price']}}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;当前待支付订单数:{{$sum['sumnostatus']}}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;当前已支付订单数:{{$sum['sumyesstatus']}}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;当前已完成订单数:{{$sum['sumwcstatus']}}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;当前已关闭订单数:{{$sum['sumgbstatus']}}</td></tr>
                     </tbody>
                 </table>
-                {{$data->appends(['info' => isset($query['info'])?$query['info']:'','query_type'=>isset($query['query_type'])?$query['query_type']:'','status'=>isset($query['status'])?$query['status']:'','start_date'=>isset($query['start_date'])?$query['start_date']:'','end_date'=>isset($query['end_date'])?$query['end_date']:'','level1'=>isset($query['level1'])?$query['level1']:'','level2'=>isset($query['level2'])?$query['level2']:'','level3'=>isset($query['level3'])?$query['level3']:''])->links()}}
+                {{$data->appends(['info' => isset($query['info'])?$query['info']:'','query_type'=>isset($query['query_type'])?$query['query_type']:'','status'=>isset($query['status'])?$query['status']:'','start_date'=>isset($query['start_date'])?$query['start_date']:'','end_date'=>isset($query['end_date'])?$query['end_date']:''])->links()}}
             </div>
         </div>
         <div class="clearfix"></div>
@@ -350,41 +321,41 @@
         });
 
 
-        layui.use('laydate', function () {
-            var laydate = layui.laydate;
-
-            //执行一个laydate实例
-            var start = laydate.render({
-                elem: '#pay_at', //指定元素
-                max: 1,//最大值为当前日期
-                trigger: 'click',
-                type: 'datetime',//日期时间选择器
-                // value: getRecentDay(-30),//默认值30天前
-                done: function (value, date) {
-                    if (value && (value > $("#endpay_at").val())) {
-                        /*开始时间大于结束时间时，清空结束时间*/
-                        $("#endpay_at").val("");
-                    }
-                    end.config.min = {
-                        year: date.year,
-                        month: date.month - 1,
-                        date: date.date,
-                        hours: date.hours,//可注释
-                        minutes: date.minutes,//可注释
-                        seconds: date.seconds//可注释
-                    };
-                }
-            });
-            var end = laydate.render({
-                elem: '#endpay_at', //指定元素
-                max: 1,//最大值为当前日期
-                type: 'datetime',//日期时间选择器
-                // value: getRecentDay(-1),//默认值昨天
-                choose: function (datas) {
-                    start.max = datas; //结束日选好后，重置开始日的最大日期
-                }
-            });
-        });
+        // layui.use('laydate', function () {
+        //     var laydate = layui.laydate;
+        //
+        //     //执行一个laydate实例
+        //     var start = laydate.render({
+        //         elem: '#pay_at', //指定元素
+        //         max: 1,//最大值为当前日期
+        //         trigger: 'click',
+        //         type: 'datetime',//日期时间选择器
+        //         // value: getRecentDay(-30),//默认值30天前
+        //         done: function (value, date) {
+        //             if (value && (value > $("#endpay_at").val())) {
+        //                 /*开始时间大于结束时间时，清空结束时间*/
+        //                 $("#endpay_at").val("");
+        //             }
+        //             end.config.min = {
+        //                 year: date.year,
+        //                 month: date.month - 1,
+        //                 date: date.date,
+        //                 hours: date.hours,//可注释
+        //                 minutes: date.minutes,//可注释
+        //                 seconds: date.seconds//可注释
+        //             };
+        //         }
+        //     });
+        //     var end = laydate.render({
+        //         elem: '#endpay_at', //指定元素
+        //         max: 1,//最大值为当前日期
+        //         type: 'datetime',//日期时间选择器
+        //         // value: getRecentDay(-1),//默认值昨天
+        //         choose: function (datas) {
+        //             start.max = datas; //结束日选好后，重置开始日的最大日期
+        //         }
+        //     });
+        // });
 
 
 

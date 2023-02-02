@@ -160,24 +160,46 @@ Route::group(['namespace' => 'Admin','prefix' => 'admin'], function (){
         Route::get('user/logout-list', 'UserController@logoutList')->name('user.logoutList'); //注销用户列表
 
         Route::get('goodsclassification/index', 'GoodsclassificationController@index')->name('goodsclassification.index');
+        Route::get('goodsclassification/sdkindex', 'GoodsclassificationController@sdkindex')->name('goodsclassification.sdkindex');
+
         Route::get('goodsclassification/creategoodsClassification/{pid?}', 'GoodsclassificationController@creategoodsClassification')->name('goodsclassification.creategoodsClassification');
+        Route::get('goodsclassification/createsaasgoodsClassification/{pid?}', 'GoodsclassificationController@createsaasgoodsClassification')->name('goodsclassification.createsaasgoodsClassification');
+
         Route::post('goodsclassification/createRungoodsclassification', 'GoodsclassificationController@createRungoodsclassification')->name('goodsclassification.createRungoodsclassification');
+        Route::post('goodsclassification/createRunsaasgoodsclassification', 'GoodsclassificationController@createRunsaasgoodsclassification')->name('goodsclassification.createRunsaasgoodsclassification');
 
         Route::get('goodsclassification/updategoodsClassification/{pid}', 'GoodsclassificationController@updategoodsClassification')->name('goodsclassification.updategoodsClassification');
+
+        Route::get('goodsclassification/updatesaasgoodsClassification/{pid}', 'GoodsclassificationController@updatesaasgoodsClassification')->name('goodsclassification.updatesaasgoodsClassification');
+
         Route::post('goodsclassification/updateRungoodsclassification', 'GoodsclassificationController@updateRungoodsclassification')->name('goodsclassification.updateRungoodsclassification');
+
+        Route::post('goodsclassification/updatesaasRungoodsclassification', 'GoodsclassificationController@updatesaasRungoodsclassification')->name('goodsclassification.updatesaasRungoodsclassification');
+
         Route::post('goodsclassification/delgoodsclassification', 'GoodsclassificationController@delgoodsclassification')->name('goodsclassification.delgoodsclassification');
 
+        Route::post('goodsclassification/delsaasgoodsclassification', 'GoodsclassificationController@delsaasgoodsclassification')->name('goodsclassification.delsaasgoodsclassification');
+
         Route::get('goods/index', 'GoodsController@index')->name('goods.index');
+        Route::get('goods/saasindex', 'GoodsController@saasindex')->name('goods.saasindex');
         Route::get('goods/creategoods', 'GoodsController@creategoods')->name('goods.creategoods');
+        Route::get('goods/createsaasgoods', 'GoodsController@createsaasgoods')->name('goods.createsaasgoods');
         Route::post('goods/createrungoods', 'GoodsController@createrungoods')->name('goods.createrungoods');
+        Route::post('goods/createrunsaasgoods', 'GoodsController@createrunsaasgoods')->name('goods.createrunsaasgoods');
         Route::get('goods/updategoods/{id}', 'GoodsController@updategoods')->name('goods.updategoods');
+        Route::get('goods/updatesaasgoods/{id}', 'GoodsController@updatesaasgoods')->name('goods.updatesaasgoods');
+
         Route::post('goods/updaterungoods', 'GoodsController@updaterungoods')->name('goods.updaterungoods');
+        Route::post('goods/updaterunsaasgoods', 'GoodsController@updaterunsaasgoods')->name('goods.updaterunsaasgoods');
+
         Route::post('goods/delgoods', 'GoodsController@delgoods')->name('goods.delgoods');
         Route::post('goods/show', 'GoodsController@show')->name('goods.show');
         Route::get('goods/info/{id}', 'GoodsController@info')->name('goods.info');
+        Route::get('goods/saasinfo/{id}', 'GoodsController@saasinfo')->name('goods.saasinfo');
 
 
         Route::get('order/index', 'OrderController@index')->name('order.index');
+        Route::get('order/saasindex', 'OrderController@saasindex')->name('order.saasindex');
         Route::get('order/create', 'OrderController@create')->name('order.create');
         Route::get('order/getinfo/{id}', 'OrderController@getinfo')->name('order.getinfo');
         Route::post('order/createrun', 'OrderController@createrun')->name('order.createrun');
