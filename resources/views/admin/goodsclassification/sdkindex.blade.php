@@ -58,7 +58,7 @@
             background-color: red;
         }
         #cc{
-            display: inline-block;width: 200px;background: #0b94ea;color: aliceblue;border-radius: 15px
+            display: inline-block;width: 250px;background: #0b94ea;color: aliceblue;border-radius: 15px
         }
         .ab{
             display: inline-block;
@@ -74,8 +74,8 @@
     </style>
 
     <div style="width: 100%;margin-bottom: 15px;">
-        <a class="ab" style="background: #b4b7b3" href="{{route('goodsclassification.index')}}">SKD</a>
-        <a class="ab"  href="{{route('goodsclassification.sdkindex')}}">SaaS</a>
+        <a class="ab" href="{{route('goodsclassification.index')}}">SKD</a>
+        <a class="ab" style="background: #b4b7b3" href="{{route('goodsclassification.sdkindex')}}">SaaS</a>
     </div>
 
     <div class="row" id="onType">
@@ -83,8 +83,8 @@
             <div class="portlet light ">
                 <div class="portlet-title tabbable-line">
                     <div class="actions">
-                        <a id="cc" class="addClassify btn btn-md  blue  dropdown-toggle mt-ladda-btn ladda-button" data-style="zoom-in"  type="button" href="{{route('goodsclassification.creategoodsClassification')}}">
-                            <i class="fa fa-plus-circle"></i> New Goodsclassification
+                        <a id="cc" class="addClassify btn btn-md  blue  dropdown-toggle mt-ladda-btn ladda-button" data-style="zoom-in"  type="button" href="{{route('goodsclassification.createsaasgoodsClassification')}}">
+                            <i class="fa fa-plus-circle"></i> New SaaSGoodsclassification
                         </a>
                     </div>
 
@@ -105,7 +105,7 @@
                         layer.close(index);
                         var index = layer.load();
                         $.ajax({
-                            url: "{{route('goodsclassification.delgoodsclassification')}}",
+                            url: "{{route('goodsclassification.delsaasgoodsclassification')}}",
                             data: {delid:id, _token: '{{ csrf_token() }}'},
                             type: 'post',
                             dataType: "json",

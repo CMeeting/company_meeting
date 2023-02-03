@@ -41,27 +41,25 @@
 
     <textarea style="display: none" id="lv1">{{$lv1}}</textarea>
     <textarea style="display: none" id="lv2">{{$lv2}}</textarea>
-    <textarea style="display: none" id="lv3">{{$lv3}}</textarea>
     <input type="hidden" id="ls1" value="{{$query['level1']}}">
     <input type="hidden" id="ls2" value="{{$query['level2']}}">
-    <input type="hidden" id="ls3" value="{{$query['level3']}}">
     <div class="row">
         <div class="col-sm-12">
             <div class="ibox-title">
-                <h5>Goods</h5>
+                <h5>SaaSGoods</h5>
                 <button id="export" class="btn layui-btn-primary btn-sm" type="button" style="float: right;margin-left: 5px"><i class="fa fa-paste"></i>导出数据</button>
-                <a style="float: right;margin-left: 5px" href="{{route('goods.creategoods')}}" link-url="javascript:void(0)">
-                    <button class="btn btn-primary btn-sm" type="button"><i class="fa fa-plus-circle"></i> 添加 Goods</button>
+                <a style="float: right;margin-left: 5px" href="{{route('goods.createsaasgoods')}}" link-url="javascript:void(0)">
+                    <button class="btn btn-primary btn-sm" type="button"><i class="fa fa-plus-circle"></i> 添加 SaaSGoods</button>
                 </a>
             </div>
             <div style="width: 100%;padding-bottom: 15px;padding-top: 10px;background: #fbfffa">
-                <a class="ab" style="background: #b4b7b3" href="{{route('goods.index')}}">SKD</a>
-                <a class="ab"  href="{{route('goods.saasindex')}}">SaaS</a>
+                <a class="ab"  href="{{route('goods.index')}}">SKD</a>
+                <a class="ab" style="background: #b4b7b3" href="{{route('goods.saasindex')}}">SaaS</a>
             </div>
             <div class="ibox-content">
 
                 <div class="col-xs-10 col-sm-11 margintop5" style="margin-bottom: 5px">
-                    <form name="admin_list_sea" class="form-search" method="get" action="{{route('goods.index')}}">
+                    <form name="admin_list_sea" class="form-search" method="get" action="{{route('goods.saasindex')}}">
                         <div class="input-group">
 
                             <div class="input-group-btn" style="display: block;">
@@ -80,9 +78,6 @@
                             </div>
                             <div class="col-md-4 col-lg-2 col-sm-6 col-xs-12">
                                 <select name="level2" id="city" class="form-control"></select>
-                            </div>
-                            <div class="col-md-4 col-lg-2 col-sm-6 col-xs-12">
-                                <select name="level3" id="town" class="form-control"></select>
                             </div>
                             <div class="col-md-4 col-lg-2 col-sm-6 col-xs-12">
                                 <div class="form-group">
@@ -143,9 +138,8 @@
                     <thead>
                     <tr>
                         <th class="text-center" style="width: 5%">ID</th>
-                        <th class="text-center" style="width: 9%">Products</th>
-                        <th class="text-center" style="width: 9%">Platform</th>
-                        <th class="text-center" style="width: 9%">Licensie Type</th>
+                        <th class="text-center" style="width: 9%">套餐类型</th>
+                        <th class="text-center" style="width: 9%">文件档位</th>
                         <th class="text-center" style="width: 8%">Pricing(USD)</th>
                         <th class="text-center" style="width: 6%">状态</th>
                         <th class="text-center" style="width: 11%">创建时间</th>
@@ -160,7 +154,6 @@
                             <td class="text-center">{{$item['id']}}</td>
                             <td class="text-center">{{$item['products']}}</td>
                             <td>{{$item['platform']}}</td>
-                            <td>{{$item['licensie']}}</td>
                             <td>{{$item['price']}}</td>
                             <td id="status_{{$item['id']}}">
                                     @if($item['status'] == 1)
@@ -174,10 +167,10 @@
                             <td>{{$item['shelf_at']}}</td>
                             <td class="text-center">
                                 <div class="btn-group">
-                                    <a class="btn  btn-xs" style="text-decoration: none;color: #f6fff8;background: #0b94ea" title="预览 " href="{{route('goods.info',$item['id'])}}">
+                                    <a class="btn  btn-xs" style="text-decoration: none;color: #f6fff8;background: #0b94ea" title="预览 " href="{{route('goods.saasinfo',$item['id'])}}">
                                         <i class="fa fa-users"></i> 预览
                                     </a>
-                                    <a id="update_{{$item['id']}}" href="{{route('goods.updategoods',$item['id'])}}">
+                                    <a id="update_{{$item['id']}}" href="{{route('goods.updatesaasgoods',$item['id'])}}">
                                         <button class="btn btn-primary btn-xs" type="button"><i class="fa fa-paste"></i>
                                             修改
                                         </button>
@@ -206,7 +199,7 @@
                     @endforeach
                     </tbody>
                 </table>
-                {{$data->appends(['info' => isset($query['info'])?$query['info']:'','query_type'=>isset($query['query_type'])?$query['query_type']:'','status'=>isset($query['status'])?$query['status']:'','start_date'=>isset($query['start_date'])?$query['start_date']:'','end_date'=>isset($query['end_date'])?$query['end_date']:'','level1'=>isset($query['level1'])?$query['level1']:'','level2'=>isset($query['level2'])?$query['level2']:'','level3'=>isset($query['level3'])?$query['level3']:''])->links()}}
+                {{$data->appends(['info' => isset($query['info'])?$query['info']:'','query_type'=>isset($query['query_type'])?$query['query_type']:'','status'=>isset($query['status'])?$query['status']:'','start_date'=>isset($query['start_date'])?$query['start_date']:'','end_date'=>isset($query['end_date'])?$query['end_date']:'','level1'=>isset($query['level1'])?$query['level1']:'','level2'=>isset($query['level2'])?$query['level2']:''])->links()}}
             </div>
         </div>
         <div class="clearfix"></div>
@@ -425,12 +418,10 @@
         $(function () {
             var proarr = JSON.parse($("#lv1").text());
             var ciarr = JSON.parse($("#lv2").text());
-            var toarr = JSON.parse($("#lv3").text());
             var level1 = $("#ls1").val();
             var level2 = $("#ls2").val();
-            var level3 = $("#ls3").val();
             //遍历省份数组，将省份添加到省份下拉列表中
-            console.log(toarr)
+
             $.each(proarr, function () {
                 if(this.id==level1){
                     $("#province").append("<option value='"+this.id+"' selected>" + this.title + "</option>>")
@@ -449,16 +440,6 @@
                 }
             })
 
-            var index1 = $("#province option:checked").index();
-            //获取被点击的城市的索引
-            var index2 = $("#city option:checked").index();
-            $.each(toarr[index1][index2], function () {
-                if(this.id==level3){
-                    $("#town").append("<option value='"+this.id+"' selected>" + this.title + "</option>>");
-                }else{
-                        $("#town").append("<option value='"+this.id+"'>" + this.title + "</option>>");
-                }
-            })
 
             //创建一个用户改变域的内容的事件：改变省份下拉列表中的内容
             $("#province").change(function () {
@@ -474,35 +455,11 @@
                 $.each(ciarr[index], function () {
                         $("#city").append("<option value='"+this.id+"'>" + this.title + "</option>>")
                 })
-                var index1 = $("#province option:checked").index();
-                //获取被点击的城市的索引
-                var index2 = $("#city option:checked").index();
 
-                //清空县区下拉列表中的内容
-                $("#town").empty();
-
-                //根据被点击的省份和城市索引，遍历县区数组中对应的索引中的内容，将内容添加到县区下拉列表中去
-                $.each(toarr[index1][index2], function () {
-                        $("#town").append("<option value='"+this.id+"'>" + this.title + "</option>>");
-                })
             })
 
             //创建一个用户改变域的内容的事件：改变城市下拉列表中的内容
-            $("#city").change(function () {
 
-                //获得被点击的省份的索引
-                var index1 = $("#province option:checked").index();
-                //获取被点击的城市的索引
-                var index2 = $("#city option:checked").index();
-
-                //清空县区下拉列表中的内容
-                $("#town").empty();
-
-                //根据被点击的省份和城市索引，遍历县区数组中对应的索引中的内容，将内容添加到县区下拉列表中去
-                $.each(toarr[index1][index2], function () {
-                        $("#town").append("<option value='"+this.id+"'>" + this.title + "</option>>");
-                })
-            })
 
             //导出
             $("#export").click(function () {

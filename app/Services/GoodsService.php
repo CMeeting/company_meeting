@@ -26,7 +26,7 @@ class GoodsService
 
     public function data_list($param)
     {
-        $where = "deleted=0";
+        $where = "deleted=0 and is_saas=0";
         if ($param['info']) {
             $where .= " and {$param['query_type']}={$param['info']}";
         }
@@ -88,10 +88,80 @@ class GoodsService
         return $data;
     }
 
+
+    public function data_listsaas($param)
+    {
+        $where = "deleted=0 and is_saas=1";
+        if ($param['info']) {
+            $where .= " and {$param['query_type']}={$param['info']}";
+        }
+        if ($param['level1']) {
+            $where .= " and level1={$param['level1']}";
+        }
+        if ($param['level2']) {
+            $where .= " and level2={$param['level2']}";
+        }
+        if ($param['status']) {
+            $param['status'] = $param['status'] - 1;
+            $where .= " and status={$param['status']}";
+        }
+        if (isset($param['start_date']) && $param['start_date'] && isset($param['end_date']) && $param['end_date']) {
+            $where .= " AND created_at BETWEEN '" . $param['start_date'] . "' AND '" . $param['end_date'] . "'";
+        } elseif (isset($param['start_date']) && $param['start_date'] && empty($param['end_date'])) {
+            $where .= " AND created_at >= '" . $param['start_date'] . "'";
+        } elseif (isset($param['end_date']) && $param['end_date'] && empty($param['start_date'])) {
+            $where .= " AND created_at <= '" . $param['end_date'] . "'";
+        }
+
+        if (isset($param['updated_at']) && $param['updated_at'] && isset($param['endupdated_at']) && $param['endupdated_at']) {
+            $where .= " AND updated_at BETWEEN '" . $param['updated_at'] . "' AND '" . $param['endupdated_at'] . "'";
+        } elseif (isset($param['updated_at']) && $param['updated_at'] && empty($param['endupdated_at'])) {
+            $where .= " AND updated_at >= '" . $param['updated_at'] . "'";
+        } elseif (isset($param['endupdated_at']) && $param['endupdated_at'] && empty($param['updated_at'])) {
+            $where .= " AND updated_at <= '" . $param['endupdated_at'] . "'";
+        }
+
+        if (isset($param['shelf_at']) && $param['shelf_at'] && isset($param['endshelf_at']) && $param['endshelf_at']) {
+            $where .= " AND shelf_at BETWEEN '" . $param['shelf_at'] . "' AND '" . $param['endshelf_at'] . "'";
+        } elseif (isset($param['shelf_at']) && $param['shelf_at'] && empty($param['endshelf_at'])) {
+            $where .= " AND shelf_at >= '" . $param['shelf_at'] . "'";
+        } elseif (isset($param['endshelf_at']) && $param['endshelf_at'] && empty($param['shelf_at'])) {
+            $where .= " AND shelf_at <= '" . $param['endshelf_at'] . "'";
+        }
+
+
+        $goods = new Goods();
+
+        if ($param['export'] == 1) {
+            return $goods->whereRaw($where)->orderByRaw('id desc')->get()->toArray();
+        } else {
+            $data = $goods->whereRaw($where)->orderByRaw('id desc')->paginate(10);
+        }
+
+        if (!empty($data)) {
+            $classification = $this->assembly_saasclassification();
+            foreach ($data as $k => $v) {
+                $v->products = $classification[$v['level1']]['title'];
+                $v->platform = $classification[$v['level2']]['title'];
+            }
+        }
+        return $data;
+    }
+
     function assembly_classification()
     {
         $Goodsclassification = new Goodsclassification();
-        $data = $Goodsclassification->_where("deleted=0",'displayorder');
+        $data = $Goodsclassification->_where("deleted=0 and is_saas=0",'displayorder');
+        $arr = array();
+        foreach ($data as $k => $v) {
+            $arr[$v['id']] = $v;
+        }
+        return $arr;
+    }
+    function assembly_saasclassification()
+    {
+        $Goodsclassification = new Goodsclassification();
+        $data = $Goodsclassification->_where("deleted=0 and is_saas=1",'displayorder');
         $arr = array();
         foreach ($data as $k => $v) {
             $arr[$v['id']] = $v;
@@ -101,7 +171,7 @@ class GoodsService
 
     public function threelevellinkage()
     {
-        $where = "deleted=0";
+        $where = "deleted=0 and is_saas=0";
         $goods = new Goodsclassification();
         $data = $goods->_where($where, "lv,displayorder");
 
@@ -144,6 +214,35 @@ class GoodsService
     }
 
 
+    public function threelevellinkagesaas()
+    {
+        $where = "deleted=0 and is_saas=1";
+        $goods = new Goodsclassification();
+        $data = $goods->_where($where, "lv,displayorder");
+        $lv1 = array(['id'=>0,'title'=>'请选择套餐']);
+        $lv2 = array();
+        if ($data) {
+            foreach ($data as $k => $v) {
+                if ($v['lv'] == 1) {
+                    $lv1[] = $v;
+                }
+            }
+            foreach ($lv1 as $ks => $vs) {  //循环一级数组数据
+                $lv2[$vs['title']][] = ['id'=>0,'title'=>'请选择档位'];
+                foreach ($data as $kb => $vb) {         //循环二级数组数据
+                    $s = 0;
+                    if ($vb['lv'] == 2 && $vb['pid'] === $vs['id']) {
+                        $lv2[$vs['title']][] = $vb;
+
+                    }
+                }
+            }
+            $lv2 = array_values($lv2);
+        }
+        return ['arr1' => $lv1, 'arr2' => $lv2];
+    }
+
+
     public function addEditcaregorical($param)
     {
         $Goods = new Goods();
@@ -154,11 +253,11 @@ class GoodsService
             $data['info']=serialize($data['info']);
         }
         if (isset($data['id'])) {
-            $where = "id='{$data['id']}'";
+            $where = "id='{$data['id']}' and is_saas=0";
             $is_find = $Goods->_find($where);
             $is_find = $Goods->objToArr($is_find);
             if (($is_find['level1'] != $data['level1']) || ($is_find['level2'] != $data['level2']) || ($is_find['level3'] != $data['level3'])) {
-                $names = $Goods->find("level1={$data['level1']} and level2={$data['level2']} and level3={$data['level3']} and deleted=0 and id!={$data['id']}");
+                $names = $Goods->find("level1={$data['level1']} and level2={$data['level2']} and level3={$data['level3']} and deleted=0 and id!={$data['id']} and is_saas=0");
                 $names = $Goods->objToArr($names);
                 if ((isset($names) && $names)) {
                     return "repeat";
@@ -168,7 +267,7 @@ class GoodsService
         } elseif (isset($param['delid'])) {
             $bool = $Goods->_update(['deleted' => 1], "id=" . $param['delid']);
         } else {
-            $names = $Goods->_find("level1='" . $data['level1'] . "' and level2={$data['level2']} and level3={$data['level3']} and deleted=0");
+            $names = $Goods->_find("level1='" . $data['level1'] . "' and level2={$data['level2']} and level3={$data['level3']} and deleted=0 and is_saas=0");
             $names = $Goods->objToArr($names);
             if (isset($names) && $names) {
                 return "repeat";
@@ -178,6 +277,44 @@ class GoodsService
             }
             $data['created_at'] = date("Y-m-d H:i:s");
             $data['updated_at'] = date("Y-m-d H:i:s");
+            $bool = $Goods->_insert($data);
+        }
+        return $bool;
+
+    }
+
+    public function addsaasEditcaregorical($param)
+    {
+        $Goods = new Goods();
+        if (isset($param['data'])) {
+            $data = $param['data'];
+        }
+        if (isset($data['id'])) {
+            $where = "id='{$data['id']}' and is_saas=1";
+            $is_find = $Goods->_find($where);
+            $is_find = $Goods->objToArr($is_find);
+            if (($is_find['level1'] != $data['level1']) || ($is_find['level2'] != $data['level2']) ) {
+                $names = $Goods->find("level1={$data['level1']} and level2={$data['level2']}  and deleted=0 and id!={$data['id']} and is_saas=1");
+                $names = $Goods->objToArr($names);
+                if ((isset($names) && $names)) {
+                    return "repeat";
+                }
+            }
+            $bool = $Goods->_update($data, $where);
+        } elseif (isset($param['delid'])) {
+            $bool = $Goods->_update(['deleted' => 1], "id=" . $param['delid']);
+        } else {
+            $names = $Goods->_find("level1='" . $data['level1'] . "' and level2={$data['level2']} and deleted=0 and is_saas=1");
+            $names = $Goods->objToArr($names);
+            if (isset($names) && $names) {
+                return "repeat";
+            }
+            if ($data['status'] == 1) {
+                $data['shelf_at'] = date("Y-m-d H:i:s");
+            }
+            $data['created_at'] = date("Y-m-d H:i:s");
+            $data['updated_at'] = date("Y-m-d H:i:s");
+            $data['is_saas'] = 1;
             $bool = $Goods->_insert($data);
         }
         return $bool;
@@ -195,8 +332,22 @@ class GoodsService
         }
         $data['level1name'] = $classification[$data['level1']]['title'];
         $data['level2name'] = $classification[$data['level2']]['title'];
-        $data['level3name'] = $classification[$data['level3']]['title'];;
+        $data['level3name'] = $classification[$data['level3']]['title'];
 
+        return $data;
+    }
+
+    public function getsaasFindcategorical($id)
+    {
+        $Goods = new Goods();
+        $data = $Goods->_find("deleted=0 and id='{$id}'");
+        $data = $Goods->objToArr($data);
+        $classification = $this->assembly_saasclassification();
+        if($data['info']){
+            $data['info'] = unserialize($data['info']);
+        }
+        $data['level1name'] = $classification[$data['level1']]['title'];
+        $data['level2name'] = $classification[$data['level2']]['title'];
         return $data;
     }
 
@@ -267,8 +418,8 @@ class GoodsService
     {
         $Goodsclassification = new Goodsclassification();
         $goods = new Goods();
-        $data = $Goodsclassification->_where("deleted=0", 'lv,displayorder');
-        $goodsdata = $goods->whereRaw("deleted=0 and status=1")->orderByRaw('id desc')->get()->toArray();
+        $data = $Goodsclassification->_where("deleted=0 and is_saas=0", 'lv,displayorder');
+        $goodsdata = $goods->whereRaw("deleted=0 and status=1 and is_saas=0")->orderByRaw('id desc')->get()->toArray();
         if (!empty($goodsdata)) {
             $classification = $this->assembly_classification();
             foreach ($goodsdata as $k => $v) {
