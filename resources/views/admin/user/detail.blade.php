@@ -44,6 +44,7 @@
             <legend style="font-size: 17px">统计信息</legend>
             <div class="layui-field-box">
                 <table class="layui-table" style="width: 800px; margin: 0 auto; height: 80px">
+                    <caption>SDK</caption>
                     <tr>
                         <td style="background: #e2e2e2">消费金额</td>
                         <td style="background: #e2e2e2">订单数量</td>
@@ -52,10 +53,36 @@
                         <td style="background: #e2e2e2">登录次数</td>
                     </tr>
                     <tr>
-                        <td>{{$total_info['order_amount']}}</td>
-                        <td>{{$total_info['order_num']}}</td>
+                        <td>{{$sdk_info['order_amount']}}</td>
+                        <td>{{$sdk_info['order_num']}}</td>
 {{--                        <td>###</td>--}}
 {{--                        <td>###</td>--}}
+                        <td>{{$user->login_times}}</td>
+                    </tr>
+                </table>
+                <br>
+                <table class="layui-table" style="width: 800px; margin: 0 auto; height: 80px">
+                    <caption>SaaS</caption>
+                    <tr>
+                        <td style="background: #e2e2e2">消费金额</td>
+                        <td style="background: #e2e2e2">总资产</td>
+                        <td style="background: #e2e2e2">总资产余量</td>
+                        <td style="background: #e2e2e2">资产余量（订阅制）</td>
+                        <td style="background: #e2e2e2">资产余量（Package）</td>
+                        <td style="background: #e2e2e2">订单数量</td>
+                        {{--                        <td style="background: #e2e2e2">优惠券（张）</td>--}}
+                        {{--                        <td style="background: #e2e2e2">退款记录</td>--}}
+                        <td style="background: #e2e2e2">登录次数</td>
+                    </tr>
+                    <tr>
+                        <td>{{$saas_info['order_amount']}}</td>
+                        <td>{{$saas_info['order_num']}}</td>
+                        <td>{{$saas_info['total_assets']}}</td>
+                        <td>{{$saas_info['total_assets_balance']}}</td>
+                        <td>{{$saas_info['sub_assets_balance']}}</td>
+                        <td>{{$saas_info['package_assets_balance']}}</td>
+                        {{--                        <td>###</td>--}}
+                        {{--                        <td>###</td>--}}
                         <td>{{$user->login_times}}</td>
                     </tr>
                 </table>

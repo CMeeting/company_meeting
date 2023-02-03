@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 
 
 use App\Models\Mailmagicboard;
+use App\Models\Order;
 use App\Models\User;
 use App\Models\UserBillingInformation;
 use App\Services\EmailService;
@@ -217,12 +218,28 @@ class UserController extends BaseController
         //订单信息
         $orders = $userService->getUserOrders($id);
 
-        //统计信息
-        $total_info = $userService->getOrderTotalByUser($id);
-        if($total_info){
-            $total_info = $total_info->toArray();
-        }else{
-            $total_info = ['order_amount' => 0.00, 'order_num' => 0];
+        //统计信息 SDK
+        $sdk_info = ['order_amount' => 0.00, 'order_num' => 0];
+        $sdk_info_temp = $userService->getOrderTotalByUser($id, [Order::DETAILS_STATUS_1_TRIAL, Order::DETAILS_STATUS_2_SDK]);
+        if($sdk_info_temp){
+            $sdk_info = $sdk_info_temp->toArray();
+        }
+
+        //统计信息 SaaS
+        $saas_info = ['order_amount' => 0.00, 'order_num' => 0, 'total_assets' => 0, 'total_assets_balance' => 0, 'sub_assets_balance' => 0, 'package_assets_balance' => 0];
+        $saas_info_temp = $userService->getOrderTotalByUser($id, [Order::DETAILS_STATUS_3_SAAS]);
+        if($saas_info_temp){
+            $saas_info['order_amount'] = $saas_info_temp['order_amount'];
+            $saas_info['order_num'] = $saas_info_temp['order_num'];
+        }
+
+        //资产信息
+        $assets_info = $userService->getSaaSAssetByUser($id);
+        if($assets_info){
+            $saas_info['total_assets'] = $assets_info['total_assets'];
+            $saas_info['total_assets_balance'] = $assets_info['total_assets_balance'];
+            $saas_info['sub_assets_balance'] = $assets_info['sub_assets_balance'];
+            $saas_info['package_assets_balance'] = $assets_info['package_assets_balance'];
         }
 
         //TODO 后续声明常量
@@ -231,7 +248,9 @@ class UserController extends BaseController
         $source_arr = [1 => '后台创建', 2 => '用户购买'];
         $details_type_arr = [1 => 'SDK试用', 2 => 'SDK订单', 3 => 'SaaS订单'];
 
-        return $this->view('detail')->with(['user' => $user, 'billing' => $billing, 'orders' => $orders, 'total_info'=>$total_info, 'status_arr' => $status_arr, 'pay_type_arr' => $pay_type_arr, 'source_arr' => $source_arr, 'details_type_arr'=>$details_type_arr]);
+        return $this->view('detail')->with(['user' => $user, 'billing' => $billing, 'orders' => $orders, 'sdk_info'=>$sdk_info,
+            'saas_info' => $saas_info,
+            'status_arr' => $status_arr, 'pay_type_arr' => $pay_type_arr, 'source_arr' => $source_arr, 'details_type_arr'=>$details_type_arr]);
     }
 
     /**

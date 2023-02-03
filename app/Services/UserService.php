@@ -9,6 +9,7 @@ use App\Models\LogoutUser;
 use App\Models\Mailmagicboard;
 use App\Models\Order;
 use App\Models\User;
+use App\Models\UserAssets;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Query\Builder;
@@ -406,11 +407,28 @@ class UserService
         $user->save();
     }
 
-    public function getOrderTotalByUser($user_id){
+    /**
+     * 获取用户账单
+     * @param $user_id
+     * @param $type
+     * @return \Illuminate\Database\Eloquent\Builder|Model|Builder|object|null
+     */
+    public function getOrderTotalByUser($user_id, $type){
         return Order::where('user_id', $user_id)
+            ->whereIn('type', $type)
             ->whereIn('status', [1,2])
             ->groupBy('user_id')
             ->selectRaw('sum(price) as order_amount, count(user_id) as order_num')
+            ->first();
+    }
+
+    /**
+     * 获取用户资产
+     * @param $user_id
+     * @return \Illuminate\Database\Eloquent\Builder|Model|object|null
+     */
+    public function getSaaSAssetByUser($user_id){
+        return UserAssets::where('user_id', $user_id)
             ->first();
     }
 }
