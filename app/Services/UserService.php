@@ -425,10 +425,11 @@ class UserService
     /**
      * 获取用户资产
      * @param $user_id
-     * @return \Illuminate\Database\Eloquent\Builder|Model|object|null
+     * @return array
      */
     public function getSaaSAssetByUser($user_id){
         return UserAssets::where('user_id', $user_id)
-            ->first();
+            ->get()
+            ->toArray();
     }
 }

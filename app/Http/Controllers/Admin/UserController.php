@@ -7,6 +7,7 @@ namespace App\Http\Controllers\Admin;
 use App\Models\Mailmagicboard;
 use App\Models\Order;
 use App\Models\User;
+use App\Models\UserAssets;
 use App\Models\UserBillingInformation;
 use App\Services\EmailService;
 use App\Services\JWTService;
@@ -235,11 +236,18 @@ class UserController extends BaseController
 
         //资产信息
         $assets_info = $userService->getSaaSAssetByUser($id);
-        if($assets_info){
-            $saas_info['total_assets'] = $assets_info['total_assets'];
-            $saas_info['total_assets_balance'] = $assets_info['total_assets_balance'];
-            $saas_info['sub_assets_balance'] = $assets_info['sub_assets_balance'];
-            $saas_info['package_assets_balance'] = $assets_info['package_assets_balance'];
+        $saas_info['total_assets'] = 0;
+        $saas_info['total_assets_balance'] = 0;
+        if(!empty($assets_info)){
+            foreach ($assets_info as $assets){
+                if($assets['type'] == UserAssets::TYPE_1_SUB){
+                    $saas_info['sub_assets_balance'] = $assets['balance'];
+                }elseif($assets['type'] == UserAssets::TYPE_2_PACKAGE){
+                    $saas_info['package_assets_balance'] = $assets['balance'];
+                }
+            }
+            $saas_info['total_assets'] += $assets_info['total'];
+            $saas_info['total_assets_balance'] += $assets_info['balance'];
         }
 
         //TODO 后续声明常量
