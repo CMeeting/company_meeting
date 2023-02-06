@@ -88,7 +88,7 @@ class OrdersService
 
     public function data_list($param)
     {
-        $where = "details_type!=3";
+        $where = "orders.details_type!=3";
         if ($param['info']) {
             $where .= " and {$param['query_type']}='{$param['info']}'";
         }
@@ -136,7 +136,7 @@ class OrdersService
 
     public function data_saaslist($param)
     {
-        $where = "details_type=3";
+        $where = "orders.details_type=3";
         if ($param['info']) {
             $where .= " and {$param['query_type']}='{$param['info']}'";
         }
@@ -170,14 +170,40 @@ class OrdersService
         }
 
         $goods = new Order();
-
+        $classification = $this->assembly_saasclassification();
         if ($param['export'] == 1) {
-            return $goods->leftJoin('users', 'orders.user_id', '=', 'users.id')->whereRaw($where)->orderByRaw('orders.id desc')->selectRaw("orders.*,users.email")->get()->toArray();
+            return $goods->leftJoin('users', 'orders.user_id', '=', 'users.id')
+                ->leftJoin('orders_goods', 'orders_goods.order_id', '=', 'orders.id')
+                ->leftJoin('goods', 'goods.id', '=', 'orders_goods.goods_id')
+                ->whereRaw($where)
+                ->orderByRaw('orders.id desc')
+                ->selectRaw("orders.*,users.email,goods.level1,goods.level2")->toArray();
         } else {
-            $data = $goods->leftJoin('users', 'orders.user_id', '=', 'users.id')->whereRaw($where)->orderByRaw('orders.id desc')->selectRaw("orders.*,users.email")->paginate(10);
-        }
+            $data = $goods
+                ->leftJoin('users', 'orders.user_id', '=', 'users.id')
+                ->leftJoin('orders_goods', 'orders_goods.order_id', '=', 'orders.id')
+                ->leftJoin('goods', 'goods.id', '=', 'orders_goods.goods_id')
+                ->whereRaw($where)
+                ->orderByRaw('orders.id desc')
+                ->selectRaw("orders.*,users.email,goods.level1,goods.level2")->paginate(10);
+              foreach ($data as $k=>$v){
+                  $v->level1name = $classification[$v->level1]['title'];
+                  $v->level2name = $classification[$v->level2]['title'];
+              }
 
+        }
         return $data;
+    }
+
+    function assembly_saasclassification()
+    {
+        $Goodsclassification = new Goodsclassification();
+        $data = $Goodsclassification->_where("deleted=0 and is_saas=1",'displayorder');
+        $arr = array();
+        foreach ($data as $k => $v) {
+            $arr[$v['id']] = $v;
+        }
+        return $arr;
     }
 
 
@@ -568,6 +594,119 @@ class OrdersService
         return ['code' => 200];
     }
 
+
+
+    public function saasrundata($param)
+    {
+        $data = $param['data'];
+        $user = new User();
+        $email = new EmailService();
+        $maile = new MailmagicboardService();
+        $goods = new Goods();
+        $order = new Order();
+        $orderGoods = new OrderGoods();
+        $is_user = $user->existsEmail($data['email']);
+        if (!$is_user) {
+            $password = User::getRandStr();
+            $arr['full_name'] = $data['full_name'];
+            $arr['email'] = $data['email'];
+            $arr['flag'] = 2;
+            $arr['password'] = User::encryptPassword($password);
+            $arr['created_at'] = date("Y-m-d H:i:s");
+            $arr['updated_at'] = date("Y-m-d H:i:s");
+            $user_id = Db::table("users")->insertGetId($arr);
+            //自动订阅电子报
+            $subsService = new SubscriptionService();
+            $subsService->update_status(['email'=>$data['email'], 'subscribed'=>1], false);
+            //发送邮件
+            $emailModel = Mailmagicboard::getByName('后台新增订单（用户注册成功邮件）');
+            $data['title'] = $emailModel->title;
+            $data['info'] = $emailModel->info;
+            $data['info'] = str_replace("#@username", $arr['full_name'], $data['info']);
+            $data['info'] = str_replace("#@mail", $arr['email'], $data['info']);
+            $data['info'] = str_replace("#@password", $password, $data['info']);
+            $url = env('WEB_HOST') . '/login';
+            $url_info = "<a href='$url'>$url</a>";
+            $data['info'] = str_replace("#@url", $url_info, $data['info']);
+            $data['id'] = $emailModel->id;
+            $email->sendDiyContactEmail($data, 0, $arr['email']);
+            $emailarr['username']=$arr['full_name'];
+            $user_email=$arr['email'];
+        } else {
+            $users = DB::table('users')->where('email', $data['email'])->first();
+            $user_id = $users->id;
+            $emailarr['username']=$users->full_name;
+            $user_email=$users->email;
+        }
+
+        $goods_data = $goods->_where("deleted=0 and status=1 and is_saas=1");
+        $arr = [];
+        $sumprice = 0;
+        $goodstotal = 0;
+        if ($data['status'] == 1) {
+            $pay_type = 4;
+        } else {
+            $pay_type = 0;
+        }
+        $classification = $this->assembly_saasorderclassification();
+        foreach ($data['level1'] as $k => $v) {
+            $goodsid=0;
+
+            foreach ($goods_data as $ks => $vs) {
+                if ($v == $vs['level1'] && $data['level2'][$k] == $vs['level2']) {
+                    $goodsid = $vs['id'];
+                    if(isset($data['zican'])){
+                        $price=$data['price'];
+                    }else{
+                        $price = $vs['price']*$data['period'][$k];
+                    }
+                }
+            }
+
+            if (!$goodsid) return ['code' => 500, 'msg' => $classification[$v]['title'] . '-' . $classification[$data['level2'][$k]]['title'] . '下没有商品'];
+            $ordergoods_no = chr(rand(65, 90)) .chr(rand(65, 90)) .chr(rand(65, 90)). time();
+            $s = $k + 1;
+            $arr[] = [
+                'goods_no' => $ordergoods_no,
+                'status' => $data['status'],
+                'type' => 1,
+                'details_type' => 3,
+                'pay_type' => $pay_type,
+                'price' => $price,
+                'user_id' => $user_id,
+                'goods_id' => $goodsid,
+                'created_at' => date("Y-m-d H:i:s"),
+                'updated_at' => date("Y-m-d H:i:s")
+            ];
+            $goodstotal++;
+            $sumprice += $price;
+        }
+        $orderno = chr(rand(65, 90)) .chr(rand(65, 90)) .chr(rand(65, 90)) .time();
+        $orderdata = [
+            'pay_type' => $pay_type,
+            'order_no' => $orderno,
+            'status' => $data['status'],
+            'type' => 1,
+            'details_type' => 3,
+            'user_bill' => serialize(['email'=>$user_email]),
+            'price' => $sumprice,
+            'user_id' => $user_id,
+            'goodstotal' => $goodstotal
+        ];
+
+        try {
+            $order_id = $order->insertGetId($orderdata);
+            foreach ($arr as $k => $v) {
+                $arr[$k]['order_id'] = $order_id;
+                $arr[$k]['order_no'] = $orderno;
+                $orderGoods->insertGetId($arr[$k]);
+            }
+        } catch (Exception $e) {
+            return ['code' => 500, 'message' => 'Invalid Token'];
+        }
+        return ['code' => 200];
+    }
+
     public function data_info($id)
     {
         $orderGoods = new OrderGoods();
@@ -583,6 +722,25 @@ class OrdersService
                 $ordergoodsdata[$k]['products'] = $classification[$v['level1']]['title'];
                 $ordergoodsdata[$k]['platform'] = $classification[$v['level2']]['title'];
                 $ordergoodsdata[$k]['licensie'] = $classification[$v['level3']]['title'];
+            }
+        }
+        return $ordergoodsdata;
+    }
+
+    public function data_saasinfo($id)
+    {
+        $orderGoods = new OrderGoods();
+        $ordergoodsdata = $orderGoods
+            ->leftJoin('users', 'orders_goods.user_id', '=', 'users.id')
+            ->leftJoin('goods', 'goods.id', '=', 'orders_goods.goods_id')
+            ->whereRaw("orders_goods.order_id='{$id}'")
+            ->selectRaw("orders_goods.*,users.email,goods.level1,goods.level2")
+            ->get()->toArray();
+        if (!empty($ordergoodsdata)) {
+            $classification = $this->assembly_saasorderclassification();
+            foreach ($ordergoodsdata as $k => $v) {
+                $ordergoodsdata[$k]['products'] = $classification[$v['level1']]['title'];
+                $ordergoodsdata[$k]['platform'] = $classification[$v['level2']]['title'];
             }
         }
         return $ordergoodsdata;
@@ -1110,7 +1268,18 @@ class OrdersService
     function assembly_orderclassification()
     {
         $Goodsclassification = new Goodsclassification();
-        $data = $Goodsclassification->_where("1=1");
+        $data = $Goodsclassification->_where("is_saas=0");
+        $arr = array();
+        foreach ($data as $k => $v) {
+            $arr[$v['id']] = $v;
+        }
+        return $arr;
+    }
+
+    function assembly_saasorderclassification()
+    {
+        $Goodsclassification = new Goodsclassification();
+        $data = $Goodsclassification->_where("is_saas=1");
         $arr = array();
         foreach ($data as $k => $v) {
             $arr[$v['id']] = $v;
