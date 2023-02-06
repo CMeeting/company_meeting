@@ -201,8 +201,11 @@ Route::group(['namespace' => 'Admin','prefix' => 'admin'], function (){
         Route::get('order/index', 'OrderController@index')->name('order.index');
         Route::get('order/saasindex', 'OrderController@saasindex')->name('order.saasindex');
         Route::get('order/create', 'OrderController@create')->name('order.create');
+        Route::get('order/saascreate', 'OrderController@saascreate')->name('order.saascreate');
         Route::get('order/getinfo/{id}', 'OrderController@getinfo')->name('order.getinfo');
+        Route::get('order/getsaasinfo/{id}', 'OrderController@getsaasinfo')->name('order.getsaasinfo');
         Route::post('order/createrun', 'OrderController@createrun')->name('order.createrun');
+        Route::post('order/saascreaterun', 'OrderController@saascreaterun')->name('order.saascreaterun');
         Route::post('order/updatestatus', 'OrderController@updatestatus')->name('order.updatestatus');
 
         Route::get('license/index', 'LicenseController@index')->name('license.index');

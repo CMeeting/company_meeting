@@ -50,7 +50,6 @@ class OrderController extends BaseController {
         $query ['field'] = array_get($param, 'field', '');
         $data = $GoodsService->data_saaslist($query);
         $sum = $GoodsService->sum_saasdata($query);
-
         if($query['export'] == 1){
             return $GoodsService->export($data, $query['field']);
         }
@@ -62,11 +61,23 @@ class OrderController extends BaseController {
         $categorical_data = $GoodsService->threelevellinkage();
         return $this->view('create',['lv1'=>json_encode($categorical_data['arr1']),'lv2'=>json_encode($categorical_data['arr2']),'lv3'=>json_encode($categorical_data['arr3'])]);
     }
+    public function saascreate(){
+        $GoodsService = new GoodsService();
+        $categorical_data = $GoodsService->threelevellinkagesaas();
+        return $this->view('saascreate',['lv1'=>json_encode($categorical_data['arr1']),'lv2'=>json_encode($categorical_data['arr2'])]);
+    }
 
     public function createrun(Request $request){
         $param = $request->input();
         $GoodsService = new OrdersService();
         $rest=$GoodsService->rundata($param);
+        return $rest;
+    }
+
+    public function saascreaterun(Request $request){
+        $param = $request->input();
+        $GoodsService = new OrdersService();
+        $rest=$GoodsService->saasrundata($param);
         return $rest;
     }
 
@@ -82,6 +93,14 @@ class OrderController extends BaseController {
         $data = $order->data_info($id);
         $info = $order->getOrderInfo($id);//获取发票信息
         return $this->view('info', ['data' => $data, 'info' => $info]);
+    }
+
+
+    public function getsaasinfo($id){
+        $order = new OrdersService();
+        $data = $order->data_saasinfo($id);
+//        $info = $order->getOrderInfo($id);//获取发票信息
+        return $this->view('saasinfo', ['data' => $data]);
     }
 
     public function updatestatus(Request $request){

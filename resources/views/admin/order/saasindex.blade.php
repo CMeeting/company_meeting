@@ -34,7 +34,7 @@
             <div class="ibox-title">
                 <h5>Order</h5>
                 <button id="export" class="btn layui-btn-primary btn-sm" type="button" style="float: right;margin-left: 5px"><i class="fa fa-paste"></i>导出数据</button>
-                <a style="float: right;margin-left: 5px" href="{{route('order.create')}}" link-url="javascript:void(0)">
+                <a style="float: right;margin-left: 5px" href="{{route('order.saascreate')}}" link-url="javascript:void(0)">
                     <button class="btn btn-primary btn-sm" type="button"><i class="fa fa-plus-circle"></i> 添加 SaasOrder</button>
                 </a>
             </div>
@@ -181,8 +181,8 @@
                             <td class="text-center">{{$item['id']}}</td>
                             <td class="text-center">{{$item['order_no']}}</td>
                             <td>{{$item['email']}}</td>
-                            <td>套餐</td>
-                            <td>档位</td>
+                            <td>{{$item['level1name']}}</td>
+                            <td>{{$item['level2name']}}</td>
                             <td>{{$item['price']}}</td>
                             <td>
                                     @if($item['pay_type'] == 1)
@@ -225,7 +225,7 @@
 
                             <td class="text-center">
                                 <div class="btn-group">
-                                    <a class="btn  btn-xs" style="text-decoration: none;color: #f6fff8;background: #0b94ea" title="预览 " href="{{route('order.getinfo',$item['id'])}}">
+                                    <a class="btn  btn-xs" style="text-decoration: none;color: #f6fff8;background: #0b94ea" title="预览 " href="{{route('order.getsaasinfo',$item['id'])}}">
                                         <i class="fa fa-users"></i> 详情
                                     </a>
                                 </div>
