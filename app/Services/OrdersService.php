@@ -790,6 +790,12 @@ class OrdersService
             'goodstotal' => $goodstotal
         ];
 
+        //更新用户类型
+        if($data['status'] == 1){
+            $user_service = new UserService();
+            $user_service->changeType(Order::DETAILS_STATUS_3_SAAS, $user_id);
+        }
+
         $assets_service = new UserAssetsService();
         try {
             $order_id = $order->insertGetId($orderdata);
