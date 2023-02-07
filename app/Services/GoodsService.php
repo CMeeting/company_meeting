@@ -398,7 +398,7 @@ class GoodsService
                 if (in_array($key, ['level1', 'level2', 'level3'])) {
                     $value = $classification[$value]['title'];
                 } elseif ($key == 'status') {
-                    $value = $value == 1 ? '下架' : '上架';
+                    $value = $value == 1 ? '上架' : '下架';
                 }
                 $row[] = $value;
             }
@@ -407,13 +407,52 @@ class GoodsService
         }
 
         $userExport = new GoodsExport($rows);
-        $fileName = 'export' . DIRECTORY_SEPARATOR . '商品列表' . time() . '.xlsx';
-        \Excel::store($userExport, $fileName);
-
-        //ajax请求 需要返回下载地址，在使用location.href请求下载地址
-        return ['url' => route('download', ['file_name' => $fileName])];
+        $fileName = 'SDK商品列表' . time() . '.xlsx';
+        return \Excel::download($userExport, $fileName);
     }
 
+    public function exportSaaS($list, $field)
+    {
+        $title_arr = [
+            'id' => 'ID',
+            'level1' => '套餐类型',
+            'level2' => '文件档位',
+            'price' => 'Pricing(USD)',
+            'status' => '状态',
+            'created_at' => '创建时间',
+            'updated_at' => '更新时间',
+            'shelf_at' => '上架时间',
+        ];
+
+        $classification = $this->assembly_saasclassification();
+
+        $field = explode(',', $field);
+
+        $header = [];
+        foreach ($field as $title) {
+            $header[] = array_get($title_arr, $title);
+        }
+        $rows[] = $header;
+
+        foreach ($list as $data) {
+            $row = [];
+            foreach ($field as $key) {
+                $value = array_get($data, $key);
+                if (in_array($key, ['level1', 'level2'])) {
+                    $value = $classification[$value]['title'];
+                } elseif ($key == 'status') {
+                    $value = $value == 1 ? '上架' : '下架';
+                }
+                $row[] = $value;
+            }
+
+            $rows[] = $row;
+        }
+
+        $userExport = new GoodsExport($rows);
+        $fileName = 'SaaS商品列表' . time() . '.xlsx';
+        return \Excel::download($userExport, $fileName);
+    }
 
     public function get_data()
     {

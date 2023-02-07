@@ -465,9 +465,8 @@
             $("#export").click(function () {
                 html =  '<div style="display: flex; justify-content: left;flex-wrap: wrap; padding: 10px">' +
                     '<div style="margin-bottom: 20px"><label style="margin-right: 10px; width: 50px"><input name="id"  type="checkbox"  value="id" checked="checked"/>ID</label>' +
-                    '<label style="margin-right: 10px; width: 100px"><input name="products"  type="checkbox"  value="level1" checked="checked"/>Products</label>' +
-                    '<label style="margin-right: 10px; width: 100px"><input name="platform"  type="checkbox"  value="level2" checked="checked"/>Platform</label>' +
-                    '<label style="margin-right: 10px; width: 120px"><input name="licensie"  type="checkbox"  value="level3" checked="checked"/>Licensie Type</label>' +
+                    '<label style="margin-right: 10px; width: 100px"><input name="products"  type="checkbox"  value="level1" checked="checked"/>套餐类型</label>' +
+                    '<label style="margin-right: 10px; width: 100px"><input name="platform"  type="checkbox"  value="level2" checked="checked"/>文件档位</label>' +
                     '<label style="margin-right: 10px; width: 120px"><input name="price"  type="checkbox"  value="price" checked="checked"/>Pricing(USD)</label></div>' +
                     '<div><label style="margin-right: 10px; width: 50px"><input name="status"  type="checkbox"  value="status" checked="checked"/>状态</label>' +
                     '<label style="margin-right: 10px; width: 100px"><input name="created_at"  type="checkbox"  value="created_at" checked="checked"/>创建时间</label>' +
@@ -507,19 +506,8 @@
                         let startDate = $('#startDate').val()
                         let endDate = $('#endDate').val()
 
-                        $.ajax({
-                            url: "{{route('goods.index')}}",
-                            header: {
-                                contentType: "application/octet-stream"
-                            },
-                            data: "query_type="+ query_type + "info=" + info + "&level1=" + level1 + "&level2=" + level2 + "&level3=" + level3 + "&status=" + status + "&start_date=" + startDate + "&end_date=" + endDate
-                                + "&field=" + field.join(',') + "&export=1",
-                            type: 'get',
-                            success: function (res) {
-                                //导出
-                                location.href = res.url;
-                            }
-                        });
+                        location.href = "/admin/goods/saasindex?export=1&query_type" + query_type + "&info=" + info + "&level1=" + level1 + "&level2=" + level2 +
+                            "&start_date=" + startDate + "&end_date=" + endDate + "&status=" + status + "&field=" + field.join(',');
                     }
                 });
             });

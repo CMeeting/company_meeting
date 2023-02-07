@@ -550,19 +550,9 @@
                         let startDate = $('#startDate').val()
                         let endDate = $('#endDate').val()
 
-                        $.ajax({
-                            url: "{{route('goods.index')}}",
-                            header: {
-                                contentType: "application/octet-stream"
-                            },
-                            data: "query_type="+ query_type + "info=" + info + "&level1=" + level1 + "&level2=" + level2 + "&level3=" + level3 + "&status=" + status + "&start_date=" + startDate + "&end_date=" + endDate
-                                + "&field=" + field.join(',') + "&export=1",
-                            type: 'get',
-                            success: function (res) {
-                                //导出
-                                location.href = res.url;
-                            }
-                        });
+                        location.href = "/admin/goods/index?export=1&query_type"+ query_type + "info=" + info + "&level1=" + level1 + "&level2="
+                            + level2 + "&level3=" + level3 + "&status=" + status + "&start_date=" + startDate + "&end_date=" + endDate
+                            + "&field=" + field.join(',');
                     }
                 });
             });
