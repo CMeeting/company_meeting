@@ -410,12 +410,12 @@ class UserService
     /**
      * 获取用户账单
      * @param $user_id
-     * @param $type
+     * @param $details_type
      * @return \Illuminate\Database\Eloquent\Builder|Model|Builder|object|null
      */
-    public function getOrderTotalByUser($user_id, $type){
+    public function getOrderTotalByUser($user_id, $details_type){
         return Order::where('user_id', $user_id)
-            ->whereIn('type', $type)
+            ->whereIn('details_type', $details_type)
             ->whereIn('status', [1,2])
             ->groupBy('user_id')
             ->selectRaw('sum(price) as order_amount, count(user_id) as order_num')
@@ -428,7 +428,7 @@ class UserService
      * @return array
      */
     public function getSaaSAssetByUser($user_id){
-        return UserAssets::where('user_id', $user_id)
+        return UserAssets::where('user_id', $user_id)->where('status', UserAssets::STATUS_1_ENABLE)
             ->get()
             ->toArray();
     }

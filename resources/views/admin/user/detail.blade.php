@@ -76,11 +76,11 @@
                     </tr>
                     <tr>
                         <td>{{$saas_info['order_amount']}}</td>
-                        <td>{{$saas_info['order_num']}}</td>
                         <td>{{$saas_info['total_assets']}}</td>
                         <td>{{$saas_info['total_assets_balance']}}</td>
                         <td>{{$saas_info['sub_assets_balance']}}</td>
                         <td>{{$saas_info['package_assets_balance']}}</td>
+                        <td>{{$saas_info['order_num']}}</td>
                         {{--                        <td>###</td>--}}
                         {{--                        <td>###</td>--}}
                         <td>{{$user->login_times}}</td>
@@ -203,7 +203,11 @@
 
                             <th>
                                 <div class="btn-group">
-                                    <a  href="{{route('order.getinfo',$order->id)}}"><button class="btn btn-primary btn-xs" type="button"><i class="fa fa-paste"></i> 查看订单</button></a>
+                                    @if($order->details_type == 3)
+                                        <a  href="{{route('order.getsaasinfo',$order->id)}}"><button class="btn btn-primary btn-xs" type="button"><i class="fa fa-paste"></i> 查看订单</button></a>
+                                    @else
+                                        <a  href="{{route('order.getinfo',$order->id)}}"><button class="btn btn-primary btn-xs" type="button"><i class="fa fa-paste"></i> 查看订单</button></a>
+                                    @endif
                                 </div>
                             </th>
                         </tr>

@@ -28,5 +28,6 @@ class Order extends Model
     const DETAILS_STATUS_2_SDK = 2;
     const DETAILS_STATUS_3_SAAS = 3;
 
+    const TYPE_1_BACKGROUND_CREATE = 1;
     const TYPE_2_USER_BUY = 2;
 }

@@ -12,6 +12,7 @@ declare (strict_types=1);
 namespace App\Services;
 
 use App\Export\GoodsExport;
+use App\Models\UserAssets;
 use PDF;
 use App\Http\Controllers\Api\biz\AlipayBiz;
 use App\Http\Controllers\Api\OrderController;
@@ -694,14 +695,16 @@ class OrdersService
             'goodstotal' => $goodstotal
         ];
 
+        $assets_service = new UserAssetsService();
         try {
             $order_id = $order->insertGetId($orderdata);
             foreach ($arr as $k => $v) {
                 $arr[$k]['order_id'] = $order_id;
                 $arr[$k]['order_no'] = $orderno;
-                $orderGoods->insertGetId($arr[$k]);
+                $order_goods_id = $orderGoods->insertGetId($arr[$k]);
+                $assets_service->addUserAssetsFromOrder($order_goods_id, $user_id, $classification[$data['level1'][0]]['title'], $classification[$data['level2'][0]]['title'], $data['zican'] ?? null);
             }
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             return ['code' => 500, 'message' => 'Invalid Token'];
         }
         return ['code' => 200];
