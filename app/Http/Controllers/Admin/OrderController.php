@@ -51,7 +51,7 @@ class OrderController extends BaseController {
         $data = $GoodsService->data_saaslist($query);
         $sum = $GoodsService->sum_saasdata($query);
         if($query['export'] == 1){
-            return $GoodsService->export($data, $query['field']);
+            return $GoodsService->exportSaaS($data, $query['field']);
         }
         return $this->view('saasindex',['data'=>$data,'query'=>$query,'sum'=>$sum]);
     }

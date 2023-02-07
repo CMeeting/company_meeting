@@ -178,7 +178,9 @@ class OrdersService
                 ->leftJoin('goods', 'goods.id', '=', 'orders_goods.goods_id')
                 ->whereRaw($where)
                 ->orderByRaw('orders.id desc')
-                ->selectRaw("orders.*,users.email,goods.level1,goods.level2")->toArray();
+                ->selectRaw("orders.*,users.email,goods.level1,goods.level2")
+                ->get()
+                ->toArray();
         } else {
             $data = $goods
                 ->leftJoin('users', 'orders.user_id', '=', 'users.id')
@@ -301,8 +303,101 @@ class OrdersService
         }
 
         $userExport = new GoodsExport($rows);
-        $fileName = '订单列表' . time() . '.xlsx';
-        return \Maatwebsite\Excel\Facades\Excel::download($userExport, $fileName);
+        $fileName = 'SDK订单列表' . time() . '.xlsx';
+        return \Excel::download($userExport, $fileName);
+    }
+
+    public function exportSaaS($list, $field)
+    {
+        $title_arr = [
+            'id' => 'ID',
+            'order_no' => '订单编号',
+            'email' => '用户账号',
+            'level1name' => '套餐',
+            'level2name' => '档位',
+            'price' => '订单金额',
+            'pay_type' => '支付方式',
+            'type' => '订单来源',
+            'status' => '订单状态',
+        ];
+
+
+        $field = explode(',', $field);
+
+        $header = [];
+        foreach ($field as $title) {
+            $header[] = array_get($title_arr, $title);
+        }
+        $rows[] = $header;
+
+        $classification = $this->assembly_saasclassification();
+        foreach ($list as $data) {
+            $row = [];
+            foreach ($field as $key) {
+                $value = array_get($data, $key);
+                if ($key == 'status') {
+                    switch ($value) {
+                        case 0:
+                            $value = "待付款";
+                            break;
+                        case 1:
+                            $value = "已付款";
+                            break;
+                        case 2:
+                            $value = "已完成";
+                            break;
+                        case 3:
+                            $value = "待退款";
+                            break;
+                        case 4:
+                            $value = "已关闭";
+                            break;
+                    }
+                }
+                elseif ($key == 'pay_type') {
+                    switch ($value) {
+                        case 0:
+                            $value = "未支付";
+                            break;
+                        case 1:
+                            $value = "paddle支付";
+                            break;
+                        case 2:
+                            $value = "支付宝";
+                            break;
+                        case 3:
+                            $value = "微信";
+                            break;
+                        case 4:
+                            $value = "不需支付";
+                            break;
+                    }
+                }
+                elseif ($key == 'type') {
+                    switch ($value) {
+                        case 1:
+                            $value = "后台创建";
+                            break;
+                        case 2:
+                            $value = "用户购买";
+                            break;
+                    }
+                }
+                elseif ($key == 'level1name'){
+                    $value = $classification[$data['level1']]['title'];
+                }
+                elseif($key == 'level2name'){
+                    $value = $classification[$data['level2']]['title'];
+                }
+                $row[] = $value;
+            }
+
+            $rows[] = $row;
+        }
+
+        $userExport = new GoodsExport($rows);
+        $fileName = 'SaaS订单列表' . time() . '.xlsx';
+        return \Excel::download($userExport, $fileName);
     }
 
     public function sum_data($param)
