@@ -66,6 +66,13 @@
                             <select name="data[level1][]" id="province1" class="form-control province" onchange="province(1)"></select>
                         </div>
                     </div>
+                    <div class="form-group h1title">
+                        <label class="col-sm-2 control-label no-padding-right" for="form-field-1"> 有效期：<span style="color: red;font-size: 14px">*</span></label>
+                        <div class="col-sm-6 col-xs-12">
+                            <input id="pay_years" type="number" min="1" class="form-control" name="data[pay_years]" required placeholder="请输入有效期">
+                        </div>
+                        <span class="lbl">/月</span>
+                    </div>
                     <div class="form-group">
                         <label class="col-sm-2 control-label no-padding-right" for="form-field-1">档位：<span style="color: red;font-size: 14px">*</span></label>
                         <div class="col-sm-6 col-xs-12">
@@ -153,6 +160,14 @@
                 layer.closeAll('loading');
                 return false;
             }
+
+            if(!$("#pay_years").val()){
+                dd=1;
+                layer.msg("请输入有效期", {time: 1500, anim: 6});
+                layer.closeAll('loading');
+                return false;
+            }
+
             $(".city").each(function (){
                 if(!$(this).val() || $(this).val()==0){
                     dd=1;

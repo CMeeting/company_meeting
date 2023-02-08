@@ -45,6 +45,7 @@
                             <th class="text-center" style="width: 12%">子订单编号</th>
                             <th class="text-center" style="width: 15%">套餐类型</th>
                             <th class="text-center" style="width: 9%">档位</th>
+                            <th class="text-center" style="width: 9%">有效期(月）</th>
                             <th class="text-center" style="width: 9%">提交时间</th>
                             <th class="text-center" style="width: 8%">用户账号</th>
                             <th class="text-center" style="width: 6%">订单金额</th>
@@ -59,6 +60,7 @@
                                 <td class="text-center">{{$item['goods_no']}}</td>
                                 <td class="text-center">{{$item['products']}}</td>
                                 <td>{{$item['platform']}}</td>
+                                <td>{{$item['pay_years']}}/月</td>
                                 <td>{{$item['created_at']}}</td>
                                 <td>{{$item['email']}}</td>
                                 <td>${{$item['price']}}</td>

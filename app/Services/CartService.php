@@ -52,15 +52,15 @@ class CartService
 
             $appid=implode(",",$data['appid']);
             if(!isset($data['goods_id'])){
-                $goods_data = $goods->_find("level1='{$data['products_id']}' and level2='{$data['platform_id']}' and level3='{$data['licensetype_id']}' and deleted=0 and status=1");
+                $goods_data = $goods->_find("level1='{$data['products_id']}' and level2='{$data['platform_id']}' and level3='{$data['licensetype_id']}' and deleted=0 and status=1 and is_saas=0");
             }else{
-                $goods_data = $goods->_find("id='{$data['goods_id']}' and deleted=0 and status=1");
+                $goods_data = $goods->_find("id='{$data['goods_id']}' and deleted=0 and status=1 and is_saas=0");
             }
             $goods_data = $goods->objToArr($goods_data);
             if (!$goods_data) {
                 return ['code' => 403, 'msg' => "该商品不存在或已下架"];
             }
-            $cart_info = $cart->_find("goods_id='{$goods_data['id']}' and user_id='{$data['user_id']}' and appid='{$appid}'");
+            $cart_info = $cart->_find("goods_id='{$goods_data['id']}' and user_id='{$data['user_id']}' and appid='{$appid}' and is_saas=0");
             $cart_info = $cart->objToArr($cart_info);
             if ($cart_info) {
                 $arr = ['pay_years' => $data['pay_years'] + $cart_info['pay_years']];
@@ -117,8 +117,8 @@ class CartService
     public function get_goods(){
         $goodsfenlei = new Goodsclassification();
         $goods = new Goods();
-        $fenleidata = $goodsfenlei->_where("1=1");
-        $goodsdata = $goods->_where("1=1");
+        $fenleidata = $goodsfenlei->_where("is_saas=0");
+        $goodsdata = $goods->_where("and is_saas=0");
         $arr=array();
         foreach ($fenleidata as $k=>$v){
             $arr['fenlei'][$v['id']]=$v;
@@ -149,7 +149,7 @@ class CartService
         $arr = [];
         $sumprice = $goodstotal = 0;
         foreach ($list as $k => $v) {
-            $goods_data = obj_to_arr($goods->_find("level1='{$v['level1']}' and level2='{$v['level2']}' and level3='{$v['level3']}' and deleted=0 and status=1"));
+            $goods_data = obj_to_arr($goods->_find("level1='{$v['level1']}' and level2='{$v['level2']}' and level3='{$v['level3']}' and deleted=0 and status=1 and is_saas=0"));
 //            $goods_data = $goods->objToArr($goods_data);
             if (!$goods_data) {
                 Log::info("用户ID：[" . $data["user_id"] . "]该商品不存在或已下架：" . json_encode($v, JSON_UNESCAPED_UNICODE));
