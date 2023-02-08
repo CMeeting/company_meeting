@@ -53,7 +53,7 @@
                 </a>
             </div>
             <div style="width: 100%;padding-bottom: 15px;padding-top: 10px;background: #fbfffa">
-                <a class="ab"  href="{{route('goods.index')}}">SKD</a>
+                <a class="ab"  href="{{route('goods.index')}}">SDK</a>
                 <a class="ab" style="background: #b4b7b3" href="{{route('goods.saasindex')}}">SaaS</a>
             </div>
             <div class="ibox-content">
