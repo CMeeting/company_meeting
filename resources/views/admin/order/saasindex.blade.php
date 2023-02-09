@@ -39,7 +39,7 @@
                 </a>
             </div>
             <div style="width: 100%;padding-bottom: 15px;padding-top: 10px;background: #fbfffa">
-                <a class="ab"  href="{{route('order.index')}}">SKD</a>
+                <a class="ab"  href="{{route('order.index')}}">SDK</a>
                 <a class="ab" style="background: #b4b7b3" href="{{route('order.saasindex')}}">SaaS</a>
             </div>
             <div class="ibox-content">
@@ -172,6 +172,7 @@
                         <th class="text-center" style="width: 6%">支付方式</th>
                         <th class="text-center" style="width: 6%">订单类型</th>
                         <th class="text-center" style="width: 11%">订单状态</th>
+                        <th class="text-center" style="width: 11%">创建时间</th>
                         <th class="text-center" style="width: 10%">操作</th>
                     </tr>
                     </thead>
@@ -222,6 +223,7 @@
                                 @endif
 
                             </td>
+                            <td>{{$item['created_at']}}</td>
 
                             <td class="text-center">
                                 <div class="btn-group">

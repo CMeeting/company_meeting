@@ -315,7 +315,7 @@ class AdminsService
      */
     public function logout()
     {
-//        Cache::tags('rbac')->flush();
+        Cache::tags('rbac')->flush();
         return Auth::guard('admin')->logout();
     }
 }

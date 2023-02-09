@@ -754,7 +754,7 @@ class OrdersService
                     if(isset($data['zican'])){
                         $price=$data['price'];
                     }else{
-                        $price = $vs['price']*$data['period'][$k];
+                        $price = $vs['price'];
                     }
                 }
             }
@@ -769,6 +769,7 @@ class OrdersService
                 'details_type' => 3,
                 'pay_type' => $pay_type,
                 'price' => $price,
+                'pay_years' => $data['pay_years']?$data['pay_years']:0,
                 'user_id' => $user_id,
                 'goods_id' => $goodsid,
                 'created_at' => date("Y-m-d H:i:s"),
@@ -943,13 +944,13 @@ class OrdersService
     {
         $order = new Order();
         $orderGoods = new OrderGoods();
-        $data = $order->_where("user_id='{$parm['user_id']}' and details_type!=1", "id DESC", "id,order_no,status,created_at,price,isrenwe");
+        $data = $order->_where("user_id='{$parm['user_id']}' and details_type=2", "id DESC", "id,order_no,status,created_at,price,isrenwe");
         if (!$data) {
             return ['code' => 403, 'msg' => '当前没有订单数据', 'data' => []];
         }
         $ordergoodsdata = $orderGoods
             ->leftJoin('goods', 'orders_goods.goods_id', '=', 'goods.id')
-            ->whereRaw("orders_goods.user_id='{$parm['user_id']}' and orders_goods.details_type!=1")
+            ->whereRaw("orders_goods.user_id='{$parm['user_id']}' and orders_goods.details_type=2")
             ->selectRaw("goods.level1,goods.level2,goods.level3,orders_goods.order_no as order_id, goods.status as goods_status")
             ->get()->toArray();
         $classification = $this->assembly_orderclassification();

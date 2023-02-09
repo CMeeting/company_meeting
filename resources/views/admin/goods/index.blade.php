@@ -55,7 +55,7 @@
                 </a>
             </div>
             <div style="width: 100%;padding-bottom: 15px;padding-top: 10px;background: #fbfffa">
-                <a class="ab" style="background: #b4b7b3" href="{{route('goods.index')}}">SKD</a>
+                <a class="ab" style="background: #b4b7b3" href="{{route('goods.index')}}">SDK</a>
                 <a class="ab"  href="{{route('goods.saasindex')}}">SaaS</a>
             </div>
             <div class="ibox-content">
@@ -73,7 +73,7 @@
                                 </select>
                             </div>
                             <input id="info" type="text" name="info" placeholder="请输入ID" class="form-control" style="display: inline-block;width: 150px;
-                                   value="@if(isset($query)){{$query['info']}}@endif"/>
+                                   value="@if(isset($query))value="{{$query['info']}}"@endif"/>
 
                             <div class="col-md-4 col-lg-2 col-sm-6 col-xs-12">
                                 <select name="level1" id="province" class="form-control"></select>

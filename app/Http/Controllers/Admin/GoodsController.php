@@ -55,7 +55,6 @@ class GoodsController extends BaseController {
         if($query['export'] == 1){
             return $GoodsService->exportSaaS($data, $query['field']);
         }
-
         return $this->view('saasindex',['data'=>$data,'query'=>$query,'lv1'=>json_encode($categorical_data['arr1']),'lv2'=>json_encode($categorical_data['arr2'])]);
     }
 
