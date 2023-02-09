@@ -30,7 +30,7 @@ class UserAssetsService
             $assets->status = UserAssets::STATUS_1_ENABLE;
         }
 
-        if($manual){
+        if($gear == '手动配置'){
             $assets->total += $manual;
             $assets->balance += $manual;
         }else{
