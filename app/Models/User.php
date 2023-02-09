@@ -41,7 +41,7 @@ class User extends Model
 
     public static $typeArr = [
         1 => '免费用户',
-        2 => '试用用户',
+        2 => 'SDK试用用户',
         3 => 'SaaS用户',
         4 => 'SDK用户',
         5 => 'SaaS、SDK用户',
