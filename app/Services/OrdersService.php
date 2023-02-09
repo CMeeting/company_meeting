@@ -751,7 +751,7 @@ class OrdersService
             foreach ($goods_data as $ks => $vs) {
                 if ($v == $vs['level1'] && $data['level2'][$k] == $vs['level2']) {
                     $goodsid = $vs['id'];
-                    if(isset($data['zican'])){
+                    if($classification[$vs['level2']] == '手动配置'){
                         $price=$data['price'];
                     }else{
                         $price = $vs['price'];
