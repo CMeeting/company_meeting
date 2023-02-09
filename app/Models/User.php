@@ -27,7 +27,7 @@ use Illuminate\Database\Eloquent\Model;
 class User extends Model
 {
     const TYPE_1_FREE = 1;
-    const TYPE_2_TRY_OUT = 2;
+    const TYPE_2_SDK_TRY_OUT = 2;
     const TYPE_3_SAAS = 3;
     const TYPE_4_SDK = 4;
     const TYPE_5_SAAS_ADN_SDK = 5;
