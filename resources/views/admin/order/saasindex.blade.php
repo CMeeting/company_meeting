@@ -172,6 +172,7 @@
                         <th class="text-center" style="width: 6%">支付方式</th>
                         <th class="text-center" style="width: 6%">订单类型</th>
                         <th class="text-center" style="width: 11%">订单状态</th>
+                        <th class="text-center" style="width: 11%">创建时间</th>
                         <th class="text-center" style="width: 10%">操作</th>
                     </tr>
                     </thead>
@@ -222,6 +223,7 @@
                                 @endif
 
                             </td>
+                            <td>{{$item['created_at']}}</td>
 
                             <td class="text-center">
                                 <div class="btn-group">

@@ -60,7 +60,11 @@
                                 <td class="text-center">{{$item['goods_no']}}</td>
                                 <td class="text-center">{{$item['products']}}</td>
                                 <td>{{$item['platform']}}</td>
-                                <td>{{$item['pay_years']}}/月</td>
+                                @if($item['pay_years']>0)
+                                    <td>{{$item['pay_years']}}/月</td>
+                                @else
+                                    <td>无期限</td>
+                                @endif
                                 <td>{{$item['created_at']}}</td>
                                 <td>{{$item['email']}}</td>
                                 <td>${{$item['price']}}</td>

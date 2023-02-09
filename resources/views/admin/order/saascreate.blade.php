@@ -66,7 +66,7 @@
                             <select name="data[level1][]" id="province1" class="form-control province" onchange="province(1)"></select>
                         </div>
                     </div>
-                    <div class="form-group h1title">
+                    <div class="form-group h1title" id="pay_yearsdiv">
                         <label class="col-sm-2 control-label no-padding-right" for="form-field-1"> 有效期：<span style="color: red;font-size: 14px">*</span></label>
                         <div class="col-sm-6 col-xs-12">
                             <input id="pay_years" type="number" min="1" class="form-control" name="data[pay_years]" required placeholder="请输入有效期">
@@ -161,7 +161,7 @@
                 return false;
             }
 
-            if(!$("#pay_years").val()){
+            if($("#province1 option:checked").text()!="package" && !$("#pay_years").val()){
                 dd=1;
                 layer.msg("请输入有效期", {time: 1500, anim: 6});
                 layer.closeAll('loading');
@@ -214,6 +214,11 @@
             //获取被点击的省份的索引
             var index = $("#province"+id+" option:checked").index();
 
+            if($("#province"+id+" option:checked").text()=="package"){
+                $("#pay_yearsdiv").hide();
+            }else{
+                $("#pay_yearsdiv").show();
+            }
             //先清空城市下拉列表中的内容
             $("#city"+id).empty();
 

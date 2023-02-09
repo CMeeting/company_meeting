@@ -769,7 +769,7 @@ class OrdersService
                 'details_type' => 3,
                 'pay_type' => $pay_type,
                 'price' => $price,
-                'pay_years' => $data['pay_years'],
+                'pay_years' => $data['pay_years']?$data['pay_years']:0,
                 'user_id' => $user_id,
                 'goods_id' => $goodsid,
                 'created_at' => date("Y-m-d H:i:s"),
