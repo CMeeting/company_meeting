@@ -182,7 +182,7 @@ class UserService
         foreach ($data as $value){
             $rows = [];
             foreach ($fields as $field){
-                $content = $value->$field;
+                $content = $value[$field];
 
                 if($field == 'type'){
                     $content = array_get(User::$typeArr, $content);
