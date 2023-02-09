@@ -54,7 +54,7 @@
                                     <option value="orders.id" @if(isset($query)&&$query['query_type']=='orders.id') selected @endif>
                                         ID
                                     </option>
-                                    <option value="orders.order_no" @if(isset($query)&&$query['query_type']=='orders.order_no') selected @endif>
+                                    <option value="orders_goods.goods_no" @if(isset($query)&&$query['query_type']=='orders_goods.goods_no') selected @endif>
                                         订单号
                                     </option>
                                     <option value="users.email" @if(isset($query)&&$query['query_type']=='users.email') selected @endif>
@@ -180,7 +180,7 @@
                     @foreach($data as $key => $item)
                         <tr id="del_{{$item['id']}}">
                             <td class="text-center">{{$item['id']}}</td>
-                            <td class="text-center">{{$item['order_no']}}</td>
+                            <td class="text-center">{{$item['goods_no']}}</td>
                             <td>{{$item['email']}}</td>
                             <td>{{$item['level1name']}}</td>
                             <td>{{$item['level2name']}}</td>

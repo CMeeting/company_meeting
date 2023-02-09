@@ -188,7 +188,7 @@ class OrdersService
                 ->leftJoin('goods', 'goods.id', '=', 'orders_goods.goods_id')
                 ->whereRaw($where)
                 ->orderByRaw('orders.id desc')
-                ->selectRaw("orders.*,users.email,goods.level1,goods.level2")->paginate(10);
+                ->selectRaw("orders.*,users.email,goods.level1,goods.level2,orders_goods.goods_no")->paginate(10);
               foreach ($data as $k=>$v){
                   $v->level1name = $classification[$v->level1]['title'];
                   $v->level2name = $classification[$v->level2]['title'];
@@ -470,7 +470,7 @@ class OrdersService
 
     public function sum_saasdata($param)
     {
-        $where = "details_type=3";
+        $where = "orders.details_type=3";
         if ($param['info']) {
             $where .= " and {$param['query_type']}='{$param['info']}'";
         }
@@ -496,7 +496,7 @@ class OrdersService
             $where .= " AND orders.created_at <= '" . $param['endshelf_at'] . "'";
         }
         $goods = new Order();
-        $data = $goods->leftJoin('users', 'orders.user_id', '=', 'users.id')->whereRaw($where)->get()->toArray();
+        $data = $goods->leftJoin('users', 'orders.user_id', '=', 'users.id')->leftJoin('orders_goods', 'orders_goods.order_id', '=', 'orders.id')->whereRaw($where)->get()->toArray();
         $arr = [];
         $price = 0;
         $sumcount = 0;
