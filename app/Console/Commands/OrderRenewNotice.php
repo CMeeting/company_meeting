@@ -47,7 +47,7 @@ class OrderRenewNotice extends Command
         \Log::info('-----订单到期续订提醒邮件发送脚本开始执行-----', ['start_at'=>Carbon::now()->format('Y-m-d H:i:s')]);
         $email_service = new EmailService();
         $alert_id = ['month'=>[], 'ten'=>[], 'one'=>[]];
-        $order_goods = OrderGoods::with('order')->where('status', 1)->where('details_type', '!=', 1)->where('type', Order::TYPE_2_USER_BUY)->get()->toArray();
+        $order_goods = OrderGoods::with('order')->where('status', 1)->where('details_type', 2)->where('type', Order::TYPE_2_USER_BUY)->get()->toArray();
         foreach ($order_goods as $order_good){
             $send_mail = false;
             $order_id = $order_good['id'];

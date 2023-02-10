@@ -44,7 +44,7 @@ class CloseOrder extends Command
         \Log::info('----关闭订单开始执行----', ['start_time'=>$now]);
         $end_at = date('Y-m-d 23:59:59');
         $seven_days_ago = Carbon::parse($end_at)->subDays(7)->format('Y-m-d H:i:s');
-        $query = Order::where('created_at', '<=', $seven_days_ago)->where('status', 0);
+        $query = Order::where('created_at', '<=', $seven_days_ago)->where('status', 0)->where('details_type', '!=', 3);
         //获取需要关闭的订单id
         $order_id_arr = (clone $query)->pluck('id')->toArray();
         //将过期订单关闭
