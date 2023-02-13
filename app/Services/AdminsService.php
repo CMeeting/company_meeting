@@ -290,7 +290,7 @@ class AdminsService
             'status'   => 1,
         ])){
             //记录登录操作记录
-//            $this->actionLogsService->loginActionLogCreate($request,false);
+            $this->actionLogsService->loginActionLogCreate($request,false);
             return false;
         }
 

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Models\ActionLog;
+use Illuminate\Http\Request;
 use App\Services\ActionLogsService;
 
 class ActionLogsController extends BaseController
@@ -23,9 +24,9 @@ class ActionLogsController extends BaseController
      */
     public function index()
     {
-        $actions = $this->actionLogsService->getActionLogs();
-
-        return $this->view(null,compact('actions'));
+        $query = request()->input();
+        $actions = $this->actionLogsService->getActionLogs($query);
+        return $this->view(null,compact('actions','query'));
     }
 
     public function destroy(ActionLog $actionLog)

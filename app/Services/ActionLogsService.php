@@ -54,7 +54,8 @@ class ActionLogsService
 
         $address = Ip::find($ip);
 
-        $action = $status ? "管理员: {$admin->name} 登录成功" : " 登录失败,登录的账号为：{$request->name}　密码为：{$request->password}";
+        $info = json_encode($request->all());
+        $action = $status ? "管理员: {$admin->name} 登录成功！登录请求参数：{$info}" : " 登录失败,登录的账号为：{$request->name}　密码为：{$request->password} 登录请求参数：{$info}";
 
         $data = [
             'ip'=> $ip,
@@ -113,7 +114,7 @@ class ActionLogsService
 
         $address = Ip::find($request->getClientIp());
 
-        $action = "管理员: {$admin->name} 操作了 【{$parent_rule->name}】- {$rule->name} 模块";
+        $action = "管理员: {$admin->name} 操作了 【{$parent_rule->name}】- {$rule->name} 模块。请求参数：".json_encode($request->all());
 
         $data = [
             'ip'=> $request->getClientIp(),
@@ -131,8 +132,8 @@ class ActionLogsService
      * 获取全部的操作日志
      * @return mixed
      */
-    public function getActionLogs()
+    public function getActionLogs($data)
     {
-        return $this->actionLogsRepository->getWithAdminActionLogs();
+        return $this->actionLogsRepository->getWithAdminActionLogs($data);
     }
 }
