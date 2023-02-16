@@ -34,7 +34,7 @@
             <div class="ibox-title">
                 <h5>Order</h5>
                 <button id="export" class="btn layui-btn-primary btn-sm" type="button" style="float: right;margin-left: 5px"><i class="fa fa-paste"></i>导出数据</button>
-                <a style="float: right;margin-left: 5px" href="{{route('ActionLogsController.create')}}" link-url="javascript:void(0)">
+                <a style="float: right;margin-left: 5px" href="{{route('order.create')}}" link-url="javascript:void(0)">
                     <button class="btn btn-primary btn-sm" type="button"><i class="fa fa-plus-circle"></i> 添加 Order</button>
                 </a>
             </div>
