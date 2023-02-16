@@ -203,6 +203,15 @@ class AdminsService
             'updated_at'=>date("Y-m-d H:i:s")
         ];
         DB::table('admin_auth')->insert($arr);
+
+        //删除用户权限缓存
+        $cache_key = $id . '_cache_rules';
+        Cache::tags(['rbac', 'rules'])->forget($cache_key);
+
+        //删除用户导航缓存
+        $menu_key = $id . '_menu_cache';
+        Cache::tags(['rbac', 'menus'])->forget($menu_key);
+
         return $admin;
     }
 
