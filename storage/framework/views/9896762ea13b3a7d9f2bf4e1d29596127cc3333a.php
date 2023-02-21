@@ -27,9 +27,9 @@
                                 </span>
                                 </a>
                     <ul class="dropdown-menu animated fadeInRight m-t-xs">
-
-
-
+                        <li><a class="J_menuItem" href="<?php echo e(route('admin.editAvatar',$admin->id)); ?>">修改头像</a></li>
+                        <li><a class="J_menuItem" href="<?php echo e(route('admin.editPassword',$admin->id)); ?>">修改密码</a></li>
+                        <li class="divider"></li>
                         <li><a href="<?php echo e(route('admin.logout')); ?>">安全退出</a></li>
                     </ul>
                 </div>
