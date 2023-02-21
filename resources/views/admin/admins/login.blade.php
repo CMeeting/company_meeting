@@ -39,7 +39,7 @@
             </div>
             <div class="col-sm-7 animated fadeInRight">
                 <form method="post" action="{{route('login-handle')}}">
-                    <div class="g-recaptcha" data-sitekey="6LcbEZ4kAAAAACuKdwPOomSWNye--wMTIDoT5hKg"></div>
+                    <div class="g-recaptcha" data-sitekey="6LebSJ4kAAAAAIOIQYoid24mG0lrbWmGmGMLrRJe"></div>
 {{--                    {{csrf_field()}}--}}
 {{--                    <p class="login-title">登录</p>--}}
 {{--                    <p class="m-t-md" style="color:#666">登录到{{ config('app.name', 'Laravel') }}系统后台管理</p>--}}
