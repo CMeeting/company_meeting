@@ -308,15 +308,15 @@ class AdminsService
 //            return false;
 //        }
 //
-//        if(!Auth::guard('admin')->attempt([
-//            'name'     => $request->name,
-//            'password' => $request->password,
-//            'status'   => 1,
-//        ])){
-//            //记录登录操作记录
-//            $this->actionLogsService->loginActionLogCreate($request,false);
-//            return false;
-//        }
+        if(!Auth::guard('admin')->attempt([
+            'name'     => $request->name,
+            'password' => $request->password,
+            'status'   => 1,
+        ])){
+            //记录登录操作记录
+            $this->actionLogsService->loginActionLogCreate($request,false);
+            return false;
+        }
 
         //增加登录次数.
         $admin = Auth::guard('admin')->user();
