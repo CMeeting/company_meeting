@@ -292,31 +292,31 @@ class AdminsService
      */
     public function login($request)
     {
-        \Log::info(json_encode($_POST));
-        if (isset($_POST['g-recaptcha-response'])) {
-            $captcha = $_POST['g-recaptcha-response'];
-        }
-        if (!$captcha) {
-            return false;
-        }
-        $secretKey = "6LebSJ4kAAAAAH1LtTDjIAY7RjBuprEsS9E7Jb7L";
-        $url = 'https://www.google.com/recaptcha/api/siteverify?secret=' . urlencode($secretKey) . '&response=' . urlencode($captcha);
-        $response = file_get_contents($url);
-        $responseKeys = json_decode($response, true);
-        \Log::info(json_encode($responseKeys));
-        if (!$responseKeys["success"]) {
-            return false;
-        }
-
-        if(!Auth::guard('admin')->attempt([
-            'name'     => $request->name,
-            'password' => $request->password,
-            'status'   => 1,
-        ])){
-            //记录登录操作记录
-            $this->actionLogsService->loginActionLogCreate($request,false);
-            return false;
-        }
+//        \Log::info(json_encode($_POST));
+//        if (isset($_POST['g-recaptcha-response'])) {
+//            $captcha = $_POST['g-recaptcha-response'];
+//        }
+//        if (!$captcha) {
+//            return false;
+//        }
+//        $secretKey = "6LebSJ4kAAAAAH1LtTDjIAY7RjBuprEsS9E7Jb7L";
+//        $url = 'https://www.google.com/recaptcha/api/siteverify?secret=' . urlencode($secretKey) . '&response=' . urlencode($captcha);
+//        $response = file_get_contents($url);
+//        $responseKeys = json_decode($response, true);
+//        \Log::info(json_encode($responseKeys));
+//        if (!$responseKeys["success"]) {
+//            return false;
+//        }
+//
+//        if(!Auth::guard('admin')->attempt([
+//            'name'     => $request->name,
+//            'password' => $request->password,
+//            'status'   => 1,
+//        ])){
+//            //记录登录操作记录
+//            $this->actionLogsService->loginActionLogCreate($request,false);
+//            return false;
+//        }
 
         //增加登录次数.
         $admin = Auth::guard('admin')->user();
