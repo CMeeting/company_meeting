@@ -48,8 +48,8 @@
                         {!! Geetest::render() !!}
                     </div>
                     <p></p>
-                    <div class="g-recaptcha" data-sitekey="6LdESp4kAAAAAGxfbeTbs4f3qJJJRa1USNB6B4MG"></div>
-{{--                    <div class="g-recaptcha" data-sitekey="6LebSJ4kAAAAAIOIQYoid24mG0lrbWmGmGMLrRJe"></div>--}}
+{{--                    <div class="g-recaptcha" data-sitekey="6LdESp4kAAAAAGxfbeTbs4f3qJJJRa1USNB6B4MG"></div>--}}
+                    <div class="g-recaptcha" data-sitekey="6LebSJ4kAAAAAIOIQYoid24mG0lrbWmGmGMLrRJe"></div>
                     <button class="btn btn-success btn-block">登录</button>
                     <p></p>
                     @if (count($errors) > 0)
