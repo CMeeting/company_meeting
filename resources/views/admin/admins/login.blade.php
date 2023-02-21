@@ -14,6 +14,12 @@
     <script>
         if(window.top!==window.self){window.top.location=window.location};
     </script>
+    <script src="https://www.google.com/recaptcha/api.js"></script>
+    <script>
+        function onSubmit(token) {
+            document.getElementById("demo-form").submit();
+        }
+    </script>
 
 </head>
 
@@ -42,6 +48,10 @@
                         {!! Geetest::render() !!}
                     </div>
                     <p></p>
+                    <button class="g-recaptcha"
+                            data-sitekey="6LcbEZ4kAAAAAP2F6g29yX_TI8Pgsaic-G03ZlZ-"
+                            data-callback='onSubmit'
+                            data-action='submit'>Submit</button>
                     <button class="btn btn-success btn-block">登录</button>
                     <p></p>
                     @if (count($errors) > 0)
