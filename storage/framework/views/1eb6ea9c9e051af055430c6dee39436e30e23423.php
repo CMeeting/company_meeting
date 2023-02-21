@@ -50,6 +50,7 @@
 
                     </div>
                     <p></p>
+
                     <div class="g-recaptcha" data-sitekey="6LebSJ4kAAAAAIOIQYoid24mG0lrbWmGmGMLrRJe"></div>
                     <button class="btn btn-success btn-block">登录</button>
                     <p></p>

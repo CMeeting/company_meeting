@@ -238,8 +238,6 @@ class AdminsController extends BaseController {
      */
     public function loginHandle(AdminLoginRequest $request)
     {
-        echo"<pre>";
-        print_r($request);die;
         $result = $this->adminsService->login($request);
 
         if ( !$result || false == $result) {
