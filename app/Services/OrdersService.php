@@ -85,7 +85,7 @@ class OrdersService
         }
     }
 
-    public static $payments = ['paddle' => 1, 'alipay' => 2, 'wxpay' => 3];
+    public static $payments = ['paddle' => 1, 'alipay' => 2, 'wxpay' => 3, 'paypal' => 5];
 
     public function data_list($param)
     {
@@ -273,6 +273,9 @@ class OrdersService
                             break;
                         case 4:
                             $value = "不需支付";
+                            break;
+                        case 5:
+                            $value = "paypal";
                             break;
                     }
                 }
@@ -1435,9 +1438,12 @@ class OrdersService
             $pay_redirect_path = '/resubscribe/payed';
             $return_url = $call_back . $pay_redirect_path;
             $pay_url_data = $this->getAliPayUrl($trade_no, $product, $price, $call_back, $return_url);
-        } else if ($payment == self::$payments['wxpay']) {
+        } elseif ($payment == self::$payments['wxpay']) {
             $pay_url_data = WechatPay::wechatPay($trade_no, $product, $price, $call_back);
+        } elseif($payment == self::$payments['paypal']){
+
         }
+
         return $pay_url_data;
     }
 
@@ -1541,5 +1547,67 @@ class OrdersService
     {
         $http_type = ((isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on') || (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] == 'https')) ? 'https://' : 'http://';
         return $http_type . $_SERVER['HTTP_HOST'];
+    }
+
+    /**
+     * 支付成功生成序列码
+     * @param $order_no
+     * @param $third_trade_no
+     * @return bool
+     */
+    public function notifyHandle($order_no, $third_trade_no){
+        $order_controller = new OrderController();
+        $user_service = new UserService();
+        $license_model = new LicenseModel();
+
+        $order = Order::where('merchant_no', $third_trade_no)->first();
+        if(!$order){
+            \Log::info('支付成功回调失败，第三方交易号未找到订单#', ['order_no'=>$order_no, 'merchant_no'=>$third_trade_no]);
+            return false;
+        }
+
+        $order_data = $order->toArray();
+        $email_data = unserialize($order_data['user_bill']);
+        $order_goods_data = OrderGoods::where('merchant_no', $third_trade_no)->get()->toArray();
+        $goods_data = Goods::all()->keyBy('id')->toArray();
+
+        try {
+            $invoice_url = $order_controller->get_pdfurl($order_data['id']);
+            $user_service->changeType(User::TYPE_4_SDK, $order_data['user_id']);
+            Order::orderComplete($third_trade_no, $order_no, $invoice_url);
+            OrderGoods::orderComplete($order_no, $third_trade_no);
+            \Log::info($order_no . ":进入回调执行生成授权码");
+            if ($order_data['renwe_id']) {   //续订订单
+                $ids = [];
+                $license_data = LicenseModel::where('order_id', $order_data['id']); //查出续订的父订单所有序列码
+                foreach ($order_goods_data as $k => $v) {            //循环当前子订单
+                    foreach ($license_data as $ks => $vs) {             //循环嵌套续订父订单的所有序列码
+                        if ($v['renwe_goodsid'] == $vs['ordergoods_id']) {   //判断当前子订单的父级明细订单与序列码绑定的子订单ID一致
+                            if (in_array($v['renwe_goodsid'], $ids)) continue; //判断当前子订单ID已添加过序列码则跳过循环
+                            array_push($ids, $vs['ordergoods_id']);//把当前添加授权码的子订单ID添加到数组内，避免重复添加多条授权码
+
+                            $license_data_new = LicenseService::buildLicenseCodeData($v['goods_no'], $v['pay_years'], $v['user_id'], $vs['products_id'], $vs['platform_id'], $vs['licensetype_id'], explode(",", $v['appid']), $email_data['email'], $v['order_id'], $v['id'], 'year', $vs['created_at']);
+                            \Log::info($order_no . ":续订订单进入回调执行生成授权码" . json_encode($license_data_new));
+                            $license_model->_insert($license_data_new);
+                        }
+                    }
+                }
+            } else {
+                //正常购买订单
+                foreach ($order_goods_data as $k => $v) {
+                    foreach ($goods_data as $ks => $vs) {
+                        if ($v['goods_id'] == $vs['id']) {
+                            $license_data_new = LicenseService::buildLicenseCodeData($v['goods_no'], $v['pay_years'], $v['user_id'], $vs['level1'], $vs['level2'], $vs['level3'], explode(",", $v['appid']), $email_data['email'], $v['order_id'], $v['id']);
+                            \Log::info($order_no . ":进入回调执行生成授权码" . json_encode($license_data_new));
+                            $license_model->_insert($license_data_new);
+                        }
+                    }
+                }
+            }
+            return true;
+        } catch (\Exception $e) {
+            \Log::info('支付成功生成序列码失败#', ['order_no'=>$order_no, 'merchant_no'=>$third_trade_no, 'message'=>$e->getMessage()]);
+            return false;
+        }
     }
 }

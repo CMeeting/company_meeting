@@ -3,6 +3,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Http\Controllers\Api\biz\PaypalBiz;
 use App\Models\Goods;
 use App\Models\LicenseModel;
 use App\Models\Order;
@@ -143,7 +144,6 @@ class OrderController
         $order->wechatnot($xml);
 
     }
-
 
     public function rewinfo(Request $request){
         $current_user = UserService::getCurrentUser($request);
@@ -330,4 +330,21 @@ class OrderController
         $email->sendDiyContactEmail([], 16, "wangyuting@kdanmobile.com",$mailedatas);
         return \Response::json(['code'=>200,'msg'=>"success"]);
     }
+
+    public function pay(Request $request){
+        $paypal = new PaypalBiz();
+        $data = $paypal->pay('test', 100, '111111');
+        return \Response::json(['code'=>200, 'msg'=>'success', 'data'=>$data]);
+    }
+
+    public function payPalNotify(Request $request){
+        dd(21312);
+        Log::info('paypal异步回调地址', [$request->all()]);
+    }
+
+    public function payPalCallBack(Request $request){
+        dd(21312);
+        Log::info('paypal同步回调地址', [$request->all()]);
+    }
+
 }

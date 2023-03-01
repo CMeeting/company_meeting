@@ -25,4 +25,10 @@ class OrderGoods extends Model
     public function order(){
         return $this->belongsTo(Order::class, 'order_id', 'id');
     }
+
+    public static function orderComplete($order_no, $third_trade_no){
+        \DB::table("orders_goods")
+            ->whereRaw("order_no='{$order_no}'")
+            ->update(['status' => 1, 'pay_time' => date("Y-m-d H:i:s"), 'paddle_no' => $third_trade_no]);
+    }
 }

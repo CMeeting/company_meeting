@@ -63,6 +63,10 @@ Route::group(['prefix' => 'user', 'namespace' => 'Api'], function () {
     //修改密码 - 通过邮箱修改
     Route::post('change-password-by-email', 'UserController@changePasswordByEmail');
 
+    Route::post('paypal-pay', 'OrderController@pay');
+    Route::post('paypal-notify', 'OrderController@payPalNotify');
+    Route::post('paypal-callback', 'OrderController@payPalCallBack');
+
     Route::group(['middleware' => ['jwt.auth', 'cors']], function () {
         //修改密码 - 用户中心修改
         Route::post('change-password', 'UserController@changePassword');
