@@ -353,17 +353,16 @@ class OrderController
      * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\RedirectResponse
      */
     public function payPalCallBack(Request $request){
-        Log::info('paypal同步回调地址', [$request->all()]);
-        $payment_id = $request->input('paymentId');
-        $payer_id = $request->input('PayerID');
-        $paypal = new PaypalBiz();
-        $paypal->callBack($payment_id, $payer_id);
-        return redirect()->away('https://www.google.com');
-
         $param = $request->all();
+        Log::info('paypal支付重定向', [$param]);
+
         //支付成功跳转前端地址
         if(isset($param['success'])){
             if($param['success'] == 'true'){
+                $payment_id = $request->input('paymentId');
+                $payer_id = $request->input('PayerID');
+                $paypal = new PaypalBiz();
+                $paypal->callBack($payment_id, $payer_id);
                 return redirect()->away('https://www.google.com');
             }else{
                 return \Response::json(['code'=>500, 'message'=>'用户取消支付']);
