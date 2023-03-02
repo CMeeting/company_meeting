@@ -341,7 +341,7 @@ class OrderController
         $resource = $request->input('resource');
         $invoice = $resource['invoice_number'] ?? '';
         $trade_no = $resource['parent_payment'] ?? '';
-        if(!$invoice || $trade_no){
+        if(!$invoice || !$trade_no){
             Log::info('paypal异步回调错误，缺少invoice_number或者parent_payment', [$request->all()]);
             die;
         }
