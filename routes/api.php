@@ -34,6 +34,8 @@ Route::group(['namespace' => 'Api'], function () {
     Route::get('/emailtest', 'EmailtestContr@emailtest');
     Route::post('/paddlecallback', 'OrderController@paddlecallback');
     Route::get('/invoicemice', 'OrderController@invoicemice');
+    Route::post('/paypal-notify', 'OrderController@payPalNotify');
+    Route::get('/paypal-callback', 'OrderController@payPalCallBack');
 });
 
 Route::group(['middleware' => ['jwt.auth', 'cors'], 'namespace' => 'Api'], function () {
@@ -62,10 +64,6 @@ Route::group(['prefix' => 'user', 'namespace' => 'Api'], function () {
     Route::post('forget-password', 'UserController@forgetPassword');
     //修改密码 - 通过邮箱修改
     Route::post('change-password-by-email', 'UserController@changePasswordByEmail');
-
-    Route::post('paypal-pay', 'OrderController@pay');
-    Route::post('paypal-notify', 'OrderController@payPalNotify');
-    Route::get('paypal-callback', 'OrderController@payPalCallBack');
 
     Route::group(['middleware' => ['jwt.auth', 'cors']], function () {
         //修改密码 - 用户中心修改

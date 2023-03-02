@@ -55,6 +55,13 @@ class PaypalBiz extends Controller
         }
     }
 
+    /**
+     * paypal创建支付链接
+     * @param $product
+     * @param $price
+     * @param $order_no
+     * @return mixed
+     */
     public function pay($product, $price, $order_no){
         $payer = new Payer();
         $payer->setPaymentMethod('paypal');
@@ -75,7 +82,8 @@ class PaypalBiz extends Controller
         $transaction->setAmount($amount)->setItemList($itemList)->setDescription('Payment Description')->setInvoiceNumber($order_no);
 
         $redirectUrls = new RedirectUrls();
-        $redirectUrls->setReturnUrl('https://test-compdf.kdan.cn/api/user/paypal-callback?success=true')->setCancelUrl('https://test-compdf.kdan.cn/api/user/paypal-callback?success=false');
+        $serverName = $_SERVER['SERVER_NAME'];
+        $redirectUrls->setReturnUrl($serverName . '/api/paypal-callback?success=true')->setCancelUrl($serverName . '/api/paypal-callback?success=false');
 
         $payment = new Payment();
         $payment->setIntent('sale')->setPayer($payer)->setRedirectUrls($redirectUrls)->setTransactions([$transaction]);
@@ -89,13 +97,15 @@ class PaypalBiz extends Controller
         $result['url'] = $payment->getApprovalLink();
         $result['id'] = $payment->getId();
 
+        \Log::info('paypal创建订单成功', ['order_no'=>$order_no, 'id'=>$result['id'], 'url'=>$result['url']]);
         return $result;
     }
 
-    public function notify(){
-
-    }
-
+    /**
+     * paypal重定向方法
+     * @param $paymentId
+     * @param $payerId
+     */
     public function callBack($paymentId, $payerId){
         $apiContext = $this->paypal;
 

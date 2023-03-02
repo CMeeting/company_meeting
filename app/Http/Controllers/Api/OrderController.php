@@ -331,24 +331,30 @@ class OrderController
         return \Response::json(['code'=>200,'msg'=>"success"]);
     }
 
-    public function pay(Request $request){
-        $paypal = new PaypalBiz();
-        $data = $paypal->pay('test', 100, '111111');
-        return \Response::json(['code'=>200, 'msg'=>'success', 'data'=>$data]);
-    }
-
+    /**
+     * paypal支付成功回调事件
+     * @param Request $request
+     */
     public function payPalNotify(Request $request){
-        Log::info('paypal异步回调地址', [$request->all()]);
-        die;
-        $param = $request->all();
-        //支付成功
-        if($param['payment_status'] == 'Completed'){
+        Log::info('paypal异步回调参数', [$request->all()]);
+        $payment_status = $request->input('event_type');
+        $resource = $request->input('resource');
+        $invoice = $resource['invoice_number'] ?? '';
+        $trade_no = $resource['parent_payment'] ?? '';
+        if(!$invoice || $trade_no){
+            Log::info('paypal异步回调错误，缺少invoice_number或者parent_payment', [$request->all()]);
+            die;
+        }
+
+        //支付完成事件
+        if($payment_status == 'PAYMENT.SALE.COMPLETED'){
             $order = new OrdersService();
-            $order->notifyHandle($param['invoice'], $param['txn_id']);
+            $order->notifyHandle($invoice, $trade_no);
         }
     }
 
     /**
+     * paypal支付重定向
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\RedirectResponse
      */
@@ -363,7 +369,8 @@ class OrderController
                 $payer_id = $request->input('PayerID');
                 $paypal = new PaypalBiz();
                 $paypal->callBack($payment_id, $payer_id);
-                return redirect()->away('https://www.google.com');
+                $webHost = env('WEB_HOST');
+                return redirect()->away($webHost);
             }else{
                 return \Response::json(['code'=>500, 'message'=>'用户取消支付']);
             }
@@ -371,5 +378,4 @@ class OrderController
 
         return \Response::json();
     }
-
 }

@@ -1407,7 +1407,7 @@ class OrdersService
                 $pay_url_data['id'] = 'ali' . $order['order_no'];
             }elseif ($order['pay_type'] == 1){
                 $pay_url_data['id'] = 'paddle' . $order['order_no'];
-            }elseif ($order['pay_type'] == 1){
+            }elseif ($order['pay_type'] == 5){
                 $pay_url_data['id'] = 'paypal' . $order['order_no'];
             }
             $newOrderData = [
