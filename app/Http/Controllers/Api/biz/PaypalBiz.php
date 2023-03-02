@@ -74,11 +74,10 @@ class PaypalBiz extends Controller
         $transaction->setAmount($amount)->setItemList($itemList)->setDescription('Payment Description')->setInvoiceNumber($order_no);
 
         $redirectUrls = new RedirectUrls();
-        $redirectUrls->setReturnUrl('https://l3cckwhn3xlnshsh3.neiwangyun.net/api/user/paypal-callback?success=true')->setCancelUrl('https://l3cckwhn3xlnshsh3.neiwangyun.net/api/user/paypal-callback?success=false');
+        $redirectUrls->setReturnUrl('https://pm4repfy6fvkshsh3.neiwangyun.net/api/user/paypal-callback')->setCancelUrl('https://pm4repfy6fvkshsh3.neiwangyun.net/api/user/paypal-callback');
 
         $payment = new Payment();
         $payment->setIntent('sale')->setPayer($payer)->setRedirectUrls($redirectUrls)->setTransactions([$transaction]);
-
         try{
             $payment->create($this->paypal);
         }catch (\Exception $e){
