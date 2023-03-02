@@ -338,16 +338,17 @@ class OrderController
     public function payPalNotify(Request $request){
         Log::info('paypal异步回调参数', [$request->all()]);
         $payment_status = $request->input('event_type');
-        $resource = $request->input('resource');
-        $invoice = $resource['invoice_number'] ?? '';
-        $trade_no = $resource['parent_payment'] ?? '';
-        if(!$invoice || !$trade_no){
-            Log::info('paypal异步回调错误，缺少invoice_number或者parent_payment', [$request->all()]);
-            die;
-        }
 
-        //支付完成事件
+        //支付完成回调事件
         if($payment_status == 'PAYMENT.SALE.COMPLETED'){
+            $resource = $request->input('resource');
+            Log::info('paypal异步回调参数 resource', [$resource]);
+            $invoice = $resource['invoice_number'] ?? '';
+            $trade_no = $resource['parent_payment'] ?? '';
+            if(!$invoice || !$trade_no){
+                Log::info('paypal异步回调错误，缺少invoice_number或者parent_payment', [$request->all()]);
+                die;
+            }
             $order = new OrdersService();
             $order->notifyHandle($invoice, $trade_no);
         }
