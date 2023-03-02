@@ -82,8 +82,9 @@ class PaypalBiz extends Controller
         $transaction->setAmount($amount)->setItemList($itemList)->setDescription('Payment Description')->setInvoiceNumber($order_no);
 
         $redirectUrls = new RedirectUrls();
-        $serverName = $_SERVER['SERVER_NAME'];
-        $redirectUrls->setReturnUrl($serverName . '/api/paypal-callback?success=true')->setCancelUrl($serverName . '/api/paypal-callback?success=false');
+        $serverName = 'https://' . $_SERVER['SERVER_NAME'] . '/api/paypal-callback';
+        \Log::info('paypal支付重定向地址' . $serverName);
+        $redirectUrls->setReturnUrl($serverName . '?success=true')->setCancelUrl($serverName . '?success=false');
 
         $payment = new Payment();
         $payment->setIntent('sale')->setPayer($payer)->setRedirectUrls($redirectUrls)->setTransactions([$transaction]);
