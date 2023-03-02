@@ -338,13 +338,34 @@ class OrderController
     }
 
     public function payPalNotify(Request $request){
-        dd(21312);
         Log::info('paypal异步回调地址', [$request->all()]);
+        die;
+        $param = $request->all();
+        //支付成功
+        if($param['payment_status'] == 'Completed'){
+            $order = new OrdersService();
+            $order->notifyHandle($param['invoice'], $param['txn_id']);
+        }
     }
 
+    /**
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\RedirectResponse
+     */
     public function payPalCallBack(Request $request){
-        dd(21312);
         Log::info('paypal同步回调地址', [$request->all()]);
+        return redirect()->away('https://www.google.com');
+        $param = $request->all();
+        //支付成功跳转前端地址
+        if(isset($param['success'])){
+            if($param['success'] == 'true'){
+                return redirect()->away('https://www.google.com');
+            }else{
+                return \Response::json(['code'=>500, 'message'=>'用户取消支付']);
+            }
+        }
+
+        return \Response::json();
     }
 
 }

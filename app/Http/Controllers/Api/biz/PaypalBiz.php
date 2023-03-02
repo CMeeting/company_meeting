@@ -54,7 +54,7 @@ class PaypalBiz extends Controller
         }
     }
 
-    public function pay($product, $price, $invoice_num){
+    public function pay($product, $price, $order_no){
         $payer = new Payer();
         $payer->setPaymentMethod('paypal');
 
@@ -71,10 +71,10 @@ class PaypalBiz extends Controller
         $amount->setCurrency($this->currency)->setTotal($price)->setDetails($details);
 
         $transaction = new Transaction();
-        $transaction->setAmount($amount)->setItemList($itemList)->setDescription('Payment Description')->setInvoiceNumber($invoice_num);
+        $transaction->setAmount($amount)->setItemList($itemList)->setDescription('Payment Description')->setInvoiceNumber($order_no);
 
         $redirectUrls = new RedirectUrls();
-        $redirectUrls->setReturnUrl('https://www.baidu.com')->setCancelUrl('https://www.baidu.com');
+        $redirectUrls->setReturnUrl('https://l3cckwhn3xlnshsh3.neiwangyun.net/api/user/paypal-callback?success=true')->setCancelUrl('https://l3cckwhn3xlnshsh3.neiwangyun.net/api/user/paypal-callback?success=false');
 
         $payment = new Payment();
         $payment->setIntent('sale')->setPayer($payer)->setRedirectUrls($redirectUrls)->setTransactions([$transaction]);
@@ -82,7 +82,8 @@ class PaypalBiz extends Controller
         try{
             $payment->create($this->paypal);
         }catch (\Exception $e){
-            \Log::info('paypal创建订单失败#', [$e->getMessage()]);
+            \Log::info('paypal创建订单失败#order_no' . $order_no, [$e->getMessage()]);
+            die;
         }
 
         $result['url'] = $payment->getApprovalLink();

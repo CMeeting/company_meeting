@@ -12,6 +12,7 @@ declare (strict_types=1);
 namespace App\Services;
 
 use App\Export\GoodsExport;
+use App\Http\Controllers\Api\biz\PaypalBiz;
 use App\Models\UserAssets;
 use PDF;
 use App\Http\Controllers\Api\biz\AlipayBiz;
@@ -1406,6 +1407,8 @@ class OrdersService
                 $pay_url_data['id'] = 'ali' . $order['order_no'];
             }elseif ($order['pay_type'] == 1){
                 $pay_url_data['id'] = 'paddle' . $order['order_no'];
+            }elseif ($order['pay_type'] == 1){
+                $pay_url_data['id'] = 'paypal' . $order['order_no'];
             }
             $newOrderData = [
                 'third_order_no' => $pay_url_data['id'] ?? '',
@@ -1440,8 +1443,9 @@ class OrdersService
             $pay_url_data = $this->getAliPayUrl($trade_no, $product, $price, $call_back, $return_url);
         } elseif ($payment == self::$payments['wxpay']) {
             $pay_url_data = WechatPay::wechatPay($trade_no, $product, $price, $call_back);
-        } elseif($payment == self::$payments['paypal']){
-
+        } elseif($payment == self::$payments['paypal']) {
+            $paypal = new PaypalBiz();
+            $pay_url_data = $paypal->pay($product, $price, $trade_no);
         }
 
         return $pay_url_data;
@@ -1560,15 +1564,10 @@ class OrdersService
         $user_service = new UserService();
         $license_model = new LicenseModel();
 
-        $order = Order::where('merchant_no', $third_trade_no)->first();
-        if(!$order){
-            \Log::info('支付成功回调失败，第三方交易号未找到订单#', ['order_no'=>$order_no, 'merchant_no'=>$third_trade_no]);
-            return false;
-        }
-
+        $order = Order::where('order_no', $order_no)->first();
         $order_data = $order->toArray();
         $email_data = unserialize($order_data['user_bill']);
-        $order_goods_data = OrderGoods::where('merchant_no', $third_trade_no)->get()->toArray();
+        $order_goods_data = OrderGoods::where('order_no', $order_no)->get()->toArray();
         $goods_data = Goods::all()->keyBy('id')->toArray();
 
         try {
