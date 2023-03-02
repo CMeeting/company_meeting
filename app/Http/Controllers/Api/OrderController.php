@@ -354,7 +354,12 @@ class OrderController
      */
     public function payPalCallBack(Request $request){
         Log::info('paypal同步回调地址', [$request->all()]);
+        $payment_id = $request->input('paymentId');
+        $payer_id = $request->input('PayerID');
+        $paypal = new PaypalBiz();
+        $paypal->callBack($payment_id, $payer_id);
         return redirect()->away('https://www.google.com');
+
         $param = $request->all();
         //支付成功跳转前端地址
         if(isset($param['success'])){

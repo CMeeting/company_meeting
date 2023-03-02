@@ -18,6 +18,7 @@ use PayPal\Api\Item;
 use PayPal\Api\ItemList;
 use PayPal\Api\Payer;
 use PayPal\Api\Payment;
+use PayPal\Api\PaymentExecution;
 use PayPal\Api\RedirectUrls;
 use PayPal\Api\Transaction;
 use PayPal\Auth\OAuthTokenCredential;
@@ -95,7 +96,18 @@ class PaypalBiz extends Controller
 
     }
 
-    public function callBack(){
+    public function callBack($paymentId, $payerId){
+        $apiContext = $this->paypal;
 
+        $payment = Payment::get($paymentId, $apiContext);
+        $execution = new PaymentExecution();
+        $execution->setPayerId($payerId);
+        try {
+            $result = $payment->execute($execution, $apiContext);
+            \Log::info('paypal支付成功', [$result->toArray()]);
+            Payment::get($paymentId, $apiContext);
+        } catch (\Exception $ex) {
+            \Log::info('paypal支付失败', ['payment_id'=>$paymentId, 'result'=>$result->toArray(), 'message'=>$ex->getMessage()]);
+        }
     }
 }
