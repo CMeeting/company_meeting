@@ -1279,8 +1279,13 @@ class OrdersService
         //paypal支付 未付款订单主动查询状态
         if($data['pay_type'] == 5 && $data['status'] == 0){
             $paypal = new PaypalBiz();
-            $data = $paypal->findByPaymentId($data['paddle_no']);
-            \Log::info('paypal主动查询订单状态数据', [$data]);
+            $result = $paypal->findByPaymentId($data['paddle_no']);
+            //支付完成
+            \Log::info('paypal主动查询订单状态数据', ['order_no'=>$data['order_no'], 'status'=>$data['status'], 'result'=>$result]);
+            if($result->getState() == 'approved' && $data['status'] == Order::STATUS_0_UNPAID){
+                $order = new OrdersService();
+                $order->notifyHandle($data['order_no'], $trade_no);
+            }
         }
 
         $data = $order->_find("merchant_no='{$trade_no}'");
@@ -1574,6 +1579,11 @@ class OrdersService
         $license_model = new LicenseModel();
 
         $order = Order::where('order_no', $order_no)->first();
+        //已完成订单不进行回调操作
+        if($order['status'] == Order::STATUS_1_PAYED){
+            return false;
+        }
+
         $order_data = $order->toArray();
         $email_data = unserialize($order_data['user_bill']);
         $order_goods_data = OrderGoods::where('order_no', $order_no)->get()->toArray();
