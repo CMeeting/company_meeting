@@ -1275,6 +1275,14 @@ class OrdersService
         if ($data['pay_type'] == 2 && !($data['status']==1||$data['status']==2)) {
             self::AlipayNotifyService($data['merchant_no']);
         }
+
+        //paypal支付 未付款订单主动查询状态
+        if($data['pay_type'] == 5 && $data['status'] == 0){
+            $paypal = new PaypalBiz();
+            $data = $paypal->findByPaymentId($data['paddle_no']);
+            \Log::info('paypal主动查询订单状态数据', [$data]);
+        }
+
         $data = $order->_find("merchant_no='{$trade_no}'");
         $data = $order->objToArr($data);
         $emaildata = unserialize($data['user_bill']);
@@ -1408,6 +1416,7 @@ class OrdersService
             }elseif ($order['pay_type'] == 1){
                 $pay_url_data['id'] = 'paddle' . $order['order_no'];
             }elseif ($order['pay_type'] == 5){
+                $payment_id = $pay_url_data['id'];
                 $pay_url_data['id'] = 'paypal' . $order['order_no'];
             }
             $newOrderData = [
@@ -1415,8 +1424,8 @@ class OrdersService
                 'page_pay_url' => $pay_url_data['url'],
             ];
             $bill_no = $this->getBillNo();
-            $ordernew->_update(['merchant_no' => $pay_url_data['id']?? '','pay_url'=>$pay_url_data['url'],'bill_no'=>$bill_no,'pay_type'=>$order['pay_type']], "order_no='{$order['order_no']}'");
-            $ordergoods->_update(['merchant_no' => $pay_url_data['id']?? '','pay_type'=>$order['pay_type']], "order_no='{$order['order_no']}'");
+            $ordernew->_update(['merchant_no' => $pay_url_data['id']?? '', 'paddle_no' => $payment_id ?? null, 'pay_url'=>$pay_url_data['url'],'bill_no'=>$bill_no,'pay_type'=>$order['pay_type']], "order_no='{$order['order_no']}'");
+            $ordergoods->_update(['merchant_no' => $pay_url_data['id']?? '', 'paddle_no' => $payment_id ?? null,'pay_type'=>$order['pay_type']], "order_no='{$order['order_no']}'");
         }
         return $newOrderData;
     }

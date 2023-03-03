@@ -121,4 +121,17 @@ class PaypalBiz extends Controller
             \Log::info('paypal支付失败', ['payment_id'=>$paymentId, 'result'=>$result->toArray(), 'message'=>$ex->getMessage()]);
         }
     }
+
+    public function findByPaymentId($paymentId)
+    {
+        try {
+            $payment = Payment::get($paymentId,  $this->paypal);
+        } catch (\Exception $ex) {
+            \Log::info('paypal查询失败', ['payment_id'=>$paymentId, 'result'=>$ex->getMessage()]);
+            return [];
+        }
+
+        \Log::info('paypal查询结果', ['payment_id'=>$paymentId, 'result'=>$payment->toArray()]);
+        return $payment;
+    }
 }
