@@ -83,7 +83,6 @@ class PaypalBiz extends Controller
 
         $redirectUrls = new RedirectUrls();
         $serverName = 'https://' . $_SERVER['SERVER_NAME'] . '/api/paypal-callback';
-        \Log::info('paypal支付重定向地址' . $serverName);
         $redirectUrls->setReturnUrl($serverName . '?success=true')->setCancelUrl($serverName . '?success=false');
 
         $payment = new Payment();
