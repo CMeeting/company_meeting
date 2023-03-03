@@ -1281,7 +1281,7 @@ class OrdersService
             $paypal = new PaypalBiz();
             $result = $paypal->findByPaymentId($data['paddle_no']);
             //支付完成
-            \Log::info('paypal主动查询订单状态数据', ['order_no'=>$data['order_no'], 'status'=>$data['status'], 'result'=>$result]);
+            \Log::info('paypal主动查询订单状态数据', ['order_no'=>$data['order_no'], 'status'=>$data['status'], 'result'=>$result->toArray()]);
             if($result->getState() == 'approved' && $data['status'] == Order::STATUS_0_UNPAID){
                 $order_service = new OrdersService();
                 $order_service->notifyHandle($data['order_no'], $trade_no);

@@ -121,6 +121,11 @@ class PaypalBiz extends Controller
         }
     }
 
+    /**
+     * 主动查询paypal订单接口
+     * @param $paymentId
+     * @return array|Payment
+     */
     public function findByPaymentId($paymentId)
     {
         try {
@@ -130,7 +135,6 @@ class PaypalBiz extends Controller
             return [];
         }
 
-        \Log::info('paypal查询结果', ['payment_id'=>$paymentId, 'result'=>$payment->toArray()]);
         return $payment;
     }
 }
