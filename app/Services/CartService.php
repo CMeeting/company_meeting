@@ -118,7 +118,7 @@ class CartService
         $goodsfenlei = new Goodsclassification();
         $goods = new Goods();
         $fenleidata = $goodsfenlei->_where("is_saas=0");
-        $goodsdata = $goods->_where("and is_saas=0");
+        $goodsdata = $goods->_where("is_saas=0");
         $arr=array();
         foreach ($fenleidata as $k=>$v){
             $arr['fenlei'][$v['id']]=$v;
