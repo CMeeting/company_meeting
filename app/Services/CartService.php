@@ -60,7 +60,7 @@ class CartService
             if (!$goods_data) {
                 return ['code' => 403, 'msg' => "该商品不存在或已下架"];
             }
-            $cart_info = $cart->_find("goods_id='{$goods_data['id']}' and user_id='{$data['user_id']}' and appid='{$appid}' and is_saas=0");
+            $cart_info = $cart->_find("goods_id='{$goods_data['id']}' and user_id='{$data['user_id']}' and appid='{$appid}'");
             $cart_info = $cart->objToArr($cart_info);
             if ($cart_info) {
                 $arr = ['pay_years' => $data['pay_years'] + $cart_info['pay_years']];
