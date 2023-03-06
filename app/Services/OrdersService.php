@@ -1597,7 +1597,7 @@ class OrdersService
             \Log::info($order_no . ":进入回调执行生成授权码");
             if ($order_data['renwe_id']) {   //续订订单
                 $ids = [];
-                $license_data = LicenseModel::where('order_id', $order_data['id']); //查出续订的父订单所有序列码
+                $license_data = LicenseModel::where('order_id', $order_data['renwe_id']); //查出续订的父订单所有序列码
                 foreach ($order_goods_data as $k => $v) {            //循环当前子订单
                     foreach ($license_data as $ks => $vs) {             //循环嵌套续订父订单的所有序列码
                         if ($v['renwe_goodsid'] == $vs['ordergoods_id']) {   //判断当前子订单的父级明细订单与序列码绑定的子订单ID一致
