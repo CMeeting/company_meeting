@@ -1427,6 +1427,7 @@ class OrdersService
             $newOrderData = [
                 'third_order_no' => $pay_url_data['id'] ?? '',
                 'page_pay_url' => $pay_url_data['url'],
+                'payment_id' => $payment_id ?? null
             ];
             $bill_no = $this->getBillNo();
             $ordernew->_update(['merchant_no' => $pay_url_data['id']?? '', 'paddle_no' => $payment_id ?? null, 'pay_url'=>$pay_url_data['url'],'bill_no'=>$bill_no,'pay_type'=>$order['pay_type']], "order_no='{$order['order_no']}'");
