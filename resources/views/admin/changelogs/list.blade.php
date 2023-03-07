@@ -82,8 +82,8 @@
                 @foreach($data as $key => $item)
                     <tr>
                         <td  class="text-center" >{{$item['id']}}</td>
-                        <td  class="text-center" >{{$platform[$item['platform']]['name']}}</td>
-                        <td  class="text-center" >{{$platform[$item['product']]['name']}}</td>
+                        <td  class="text-center" >{{array_get($platform, $item['platform'] . ".name")}}</td>
+                        <td  class="text-center" >{{array_get($platform, $item['product'] . ".name")}}</td>
                         <td  class="text-center" >{{$development_language[$item['development_language']]}}</td>
                         <td  class="text-center" >{{$item['version_no']}}</td>
                         <td  class="text-center" >{{$item['slug']}}</td>
