@@ -257,6 +257,7 @@
                                     <a class="btn  btn-xs" style="text-decoration: none;color: #f6fff8;background: #0b94ea" title="预览 " href="{{route('order.getinfo',$item['id'])}}">
                                         <i class="fa fa-users"></i> 详情
                                     </a>
+                                    
                                 </div>
                             </td>
                         </tr>
