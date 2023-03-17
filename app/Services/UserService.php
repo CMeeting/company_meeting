@@ -95,6 +95,8 @@ class UserService
 
         if($source == User::SOURCE_2_SAAS){
             $user->type = User::TYPE_6_SAAS_TRY_OUT;
+        }elseif($source == User::SOURCE_3_WEBVIEWER){
+            $user->type = User::TYPE_7_WEBVIEWER;
         }
 
         $user->save();

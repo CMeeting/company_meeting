@@ -32,12 +32,14 @@ class User extends Model
     const TYPE_4_SDK = 4;
     const TYPE_5_SAAS_ADN_SDK = 5;
     const TYPE_6_SAAS_TRY_OUT = 6;
+    const TYPE_7_WEBVIEWER = 7;
 
     const CODE_1_YES = 1;
     const CODE_0_NO = 0;
 
     const SOURCE_1_SDK = 1;
     const SOURCE_2_SAAS = 2;
+    const SOURCE_3_WEBVIEWER = 3;
 
     public static $typeArr = [
         1 => '免费用户',
@@ -45,7 +47,8 @@ class User extends Model
         3 => 'SaaS用户',
         4 => 'SDK用户',
         5 => 'SaaS、SDK用户',
-        6 => 'SaaS试用用户'
+        6 => 'SaaS试用用户',
+        7 => 'WebViewer用户'
     ];
 
     protected $table = 'users';
