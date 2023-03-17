@@ -36,6 +36,10 @@ d1FVI4dnsRFaW/FsOIK5iyYxbLIuZ2ZLCw4ZQNDFK+HT5iHA5dEZSMB07MayW3sJ1+5DXTLErwsW
 FdRLZgcfSkQrvDjdm0cCmmlne3wE/cmVmKY0Jm2eQOAgKg3BAJVvEa4TL9BTSlZ9fxjFbgwvz7Fk
 8iNXyQIDAQAB';
 
+    public $key = 'T2EKWNOflrd6ICU5';
+
+    public $iv = 'GM3Faw9kX7CBmojt';
+
     public function encryption($data){
         $public_key = "-----BEGIN PUBLIC KEY-----\n" . wordwrap($this->rsa_public, 64, "\n", true) . "\n-----END PUBLIC KEY-----";
         $key = openssl_pkey_get_public($public_key);
@@ -56,13 +60,13 @@ FdRLZgcfSkQrvDjdm0cCmmlne3wE/cmVmKY0Jm2eQOAgKg3BAJVvEa4TL9BTSlZ9fxjFbgwvz7Fk
 
     /**
      * 获取加盐码
-     * 邮箱长度除以5取余，余数为0则为4，截取邮箱MD5算法后字符串，从余数开始，长度为 余数加3 的字符串
-     * @param $email
+     * str长度除以5取余，余数为0则为4，截取邮箱MD5算法后字符串，从余数开始，长度为 余数加3 的字符串
+     * @param $str
      * @return false|string
      */
-    public function getSaltCode($email){
-        $result = md5($email);
-        $str_len = strlen($email);
+    public function getSaltCode($str){
+        $result = md5($str);
+        $str_len = strlen($str);
 
         $mod = $str_len % 5;
         if($mod == 0){

@@ -79,9 +79,9 @@ class WebViewerLicenseService
 
        //验证域名
        $allow_domain = WebViewerLicenseDomain::where('license_id', $license_model->id)->pluck('domain')->toArray();
-       if(!in_array($request_domain, $allow_domain)){
-           return ['code'=>500, 'message'=>'invalid domain', 'data'=>[]];
-       }
+//       if(!in_array($request_domain, $allow_domain)){
+//           return ['code'=>500, 'message'=>'invalid domain', 'data'=>[]];
+//       }
 
        //验证时间
        $end_date = Carbon::parse($license_model->expiration);
@@ -100,12 +100,15 @@ class WebViewerLicenseService
            'license_id' => $license_model->id,
            'user_id' => $license_model->user_id,
            'domain' => $allow_domain,
-           'expire_date' => $expire_date->format('Y-m-dTH:i:s')
+           'expire_date' => $expire_date->format('Y-m-d H:i:s')
        ];
 
        $encryptionService = new EncryptionService();
        $token = $encryptionService->encryption(json_encode($data));
 
-       return ['code'=>200, 'message'=>'success', 'data'=>['token'=>$token]];
+       $data = json_encode(['token'=>$token, 'domain'=>$allow_domain]);
+       $data = openssl_encrypt($data, 'AES-128-CBC', $encryptionService->key, 0, $encryptionService->iv);
+
+       return ['code'=>200, 'message'=>'success', 'data'=>$data];
    }
 }
