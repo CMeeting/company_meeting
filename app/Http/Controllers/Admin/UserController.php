@@ -252,7 +252,7 @@ class UserController extends BaseController
 
         //TODO 后续声明常量
         $status_arr = [0 => '待付款', 1 => '已付款', 2 => '已完成', 3 => '待退款', 4 => '已关闭'];
-        $pay_type_arr = [1 => 'paddle', 2 => '支付宝', 3 => '微信', 4 => '不需要支付'];
+        $pay_type_arr = [1 => 'paddle', 2 => '支付宝', 3 => '微信', 4 => '不需要支付', 5 => 'paypal'];
         $source_arr = [1 => '后台创建', 2 => '用户购买'];
         $details_type_arr = [1 => 'SDK试用', 2 => 'SDK订单', 3 => 'SaaS订单'];
 
