@@ -71,6 +71,8 @@
                                         <span class="ladda-label">微信</span>
                                     @elseif($item['pay_type'] == 4)
                                         <span class="ladda-label">不需支付</span>
+                                    @elseif($item['pay_type'] == 5)
+                                        <span class="ladda-label">PayPal</span>
                                     @else
                                         <span class="ladda-label">未支付</span>
                                     @endif
