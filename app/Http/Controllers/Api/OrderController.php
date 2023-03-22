@@ -370,8 +370,7 @@ class OrderController
                 $payer_id = $request->input('PayerID');
                 $paypal = new PaypalBiz();
                 $paypal->callBack($payment_id, $payer_id);
-                $webHost = env('WEB_HOST');
-                return redirect()->away($webHost);
+                return \Response::json(['code'=>200, 'message'=>'用户支付成功']);
             }else{
                 return \Response::json(['code'=>500, 'message'=>'用户取消支付']);
             }

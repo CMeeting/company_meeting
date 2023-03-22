@@ -35,11 +35,11 @@ Route::group(['namespace' => 'Api'], function () {
     Route::post('/paddlecallback', 'OrderController@paddlecallback');
     Route::get('/invoicemice', 'OrderController@invoicemice');
     Route::post('/paypal-notify', 'OrderController@payPalNotify');
-    Route::get('/paypal-callback', 'OrderController@payPalCallBack');
     //webviewer 生成序列码
     Route::post('/license/generate', 'WebViewerLicenseController@generate');
     //webviewer 校验序列码
     Route::post('/license/verify', 'WebViewerLicenseController@verify');
+    Route::post('/paypal-callback', 'OrderController@payPalCallBack');
 });
 
 Route::group(['middleware' => ['jwt.auth', 'cors'], 'namespace' => 'Api'], function () {
