@@ -79,9 +79,9 @@ class WebViewerLicenseService
 
        //验证域名
        $allow_domain = WebViewerLicenseDomain::where('license_id', $license_model->id)->pluck('domain')->toArray();
-//       if(!in_array($request_domain, $allow_domain)){
-//           return ['code'=>500, 'message'=>'invalid domain', 'data'=>[]];
-//       }
+       if(!in_array($request_domain, $allow_domain)){
+           return ['code'=>500, 'message'=>'invalid domain', 'data'=>[]];
+       }
 
        //验证时间
        $end_date = Carbon::parse($license_model->expiration);
