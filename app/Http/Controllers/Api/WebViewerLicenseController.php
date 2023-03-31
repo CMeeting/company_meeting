@@ -53,11 +53,11 @@ class WebViewerLicenseController extends Controller
     public function verify(Request $request){
         $license = $request->input('license');
 
-        $source_domain = $_SERVER['HTTP_REFERER'] ?? '';
+        $url = $_SERVER['HTTP_REFERER'] ?? '';
 
         $licenseService = new WebViewerLicenseService();
 
-        $result = $licenseService->verify($license, $source_domain);
+        $result = $licenseService->verify($license, $url);
 
         return \Response::json($result);
     }

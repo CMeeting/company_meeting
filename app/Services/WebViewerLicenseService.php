@@ -67,10 +67,10 @@ class WebViewerLicenseService
     /**
      * 序列码验证
      * @param $license_code
-     * @param $request_domain
+     * @param $url
      * @return array
      */
-   public function verify($license_code, $request_domain){
+   public function verify($license_code, $url){
        $license_model = WebViewerLicense::where('license_code', $license_code)->first();
 
        if(!$license_model instanceof WebViewerLicense){
@@ -79,7 +79,8 @@ class WebViewerLicenseService
 
        //验证域名
        $allow_domain = WebViewerLicenseDomain::where('license_id', $license_model->id)->pluck('domain')->toArray();
-       if(!in_array($request_domain, $allow_domain)){
+       $host = $this->getTopDomain($url);
+       if(!in_array($host, $allow_domain)){
            return ['code'=>500, 'message'=>'invalid domain', 'data'=>[]];
        }
 
@@ -110,5 +111,22 @@ class WebViewerLicenseService
        $data = openssl_encrypt($data, 'AES-128-CBC', $encryptionService->key, 0, $encryptionService->iv);
 
        return ['code'=>200, 'message'=>'success', 'data'=>$data];
+   }
+
+   public function getTopDomain($domain){
+       $host = parse_url($domain, PHP_URL_HOST);
+       $data = explode('.', $host);
+       $n = count($data);
+
+       //判断是否是双后缀
+       $preg = '/[\w].+\.(com|net|org|gov|edu)\.cn$/';
+       if(($n > 2) &&  preg_match($preg, $host)){
+           //双后缀取后3位
+           $host = $data[$n-3].'.'.$data[$n-2].'.'.$data[$n-1];
+       }else{
+           //非双后缀取后两位
+           $host = $data[$n-2].'.'.$data[$n-1];
+       }
+       return $host;
    }
 }
