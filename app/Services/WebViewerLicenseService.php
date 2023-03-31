@@ -77,10 +77,18 @@ class WebViewerLicenseService
            return ['code'=>500, 'message'=>'license code not exists', 'data'=>[]];
        }
 
-       //验证域名
+       //验证 请求的域名是否已license的域名结尾
        $allow_domain = WebViewerLicenseDomain::where('license_id', $license_model->id)->pluck('domain')->toArray();
-       $host = $this->getTopDomain($url);
-       if(!in_array($host, $allow_domain)){
+       $host = parse_url($url, PHP_URL_HOST);
+       $pass_domain = '';
+       foreach ($allow_domain as $domain){
+           $len = strlen($domain);
+           if(substr($host, -$len) === $domain){
+               $pass_domain = $domain;
+               break;
+           }
+       }
+       if(!$pass_domain){
            return ['code'=>500, 'message'=>'invalid domain', 'data'=>[]];
        }
 
@@ -107,7 +115,7 @@ class WebViewerLicenseService
        $encryptionService = new EncryptionService();
        $token = $encryptionService->encryption(json_encode($data));
 
-       $data = json_encode(['token'=>$token, 'domain'=>$allow_domain]);
+       $data = json_encode(['token'=>$token, 'domain'=>$pass_domain]);
        $data = openssl_encrypt($data, 'AES-128-CBC', $encryptionService->key, 0, $encryptionService->iv);
 
        return ['code'=>200, 'message'=>'success', 'data'=>$data];
