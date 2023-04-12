@@ -19,6 +19,7 @@ use App\Models\LicenseModel;
 use App\Models\Mailmagicboard;
 use App\Models\User;
 use Auth;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Facades\Excel;
@@ -60,12 +61,28 @@ class LicenseService
         if ($param['level3']) {
             $where .= " and l.licensetype_id = " . $param['level3'];
         }
+
+        //拆分创建时间
+        $created_at = $param['created_at'] ?? '';
+        if($created_at) {
+            $created_at = explode('/', $created_at);
+            $param['created_start'] = $created_at[0];
+            $param['created_end'] = Carbon::parse($created_at[1])->addDay()->format('Y-m-d H:i:s');
+        }
         if (isset($param['created_start']) && $param['created_start'] && isset($param['created_end']) && $param['created_end']) {
             $where .= " AND l.created_at BETWEEN '" . $param['created_start'] . "' AND '" . $param['created_end'] . "'";
         } elseif (isset($param['created_start']) && $param['created_start'] && empty($param['created_end'])) {
             $where .= " AND l.created_at >= '" . $param['created_start'] . "'";
         } elseif (isset($param['created_end']) && $param['created_end'] && empty($param['created_start'])) {
             $where .= " AND l.created_at <= '" . $param['created_end'] . "'";
+        }
+
+        //拆分过期时间
+        $expire_at = $param['expire_at'] ?? '';
+        if($expire_at) {
+            $expire_at = explode('/', $expire_at);
+            $param['expire_start'] = $expire_at[0];
+            $param['created_end'] = Carbon::parse($expire_at[1])->addDay()->format('Y-m-d H:i:s');
         }
 
         if (isset($param['expire_start']) && $param['expire_start'] && isset($param['expire_end']) && $param['expire_end']) {
@@ -75,6 +92,11 @@ class LicenseService
         } elseif (isset($param['expire_end']) && $param['expire_end'] && empty($param['expire_start'])) {
             $where .= " AND l.expire_time <= '" . $param['expire_end'] . "'";
         }
+
+        if($param['status']){
+            $where .= " AND l.status = '". $param['status'] ."'";
+        }
+
         $query = DB::table("license_code as l");
         if ($param['export'] == 1) {
             $data = $query->select("l.id", "o.order_no as order_id", "o.goods_no as order_no", "l.uuid", "l.created_at", "l.expire_time",
@@ -122,7 +144,7 @@ class LicenseService
             }
         }
 
-            return $data ?? [];
+        return $data ?? [];
 
     }
 

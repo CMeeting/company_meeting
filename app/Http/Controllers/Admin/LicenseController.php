@@ -26,19 +26,19 @@ class LicenseController extends BaseController
         $query["level1"] = isset($param['level1']) ? $param['level1'] : "";
         $query["level2"] = isset($param['level2']) ? $param['level2'] : "";
         $query["level3"] = isset($param['level3']) ? $param['level3'] : "";
-        $query["created_start"] = isset($param['created_start']) ? $param['created_start'] : "";
-        $query["created_end"] = isset($param['created_end']) ? $param['created_end'] : "";
-        $query["expire_start"] = isset($param['expire_start']) ? $param['expire_start'] : "";
-        $query["expire_end"] = isset($param['expire_end']) ? $param['expire_end'] : "";
+        $query["created_at"] = isset($param['created_at']) ? $param['created_at'] : "";
+        $query["expire_at"] = isset($param['expire_at']) ? $param['expire_at'] : "";
+        $query['status'] = isset($param['status']) ? $param['status'] : '';
         $query['export'] = array_get($param, 'export', 0);
         $license_type = config("constants.license_type");
+        $license_status = config('constants.license_status');
         $data = $license->list($query);
         $categorical_data = $GoodsService->threelevellinkage();
         if($query['export'] == 1){
             return $license->export($data, $param['field']);
         }
 //        return $this->view('index', compact('data', 'query', 'license_type', 'products', 'platforms', 'license_types'));
-        return $this->view('index',['data'=>$data,'license_type'=>$license_type,'query'=>$query,'lv1'=>json_encode($categorical_data['arr1']),'lv2'=>json_encode($categorical_data['arr2']),'lv3'=>json_encode($categorical_data['arr3'])]);
+        return $this->view('index',['data'=>$data,'license_type'=>$license_type, 'license_status'=>$license_status, 'query'=>$query,'lv1'=>json_encode($categorical_data['arr1']),'lv2'=>json_encode($categorical_data['arr2']),'lv3'=>json_encode($categorical_data['arr3'])]);
     }
 
     /**

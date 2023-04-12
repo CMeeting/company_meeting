@@ -69,6 +69,18 @@
                                 </select>
                             </div>
                         </div>
+
+                        <div class="col-md-4 col-lg-2 col-sm-6 col-xs-12">
+                            <div class="form-group">
+                                <select id="type" class="form-control" name="status" tabindex="1">
+                                    <option value="">请选择授权码状态</option>
+                                    @foreach($license_status as $key => $value)
+                                        <option value="{{$key}}" @if(isset($query)&&$query['status']==$key) selected @endif>{{$value}}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+
                         <div class="col-md-4 col-lg-2 col-sm-6 col-xs-12">
                             <select name="level1" id="province" class="form-control"></select>
                         </div>
@@ -79,27 +91,28 @@
                             <select name="level3" id="town" class="form-control"></select>
                         </div>
 
-                        <div class="input-group-btn" style="display: inline-block;width: 150px;margin-left:20px;">
-                            <input type="text" name="created_start" class="form-control"
-                                   style="display: inline-block;width: 160px;" id="created_start" placeholder="创建时间-开始"
-                                   value="@if(isset($query)){{$query['created_start']}}@endif"/>
+                        <div class="input-group-btn" style="display: inline-block;width: 250px;margin-left:20px;">
+                            <input type="text" name="created_at" class="form-control"
+                                   style="display: inline-block;width: 200px;" id="created_at" placeholder="创建时间"
+                                   value="@if(isset($query)){{$query['created_at']}}@endif"/>
                         </div>
-                        <div class="input-group-btn" style="display: inline-block;width: 150px;margin-left:20px;">
-                            <input type="text" id="created_end" name="created_end" class="form-control"
-                                   style="display: inline-block;width: 160px;" placeholder="创建时间-结束"
-                                   value="@if(isset($query)){{$query['created_end']}}@endif"/>
+{{--                        <div class="input-group-btn" style="display: inline-block;width: 150px;margin-left:20px;">--}}
+{{--                            <input type="text" id="created_end" name="created_end" class="form-control"--}}
+{{--                                   style="display: inline-block;width: 160px;" placeholder="创建时间-结束"--}}
+{{--                                   value="@if(isset($query)){{$query['created_end']}}@endif"/>--}}
+{{--                        </div>--}}
+
+                        <div class="input-group-btn" style="display: inline-block;width: 250px;margin-left:20px;">
+                            <input type="text" name="expire_at" class="form-control"
+                                   style="display: inline-block;width: 200px;" id="expire_at" placeholder="过期时间"
+                                   value="@if(isset($query)){{$query['expire_at']}}@endif"/>
                         </div>
 
-                        <div class="input-group-btn" style="display: inline-block;width: 150px;margin-left:20px;">
-                            <input type="text" name="expire_start" class="form-control"
-                                   style="display: inline-block;width: 160px;" id="expire_start" placeholder="过期时间-开始"
-                                   value="@if(isset($query)){{$query['expire_start']}}@endif"/>
-                        </div>
-                        <div class="input-group-btn" style="display: inline-block;width: 150px;margin-left:20px;">
-                            <input type="text" name="expire_end" class="form-control"
-                                   style="display: inline-block;width: 160px;" id="expire_end" placeholder="过期时间-结束"
-                                   value="@if(isset($query)){{$query['expire_end']}}@endif"/>
-                        </div>
+{{--                        <div class="input-group-btn" style="display: inline-block;width: 150px;margin-left:20px;">--}}
+{{--                            <input type="text" name="expire_end" class="form-control"--}}
+{{--                                   style="display: inline-block;width: 160px;" id="expire_end" placeholder="过期时间-结束"--}}
+{{--                                   value="@if(isset($query)){{$query['expire_end']}}@endif"/>--}}
+{{--                        </div>--}}
 
                         <span class="input-group-btn" style="display: inline-block;">
                             <button type="submit" class="btn btn-purple btn-sm" style="margin-left: 20px;">
@@ -165,10 +178,9 @@
                 'info' => isset($query['info'])?$query['info']:'',
                 'query_type'=>isset($query['query_type'])?$query['query_type']:'',
                 'type'=>isset($query['type'])?$query['type']:'',
-                'created_start'=>isset($query['created_start'])?$query['created_start']:'',
-                'created_end'=>isset($query['created_end'])?$query['created_end']:'',
-                'expire_start'=>isset($query['expire_start'])?$query['expire_start']:'',
-                'expire_end'=>isset($query['expire_end'])?$query['expire_end']:''])
+                'created_at'=>isset($query['created_at'])?$query['created_at']:'',
+                'expire_at'=>isset($query['expire_at'])?$query['expire_at']:'',
+                'status'=>isset($query['status'])?$query['status']:'',])
                 ->links()}}
         </div>
     </div>
@@ -209,77 +221,21 @@
     layui.use('laydate', function () {
         var laydate = layui.laydate;
 
-        //执行一个laydate实例
-        var start = laydate.render({
-            elem: '#created_start', //指定元素
+        laydate.render({
+            elem: '#created_at', //指定元素
             max: 1,//最大值为当前日期
             trigger: 'click',
-            type: 'datetime',//日期时间选择器
-            // value: getRecentDay(-30),//默认值30天前
-            done: function (value, date) {
-                if (value && (value > $("#created_end").val())) {
-                    /*开始时间大于结束时间时，清空结束时间*/
-                    $("#created_end").val("");
-                }
-                end.config.min = {
-                    year: date.year,
-                    month: date.month - 1,
-                    date: date.date,
-                    hours: date.hours,//可注释
-                    minutes: date.minutes,//可注释
-                    seconds: date.seconds//可注释
-                };
-            }
+            type: 'date',//日期时间选择器
+            range:'/'
         });
-        var end = laydate.render({
-            elem: '#created_end', //指定元素
-            max: 1,//最大值为当前日期
-            type: 'datetime',//日期时间选择器
-            // value: getRecentDay(-1),//默认值昨天
-            choose: function (datas) {
-                start.max = datas; //结束日选好后，重置开始日的最大日期
-            }
-        });
-    });
 
-
-    layui.use('laydate', function () {
-        var laydate = layui.laydate;
-
-        //执行一个laydate实例
-        var start = laydate.render({
-            elem: '#expire_start', //指定元素
-            max: 3,//最大值为当前日期
+        laydate.render({
+            elem: '#expire_at', //指定元素
             trigger: 'click',
-            type: 'datetime',//日期时间选择器
-            // value: getRecentDay(-30),//默认值30天前
-            done: function (value, date) {
-                if (value && (value > $("#expire_end").val())) {
-                    /*开始时间大于结束时间时，清空结束时间*/
-                    $("#expire_end").val("");
-                }
-                end.config.min = {
-                    year: date.year,
-                    month: date.month - 1,
-                    date: date.date,
-                    hours: date.hours,//可注释
-                    minutes: date.minutes,//可注释
-                    seconds: date.seconds//可注释
-                };
-            }
-        });
-        var end = laydate.render({
-            elem: '#expire_end', //指定元素
-            max: '2099-12-31',//最大值为当前日期
-            type: 'datetime',//日期时间选择器
-            // value: getRecentDay(-1),//默认值昨天
-
-            choose: function (datas) {
-                start.max = datas; //结束日选好后，重置开始日的最大日期
-            }
+            type: 'date',//日期时间选择器
+            range:'/'
         });
     });
-
 
     function show(id, status) {
         if (status == 1) {
