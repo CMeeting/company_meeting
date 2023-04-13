@@ -99,7 +99,7 @@
                     <div class="form-group">
                         <label class="col-sm-2 control-label no-padding-right" for="form-field-1">上传密钥：<span style="color: red;font-size: 14px">*</span></label>
                         <div class="col-sm-6 col-xs-12">
-                            <input type="file" name="file" id="file" required/>
+                            <input type="file" name="file" id="file"/>
 {{--                            <button type="button" class="layui-btn" id="upload">--}}
 {{--                                <i class="layui-icon">&#xe67c;</i>--}}
 {{--                            </button>--}}
@@ -179,6 +179,22 @@
             var x = document.getElementById("file").value;
             if(x == ''){
                 layer.msg("没有上传密钥文件", {time: 1500, anim: 6});
+                return false;
+            }
+
+            //限制文件上传大小不能超过1M
+            var keyFile = document.getElementById("file").files[0]
+            var maxsize = 1024*1024;
+            if(keyFile.size > maxsize){
+                layer.msg("上传文件不能大于1M", {time: 1500, anim: 6});
+                return false;
+            }
+
+            //限制文件上传类型
+            var suffix_arr = keyFile.name.split('.')
+            var suffix = suffix_arr[suffix_arr.length-1]
+            if(suffix != 'pem'){
+                layer.msg("请上传.pem后缀文件", {time: 1500, anim: 6});
                 return false;
             }
 
