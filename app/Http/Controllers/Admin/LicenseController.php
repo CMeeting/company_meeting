@@ -7,6 +7,7 @@ use App\Services\LicenseService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Services\GoodsService;
+use Illuminate\Support\Facades\Auth;
 
 class LicenseController extends BaseController
 {
@@ -77,8 +78,16 @@ class LicenseController extends BaseController
     public function createrunLicense(Request $request)
     {
         $param = $request->input();
+
+        //生成序列码密钥改为管理员上传
+        $admin = Auth::guard('admin')->user();
+        $path = 'licenseKey' . DIRECTORY_SEPARATOR . $admin->id;
+        $request->file('file')->storeAs($path, 'private_key.pem');
+        $private_key = '..'. DIRECTORY_SEPARATOR .'storage' . DIRECTORY_SEPARATOR . 'app' . DIRECTORY_SEPARATOR . $path . DIRECTORY_SEPARATOR . 'private_key.pem';
+
         $license = new LicenseService();
-        $ret=$license->createlicense($param['data']);
+        $param['data']['admin_id'] = $admin->id;
+        $ret=$license->createlicense($param['data'], $private_key);
         if($ret){
             return $ret;
         }
@@ -121,6 +130,10 @@ class LicenseController extends BaseController
         $result = $generate->verify($key, $secret, $id, $plat, $os, $time);
         echo $result;
         die;
+    }
+
+    public function uploadFile(){
+
     }
 
 }

@@ -256,6 +256,6 @@ Route::group(['namespace' => 'Admin','prefix' => 'admin'], function (){
 
 /**下载文件**/
 Route::group(['namespace'=>'Common', 'middleware' => ['auth:admin','rbac']], function(){
-    Route::get('download', 'DownloadController@download')->name('download'); //下载文件
+    Route::get('download', 'FileController@download')->name('download'); //下载文件
 });
 

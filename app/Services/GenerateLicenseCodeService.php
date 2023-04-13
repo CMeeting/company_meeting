@@ -261,10 +261,12 @@ Class GenerateLicenseCodeService
      * @param $end_time
      * @param $ids
      * @param $email
+     * @param $private_key
      * @return array
      * @throws \Exception
      */
-    public function generate($product, $platform, $license_type, $start_time, $end_time, $ids, $email){
+    public function generate($product, $platform, $license_type, $start_time, $end_time, $ids, $email, $private_key = ''){
+        dd($private_key);
         $permission = $this->getPermission($product, $license_type);
         \Log::info('生成序列码permission:' . $permission);
         $platform = $this->getPlatformCode($platform);
@@ -274,7 +276,10 @@ Class GenerateLicenseCodeService
         $filename = $license_demo_path . DIRECTORY_SEPARATOR . 'licensefile' . DIRECTORY_SEPARATOR . $email . '_' . time() . '.xml';
 
         //秘钥
-        $private_key = $license_demo_path . DIRECTORY_SEPARATOR . 'private_key.pem';
+        if(!$private_key){
+            $private_key = $license_demo_path . DIRECTORY_SEPARATOR . 'private_key.pem';
+        }
+        \Log::info('密钥地址:' . $private_key);
 
         //拼接生成序列码命令
         $command = $license_demo_path . DIRECTORY_SEPARATOR. "LicenseDemo -pem \"$private_key\" -plat \"$platform\" -stt \"$start_time\" -edt \"$end_time\" -t \"2\" -parms \"$permission\"";

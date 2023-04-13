@@ -4,9 +4,10 @@
 namespace App\Http\Controllers\Common;
 
 
+use Auth;
 use Illuminate\Http\Request;
 
-class DownloadController
+class FileController
 {
     /**
      * 下载文件
@@ -17,5 +18,12 @@ class DownloadController
     {
         $file_name = $request->input('file_name');
         return \Storage::download($file_name);
+    }
+
+    public function upload(Request $request){
+        $file = $request->file('file');
+        $admin = Auth::guard('admin')->user();
+        $filename = 'licenseKey' . DIRECTORY_SEPARATOR . $admin->id;
+        \Storage::putFile($filename, $file, 'private_key.pem');
     }
 }

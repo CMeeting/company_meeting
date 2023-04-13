@@ -96,6 +96,16 @@
                         </div>
                     </div>
 
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label no-padding-right" for="form-field-1">上传密钥：<span style="color: red;font-size: 14px">*</span></label>
+                        <div class="col-sm-6 col-xs-12">
+                            <input type="file" name="file" id="file" required/>
+{{--                            <button type="button" class="layui-btn" id="upload">--}}
+{{--                                <i class="layui-icon">&#xe67c;</i>--}}
+{{--                            </button>--}}
+                        </div>
+                    </div>
+
 
 
                 <div class="clearfix form-actions">
@@ -116,7 +126,7 @@
 
     <script src="{{loadEdition('/js/jquery.min.js')}}"></script>
     <script>
- var mdindex=0;
+        var mdindex=0;
         function addmaidian(id) {
             mdindex++;
             var str = '<div class="form-group md" id="md' + mdindex + '"><label class="col-sm-2 control-label no-padding-right" for="form-field-1"> </label><div class="col-sm-6 col-xs-12"> <input style="float: left" id="maidian"  type="text" class="form-control maidian" name="data[appid][]" required> </div> <span class="lbl" style="float: left;margin-top: 0.2%;"><a style="display: inline-block;width: 30px;height: 30px;font-size: 18px;color: red;background: #fff9f9;text-align: center;line-height: 30px;border: 1px solid red" onclick="movemaidian(' + mdindex + ')">-</a></span> </div>';
@@ -172,6 +182,13 @@
                     return false;
                 }
             })
+            var x = document.getElementById("file").value;
+            if(x == ''){
+                layer.close(index);
+                layer.msg("没有上传密钥文件", {time: 1500, anim: 6});
+                return false;
+            }
+
             if(dd==1){
                 return false;
             }

@@ -251,7 +251,7 @@ class LicenseService
     }
 
 
-    public function createlicense($data){
+    public function createlicense($data, $private_key){
         $user = new User();
         $goods = new Goods();
         $lisecosdmode=new LicenseModel();
@@ -265,14 +265,15 @@ class LicenseService
 
         if(!isset($goodsid))return ['code' => 500, 'msg' => $classification[$data['level1']]['title'].'-'.$classification[$data['level2']]['title'].'-'.$classification[$data['level3']]['title'].'下没有商品'];
 
-        $licensecodedata=LicenseService::buildLicenseCodeData(0, 1, 0, $data['level1'], $data['level2'], $data['level3'],  $data["appid"], $data['email'],0,0);
+        $licensecodedata=LicenseService::buildLicenseCodeData(0, 1, 0, $data['level1'], $data['level2'], $data['level3'],  $data["appid"], $data['email'],0,0, 'year', 0, $private_key);
         foreach ($licensecodedata as $k=>$v){
             $licensecodedata[$k]['user_email'] = $data['email'];
             $licensecodedata[$k]['lise_type'] = 1;
+            $licensecodedata[$k]['admin_id'] = $data['admin_id'];
         }
         $res=$lisecosdmode->_insert($licensecodedata);
-         return ['code' => 1, 'msg' => "添加成功"];
 
+        return ['code' => 1, 'msg' => "添加成功"];
     }
 
 
@@ -300,10 +301,11 @@ class LicenseService
      * @param $order_id
      * @param $ordergoods_id
      * @param string $period_unit
+     * @param string $private_key 密钥文件
      * @return array
      * @throws \Exception
      */
-    public static function buildLicenseCodeData($ordergoods_no, $period, $user_id, $product_id, $platform_id, $licensetype_id, $app_id, $email,$order_id,$ordergoods_id, $period_unit = 'year',$start_time=0){
+    public static function buildLicenseCodeData($ordergoods_no, $period, $user_id, $product_id, $platform_id, $licensetype_id, $app_id, $email,$order_id,$ordergoods_id, $period_unit = 'year',$start_time=0, $private_key = ''){
         $license_code_arr = [];
 
         if(!$start_time){
@@ -330,13 +332,13 @@ class LicenseService
         }
 
         if($product == 'ComPDFKit SDK'){
-            $license_code_pdf = $generateService->generate('ComPDFKit PDF SDK', $platform, $license_type, $start_time, $end_time, $app_id, $email);
+            $license_code_pdf = $generateService->generate('ComPDFKit PDF SDK', $platform, $license_type, $start_time, $end_time, $app_id, $email, $private_key);
             $license_code_arr[] = self::getLicenseCodeData($license_code_pdf, $ordergoods_no, $user_id, $product_id, $platform_id, $licensetype_id, $app_id, $period, $end_time,$order_id,$ordergoods_id, $type, 'ComPDFKit PDF SDK');
 
-            $license_code_conversion = $generateService->generate('ComPDFKit Conversion SDK', $platform, $license_type, $start_time, $end_time, $app_id, $email);
+            $license_code_conversion = $generateService->generate('ComPDFKit Conversion SDK', $platform, $license_type, $start_time, $end_time, $app_id, $email, $private_key);
             $license_code_arr[] = self::getLicenseCodeData($license_code_conversion, $ordergoods_no, $user_id, $product_id, $platform_id, $licensetype_id, $app_id, $period, $end_time, $order_id,$ordergoods_id, $type, 'ComPDFKit Conversion SDK');
         }else{
-            $license_code_conversion = $generateService->generate($product, $platform, $license_type, $start_time, $end_time, $app_id, $email);
+            $license_code_conversion = $generateService->generate($product, $platform, $license_type, $start_time, $end_time, $app_id, $email, $private_key);
             $license_code_arr[] = self::getLicenseCodeData($license_code_conversion, $ordergoods_no, $user_id, $product_id, $platform_id, $licensetype_id, $app_id, $period, $end_time, $order_id,$ordergoods_id, $type, $platform_name);
         }
 

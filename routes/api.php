@@ -91,6 +91,8 @@ Route::group(['prefix' => 'user', 'namespace' => 'Api'], function () {
     });
 });
 
+Route::post('upload', 'Common\FileController@upload')->name('upload'); //下载文件
+
 //测试生成序列码
 Route::post('generate-license-code', 'Admin\LicenseController@generateLicenseCode');
 //测试验证序列码
