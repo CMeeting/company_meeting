@@ -266,7 +266,6 @@ Class GenerateLicenseCodeService
      * @throws \Exception
      */
     public function generate($product, $platform, $license_type, $start_time, $end_time, $ids, $email, $private_key = ''){
-        dd($private_key);
         $permission = $this->getPermission($product, $license_type);
         \Log::info('生成序列码permission:' . $permission);
         $platform = $this->getPlatformCode($platform);
