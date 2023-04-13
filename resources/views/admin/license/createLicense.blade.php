@@ -141,7 +141,6 @@
         }
 
         function submits() {
-            var index = layer.load();
             var dd=2;
             if(!$("#email").val()){
                 layer.close(index);
@@ -155,36 +154,30 @@
                 return false;
             }
             if(!$("#full_name").val()){
-                layer.close(index);
                 layer.msg("请输入Full Name", {time: 1500, anim: 6});
                 return false;
             }
             if(!$("#province").val()||$("#province").val()==0){
-                layer.close(index);
                 layer.msg("请选择Products", {time: 1500, anim: 6});
                 return false;
             }
             if(!$("#city").val()||$("#city").val()==0){
-                layer.close(index);
                 layer.msg("请选择Platform", {time: 1500, anim: 6});
                 return false;
             }
             if(!$("#town").val()||$("#town").val()==0){
-                layer.close(index);
                 layer.msg("请选择License Type", {time: 1500, anim: 6});
                 return false;
             }
             $(".maidian").each(function (){
                 if(!$(this).val()){
                     dd=1;
-                    layer.close(index);
                     layer.msg("有APPID/Machine ID为空", {time: 1500, anim: 6});
                     return false;
                 }
             })
             var x = document.getElementById("file").value;
             if(x == ''){
-                layer.close(index);
                 layer.msg("没有上传密钥文件", {time: 1500, anim: 6});
                 return false;
             }
@@ -193,7 +186,8 @@
                 return false;
             }
             var form_data = new FormData($("#forms")[0]);
-            layer.close(index);
+
+            var index = layer.load();
 
             $.ajax({
                 url: "{{route('license.createrunLicense')}}",
@@ -213,7 +207,7 @@
                         return false;
                     }
                 }, error: function (ret) {
-
+                    layer.close(index);
                 }
             })
         }

@@ -82,12 +82,17 @@ class LicenseController extends BaseController
         //生成序列码密钥改为管理员上传
         $admin = Auth::guard('admin')->user();
         $path = 'licenseKey' . DIRECTORY_SEPARATOR . $admin->id;
+
         $request->file('file')->storeAs($path, 'private_key.pem');
         $private_key = '..'. DIRECTORY_SEPARATOR .'storage' . DIRECTORY_SEPARATOR . 'app' . DIRECTORY_SEPARATOR . $path . DIRECTORY_SEPARATOR . 'private_key.pem';
 
         $license = new LicenseService();
         $param['data']['admin_id'] = $admin->id;
         $ret=$license->createlicense($param['data'], $private_key);
+
+        //删除秘钥文件
+        \Storage::deleteDirectory($path);
+
         if($ret){
             return $ret;
         }
