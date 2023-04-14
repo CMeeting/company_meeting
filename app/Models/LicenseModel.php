@@ -19,4 +19,7 @@ use Illuminate\Database\Eloquent\Model;
 class LicenseModel extends Model
 {
     protected $table = 'license_code';
+
+    const LICENSE_TYPE_1_ON_TRIAL = 1;
+    const LICENSE_TYPE_2_PAID = 2;
 }

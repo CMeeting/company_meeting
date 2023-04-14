@@ -271,12 +271,14 @@ class LicenseService
 
         if(!isset($goodsid))return ['code' => 500, 'msg' => $classification[$data['level1']]['title'].'-'.$classification[$data['level2']]['title'].'-'.$classification[$data['level3']]['title'].'下没有商品'];
 
-        $licensecodedata=LicenseService::buildLicenseCodeData(0, 1, 0, $data['level1'], $data['level2'], $data['level3'],  $data["appid"], $data['email'],0,0, 'year', 0, $private_key);
+        $data['period'] = intval($data['period']);
+        $licensecodedata=LicenseService::buildLicenseCodeData(0, $data['period'], 0, $data['level1'], $data['level2'], $data['level3'],  $data["appid"], $data['email'],0,0, 'month', 0, $private_key);
         foreach ($licensecodedata as $k=>$v){
             $licensecodedata[$k]['user_email'] = $data['email'];
             $licensecodedata[$k]['lise_type'] = 1;
             $licensecodedata[$k]['admin_id'] = $data['admin_id'];
             $licensecodedata[$k]['company_name'] = $data['company_name'];
+            $licensecodedata[$k]['type'] = $data['type'];
         }
 
         $res=$lisecosdmode->_insert($licensecodedata);
@@ -332,7 +334,7 @@ class LicenseService
         $platform_name=$product ." for ". $platform ." (". $license_type.")";
         $generateService = new GenerateLicenseCodeService();
 
-        //如果 $period_unit是月份则是试用
+        //如果 $period_unit是月份则是试用 在license管理优化需求中，$period统一改为月份
         if($period_unit == 'year'){
             $type = self::LICENSE_TYPE_2_SDK;
         }else{

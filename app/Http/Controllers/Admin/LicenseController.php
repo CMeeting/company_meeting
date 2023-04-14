@@ -71,7 +71,8 @@ class LicenseController extends BaseController
     {
         $GoodsService = new GoodsService();
         $categorical_data = $GoodsService->threelevellinkage();
-        return $this->view('createLicense', ['lv1' => json_encode($categorical_data['arr1']), 'lv2' => json_encode($categorical_data['arr2']), 'lv3' => json_encode($categorical_data['arr3'])]);
+        $license_type = config("constants.license_type");
+        return $this->view('createLicense', ['lv1' => json_encode($categorical_data['arr1']), 'lv2' => json_encode($categorical_data['arr2']), 'lv3' => json_encode($categorical_data['arr3']), 'license_type'=>$license_type]);
     }
 
 

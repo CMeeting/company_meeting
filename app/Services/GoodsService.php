@@ -175,7 +175,7 @@ class GoodsService
         $goods = new Goodsclassification();
         $data = $goods->_where($where, "lv,displayorder");
 
-        $lv1 = array(['id'=>0,'title'=>'请选择Products']);
+        $lv1 = array(['id'=>0,'title'=>'请选择产品']);
         $lv2 = array();
         $lv3 = array();
         if ($data) {
@@ -185,8 +185,8 @@ class GoodsService
                 }
             }
             foreach ($lv1 as $ks => $vs) {  //循环一级数组数据
-                $lv2[$vs['title']][] = ['id'=>0,'title'=>'请选择Platform'];
-                $lv3[$vs['id']][][] = ['id'=>0,'title'=>'请选择License Type'];
+                $lv2[$vs['title']][] = ['id'=>0,'title'=>'请选择平台'];
+                $lv3[$vs['id']][][] = ['id'=>0,'title'=>'请选择功能套餐类型'];
                 foreach ($data as $kb => $vb) {         //循环二级数组数据
                     $s = 0;
                     $a = 0;

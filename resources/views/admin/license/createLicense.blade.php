@@ -1,7 +1,12 @@
 @extends('admin.layouts.layout')
 @section('content')
     <link rel="stylesheet" href="/layui/css/layui.css" media="all">
-    <script src="{{loadEdition('/layui/layui.js')}}"></script>
+<script>
+    import InlineView from "../../../../public/tinymce/modules/alloy/src/main/ts/ephox/alloy/api/ui/InlineView";
+    export default {
+        components: {InlineView}
+    }
+</script>
     <style>
         .cc {
             display: block;
@@ -52,6 +57,18 @@
                     </div>
 
                     <div class="form-group">
+                        <label class="col-sm-2 control-label no-padding-right" for="form-field-1">序列码类型：<span style="color: red;font-size: 14px">*</span></label>
+                        <div class="col-sm-6 col-xs-12">
+                            <select id="type" class="form-control" name="type" tabindex="1">
+                                <option value="0">请选择序列码类型</option>
+                                @foreach($license_type as $key => $value)
+                                    <option value="{{$key}}" @if(isset($query)&&$query['type']==$key) selected @endif>{{$value}}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
                         <label class="col-sm-2 control-label no-padding-right" for="form-field-1">产品：<span style="color: red;font-size: 14px">*</span></label>
                         <div class="col-sm-6 col-xs-12">
                         <select name="data[level1]" id="province" class="form-control"></select>
@@ -66,7 +83,7 @@
                 </div>
 
                     <div class="form-group">
-                        <label class="col-sm-2 control-label no-padding-right" for="form-field-1">序列码类型：<span style="color: red;font-size: 14px">*</span></label>
+                        <label class="col-sm-2 control-label no-padding-right" for="form-field-1">功能套餐类型：<span style="color: red;font-size: 14px">*</span></label>
                         <div class="col-sm-6 col-xs-12">
                         <select name="data[level3]" id="town" class="form-control"></select>
                     </div>
@@ -86,13 +103,7 @@
                     <div class="form-group">
                         <label class="col-sm-2 control-label no-padding-right" for="form-field-1">序列码有效期：<span style="color: red;font-size: 14px">*</span></label>
                         <div class="col-sm-6 col-xs-12">
-                            <select name="data[period]" id="period" class="form-control">
-                                <option value="1">1year</option>
-                                <option value="2">2years</option>
-                                <option value="3">3years</option>
-                                <option value="4">4years</option>
-                                <option value="5">5years</option>
-                            </select>
+                            <input name="data[period]" id="period" class="form-control" placeholder="单位为月(一年则填写12)"/>
                         </div>
                     </div>
 
@@ -155,6 +166,10 @@
             }
             if(!$("#company_name").val()){
                 layer.msg("请输入Company Name", {time: 1500, anim: 6});
+                return false;
+            }
+            if(!$("#type").val()||$("#province").val()==0){
+                layer.msg("请选择序列码类型", {time: 1500, anim: 6});
                 return false;
             }
             if(!$("#province").val()||$("#province").val()==0){
