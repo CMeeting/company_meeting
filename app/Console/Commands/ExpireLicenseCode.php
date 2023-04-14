@@ -3,6 +3,9 @@
 namespace App\Console\Commands;
 
 use App\Models\LicenseModel;
+use App\Models\Mailmagicboard;
+use App\Services\EmailService;
+use App\Services\OrdersService;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
 
@@ -20,7 +23,7 @@ class ExpireLicenseCode extends Command
      *
      * @var string
      */
-    protected $description = '序列码过期';
+    protected $description = '序列码状态变更';
 
     /**
      * Create a new command instance.
@@ -48,6 +51,18 @@ class ExpireLicenseCode extends Command
         $expire45_data = $query->get('id')->toArray();
         \Log::info('到期前45天序列码', ['ids'=>array_column($expire45_data, 'id')]);
         //TODO:发送提醒邮件
+        $orderService = new OrdersService();
+        $goods_class = $orderService->assembly_orderclassification();
+
+        $html='<table style="margin-top:0;">';
+        foreach ($expire45_data as $row){
+            $user_email = $row['user_email'] ?? '';
+            $product_name = $goods_class[$row['products_id']]['title'] ." for ". $goods_class[$row['platform_id']]['title'] ." (". $goods_class[$row['licensetype_id']]['title'].")";
+        }
+
+        $emailService = new EmailService();
+        $template = Mailmagicboard::find('');
+        $emailService->sendDiyContactEmail();
 
         //到期前15天发送内部提醒邮件
         $expire15 = Carbon::now()->addDays(15)->format('Y-m-d');

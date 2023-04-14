@@ -47,15 +47,12 @@
                 <form name="admin_list_sea" class="form-search" method="get" action="{{route('license.index')}}">
                     <div class="input-group" style="margin-left: 0 auto">
                         <div class="input-group-btn" style="vertical-align: top;">
-                            <select name="query_type" class="form-control" style="display: inline-block;width: 115px;" id="query_type">
-                                <option value="order_no" @if(isset($query)&&$query['query_type']=='order_no') selected @endif>订单编号
-                                </option>
-                                <option value="goods_no" @if(isset($query)&&$query['query_type']=='order_no') selected @endif>子单编号
-                                </option>
-                                <option value="uuid" @if(isset($query)&&$query['query_type']=='uuid') selected @endif>App ID/Machine ID
-                                </option>
-                                <option value="email" @if(isset($query)&&$query['query_type']=='email') selected @endif>用户账号
-                                </option>
+                            <select name="query_type" class="form-control" style="display: inline-block;width: 150px;" id="query_type">
+{{--                                <option value="order_no" @if(isset($query)&&$query['query_type']=='order_no') selected @endif>订单编号</option>--}}
+{{--                                <option value="goods_no" @if(isset($query)&&$query['query_type']=='order_no') selected @endif>子单编号</option>--}}
+                                <option value="company_name" @if(isset($query)&&$query['query_type']=='company_name') selected @endif>客户公司名称</option>
+                                <option value="uuid" @if(isset($query)&&$query['query_type']=='uuid') selected @endif>App ID/Machine ID</option>
+                                <option value="email" @if(isset($query)&&$query['query_type']=='email') selected @endif>用户邮箱</option>
                             </select>
                         </div>
                         <input type="text" name="info" id="info" class="form-control" style="display: inline-block;width: 200px;" value="@if(isset($query)){{$query['info']}}@endif"/>
@@ -128,9 +125,10 @@
                    style="word-wrap:break-word; word-break:break-all;">
                 <thead>
                 <tr>
-                    <th class="text-center" style="width: 9%">总订单号</th>
-                    <th class="text-center" style="width: 9%">子订单号</th>
-                    <th class="text-center" style="width: 9%">用户账号</th>
+{{--                    <th class="text-center" style="width: 9%">总订单号</th>--}}
+{{--                    <th class="text-center" style="width: 9%">子订单号</th>--}}
+                    <th class="text-center" style="width: 9%">客户公司名称</th>
+                    <th class="text-center" style="width: 9%">用户邮箱</th>
                     <th class="text-center" style="width: 7%">商品名称</th>
                     <th class="text-center" style="width: 8%">App ID/Machine ID</th>
                     <th class="text-center" style="width: 9%">创建时间</th>
@@ -145,8 +143,9 @@
                 <tbody>
                 @foreach($data as $key => $item)
                     <tr>
-                        <td class="text-center">{{$item->order_id}}</td>
-                        <td class="text-center">{{$item->order_no}}</td>
+{{--                        <td class="text-center">{{$item->order_id}}</td>--}}
+{{--                        <td class="text-center">{{$item->order_no}}</td>--}}
+                        <td class="text-center" title="{{$item->company_name}}">{{$item->company_name}}</td>
                         @if($item->lise_type==1)
                          <td class="text-center" title="{{$item->user_email}}">{{$item->user_email}}</td>
                         @else
@@ -366,18 +365,21 @@
 
         //导出
         html =  '<div style="display: flex; justify-content: left;flex-wrap: wrap; padding: 10px">' +
-            '<div style="margin-bottom: 10px"><label style="margin-right: 10px; width: 100px"><input name="order_id"  type="checkbox"  value="order_id" checked="checked"/>总订单编号</label>' +
-            '<label style="margin-right: 10px; width: 100px"><input name="order_no"  type="checkbox"  value="order_no" checked="checked"/>子订单号</label>' +
-            '<label style="margin-right: 10px; width: 100px"><input name="email"  type="checkbox"  value="email" checked="checked"/>用户账号</label>' +
-            '<label style="margin-right: 10px; width: 120px"><input name="name"  type="checkbox"  value="name" checked="checked"/>商品名称</label></div>' +
+            '<div style="margin-bottom: 10px">' +
+            '<label style="margin-right: 10px; width: 150px"><input name="company_name"  type="checkbox"  value="company_name" checked="checked"/>客户公司名称</label>'+
+            '<label style="margin-right: 10px; width: 150px"><input name="email"  type="checkbox"  value="user_email" checked="checked"/>用户邮箱</label>' +
+            '<label style="margin-right: 10px; width: 150px"><input name="name"  type="checkbox"  value="name" checked="checked"/>商品名称</label></div>' +
 
-            '<div style="margin-bottom: 10px"><label style="margin-right: 10px; width: 150px"><input name="uuid"  type="checkbox"  value="uuid" checked="checked"/>App ID/Machine ID</label>' +
-            '<label style="margin-right: 10px; width: 100px"><input name="created_at"  type="checkbox"  value="created_at" checked="checked"/>创建时间</label>' +
-            '<label style="margin-right: 10px; width: 100px"><input name="expire_time"  type="checkbox"  value="expire_time" checked="checked"/>过期时间</label>' +
-            '<label style="margin-right: 10px; width: 100px"><input name="license_key"  type="checkbox"  value="license_key" checked="checked"/>license_key</label></div>' +
+            '<div style="margin-bottom: 10px">' +
+            '<label style="margin-right: 10px; width: 150px"><input name="uuid"  type="checkbox"  value="uuid" checked="checked"/>App ID/Machine ID</label>' +
+            '<label style="margin-right: 10px; width: 150px"><input name="created_at"  type="checkbox"  value="created_at" checked="checked"/>创建时间</label>' +
+            '<label style="margin-right: 10px; width: 150px"><input name="expire_time"  type="checkbox"  value="expire_time" checked="checked"/>过期时间</label>' +
+            '</div>' +
 
-            '<div><label style="margin-right: 10px; width: 100px"><input name="type"  type="checkbox"  value="type" checked="checked"/>授权码类型</label>' +
-            '<label style="margin-right: 10px; width: 100px"><input name="status"  type="checkbox"  value="status" checked="checked"/>状态</label></div></div>';
+            '<div>' +
+            '<label style="margin-right: 10px; width: 150px"><input name="license_key"  type="checkbox"  value="license_key" checked="checked"/>license_key</label>' +
+            '<label style="margin-right: 10px; width: 150px"><input name="type"  type="checkbox"  value="type" checked="checked"/>授权码类型</label>' +
+            '<label style="margin-right: 10px; width: 150px"><input name="status"  type="checkbox"  value="status" checked="checked"/>状态</label></div></div>';
 
         $("#export").click(function () {
 

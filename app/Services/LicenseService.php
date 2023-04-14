@@ -46,7 +46,9 @@ class LicenseService
             }elseif ($param['query_type'] == "uuid") {
                 $where .= " and l.uuid like '%" . $param['info'] . "%'";
             } elseif ($param['query_type'] == "email") {
-                $where .= " and u.email ='{$param['info']}'";
+                $where .= " and (u.email ='{$param['info']}' or l.user_email ='{$param['info']}')";
+            } elseif ($param['query_type'] == 'company_name'){
+                $where .= " and l.company_name = '{$param['info']}'";
             }
         }
         if ($param['type']) {
@@ -100,7 +102,7 @@ class LicenseService
         $query = DB::table("license_code as l");
         if ($param['export'] == 1) {
             $data = $query->select("l.id", "o.order_no as order_id", "o.goods_no as order_no", "l.uuid", "l.created_at", "l.expire_time",
-                "u.email", "l.license_key", "l.license_key_url", "l.type", "l.status", "l.products_id", "l.platform_id", "l.licensetype_id","l.user_email","l.lise_type")
+                "u.email", "l.license_key", "l.license_key_url", "l.type", "l.status", "l.products_id", "l.platform_id", "l.licensetype_id","l.user_email","l.lise_type", "l.company_name")
                 ->whereRaw($where)
                 ->leftJoin("orders_goods as o","l.ordergoods_id", "=", "o.id")
                 ->leftJoin("users as u","u.id", "=", "l.user_id")
@@ -108,7 +110,7 @@ class LicenseService
                 ->get()->toArray();
         }else{
             $data = $query->select("l.id", "o.order_no as order_id", "o.goods_no as order_no", "l.uuid", "l.created_at", "l.expire_time",
-                "u.email", "l.license_key", "l.license_key_url", "l.type", "l.status", "l.products_id", "l.platform_id", "l.licensetype_id","l.user_email","l.lise_type")
+                "u.email", "l.license_key", "l.license_key_url", "l.type", "l.status", "l.products_id", "l.platform_id", "l.licensetype_id","l.user_email","l.lise_type","l.company_name")
                 ->whereRaw($where)
                 ->leftJoin("orders_goods as o","l.ordergoods_id", "=", "o.id")
                 ->leftJoin("users as u","u.id", "=", "l.user_id")
@@ -153,7 +155,8 @@ class LicenseService
         $title_arr = [
             'order_id' => '总订单ID',
             'order_no' => '子订单ID',
-            'email' => '用户账号',
+            'company_name' => '客户公司名称',
+            'user_email' => '用户邮箱',
             'name' => '商品名称',
             'uuid' => 'App ID/Machine ID',
             'created_at' => '创建时间',
@@ -197,6 +200,9 @@ class LicenseService
                             break;
                         case 3:
                             $value ="过期";
+                            break;
+                        case 4:
+                            $value = "即将过期";
                             break;
                     }
                 }
@@ -270,7 +276,9 @@ class LicenseService
             $licensecodedata[$k]['user_email'] = $data['email'];
             $licensecodedata[$k]['lise_type'] = 1;
             $licensecodedata[$k]['admin_id'] = $data['admin_id'];
+            $licensecodedata[$k]['company_name'] = $data['company_name'];
         }
+
         $res=$lisecosdmode->_insert($licensecodedata);
 
         return ['code' => 1, 'msg' => "添加成功"];

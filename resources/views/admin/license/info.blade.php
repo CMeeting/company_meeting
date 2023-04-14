@@ -8,18 +8,18 @@
             </div>
             <div class="ibox-content">
                 <form class="form-horizontal" id="forms" name="form">
-                <div class="form-group">
-                    <label class="col-sm-4 control-label no-padding-right" for="form-field-1">总订单号：</label>
-                    <div class="col-sm-6 col-xs-12" style="padding-top: 0.5%">
-                        {{$info['order_id']}}
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label class="col-sm-4 control-label no-padding-right" for="form-field-1">子订单号：</label>
-                    <div class="col-sm-6 col-xs-12" style="padding-top: 0.5%">
-                        {{$info['order_no']}}
-                    </div>
-                </div>
+{{--                <div class="form-group">--}}
+{{--                    <label class="col-sm-4 control-label no-padding-right" for="form-field-1">总订单号：</label>--}}
+{{--                    <div class="col-sm-6 col-xs-12" style="padding-top: 0.5%">--}}
+{{--                        {{$info['order_id']}}--}}
+{{--                    </div>--}}
+{{--                </div>--}}
+{{--                <div class="form-group">--}}
+{{--                    <label class="col-sm-4 control-label no-padding-right" for="form-field-1">子订单号：</label>--}}
+{{--                    <div class="col-sm-6 col-xs-12" style="padding-top: 0.5%">--}}
+{{--                        {{$info['order_no']}}--}}
+{{--                    </div>--}}
+{{--                </div>--}}
                 <div class="form-group">
                     <label class="col-sm-4 control-label no-padding-right" for="form-field-1">商品名称：</label>
                     <div class="col-sm-6 col-xs-12" style="padding-top: 0.5%">

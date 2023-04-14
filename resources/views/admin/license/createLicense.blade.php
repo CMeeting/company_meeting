@@ -45,28 +45,28 @@
 
 
                     <div class="form-group">
-                        <label class="col-sm-2 control-label no-padding-right" for="form-field-1">Full Name：<span style="color: red;font-size: 14px">*</span></label>
+                        <label class="col-sm-2 control-label no-padding-right" for="form-field-1">客户公司名称：<span style="color: red;font-size: 14px">*</span></label>
                         <div class="col-sm-6 col-xs-12">
-                            <input name="data[full_name]" id="full_name" class="form-control" placeholder="full Name"></input>
+                            <input name="data[company_name]" id="company_name" class="form-control" placeholder="Company Name"/>
                         </div>
                     </div>
 
                     <div class="form-group">
-                        <label class="col-sm-2 control-label no-padding-right" for="form-field-1">Products：<span style="color: red;font-size: 14px">*</span></label>
+                        <label class="col-sm-2 control-label no-padding-right" for="form-field-1">产品：<span style="color: red;font-size: 14px">*</span></label>
                         <div class="col-sm-6 col-xs-12">
                         <select name="data[level1]" id="province" class="form-control"></select>
                     </div>
                 </div>
 
                     <div class="form-group">
-                        <label class="col-sm-2 control-label no-padding-right" for="form-field-1">Platform：<span style="color: red;font-size: 14px">*</span></label>
+                        <label class="col-sm-2 control-label no-padding-right" for="form-field-1">平台：<span style="color: red;font-size: 14px">*</span></label>
                         <div class="col-sm-6 col-xs-12">
                         <select name="data[level2]" id="city" class="form-control"></select>
                     </div>
                 </div>
 
                     <div class="form-group">
-                        <label class="col-sm-2 control-label no-padding-right" for="form-field-1">License Type：<span style="color: red;font-size: 14px">*</span></label>
+                        <label class="col-sm-2 control-label no-padding-right" for="form-field-1">序列码类型：<span style="color: red;font-size: 14px">*</span></label>
                         <div class="col-sm-6 col-xs-12">
                         <select name="data[level3]" id="town" class="form-control"></select>
                     </div>
@@ -84,7 +84,7 @@
                     </div>
 
                     <div class="form-group">
-                        <label class="col-sm-2 control-label no-padding-right" for="form-field-1">Period：<span style="color: red;font-size: 14px">*</span></label>
+                        <label class="col-sm-2 control-label no-padding-right" for="form-field-1">序列码有效期：<span style="color: red;font-size: 14px">*</span></label>
                         <div class="col-sm-6 col-xs-12">
                             <select name="data[period]" id="period" class="form-control">
                                 <option value="1">1year</option>
@@ -97,7 +97,7 @@
                     </div>
 
                     <div class="form-group">
-                        <label class="col-sm-2 control-label no-padding-right" for="form-field-1">上传密钥：<span style="color: red;font-size: 14px">*</span></label>
+                        <label class="col-sm-2 control-label no-padding-right" for="form-field-1">上传密钥文件：<span style="color: red;font-size: 14px">*</span></label>
                         <div class="col-sm-6 col-xs-12">
                             <input type="file" name="file" id="file"/>
 {{--                            <button type="button" class="layui-btn" id="upload">--}}
@@ -153,8 +153,8 @@
                 layer.msg('邮件地址不合法', {time: 1500, anim: 6});
                 return false;
             }
-            if(!$("#full_name").val()){
-                layer.msg("请输入Full Name", {time: 1500, anim: 6});
+            if(!$("#company_name").val()){
+                layer.msg("请输入Company Name", {time: 1500, anim: 6});
                 return false;
             }
             if(!$("#province").val()||$("#province").val()==0){
