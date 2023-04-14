@@ -21,6 +21,18 @@
 {{--                    </div>--}}
 {{--                </div>--}}
                 <div class="form-group">
+                    <label class="col-sm-4 control-label no-padding-right" for="form-field-1">客户公司名称：</label>
+                    <div class="col-sm-6 col-xs-12" style="padding-top: 0.5%">
+                        {{$info['company_name']}}
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-4 control-label no-padding-right" for="form-field-1">用户邮箱：</label>
+                    <div class="col-sm-6 col-xs-12" style="padding-top: 0.5%">
+                        {{$info['user_email']}}
+                    </div>
+                </div>
+                <div class="form-group">
                     <label class="col-sm-4 control-label no-padding-right" for="form-field-1">商品名称：</label>
                     <div class="col-sm-6 col-xs-12" style="padding-top: 0.5%">
                         {{$info['name']}}
