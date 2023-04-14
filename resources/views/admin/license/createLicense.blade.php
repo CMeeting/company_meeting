@@ -59,7 +59,7 @@
                     <div class="form-group">
                         <label class="col-sm-2 control-label no-padding-right" for="form-field-1">序列码类型：<span style="color: red;font-size: 14px">*</span></label>
                         <div class="col-sm-6 col-xs-12">
-                            <select id="type" class="form-control" name="type" tabindex="1">
+                            <select id="type" class="form-control" name="data[type]" tabindex="1">
                                 <option value="0">请选择序列码类型</option>
                                 @foreach($license_type as $key => $value)
                                     <option value="{{$key}}" @if(isset($query)&&$query['type']==$key) selected @endif>{{$value}}</option>
