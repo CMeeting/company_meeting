@@ -41,7 +41,7 @@ class Kernel extends ConsoleKernel
         $schedule->command('command:trial:order:notice')->hourly();
 
         //序列码过期状态改变
-        $schedule->command('command:expire:license:code')->hourly();
+        $schedule->command('command:expire:license:code')->everyMinute();
 
         //订单到期续订提醒
         $schedule->command('command:order:renew:notice')->hourly();

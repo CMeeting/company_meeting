@@ -22,4 +22,9 @@ class LicenseModel extends Model
 
     const LICENSE_TYPE_1_ON_TRIAL = 1;
     const LICENSE_TYPE_2_PAID = 2;
+
+    const LICENSE_STATUS_1_NORMAL = 1;
+    const LICENSE_STATUS_2_STOP = 2;
+    const LICENSE_STATUS_3_EXPIRE = 3;
+    const LICENSE_STATUS_4_EXPIRE_SOON = 4;
 }
