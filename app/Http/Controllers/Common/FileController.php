@@ -46,6 +46,6 @@ class FileController
         $url=$host . '/pdf/' . $times.'.pdf';
         PDF::loadHtml($html)->save($save);
 
-        return $url;
+        return \Response::json(['url'=>$url]);
     }
 }
