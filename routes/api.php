@@ -97,3 +97,8 @@ Route::post('upload', 'Common\FileController@upload')->name('upload'); //下载�
 Route::post('generate-license-code', 'Admin\LicenseController@generateLicenseCode');
 //测试验证序列码
 Route::post('verify', 'Admin\LicenseController@verifyLicenseCode');
+
+Route::group(['namespace'=>'Common'], function(){
+    Route::post('get-invoice', 'FileController@getInvoice')->name('get-invoice'); //下载文件
+});
+

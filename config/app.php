@@ -299,7 +299,7 @@ return [
 
         'Geetest' => Germey\Geetest\Geetest::class,
         'Excel' => Maatwebsite\Excel\Facades\Excel::class,
-        'PDF' => \Meneses\LaravelMpdf\Facades\LaravelMpdf::class
+        'PDF' => \Meneses\LaravelMpdf\LaravelMpdf::class
     ],
 
 ];
