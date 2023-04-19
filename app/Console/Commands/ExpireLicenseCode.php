@@ -128,6 +128,7 @@ class ExpireLicenseCode extends Command
             $html.='<tr><td>用户邮箱：'.$row['user_email'].'</td></tr>';
             $html.='<tr><td>创建时间：'.$row['created_at'].'</td></tr>';
             $html.='<tr><td>到期时间：'.$row['expire_time'].'</td></tr>';
+            $html.='<tr><td>license_key：'.$row['license_key'].'</td></tr>';
             $i++;
         }
         $html.='</table>';
