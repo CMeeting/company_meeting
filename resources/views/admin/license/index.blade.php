@@ -222,7 +222,7 @@
 
         laydate.render({
             elem: '#created_at', //指定元素
-            max: 1,//最大值为当前日期
+            max: 0 ,//最大值为当前日期
             trigger: 'click',
             type: 'date',//日期时间选择器
             range:'/'
