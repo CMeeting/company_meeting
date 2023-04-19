@@ -84,7 +84,7 @@ class LicenseService
         if($expire_at) {
             $expire_at = explode('/', $expire_at);
             $param['expire_start'] = $expire_at[0];
-            $param['created_end'] = Carbon::parse($expire_at[1])->addDay()->format('Y-m-d H:i:s');
+            $param['expire_end'] = Carbon::parse($expire_at[1])->addDay()->format('Y-m-d H:i:s');
         }
 
         if (isset($param['expire_start']) && $param['expire_start'] && isset($param['expire_end']) && $param['expire_end']) {
