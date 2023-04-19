@@ -168,7 +168,7 @@
                 layer.msg("请输入Company Name", {time: 1500, anim: 6});
                 return false;
             }
-            if(!$("#type").val()||$("#province").val()==0){
+            if(!$("#type").val()||$("#type").val()==0){
                 layer.msg("请选择序列码类型", {time: 1500, anim: 6});
                 return false;
             }
