@@ -296,6 +296,9 @@ Class GenerateLicenseCodeService
         \Log::info('当前文件位置:' . __FILE__);
         $str = file_get_contents($filename);
 
+        if(empty($str)){
+            return ['key'=>'', 'secret'=>''];
+        }
         //获取key
         $first_key = strpos($str, '<key>') + strlen('<key>');
         $len_key = strripos($str, '</key>') - $first_key;
