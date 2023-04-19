@@ -295,15 +295,12 @@ Class GenerateLicenseCodeService
 
         \Log::info('当前文件位置:' . __FILE__);
         $str = file_get_contents($filename);
-        //获取key
-        $first_key = strpos($str, '<key>') + strlen('<key>');
-        $len_key = strripos($str, '</key>') - $first_key;
-        $key = substr($str, $first_key, $len_key);
 
-        //获取secret
-        $first_secret = strpos($str, '<secret>') + strlen('<secret>');
-        $len_secret = strripos($str, '</secret>') - $first_secret;
-        $secret = substr($str, $first_secret, $len_secret);
+        //获取key和秘钥
+        preg_match('/<key>(.+)</key>/', $str, $match);
+        $key = $match[1] ?? '';
+        preg_match('/<secret>(.+)</secret>/', $str, $match);
+        $secret = $match[1] ?? '';
 
         return ['key'=>$key, 'secret'=>$secret];
     }
