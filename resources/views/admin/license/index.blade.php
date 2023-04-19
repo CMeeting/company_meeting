@@ -37,7 +37,7 @@
             </button>
             <a style="float: right;margin-left: 5px" href="{{route('license.createLicense')}}"
                link-url="javascript:void(0)">
-                <button class="btn btn-primary btn-sm" type="button"><i class="fa fa-plus-circle"></i> 添加 授权码
+                <button class="btn btn-primary btn-sm" type="button"><i class="fa fa-plus-circle"></i> 添加 序列码
                 </button>
             </a>
         </div>
@@ -59,7 +59,7 @@
                         <div class="col-md-4 col-lg-2 col-sm-6 col-xs-12">
                             <div class="form-group">
                                 <select id="type" class="form-control" name="type" tabindex="1">
-                                    <option value="">请选择授权码类型</option>
+                                    <option value="">请选择序列码类型</option>
                                     @foreach($license_type as $key => $value)
                                         <option value="{{$key}}" @if(isset($query)&&$query['type']==$key) selected @endif>{{$value}}</option>
                                     @endforeach
@@ -70,7 +70,7 @@
                         <div class="col-md-4 col-lg-2 col-sm-6 col-xs-12">
                             <div class="form-group">
                                 <select id="type" class="form-control" name="status" tabindex="1">
-                                    <option value="">请选择授权码状态</option>
+                                    <option value="">请选择序列码状态</option>
                                     @foreach($license_status as $key => $value)
                                         <option value="{{$key}}" @if(isset($query)&&$query['status']==$key) selected @endif>{{$value}}</option>
                                     @endforeach
@@ -135,7 +135,7 @@
                     <th class="text-center" style="width: 8%">过期时间</th>
 
                     <th class="text-center" style="width: 7%">license_key</th>
-                    <th class="text-center" style="width: 5%">授权码类型</th>
+                    <th class="text-center" style="width: 5%">序列码类型</th>
                     <th class="text-center" style="width: 3%">状态</th>
                     <th class="text-center" style="width: 10%">操作</th>
                 </tr>

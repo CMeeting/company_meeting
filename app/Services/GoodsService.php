@@ -193,7 +193,7 @@ class GoodsService
                     if ($vb['lv'] == 2 && $vb['pid'] === $vs['id']) {
                         $lv2[$vs['title']][] = $vb;
 
-                            $lv3[$vs['id']][$vb['id']][] = ['id'=>0,'title'=>'请选择License Type'];
+                            $lv3[$vs['id']][$vb['id']][] = ['id'=>0,'title'=>'请选择功能套餐类型'];
 
                         foreach ($data as $kc => $vc) {  //循环组装三级级数组数据
                             if ($vc['lv'] == 3 && $vc['pid'] === $vb['id']) {
