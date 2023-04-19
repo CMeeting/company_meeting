@@ -84,8 +84,6 @@ class BlogsController extends BaseController
         $types = $this->blogService->getBlogTypeskv();
         $tags = $this->blogService->getBlogTagskv();
         $row = $this->blogService->blogRow($id);
-        echo"<pre>";
-        print_r($row);die;
         return $this->view('blog/edit', compact('types','tags','row'));
     }
 
