@@ -184,13 +184,19 @@
                 layer.msg("请选择功能套餐类型", {time: 1500, anim: 6});
                 return false;
             }
+
+            var flag = false;
             $(".maidian").each(function (){
-                if(!$(this).val()){
-                    dd=1;
-                    layer.msg("有APPID/Machine ID为空", {time: 1500, anim: 6});
+                if(!($(this).val())){
+                    flag = true;
                     return false;
                 }
             })
+
+            if(flag){
+                layer.msg("APPID/Machine ID不能为空", {time: 1500, anim: 6});
+                return false;
+            }
 
             if(!$("#period").val()){
                 layer.msg("请输入序列码有效期", {time: 1500, anim: 6});
