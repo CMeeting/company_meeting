@@ -173,15 +173,15 @@
                 return false;
             }
             if(!$("#province").val()||$("#province").val()==0){
-                layer.msg("请选择Products", {time: 1500, anim: 6});
+                layer.msg("请选择产品", {time: 1500, anim: 6});
                 return false;
             }
             if(!$("#city").val()||$("#city").val()==0){
-                layer.msg("请选择Platform", {time: 1500, anim: 6});
+                layer.msg("请选择平台", {time: 1500, anim: 6});
                 return false;
             }
             if(!$("#town").val()||$("#town").val()==0){
-                layer.msg("请选择License Type", {time: 1500, anim: 6});
+                layer.msg("请选择功能套餐类型", {time: 1500, anim: 6});
                 return false;
             }
             $(".maidian").each(function (){
@@ -191,6 +191,11 @@
                     return false;
                 }
             })
+
+            if(!$("#period").val()){
+                layer.msg("请输入序列码有效期", {time: 1500, anim: 6});
+                return false;
+            }
             var x = document.getElementById("file").value;
             if(x == ''){
                 layer.msg("没有上传密钥文件", {time: 1500, anim: 6});
