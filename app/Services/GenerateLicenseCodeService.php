@@ -274,6 +274,7 @@ Class GenerateLicenseCodeService
         $license_demo_path = '..' . DIRECTORY_SEPARATOR . 'licensedemo';
         $filename = $license_demo_path . DIRECTORY_SEPARATOR . 'licensefile' . DIRECTORY_SEPARATOR . $email . '_' . time() . '.xml';
 
+        file_put_contents($filename, '');
         //秘钥
         if(!$private_key){
             $private_key = $license_demo_path . DIRECTORY_SEPARATOR . 'private_key.pem';
