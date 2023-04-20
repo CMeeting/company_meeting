@@ -18,6 +18,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property    $order_amount   消费金额
  * @property    $login_times    登录次数
  * @property    $source         来源 1：SDK 2:SaaS
+ * @property    $is_verify      1:没有验证 2:通过验证
  * @property    $created_at
  * @property    $updated_at
  * @mixin       \Eloquent
@@ -40,6 +41,9 @@ class User extends Model
     const SOURCE_1_SDK = 1;
     const SOURCE_2_SAAS = 2;
     const SOURCE_3_WEBVIEWER = 3;
+
+    const IS_VERIFY_1_NO = 1;
+    const IS_VERIFY_2_YES = 2;
 
     public static $typeArr = [
         1 => '免费用户',

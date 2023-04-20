@@ -84,14 +84,16 @@ class UserService
      * @param $full_name
      * @param $password
      * @param $source
+     * @param $is_verify
      */
-    public function add($email, $full_name, $password, $source)
+    public function add($email, $full_name, $password, $source, $is_verify)
     {
         $user = New User();
         $user->email = $email;
         $user->full_name = $full_name;
         $user->password = $password;
         $user->source = $source;
+        $user->is_verify = $is_verify;
 
         if($source == User::SOURCE_2_SAAS){
             $user->type = User::TYPE_6_SAAS_TRY_OUT;
@@ -433,5 +435,30 @@ class UserService
         return UserAssets::where('user_id', $user_id)->where('status', UserAssets::STATUS_1_ENABLE)
             ->get()
             ->toArray();
+    }
+
+    public function sendVerifyEmail($email, $name){
+        $server_name = $server = env('WEB_HOST_SAAS') . '/login';
+        $token_suffix = 'verify-email';
+
+        //发送邮件时间
+        $payload = ['email' => $email, 'alt'=>time(), 'expire_time' => 24];
+        $token = encrypt(json_encode($payload));
+
+        //缓存
+        $expire_time = Carbon::now()->addDay();
+        \Cache::put("$token_suffix:$email", $token, $expire_time);
+
+        $server .= '?token=' . $token;
+        $url = "<a href='$server'>$server_name</a>";
+        //发送邮件
+        $email_model = Mailmagicboard::getByName($name);
+        $emailService = new EmailService();
+        $data['title'] = $email_model->title;
+        $data['info'] = $email_model->info;
+        $data['id'] = $email_model->id;
+        $data['info'] = str_replace("#@url", $url, $data['info']);
+
+        $emailService->sendDiyContactEmail($data, 0, $email);
     }
 }

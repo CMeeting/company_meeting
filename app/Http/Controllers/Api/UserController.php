@@ -37,6 +37,9 @@ class UserController extends Controller
         $password = str_replace(' ', '', $request->input('password'));
         $source = intval($request->input('source', User::SOURCE_1_SDK));
 
+        //如果存在账号但是未进行验证，则删除数据
+        User::where('email', $email)->where('is_verify', User::IS_VERIFY_1_NO)->delete();
+
         $userService = new UserService();
 
         $result_full_name = $userService->validateFullName($full_name, 'en');
@@ -58,27 +61,12 @@ class UserController extends Controller
         $subsService = new SubscriptionService();
         $subsService->update_status(['email'=>$email, 'subscribed'=>1], false);
 
-        //发送邮件
-        $email_model = Mailmagicboard::getByName('注册完成');
-        $data['title'] = $email_model->title;
-        $data['info'] = $email_model->info;
-        $url = env('WEB_HOST') . '/unsubscribe?email=' . $email;
-        $data['info'] = str_replace("#@url", $url, $data['info']);
-        $data['id'] = $email_model->id;
+        //发送验证邮件
+        $userService->sendVerifyEmail($email, '注册邮箱验证');
 
-        $emailService = new EmailService();
-        $emailService->sendDiyContactEmail($data, 0, $email);
+        $userService->add($email, $full_name, $password, $source, User::IS_VERIFY_1_NO);
 
-        $user_id = $userService->add($email, $full_name, $password, $source);
-
-        //['email'=>'test@gmail.com', 'iat'=>'签发时间', 'jti'=>'token唯一标识']
-        $jti = JWTService::getJTI();
-        JWTService::saveToken($email, $jti);
-
-        $payload = ['email' => $email, 'iat' => time(), 'jti'=>$jti, 'id'=>$user_id];
-        $token = JWTService::getToken($payload);
-
-        return Response::json(['code'=>200, 'message'=>'success', 'data'=>['token'=>$token, 'email'=>$email, 'full_name'=>$full_name]]);
+        return Response::json(['code'=>200, 'message'=>'success', 'data'=>[]]);
     }
 
     /**
@@ -90,7 +78,7 @@ class UserController extends Controller
         $email = $request->input('email');
         $password = $request->input('password');
 
-        $user = UserService::getByEmail($email);
+        $user = User::where('email', $email)->where('is_verify', User::IS_VERIFY_2_YES)->first();
         if(!$user instanceof User){
             return Response::json(['code'=>500, 'message'=>'Incorrect account or password.']);
         }
@@ -486,5 +474,51 @@ class UserController extends Controller
         JWTService::forgetToken($current_user->email);
 
         return Response::json(['code'=>200, 'message'=>'success']);
+    }
+
+    /**
+     * 注册验证接口
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function verifyRegister(Request $request){
+        $token = $request->input('token');
+
+        //解析token
+        try {
+            $payload = json_decode(decrypt($token));
+        }catch (Exception $e){
+            return Response::json(['code'=>500, 'message'=>'Invalid Token']);
+        }
+        $email = $payload->email;
+
+        //判断链接是否过期 - redis判断
+        if(!Cache::has("verify-email:$email")){
+            return Response::json(['code'=>500, 'message'=>'Expired Token']);
+        }
+
+        //修改用户为通过验证
+        $user = User::where('email', $email)->first();
+        $user->is_verify = User::IS_VERIFY_2_YES;
+        $user->save();
+
+        return Response::json(['code'=>200, 'message'=>'success']);
+    }
+
+    /**
+     * 发送注册验证邮件
+     * @param Request $request
+     */
+    public function sendVerifyEmail(Request $request){
+        $email = $request->input('email');
+        $user_service = new UserService();
+
+        $key = "verify-email:$email";
+        //上封验证邮件token过期
+        if(Cache::has("verify-email:$email")){
+            Cache::forget($key);
+        }
+
+        $user_service->sendVerifyEmail($email, '注册邮箱验证');
     }
 }

@@ -86,7 +86,7 @@ class UserController extends BaseController
         $password = User::getRandStr();
 
         $userService = new UserService();
-        $user_id = $userService->add($email, $full_name, $password, User::SOURCE_1_SDK);
+        $user_id = $userService->add($email, $full_name, $password, User::SOURCE_1_SDK, User::IS_VERIFY_2_YES);
 
         //自动订阅电子报
         $subsService = new SubscriptionService();
