@@ -162,7 +162,7 @@ class LicenseService
             'created_at' => '创建时间',
             'expire_time' => '过期时间',
             'license_key' => 'license_key',
-            'type' => '授权码类型',
+            'type' => '序列码类型',
             'status' => '状态',
         ];
 
@@ -183,17 +183,17 @@ class LicenseService
                 if ($key == 'type') {
                     switch ($value){
                         case 1:
-                            $value ="sdk试用";
+                            $value ="试用";
                             break;
                         case 2:
-                            $value ="sdk";
+                            $value ="正式";
                             break;
                     }
                 }
                 if ($key == 'status') {
                     switch ($value){
                         case 1:
-                            $value ="正常";
+                            $value ="有效";
                             break;
                         case 2:
                             $value ="停用";
