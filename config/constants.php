@@ -7,7 +7,7 @@ return [
     "license_status" => [1 => "有效", 3=>"过期", 4=>"即将过期"],
 
     #序列码即将到期提醒人员
-    "license_notice_email" => 'pengjianyong@kdanmobile.com,xiongmeiqi@kdanmobile.com,wangyuting@kdanmobile.com',
+    "license_notice_email" => 'pengjianyong@kdanmobile.com,xiongmeiqi@kdanmobile.com,wangyuting@kdanmobile.com,futingfa@kdanmobile.com,wangshuai@kdanmobile.com',
 
     #订单
 

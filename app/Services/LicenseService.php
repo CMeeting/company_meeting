@@ -213,7 +213,7 @@ class LicenseService
         }
 
         $userExport = new GoodsExport($rows);
-        $fileName = '授权码列表' . time() . '.xlsx';
+        $fileName = '序列码列表' . time() . '.xlsx';
         return Excel::download($userExport, $fileName);
     }
 

@@ -31,7 +31,7 @@
 <div class="row">
     <div class="col-sm-12">
         <div class="ibox-title">
-            <h5>授权码</h5>
+            <h5>序列码</h5>
             <button id="export" class="btn layui-btn-primary btn-sm" type="button"
                     style="float: right;margin-left: 5px"><i class="fa fa-paste"></i>导出数据
             </button>

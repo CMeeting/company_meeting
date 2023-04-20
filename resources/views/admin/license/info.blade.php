@@ -4,7 +4,7 @@
     <div class="row">
         <div class="col-sm-12">
             <div class="ibox-title">
-                <h5>授权码详情</h5>
+                <h5>序列码详情</h5>
             </div>
             <div class="ibox-content">
                 <form class="form-horizontal" id="forms" name="form">
