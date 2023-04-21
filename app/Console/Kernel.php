@@ -35,16 +35,16 @@ class Kernel extends ConsoleKernel
         $schedule->command('command:close:order')->dailyAt('15:59');
 
         //未支付订单提醒
-        $schedule->command('command:unpaid:order:notice')->hourly();
+        //$schedule->command('command:unpaid:order:notice')->hourly();
 
         //试用订单到期提醒
-        $schedule->command('command:trial:order:notice')->hourly();
+        //$schedule->command('command:trial:order:notice')->hourly();
 
         //序列码过期状态改变
         $schedule->command('command:expire:license:code')->dailyAt('00:30');
 
         //订单到期续订提醒
-        $schedule->command('command:order:renew:notice')->hourly();
+        //$schedule->command('command:order:renew:notice')->hourly();
 
         //SaaS订阅资产更新
         $schedule->command('command:update:user:assets')->daily();
