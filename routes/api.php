@@ -68,6 +68,10 @@ Route::group(['prefix' => 'user', 'namespace' => 'Api'], function () {
     Route::post('forget-password', 'UserController@forgetPassword');
     //修改密码 - 通过邮箱修改
     Route::post('change-password-by-email', 'UserController@changePasswordByEmail');
+    //验证激活
+    Route::post('register-verify', 'UserController@verifyRegister');
+    //发送验证邮箱邮件
+    Route::post('send-verify-email', 'UserController@sendVerifyEmail');
 
     Route::group(['middleware' => ['jwt.auth', 'cors']], function () {
         //修改密码 - 用户中心修改

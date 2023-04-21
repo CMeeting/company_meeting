@@ -499,8 +499,13 @@ class UserController extends Controller
 
         //修改用户为通过验证
         $user = User::where('email', $email)->first();
+        if(!$user instanceof User){
+            return Response::json(['code'=>500, 'message'=>'Invalid Email']);
+        }
         $user->is_verify = User::IS_VERIFY_2_YES;
         $user->save();
+
+        Cache::forget("verify-email:$email");
 
         return Response::json(['code'=>200, 'message'=>'success']);
     }
@@ -508,17 +513,24 @@ class UserController extends Controller
     /**
      * 发送注册验证邮件
      * @param Request $request
+     * @return JsonResponse
      */
     public function sendVerifyEmail(Request $request){
         $email = $request->input('email');
+        $user = User::where('email', $email)->where('is_verify', User::IS_VERIFY_1_NO)->first();
+        if(!$user instanceof User){
+            return Response::json(['code'=>500, 'message'=>'Invalid Email']);
+        }
+
         $user_service = new UserService();
 
         $key = "verify-email:$email";
         //上封验证邮件token过期
-        if(Cache::has("verify-email:$email")){
+        if(Cache::has($key)){
             Cache::forget($key);
         }
 
         $user_service->sendVerifyEmail($email, '注册邮箱验证');
+        return Response::json(['code'=>200, 'message'=>'success']);
     }
 }
