@@ -9,6 +9,8 @@
 
 namespace App\Services;
 
+use Illuminate\Auth\Events\Login;
+use Illuminate\Http\UploadedFile;
 use OSS\OssClient;
 use OSS\Core\OssException;
 
@@ -149,6 +151,38 @@ class OssService
 
         } catch (OssException $exception) {
             return ['msg'=>$exception->getMessage(),'code'=>1000];
+        }
+    }
+
+    /**
+     * 上传文件到OSS
+     * @param $file
+     * @param $path
+     * @return array|bool
+     */
+    public static function uploadFileNew(UploadedFile $file, $path)
+    {
+        try {
+            if ($file->getSize() > 31457280) {
+                return ['msg'=>'上传的文件不能大于30MB','code'=>1000];
+            }
+
+            $suffix = $file->getClientOriginalExtension();
+            $pathName = "$path/" . date('Y-m') . '/' . uniqid() . '.' . $suffix; //生成文件名
+            $filePath = $file->getRealPath(); //临时文件路基
+
+            $config = self::ossConfig();
+            $ossClient = new OssClient($config['accessId'], $config['accessKey'], $config['endpoint']);
+            $result = $ossClient->uploadFile($config['bucket'], $pathName, $filePath);
+            if ($result['info']) {
+                return $result['info']['url'];
+            }
+
+            return false;
+
+        } catch (OssException $exception) {
+            \Log::info('OSS文件上传失败', ['msg'=>$exception->getMessage()]);
+            return false;
         }
     }
 }

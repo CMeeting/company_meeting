@@ -39,7 +39,10 @@ Route::group(['namespace' => 'Api'], function () {
     Route::post('/license/generate', 'WebViewerLicenseController@generate');
     //webviewer 校验序列码
     Route::post('/license/verify', 'WebViewerLicenseController@verify');
-    Route::post('/paypal-callback', 'OrderController@payPalCallBack');
+    Route::get('/paypal-callback', 'OrderController@payPalCallBack');
+
+    //support
+    Route::post('support', 'ContactEmailController@support');
 });
 
 Route::group(['middleware' => ['jwt.auth', 'cors'], 'namespace' => 'Api'], function () {

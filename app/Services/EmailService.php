@@ -192,11 +192,11 @@ class EmailService
 
 
     public function sendEmail($content, $subject, $email, $attachments, $cc = ''){
-        \Mail::send('email', ['content' => $content], function ($message) use ($email, $attachments, $subject, $cc) {
+        MailHelperService::setAccount('no_reply');
+        \Mail::send('email', ['info' => $content], function ($message) use ($email, $attachments, $subject, $cc) {
             $message->to($email)->subject($subject);
             foreach ($attachments as $alias => $attachment) {
-                $ext = pathinfo($attachment)['extension'];
-                $message->attach($attachment, ['as' => "=?UTF-8?B?" . base64_encode($alias) . "?=." . $ext]);
+                $message->attach($attachment);
             }
 
             if (!empty($cc)) {

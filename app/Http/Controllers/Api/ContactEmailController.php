@@ -7,6 +7,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Services\ContactEmailService;
 use App\Services\EmailService;
+use App\Services\OssService;
 use Illuminate\Http\Request;
 
 class ContactEmailController extends Controller
@@ -14,7 +15,7 @@ class ContactEmailController extends Controller
 
     const ALLOW_EXT = ['gif','png','jpg','jpeg','doc','docx','xls','xlsx','csv','pdf','rar','zip','txt','mp4','flv'];
 
-    public function add(Request $request){
+    public function support(Request $request){
         $validate = \Validator::make($request->all(),[
            'email' => 'required|email',
            'first_name' => 'required',
@@ -34,7 +35,7 @@ class ContactEmailController extends Controller
             if($size > 1024 * 1024 *30){
                 return \Response::json(['code'=>500, 'message'=>'上传文件大小不能超过30M']);
             }
-            $suffix = explode('.',$file->getClientOriginalName());
+            $suffix = $file->getClientOriginalExtension();
             if(!in_array($suffix, self::ALLOW_EXT)){
                 return \Response::json(['code'=>500, 'message'=>'上传文件类型错误']);
             }
@@ -58,9 +59,7 @@ class ContactEmailController extends Controller
         $paths = [];
         $files = $request->allFiles();
         foreach ($files as $file){
-            $path = \Storage::putFileAs(
-                'email-attachment', $file, uniqid()
-            );
+            $path = OssService::uploadFileNew($file, 'support');
             $paths[] = $path;
 
             //新增邮件附件
@@ -68,8 +67,8 @@ class ContactEmailController extends Controller
         }
 
         //发送邮件
-        $email = 'pengjianyong@kdanmobile.com';
+        $email = '1281899760@qq.com';
         $email_service = new EmailService();
-        $email_service->sendEmail($description, $subject, $paths, $email);
+        $email_service->sendEmail($description, $subject, $email, $paths);
     }
 }
