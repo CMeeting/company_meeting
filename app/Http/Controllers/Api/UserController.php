@@ -497,6 +497,12 @@ class UserController extends Controller
             return Response::json(['code'=>500, 'message'=>'Expired Token']);
         }
 
+        //判断token时候一致，不一样则过期
+        $redis_token = Cache::get("verify-email:$email");
+        if($redis_token != $token){
+            return Response::json(['code'=>500, 'message'=>'Expired Token']);
+        }
+
         //修改用户为通过验证
         $user = User::where('email', $email)->first();
         if(!$user instanceof User){
