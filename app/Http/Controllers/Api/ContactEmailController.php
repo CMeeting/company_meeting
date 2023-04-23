@@ -60,6 +60,7 @@ class ContactEmailController extends Controller
         $files = $request->allFiles();
         foreach ($files as $file){
             $path = OssService::uploadFileNew($file, 'support');
+            $path = str_replace('http', 'https', $path);
             $paths[] = $path;
 
             //新增邮件附件
@@ -67,7 +68,7 @@ class ContactEmailController extends Controller
         }
 
         //发送邮件
-        $email = '1281899760@qq.com';
+        $email = 'pengjianyong@kdanmobile.com';
         $email_service = new EmailService();
         $email_service->sendEmail($description, $subject, $email, $paths);
 

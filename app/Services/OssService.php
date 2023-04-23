@@ -168,7 +168,7 @@ class OssService
             }
 
             $suffix = $file->getClientOriginalExtension();
-            $pathName = "$path/" . date('Y-m') . '/' . uniqid() . '.' . $suffix; //生成文件名
+            $pathName = "$path/" . date('Ym') . '/' . uniqid() . '.' . $suffix; //生成文件名
             $filePath = $file->getRealPath(); //临时文件路基
 
             $config = self::ossConfig();
@@ -179,7 +179,6 @@ class OssService
             }
 
             return false;
-
         } catch (OssException $exception) {
             \Log::info('OSS文件上传失败', ['msg'=>$exception->getMessage()]);
             return false;
