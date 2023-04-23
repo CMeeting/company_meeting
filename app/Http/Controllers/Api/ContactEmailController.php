@@ -70,5 +70,7 @@ class ContactEmailController extends Controller
         $email = '1281899760@qq.com';
         $email_service = new EmailService();
         $email_service->sendEmail($description, $subject, $email, $paths);
+
+        return \Response::json(['code'=>200, 'message'=>'success']);
     }
 }
