@@ -362,8 +362,8 @@ class UserController extends Controller
         if(!$result){
             return ['code'=>500, 'message'=>'Please enter a valid email address.'];
         }
-
-        if(!User::existsEmail($email)){
+        $user = User::where('email', $email)->where('is_verify', User::IS_VERIFY_2_YES)->first();
+        if(!$user){
             return ['code'=>500, 'message'=>'Please enter a valid email address.'];
         }
 
