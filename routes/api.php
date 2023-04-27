@@ -43,6 +43,7 @@ Route::group(['namespace' => 'Api'], function () {
 
     //support
     Route::post('support', 'ContactEmailController@support');
+    Route::post('upload-attachments', 'ContactEmailController@uploadAttachments');
 });
 
 Route::group(['middleware' => ['jwt.auth', 'cors'], 'namespace' => 'Api'], function () {

@@ -16,10 +16,9 @@ class ContactEmailService
      * @param $last_name
      * @param $subject
      * @param $description
-     * @param $files
      * @return string
      */
-    public function add($email, $first_name, $last_name, $subject, $description, $files){
+    public function add($email, $first_name, $last_name, $subject, $description){
         //保存邮件信息
         $contact_email = new ContactEmail();
         $contact_email->email = $email;
