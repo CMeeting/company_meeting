@@ -342,7 +342,7 @@ class UserService
      * @param $source
      */
     public function sendChangePasswordEmail($email, $name, $source = User::SOURCE_1_SDK){
-        $server_name = $server = env('WEB_HOST') . '/reset/password';
+        $server_name = $server = env('WEB_HOST_SAAS') . '/reset/password';
 
         //发送邮件时间
         $payload = ['email' => $email, 'alt'=>time(), 'expire_time' => 24];
