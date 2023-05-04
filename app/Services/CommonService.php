@@ -18,4 +18,33 @@ class CommonService
 
         return $month_en . ' ' . $format;
     }
+
+    /**
+     * 根据邮箱@前面内容的长度 截取当前时间戳从最后一位开始的该长度内容 并MD5
+     * @param $str
+     * @return false|string
+     */
+    public static function getSignByStr($str){
+        $time = time();
+        $str_len = strlen($str);
+        $time_len = strlen($time);
+        if($str_len > $time_len){
+            $str_len = $time_len;
+        }
+
+        return substr($time, -1, $str_len);
+    }
+
+    public static function getTokenByEmail($email){
+        $sign = self::getSignByStr($email);
+        return base64_encode($sign . $email);
+    }
+
+    public static function getEmailByToken($token){
+        $token = base64_decode($token);
+        $sign = self::getSignByStr($token);
+
+        $len = strlen($sign);
+        return substr($token, $len);
+    }
 }

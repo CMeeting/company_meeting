@@ -86,4 +86,9 @@ class ContactEmailController extends Controller
 
         return \Response::json(['code'=>200, 'message'=>'success', 'url'=>$url]);
     }
+
+    public function getPDFContent(Request $request){
+        $file = $request->input('file');
+        \PDF::getPdf()->output()
+    }
 }

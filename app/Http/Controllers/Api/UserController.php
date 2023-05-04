@@ -9,6 +9,7 @@ use App\Jobs\SendEmail;
 use App\Models\LogoutUser;
 use App\Models\Mailmagicboard;
 use App\Models\User;
+use App\Services\CommonService;
 use App\Services\EmailService;
 use App\Services\JWTService;
 use App\Services\SubscriptionService;
@@ -29,6 +30,7 @@ class UserController extends Controller
      * 注册
      * @param Request $request
      * @return array|JsonResponse
+     * @throws Exception
      */
     public function register(Request $request)
     {
@@ -383,10 +385,15 @@ class UserController extends Controller
         $userService = new UserService();
 
         $token = $request->input('token');
-        //先去掉forget-password:来解析token
-        $token = str_replace('forget-password:', '', $token);
         $new_password = str_replace(' ', '', $request->input('new_password'));
         $password_confirm = str_replace(' ', '', $request->input('password_confirm'));
+
+        //判断链接是否过期 - redis判断
+        $email = CommonService::getEmailByToken($token);
+        $tag = "forget-password:$email";
+        if(!Cache::tags($tag)->has($token)){
+            return Response::json(['code'=>500, 'message'=>'Expired Token']);
+        }
 
         $password_result = $userService->validatePassword($new_password, 'en');
         if($password_result['code'] != 200){
@@ -395,25 +402,6 @@ class UserController extends Controller
 
         if($new_password != $password_confirm){
             return Response::json(['code'=>500, 'message'=>'The Password and Confirm Password do not match.']);
-        }
-
-        try {
-            $payload = json_decode(decrypt($token));
-        }catch (Exception $e){
-            return Response::json(['code'=>500, 'message'=>'Invalid Token']);
-        }
-
-        $email = $payload->email;
-        $alt = date('Y-m-d', $payload->alt);
-
-        //判断链接是否过期 - redis判断
-        if(!Cache::has('forget-password:' . $token)){
-            return Response::json(['code'=>500, 'message'=>'Expired Token']);
-        }
-
-        //判断链接是否过期 - 解析token判断
-        if(Carbon::parse($alt)->addDay()->lt(Carbon::now())){
-            return Response::json(['code'=>500, 'message'=>'Expired Token']);
         }
         
         $user = User::where('email', $email)->first();
@@ -428,7 +416,7 @@ class UserController extends Controller
         //删除用户token
         JWTService::forgetToken($email);
         //删除重置密码token
-        Cache::forget('forget-password:' . $token);
+        Cache::tags($tag)->forget($token);
 
         return Response::json(['code'=>200, 'message'=>'success']);
     }
@@ -484,22 +472,11 @@ class UserController extends Controller
     public function verifyRegister(Request $request){
         $token = $request->input('token');
 
-        //解析token
-        try {
-            $payload = json_decode(decrypt($token));
-        }catch (Exception $e){
-            return Response::json(['code'=>500, 'message'=>'Invalid Token']);
-        }
-        $email = $payload->email;
+        $email = CommonService::getEmailByToken($token);
 
+        $tag = "verify-email:$email";
         //判断链接是否过期 - redis判断
-        if(!Cache::has("verify-email:$email")){
-            return Response::json(['code'=>500, 'message'=>'Expired Token']);
-        }
-
-        //判断token时候一致，不一样则过期
-        $redis_token = Cache::get("verify-email:$email");
-        if($redis_token != $token){
+        if(!Cache::tags($tag)->has($token)){
             return Response::json(['code'=>500, 'message'=>'Expired Token']);
         }
 
@@ -511,7 +488,7 @@ class UserController extends Controller
         $user->is_verify = User::IS_VERIFY_2_YES;
         $user->save();
 
-        Cache::forget("verify-email:$email");
+        Cache::tags($tag)->forget($token);
 
         return Response::json(['code'=>200, 'message'=>'success']);
     }
@@ -529,14 +506,8 @@ class UserController extends Controller
         }
 
         $user_service = new UserService();
-
-        $key = "verify-email:$email";
-        //上封验证邮件token过期
-        if(Cache::has($key)){
-            Cache::forget($key);
-        }
-
         $user_service->sendVerifyEmail($email, '注册邮箱验证');
+
         return Response::json(['code'=>200, 'message'=>'success']);
     }
 }

@@ -344,13 +344,13 @@ class UserService
     public function sendChangePasswordEmail($email, $name, $source = User::SOURCE_1_SDK){
         $server_name = $server = env('WEB_HOST_SAAS') . '/reset/password';
 
-        //发送邮件时间
-        $payload = ['email' => $email, 'alt'=>time(), 'expire_time' => 24];
-        $token = 'forget-password:' . encrypt(json_encode($payload));
+        $tags = "forget-password:$email";
+        $token = base64_encode($email);
 
-        //缓存
+        //缓存：先清除这个邮箱标记的token
+        \Cache::tags($tags)->flush();
         $expire_time = Carbon::now()->addDay();
-        \Cache::put($token, $email, $expire_time);
+        \Cache::tags($tags)->put($token, $email, $expire_time);
 
         $server .= '?token=' . $token;
         $url = "<a href='$server'>$server_name</a>";
@@ -438,26 +438,29 @@ class UserService
     }
 
     public function sendVerifyEmail($email, $name){
-        $server_name = $server = env('WEB_HOST_SAAS') . '/login';
+        //主站官网地址
+        $website = env('WEB_HOST');
+        //SAAS官网地址
+        $website_saas = env('WEB_HOST_SAAS');
+
         $token_suffix = 'verify-email';
+        $token = CommonService::getTokenByEmail($email);
 
-        //发送邮件时间
-        $payload = ['email' => $email, 'alt'=>time(), 'expire_time' => 24];
-        $token = encrypt(json_encode($payload));
-
-        //缓存
+        //缓存：先清除这个邮箱标记的token
+        \Cache::tags($token_suffix . ':' . $email)->flush();
         $expire_time = Carbon::now()->addDay();
-        \Cache::put("$token_suffix:$email", $token, $expire_time);
+        \Cache::tags($token_suffix . ':' . $email)->put($token, $email, $expire_time);
 
-        $server .= '?token=' . $token;
-        $url = "<a href='$server'>$server_name</a>";
+        $login_url = $website_saas . '/login?token=' . $token;
         //发送邮件
         $email_model = Mailmagicboard::getByName($name);
         $emailService = new EmailService();
         $data['title'] = $email_model->title;
         $data['info'] = $email_model->info;
         $data['id'] = $email_model->id;
-        $data['info'] = str_replace("#@url", $url, $data['info']);
+        $data['info'] = str_replace("#@website", $website, $data['info']);
+        $data['info'] = str_replace("#@saas_site", $website_saas, $data['info']);
+        $data['info'] = str_replace("#@login_url", $login_url, $data['info']);
 
         $emailService->sendDiyContactEmail($data, 0, $email);
     }
