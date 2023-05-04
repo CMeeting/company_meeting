@@ -49,12 +49,13 @@ class ContactEmailController extends Controller
             foreach ($files as $file){
                 $contact_email_service->addAttachments($id, $file);
             }
-
         }
 
         //发送邮件
         $email = 'pengjianyong@kdanmobile.com';
         $email_service = new EmailService();
+
+        $description .= "<br/><br/><div>Email：$email</div><div>First Name：$first_name</div><div>Last Name：$last_name</div>";
         $email_service->sendEmail($description, $subject, $email, $files);
 
         return \Response::json(['code'=>200, 'message'=>'success']);
@@ -85,10 +86,5 @@ class ContactEmailController extends Controller
         $url = str_replace('http', 'https', $url);
 
         return \Response::json(['code'=>200, 'message'=>'success', 'url'=>$url]);
-    }
-
-    public function getPDFContent(Request $request){
-        $file = $request->input('file');
-        \PDF::getPdf()->output()
     }
 }
