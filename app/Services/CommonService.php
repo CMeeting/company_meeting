@@ -37,11 +37,11 @@ class CommonService
 
     public static function getTokenByEmail($email){
         $sign = self::getSignByStr($email);
-        return base64_encode($sign . $email);
+        return JWTService::base64UrlEncode($sign . $email);
     }
 
     public static function getEmailByToken($token){
-        $token = base64_decode($token);
+        $token = JWTService::base64UrlDecode($token);
         $sign = self::getSignByStr($token);
 
         $len = strlen($sign);

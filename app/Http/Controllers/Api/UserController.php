@@ -490,6 +490,21 @@ class UserController extends Controller
 
         Cache::tags($tag)->forget($token);
 
+        //发送注册成功邮件
+        //主站官网地址
+        $website = env('WEB_HOST');
+        //SAAS官网地址
+        $website_saas = env('WEB_HOST_SAAS');
+        $email_model = Mailmagicboard::getByName('注册成功');
+        $emailService = new EmailService();
+        $data['title'] = $email_model->title;
+        $data['info'] = $email_model->info;
+        $data['id'] = $email_model->id;
+        $data['info'] = str_replace("#@website", $website, $data['info']);
+        $data['info'] = str_replace("#@saas_site", $website_saas, $data['info']);
+
+        $emailService->sendDiyContactEmail($data, 0, $email);
+
         return Response::json(['code'=>200, 'message'=>'success']);
     }
 

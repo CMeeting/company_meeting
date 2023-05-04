@@ -53,7 +53,7 @@ class JWTService
      * @param $input
      * @return string|string[]
      */
-    private static function base64UrlEncode($input){
+    public static function base64UrlEncode($input){
         //替换=号，base64会在末尾填充=号
         return str_replace('=', '', strtr(base64_encode($input), '+/', '-_'));
     }
@@ -63,7 +63,7 @@ class JWTService
      * @param $input
      * @return false|string
      */
-    private static function base64UrlDecode($input){
+    public static function base64UrlDecode($input){
         //补全替换掉的=号
         $remainder = strlen($input) % 4;
         if($remainder){

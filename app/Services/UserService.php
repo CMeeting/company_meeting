@@ -342,8 +342,6 @@ class UserService
      * @param $source
      */
     public function sendChangePasswordEmail($email, $name, $source = User::SOURCE_1_SDK){
-        $server_name = $server = env('WEB_HOST_SAAS') . '/reset/password';
-
         $tags = "forget-password:$email";
         $token = base64_encode($email);
 
@@ -352,15 +350,21 @@ class UserService
         $expire_time = Carbon::now()->addDay();
         \Cache::tags($tags)->put($token, $email, $expire_time);
 
-        $server .= '?token=' . $token;
-        $url = "<a href='$server'>$server_name</a>";
-        //发送邮件
-        $email_model = Mailmagicboard::getByName($name);
+        //主站地址
+        $website = env('WEB_HOST');
+        //SAAS官网地址
+        $website_saas = env('WEB_HOST_SAAS');
+        //重置密码路由
+        $reset_url = env('WEB_HOST_SAAS') . '/reset/password';
+
+        $email_model = Mailmagicboard::getByName('忘记密码');
         $emailService = new EmailService();
         $data['title'] = $email_model->title;
         $data['info'] = $email_model->info;
         $data['id'] = $email_model->id;
-        $data['info'] = str_replace("#@url", $url, $data['info']);
+        $data['info'] = str_replace("#@website", $website, $data['info']);
+        $data['info'] = str_replace("#@saas_site", $website_saas, $data['info']);
+        $data['info'] = str_replace("#@reset_url", $reset_url, $data['info']);
 
         $emailService->sendDiyContactEmail($data, 0, $email);
     }
