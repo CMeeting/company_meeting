@@ -343,7 +343,7 @@ class UserService
      */
     public function sendChangePasswordEmail($email, $name, $source = User::SOURCE_1_SDK){
         $tags = "forget-password:$email";
-        $token = base64_encode($email);
+        $token = CommonService::getTokenByEmail($email);
 
         //缓存：先清除这个邮箱标记的token
         \Cache::tags($tags)->flush();
@@ -355,9 +355,9 @@ class UserService
         //SAAS官网地址
         $website_saas = env('WEB_HOST_SAAS');
         //重置密码路由
-        $reset_url = env('WEB_HOST_SAAS') . '/reset/password';
+        $reset_url = env('WEB_HOST_SAAS') . '/reset/password?token=' . $token;
 
-        $email_model = Mailmagicboard::getByName('忘记密码');
+        $email_model = Mailmagicboard::getByName($name);
         $emailService = new EmailService();
         $data['title'] = $email_model->title;
         $data['info'] = $email_model->info;
