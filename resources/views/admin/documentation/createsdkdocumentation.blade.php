@@ -40,6 +40,13 @@
                         </div>
                     </div>
                     <div class="form-group h1title">
+                        <label class="col-sm-2 control-label no-padding-right" for="form-field-1"> SEO Description：</label>
+                        <div class="col-sm-6 col-xs-12">
+                            <input id="seotitel"  class="form-control  seo_description" name="data[seo_description]" required>
+                            <span class="lbl"></span>
+                        </div>
+                    </div>
+                    <div class="form-group h1title">
                         <label class="col-sm-2 control-label no-padding-right" for="form-field-1"> Slug(确保唯一性)：</label>
                         <div class="col-sm-6 col-xs-12">
                             <input id="Slug"  class="form-control " name="data[slug]" required onKeyUp="value=value.replace(/[^\w\.\/-]/ig,'')">

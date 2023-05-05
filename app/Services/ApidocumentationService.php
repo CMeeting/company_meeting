@@ -88,6 +88,7 @@ class Apidocumentationservice
             $data['id']=$SdKArticle['id'];
             $data['name']=$SdKArticle['titel'];
             $data['seo']=$SdKArticle['seotitel'];
+            $data['seo_description']=$SdKArticle['seo_description'];
             $data['sgluid']=$SdKArticle['slug'];
             $data['type']=$SdKArticle['type'];
             $data['data']=$SdKArticle['info'];
@@ -115,7 +116,7 @@ class Apidocumentationservice
     }
     function sdKArticle($ids){
         $SdKArticle = new SdKArticle();
-        return $SdKArticle->selects("deleted=0 and enabled=1 and platformid=".$ids[0]." and version=".$ids[1],"id,titel,seotitel,slug,info,classification_ids","displayorder");
+        return $SdKArticle->selects("deleted=0 and enabled=1 and platformid=".$ids[0]." and version=".$ids[1],"id,titel,seotitel,slug,info,classification_ids,seo_description","displayorder");
     }
 
     function theassembly($data,$ids){
@@ -171,6 +172,7 @@ class Apidocumentationservice
                   $arr[$i]['data'][$j]['name']=$vs['titel'];
                   $arr[$i]['data'][$j]['seo']=$vs['seotitel'];
                   $arr[$i]['data'][$j]['sgluid']=$vs['slug'];
+                  $arr[$i]['data'][$j]['seo_description']=$vs['seo_description'];
                   $j++;
               }
             }
