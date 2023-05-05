@@ -80,6 +80,13 @@
                                         </div>
                                     </div>
                                     <div class="form-group h1title">
+                                        <label class="col-sm-2 control-label no-padding-right" for="form-field-1"> SEO Description：</label>
+                                        <div class="col-sm-6 col-xs-12">
+                                            <input id="seo_description"  class="form-control  seo_description" name="data[seo_description]" required placeholder="SEO Description只会绑定在平台数据"  value="{{$data['seo_description']}}" onkeyup="this.value=this.value.replace(/[^\w\u4E00-\u9FA5\s]/g,'');">
+                                            <span class="lbl"></span>
+                                        </div>
+                                    </div>
+                                    <div class="form-group h1title">
                                         <label class="col-sm-2 control-label no-padding-right" for="form-field-1"> H1 title：</label>
                                         <div class="col-sm-6 col-xs-12">
                                             <input id="h1title"  class="form-control " name="data[h1title]" required placeholder="H1 title只会绑定在平台数据" value="{{$data['h1title']}}" onkeyup="this.value=this.value.replace(/[^\w\u4E00-\u9FA5\s]/g,'');">

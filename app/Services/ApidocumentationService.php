@@ -104,9 +104,9 @@ class Apidocumentationservice
     function getVersion($source){
         $PlatformVersion = new PlatformVersion();
         if($source == User::SOURCE_2_SAAS){
-            return $PlatformVersion->selects("deleted=0 and enabled=1 and (name='docs' or name = 'API Reference')","id,name,lv,pid,seotitel,h1title","lv,displayorder");
+            return $PlatformVersion->selects("deleted=0 and enabled=1 and (name='docs' or name = 'API Reference')","id,name,lv,pid,seotitel,h1title,seo_description","lv,displayorder");
         }else{
-            return $PlatformVersion->selects("deleted=0 and enabled=1 and name!='docs'","id,name,lv,pid,seotitel,h1title","lv,displayorder");
+            return $PlatformVersion->selects("deleted=0 and enabled=1 and name!='docs'","id,name,lv,pid,seotitel,h1title,seo_description","lv,displayorder");
         }
 
     }
@@ -129,6 +129,7 @@ class Apidocumentationservice
                 $arr['platformname']['name']=$v['name'];
                 $arr['platformname']['seo_titels']=$v['seotitel'];
                 $arr['platformname']['h1_titles']=$v['h1title'];
+                $arr['platformname']['seo_description']=$v['seo_description'];
             }
             if($v['pid']==$ids[0]){
                 $arr['platformname']['list'][$s]=$v['name'];
@@ -142,6 +143,8 @@ class Apidocumentationservice
              $arr['list'][$i]['name']=$v['name'];
              $arr['list'][$i]['seo_titels']=$v['seotitel'];
              $arr['list'][$i]['h1_titles']=$v['h1title'];
+             $arr['list'][$i]['h1_titles']=$v['h1title'];
+             $arr['list'][$i]['seo_description']=$v['seo_description'];
              foreach ($data as $ks=>$vs){
                  if($vs['pid']==$v['id']){
                      $arr['list'][$i]['list'][$j]['name']=$vs['name'];
