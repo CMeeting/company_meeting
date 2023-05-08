@@ -80,9 +80,14 @@ class UserController extends Controller
         $email = $request->input('email');
         $password = $request->input('password');
 
-        $user = User::where('email', $email)->where('is_verify', User::IS_VERIFY_2_YES)->first();
+        $user = User::where('email', $email)->first();
+
         if(!$user instanceof User){
             return Response::json(['code'=>500, 'message'=>'Incorrect account or password.']);
+        }
+
+        if($user->is_verify == User::IS_VERIFY_1_NO){
+            return Response::json(['code'=>501, 'message'=>'Unverified User.']);
         }
 
         if($user->password != User::encryptPassword($password)){
