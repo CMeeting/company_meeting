@@ -134,7 +134,7 @@ class UserController extends Controller
         $password_confirm = str_replace(' ', '', $request->input('password_confirm'));
 
         if($old_password == $new_password){
-            return Response::json(['code'=>500, 'message'=>'Cannot Match Old Password.']);
+            return Response::json(['code'=>500, 'message'=>'Your password cannot be the same as your current password.']);
         }
 
         if($current_user->password != User::encryptPassword($old_password)){
@@ -406,7 +406,7 @@ class UserController extends Controller
         }
 
         if($new_password != $password_confirm){
-            return Response::json(['code'=>500, 'message'=>'The Password and Confirm Password do not match.']);
+            return Response::json(['code'=>500, 'message'=>'Your password cannot be the same as your current password.']);
         }
         
         $user = User::where('email', $email)->first();
