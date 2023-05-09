@@ -186,7 +186,7 @@ class EmailService
             $data['info'] = $arrs['info'];
             $data['id'] = $arrs['id'];
         }
-        SendEmail::dispatch($data, $arr, $subject, $type)->delay(Carbon::now()->addMinute());
+        SendEmail::dispatch($data, $arr, $subject, $type);
 //        self::send_email($data, $arr, $subject, $type);
     }
 
