@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 
 
 use App\Http\Controllers\Controller;
+use App\Jobs\SendEmailAttachment;
 use App\Services\ContactEmailService;
 use App\Services\EmailService;
 use App\Services\OssService;
@@ -53,10 +54,9 @@ class ContactEmailController extends Controller
 
         //发送邮件
         $email = 'pengjianyong@kdanmobile.com';
-        $email_service = new EmailService();
-
         $description .= "<br/><br/><div>Email：$email</div><div>First Name：$first_name</div><div>Last Name：$last_name</div>";
-        $email_service->sendEmail($description, $subject, $email, $files);
+
+        SendEmailAttachment::dispatch($description, $subject, $email, $files);
 
         return \Response::json(['code'=>200, 'message'=>'success']);
     }
