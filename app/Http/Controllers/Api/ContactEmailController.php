@@ -9,6 +9,7 @@ use App\Jobs\SendEmailAttachment;
 use App\Services\ContactEmailService;
 use App\Services\EmailService;
 use App\Services\OssService;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class ContactEmailController extends Controller
@@ -56,7 +57,7 @@ class ContactEmailController extends Controller
         $email = 'pengjianyong@kdanmobile.com';
         $description .= "<br/><br/><div>Email：$email</div><div>First Name：$first_name</div><div>Last Name：$last_name</div>";
 
-        SendEmailAttachment::dispatch($description, $subject, $email, $files);
+        SendEmailAttachment::dispatch($description, $subject, $email, $files)->delay(Carbon::now()->addMinute());
 
         return \Response::json(['code'=>200, 'message'=>'success']);
     }
