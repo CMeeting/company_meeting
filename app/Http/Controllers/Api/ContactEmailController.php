@@ -57,7 +57,7 @@ class ContactEmailController extends Controller
         $email = 'pengjianyong@kdanmobile.com';
         $description .= "<br/><br/><div>Email：$email</div><div>First Name：$first_name</div><div>Last Name：$last_name</div>";
 
-        SendEmailAttachment::dispatch($description, $subject, $email, $files)->delay(Carbon::now()->addMinute());
+        SendEmailAttachment::dispatch($description, $subject, $email, $files);
 
         return \Response::json(['code'=>200, 'message'=>'success']);
     }
