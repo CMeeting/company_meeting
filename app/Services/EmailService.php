@@ -191,18 +191,20 @@ class EmailService
     }
 
 
-    public function sendEmail($content, $subject, $email, $attachments, $cc = ''){
+    public function sendEmail($content, $subject, $emails, $attachments, $cc = ''){
         MailHelperService::setAccount('no_reply');
-        \Mail::send('email', ['info' => $content], function ($message) use ($email, $attachments, $subject, $cc) {
-            $message->to($email)->subject($subject);
-            foreach ($attachments as $alias => $attachment) {
-                $message->attach($attachment);
-            }
+        foreach ($emails as $email){
+            \Mail::send('email', ['info' => $content], function ($message) use ($email, $attachments, $subject, $cc) {
+                $message->to($email)->subject($subject);
+                foreach ($attachments as $alias => $attachment) {
+                    $message->attach($attachment);
+                }
 
-            if (!empty($cc)) {
-                $message->cc($cc);
-            }
-        });
+                if (!empty($cc)) {
+                    $message->cc($cc);
+                }
+            });
+        }
     }
 
 }

@@ -40,7 +40,7 @@ class ContactEmailController extends Controller
         $last_name = $request->input('last_name');
         $subject = $request->input('subject');
         $description = $request->input('description');
-        $files = $request->input('files');
+        $files = $request->input('files', []);
 
         //新增support
         $contact_email_service = new ContactEmailService();
@@ -57,7 +57,7 @@ class ContactEmailController extends Controller
         $email = 'pengjianyong@kdanmobile.com';
         $description .= "<br/><br/><div>Email：$email</div><div>First Name：$first_name</div><div>Last Name：$last_name</div>";
 
-        SendEmailAttachment::dispatch($description, $subject, $email, $files);
+        dispatch(new SendEmailAttachment($description, $subject, $email, $files));
 
         return \Response::json(['code'=>200, 'message'=>'success']);
     }

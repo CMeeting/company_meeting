@@ -25,7 +25,7 @@ class SendEmailAttachment implements ShouldQueue
     protected $email;
     protected $files;
 
-    public function __construct($description, $subject, $email, $files)
+    public function __construct($description, $subject, $email, $files = [])
     {
         \Log::info('邮件发送队列:', ['email'=> $email, 'subject'=>$subject]);
         $this->subject = $subject;
@@ -47,7 +47,7 @@ class SendEmailAttachment implements ShouldQueue
         //邮件黑名单筛选
         $emails = $this->filterBlackEmail($this->email);
 
-        $emailService->sendEmail($this->description,$emails,$this->subject,$this->files);
+        $emailService->sendEmail($this->description, $this->subject, $emails, $this->files);
     }
 
     /**
