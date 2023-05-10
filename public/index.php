@@ -47,17 +47,6 @@ $app = require_once __DIR__.'/../bootstrap/app.php';
 |
 */
 
-$post_max_size = ini_get('post_max_size');
-$upload_max_filesize = ini_get('upload_max_filesize');
-$memory_limit = ini_get('memory_limit');
-
-echo "post_max_size: " . $post_max_size . "<br/>";
-echo "upload_max_filesize: " . $upload_max_filesize . "<br/>";
-echo "memory_limit: " . $memory_limit . "<br/>";
-
-phpinfo();
-
-die;
 $kernel = $app->make(Illuminate\Contracts\Http\Kernel::class);
 
 $response = $kernel->handle(
