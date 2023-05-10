@@ -55,6 +55,8 @@ echo "post_max_size: " . $post_max_size . "<br/>";
 echo "upload_max_filesize: " . $upload_max_filesize . "<br/>";
 echo "memory_limit: " . $memory_limit . "<br/>";
 
+phpinfo();
+
 die;
 $kernel = $app->make(Illuminate\Contracts\Http\Kernel::class);
 
