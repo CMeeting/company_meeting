@@ -68,8 +68,9 @@ class ContactEmailController extends Controller
      * @return \Illuminate\Http\JsonResponse
      */
     public function uploadAttachments(Request $request){
-        ini_set('post_max_size','30M');
-        ini_set('upload_max_filesize','30M');
+        ini_set('post_max_size','100M');
+        ini_set('upload_max_filesize','100M');
+        ini_set('memory_limit','100M');
 
         $file = $request->file('file');
 
