@@ -54,10 +54,10 @@ class ContactEmailController extends Controller
         }
 
         //发送邮件
-        $email = 'pengjianyong@kdanmobile.com';
         $description .= "<br/><br/><div>Email：$email</div><div>First Name：$first_name</div><div>Last Name：$last_name</div>";
 
-        dispatch(new SendEmailAttachment($description, $subject, $email, $files));
+        $email_to = env('SUPPORT_EMAIL');
+        dispatch(new SendEmailAttachment($description, $subject, $email_to, $files));
 
         return \Response::json(['code'=>200, 'message'=>'success']);
     }
@@ -82,7 +82,7 @@ class ContactEmailController extends Controller
         if($size > 1024 * 1024 * 30){
             return \Response::json(['code'=>502, 'message'=>'invalid size']);
         }
-        $suffix = $file->getClientOriginalExtension();
+        $suffix = strtolower($file->getClientOriginalExtension());
         if(!in_array($suffix, self::ALLOW_EXT)){
             return \Response::json(['code'=>503, 'message'=>'invalid file type']);
         }
