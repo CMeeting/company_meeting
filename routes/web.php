@@ -181,7 +181,7 @@ Route::group(['namespace' => 'Admin','prefix' => 'admin'], function (){
         Route::post('goodsclassification/delsaasgoodsclassification', 'GoodsclassificationController@delsaasgoodsclassification')->name('goodsclassification.delsaasgoodsclassification');
 
         Route::get('goods/index', 'GoodsController@index')->name('goods.index');
-        Route::get('goods/saasindex', 'GoodsController@saasindex')->name('goods.saasindex');
+        Route::get('goods/saasIndex', 'GoodsController@saasIndex')->name('goods.saasIndex');
         Route::get('goods/creategoods', 'GoodsController@creategoods')->name('goods.creategoods');
         Route::get('goods/createsaasgoods', 'GoodsController@createsaasgoods')->name('goods.createsaasgoods');
         Route::post('goods/createrungoods', 'GoodsController@createrungoods')->name('goods.createrungoods');

@@ -63,7 +63,7 @@ class OrderController extends BaseController {
     }
     public function saascreate(){
         $GoodsService = new GoodsService();
-        $categorical_data = $GoodsService->threelevellinkagesaas();
+        $categorical_data = $GoodsService->threeLevelLinkAgeSaas();
         return $this->view('saascreate',['lv1'=>json_encode($categorical_data['arr1']),'lv2'=>json_encode($categorical_data['arr2'])]);
     }
 

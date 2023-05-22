@@ -26,7 +26,7 @@
                 <h5>Edit SaaSGoods</h5>
             </div>
             <div class="ibox-content">
-                <a href="{{route('goods.saasindex')}}" style="margin-bottom: 8px">
+                <a href="{{route('goods.saasIndex')}}" style="margin-bottom: 8px">
                     <button class="menuid btn btn-primary btn-sm back" type="button"><i class="fa fa-chevron-left"></i>
                         返回列表
                     </button>
@@ -51,14 +51,22 @@
                         </div>
                     </div>
 
-
-
                     <div class="form-group">
                         <label class="col-sm-2 control-label no-padding-right" for="form-field-1"> Pricing(USD)：</label>
                         <div class="col-sm-6 col-xs-12">
                             <input style="float: left" id="price" type="number" class="form-control" name="data[price]"
                                    min="0.01" max="99999999" step="0.01"
                                    oninput="if(value.length>8)value=value.slice(0,8)" value="{{$data['price']}}"
+                                   required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label no-padding-right" for="form-field-1"> 排序号：</label>
+                        <div class="col-sm-6 col-xs-12">
+                            <input style="float: left" id="sort_num" type="number" class="form-control" name="data[sort_num]"
+                                   min="0.01" max="99999999" step="0.01"
+                                   oninput="if(value.length>8)value=value.slice(0,8)" value="{{$data['sort_num']}}"
                                    required>
                         </div>
                     </div>

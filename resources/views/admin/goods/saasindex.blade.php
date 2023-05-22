@@ -54,23 +54,23 @@
             </div>
             <div style="width: 100%;padding-bottom: 15px;padding-top: 10px;background: #fbfffa">
                 <a class="ab"  href="{{route('goods.index')}}">SDK</a>
-                <a class="ab" style="background: #b4b7b3" href="{{route('goods.saasindex')}}">SaaS</a>
+                <a class="ab" style="background: #b4b7b3" href="{{route('goods.saasIndex')}}">API</a>
             </div>
             <div class="ibox-content">
 
                 <div class="col-xs-10 col-sm-11 margintop5" style="margin-bottom: 5px">
-                    <form name="admin_list_sea" class="form-search" method="get" action="{{route('goods.saasindex')}}">
+                    <form name="admin_list_sea" class="form-search" method="get" action="{{route('goods.saasIndex')}}">
                         <div class="input-group">
 
                             <div class="input-group-btn" style="display: block;">
                                 <select id="query_type" name="query_type" class="form-control"
                                         style="display: inline-block;width: 100px;">
-                                    <option value="id" @if(isset($query)&&$query['query_type']=='id') selected @endif>
-                                        ID
+                                    <option value="sort_num" @if(isset($query)&&$query['query_type']=='sort_num') selected @endif>
+                                        序号
                                     </option>
                                 </select>
                             </div>
-                            <input id="info" type="text" name="info" placeholder="请输入ID" class="form-control" style="display: inline-block;width: 150px;
+                            <input id="info" type="text" name="info" placeholder="请输入序号" class="form-control" style="display: inline-block;width: 150px;
                                    value="@if(isset($query))value="{{$query['info']}}"@endif"/>
 
                             <div class="col-md-4 col-lg-2 col-sm-6 col-xs-12">
@@ -89,38 +89,22 @@
                                 </div>
                             </div>
 
-                            <div class="input-group-btn" style="display: inline-block;width: 150px;">
-                                <input type="text" name="start_date" class="form-control"
-                                       style="display: inline-block;width: 160px;" id="startDate" placeholder="创建时间--开始"
-                                       value="@if(isset($query)){{$query['start_date']}}@endif"/>
-                            </div>
-                            <div class="input-group-btn" style="display: inline-block;width: 150px;margin-left:20px;">
-                                <input type="text" name="end_date" class="form-control"
-                                       style="display: inline-block;width: 160px;" id="endDate" placeholder="创建时间--结束"
-                                       value="@if(isset($query)){{$query['end_date']}}@endif"/>
+                            <div class="input-group-btn" style="display: inline-block;width: 250px;margin-left:20px;">
+                                <input type="text" name="created_at" class="form-control"
+                                       style="display: inline-block;width: 200px;" id="created_at" placeholder="创建时间"
+                                       value="@if(isset($query)){{$query['created_at']}}@endif"/>
                             </div>
 
-
-                            <div class="input-group-btn" style="display: inline-block;width: 150px;">
+                            <div class="input-group-btn" style="display: inline-block;width: 250px;margin-left:20px;">
                                 <input type="text" name="updated_at" class="form-control"
-                                       style="display: inline-block;width: 160px;" id="updated_at" placeholder="更新时间--开始"
+                                       style="display: inline-block;width: 200px;" id="updated_at" placeholder="更新时间"
                                        value="@if(isset($query)){{$query['updated_at']}}@endif"/>
                             </div>
-                            <div class="input-group-btn" style="display: inline-block;width: 150px;margin-left:20px;">
-                                <input type="text" name="endupdated_at" class="form-control"
-                                       style="display: inline-block;width: 160px;" id="endupdated_at" placeholder="更新时间--结束"
-                                       value="@if(isset($query)){{$query['endupdated_at']}}@endif"/>
-                            </div>
 
-                            <div class="input-group-btn" style="display: inline-block;width: 150px;">
+                            <div class="input-group-btn" style="display: inline-block;width: 250px;margin-left:20px;">
                                 <input type="text" name="shelf_at" class="form-control"
-                                       style="display: inline-block;width: 160px;" id="shelf_at" placeholder="上架时间--开始"
+                                       style="display: inline-block;width: 200px;" id="shelf_at" placeholder="上架时间"
                                        value="@if(isset($query)){{$query['shelf_at']}}@endif"/>
-                            </div>
-                            <div class="input-group-btn" style="display: inline-block;width: 150px;margin-left:20px;">
-                                <input type="text" name="endshelf_at" class="form-control"
-                                       style="display: inline-block;width: 160px;" id="endshelf_at" placeholder="上架时间--结束"
-                                       value="@if(isset($query)){{$query['endshelf_at']}}@endif"/>
                             </div>
 
                             <span class="input-group-btn" style="display: inline-block;">
@@ -137,7 +121,7 @@
                 <table class="table table-striped table-bordered table-hover m-t-md" style="word-wrap:break-word; word-break:break-all;">
                     <thead>
                     <tr>
-                        <th class="text-center" style="width: 5%">ID</th>
+                        <th class="text-center" style="width: 5%">序号</th>
                         <th class="text-center" style="width: 9%">套餐类型</th>
                         <th class="text-center" style="width: 9%">文件档位</th>
                         <th class="text-center" style="width: 8%">Pricing(USD)</th>
@@ -151,7 +135,7 @@
                     <tbody>
                     @foreach($data as $key => $item)
                         <tr id="del_{{$item['id']}}">
-                            <td class="text-center">{{$item['id']}}</td>
+                            <td class="text-center">{{$item['sort_num']}}</td>
                             <td class="text-center">{{$item['products']}}</td>
                             <td>{{$item['platform']}}</td>
                             <td>{{$item['price']}}</td>
@@ -254,114 +238,30 @@
         layui.use('laydate', function () {
             var laydate = layui.laydate;
 
-            //执行一个laydate实例
-            var start = laydate.render({
-                elem: '#startDate', //指定元素
-                max: 1,//最大值为当前日期
+            laydate.render({
+                elem: '#created_at', //指定元素
+                max: 0 ,//最大值为当前日期
                 trigger: 'click',
-                type: 'datetime',//日期时间选择器
-                // value: getRecentDay(-30),//默认值30天前
-                done: function (value, date) {
-                    if (value && (value > $("#endDate").val())) {
-                        /*开始时间大于结束时间时，清空结束时间*/
-                        $("#endDate").val("");
-                    }
-                    end.config.min = {
-                        year: date.year,
-                        month: date.month - 1,
-                        date: date.date,
-                        hours: date.hours,//可注释
-                        minutes: date.minutes,//可注释
-                        seconds: date.seconds//可注释
-                    };
-                }
+                type: 'date',//日期时间选择器
+                range:'/'
             });
-            var end = laydate.render({
-                elem: '#endDate', //指定元素
-                max: 1,//最大值为当前日期
-                type: 'datetime',//日期时间选择器
-                // value: getRecentDay(-1),//默认值昨天
-                choose: function (datas) {
-                    start.max = datas; //结束日选好后，重置开始日的最大日期
-                }
-            });
-        });
 
-
-
-        layui.use('laydate', function () {
-            var laydate = layui.laydate;
-
-            //执行一个laydate实例
-            var start = laydate.render({
+            laydate.render({
                 elem: '#updated_at', //指定元素
-                max: 1,//最大值为当前日期
+                max:0,
                 trigger: 'click',
-                type: 'datetime',//日期时间选择器
-                // value: getRecentDay(-30),//默认值30天前
-                done: function (value, date) {
-                    if (value && (value > $("#endupdated_at").val())) {
-                        /*开始时间大于结束时间时，清空结束时间*/
-                        $("#endupdated_at").val("");
-                    }
-                    end.config.min = {
-                        year: date.year,
-                        month: date.month - 1,
-                        date: date.date,
-                        hours: date.hours,//可注释
-                        minutes: date.minutes,//可注释
-                        seconds: date.seconds//可注释
-                    };
-                }
+                type: 'date',//日期时间选择器
+                range:'/'
             });
-            var end = laydate.render({
-                elem: '#endupdated_at', //指定元素
-                max: 1,//最大值为当前日期
-                type: 'datetime',//日期时间选择器
-                // value: getRecentDay(-1),//默认值昨天
-                choose: function (datas) {
-                    start.max = datas; //结束日选好后，重置开始日的最大日期
-                }
-            });
-        });
 
-
-        layui.use('laydate', function () {
-            var laydate = layui.laydate;
-
-            //执行一个laydate实例
-            var start = laydate.render({
+            laydate.render({
                 elem: '#shelf_at', //指定元素
-                max: 1,//最大值为当前日期
+                max:0,
                 trigger: 'click',
-                type: 'datetime',//日期时间选择器
-                // value: getRecentDay(-30),//默认值30天前
-                done: function (value, date) {
-                    if (value && (value > $("#endshelf_at").val())) {
-                        /*开始时间大于结束时间时，清空结束时间*/
-                        $("#endshelf_at").val("");
-                    }
-                    end.config.min = {
-                        year: date.year,
-                        month: date.month - 1,
-                        date: date.date,
-                        hours: date.hours,//可注释
-                        minutes: date.minutes,//可注释
-                        seconds: date.seconds//可注释
-                    };
-                }
-            });
-            var end = laydate.render({
-                elem: '#endshelf_at', //指定元素
-                max: 1,//最大值为当前日期
-                type: 'datetime',//日期时间选择器
-                // value: getRecentDay(-1),//默认值昨天
-                choose: function (datas) {
-                    start.max = datas; //结束日选好后，重置开始日的最大日期
-                }
+                type: 'date',//日期时间选择器
+                range:'/'
             });
         });
-
 
         function show(id,status) {
 
@@ -506,7 +406,7 @@
                         let startDate = $('#startDate').val()
                         let endDate = $('#endDate').val()
 
-                        location.href = "/admin/goods/saasindex?export=1&query_type" + query_type + "&info=" + info + "&level1=" + level1 + "&level2=" + level2 +
+                        location.href = "/admin/goods/saasIndex?export=1&query_type" + query_type + "&info=" + info + "&level1=" + level1 + "&level2=" + level2 +
                             "&start_date=" + startDate + "&end_date=" + endDate + "&status=" + status + "&field=" + field.join(',');
                     }
                 });

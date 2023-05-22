@@ -26,7 +26,7 @@
                 <h5>New SaaSGoods</h5>
             </div>
             <div class="ibox-content">
-                <a href="{{route('goods.saasindex')}}" style="margin-bottom: 8px">
+                <a href="{{route('goods.saasIndex')}}" style="margin-bottom: 8px">
                     <button class="menuid btn btn-primary btn-sm back" type="button"><i class="fa fa-chevron-left"></i>
                         返回列表
                     </button>
@@ -48,20 +48,28 @@
                 </div>
 
 
-                    <div class="form-group">
-                        <label class="col-sm-2 control-label no-padding-right" for="form-field-1"> Pricing(USD)：</label>
-                        <div class="col-sm-6 col-xs-12">
-                            <input style="float: left" id="price"  type="number" class="form-control" name="data[price]" min="0.01" max="99999999" step="0.01" oninput="if(value.length>8)value=value.slice(0,8)" value="0.00" required>
-                        </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label no-padding-right" for="form-field-1"> Pricing(USD)：</label>
+                    <div class="col-sm-6 col-xs-12">
+                        <input style="float: left" id="price"  type="number" class="form-control" name="data[price]" max="99999999" step="0.01" oninput="if(value.length>8)value=value.slice(0,8)" value="0.00" required>
                     </div>
+                </div>
 
-                    <div class="form-group">
-                        <label class="col-sm-2 control-label no-padding-right" for="form-field-1"> status(是否上架)：</label>
-                        <div class="col-sm-6 col-xs-12">
-                            <input type="radio" name="data[status]" value="1" checked >上架
-                            <input type="radio" name="data[status]" value="0">下架
-                        </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label no-padding-right" for="form-field-1"> status(是否上架)：</label>
+                    <div class="col-sm-6 col-xs-12">
+                        <input type="radio" name="data[status]" value="1" checked >上架
+                        <input type="radio" name="data[status]" value="0">下架
                     </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="col-sm-2 control-label no-padding-right" for="form-field-1"> order_num(排序 从小到大)：</label>
+                    <div class="col-sm-6 col-xs-12">
+                        <input id="displayorder"  type="number" class="form-control" name="data[sort_num]" min="1" max="99999999" oninput="if(value.length>8)value=value.slice(0,8)" value="1" required>
+                        <span class="lbl">商品的排序对应API官网Pricing页面展示顺序，月订阅 > 年订阅 > 打包购买（从左到右依次展示），序号1-5为月订阅套餐商品，6-10为年订阅商品，11-15为打包购买商品</span>
+                    </div>
+                </div>
 
 
                 <div class="clearfix form-actions">
@@ -97,9 +105,9 @@
                 return false;
             }
 
-            if($("#price").val() < 0.01){
+            if($("#price").val() < 0.00){
                 layer.close(index);
-                layer.msg("价格不能低于0.01", {time: 1500, anim: 6});
+                layer.msg("价格不能低于0.00", {time: 1500, anim: 6});
                 return false;
             }
 

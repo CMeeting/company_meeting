@@ -27,6 +27,12 @@
                     </div>
                 </div>
                 <div class="form-group">
+                    <label class="col-sm-4 control-label no-padding-right" for="form-field-1"> 排序号：</label>
+                    <div class="col-sm-6 col-xs-12" style="padding-top: 0.5%">
+                        {{$data['sort_num']}}
+                    </div>
+                </div>
+                <div class="form-group">
                     <label class="col-sm-4 control-label no-padding-right" for="form-field-1"> 创建时间：</label>
                     <div class="col-sm-6 col-xs-12" style="padding-top: 0.5%">
                         {{$data['created_at']}}
@@ -48,7 +54,7 @@
 
                 <div class="clearfix form-actions">
                     <div class="col-md-offset-5 col-md-9">
-                        <a class="menuid btn btn-primary btn-sm" href="{{route('goods.saasindex')}}">返回</a>
+                        <a class="menuid btn btn-primary btn-sm" href="{{route('goods.saasIndex')}}">返回</a>
                     </div>
                 </div>
 

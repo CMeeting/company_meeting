@@ -33,26 +33,24 @@ class GoodsController extends BaseController {
         return $this->view('index',['data'=>$data,'query'=>$query,'lv1'=>json_encode($categorical_data['arr1']),'lv2'=>json_encode($categorical_data['arr2']),'lv3'=>json_encode($categorical_data['arr3'])]);
     }
 
-    public function saasindex()
+    public function saasIndex(Request $request)
     {
-        $param = request()->input();
         $GoodsService = new GoodsService();
-        $query["query_type"] = isset($param['query_type']) ? $param['query_type'] : "";
-        $query["info"] = isset($param['info']) ? $param['info'] : "";
-        $query["level1"] = isset($param['level1']) ? $param['level1'] : "";
-        $query["level2"] = isset($param['level2']) ? $param['level2'] : "";
-        $query["status"] = isset($param['status']) ? $param['status'] : "";
-        $query["start_date"] = isset($param['start_date']) ? $param['start_date'] : "";
-        $query["end_date"] = isset($param['end_date']) ? $param['end_date'] : "";
-        $query["updated_at"] = isset($param['updated_at']) ? $param['updated_at'] : "";
-        $query["endupdated_at"] = isset($param['endupdated_at']) ? $param['endupdated_at'] : "";
-        $query["shelf_at"] = isset($param['shelf_at']) ? $param['shelf_at'] : "";
-        $query["endshelf_at"] = isset($param['endshelf_at']) ? $param['endshelf_at'] : "";
-        $query['export'] = array_get($param, 'export', 0);
-        $query['field'] = array_get($param, 'field', '');
-        $categorical_data = $GoodsService->threelevellinkagesaas();
-        $data = $GoodsService->data_listsaas($query);
-        if($query['export'] == 1){
+
+        $query['query_type'] = $request->input('query_type');
+        $query['info'] = $request->input('info');
+        $query['level1'] = $request->input('level1');
+        $query['level2'] = $request->input('level2');
+        $query['status'] = $request->input('status');
+        $query['created_at'] = $request->input('created_at');
+        $query['updated_at'] = $request->input('updated_at');
+        $query['shelf_at'] = $request->input('shelf_at');
+        $query['export'] = $request->input('export');
+        $query['field'] = $request->input('field');
+
+        $categorical_data = $GoodsService->threeLevelLinkAgeSaas();
+        $data = $GoodsService->dataListSaaS($query);
+        if(isset($query['export']) && $query['export'] == 1){
             return $GoodsService->exportSaaS($data, $query['field']);
         }
         return $this->view('saasindex',['data'=>$data,'query'=>$query,'lv1'=>json_encode($categorical_data['arr1']),'lv2'=>json_encode($categorical_data['arr2'])]);
@@ -67,7 +65,7 @@ class GoodsController extends BaseController {
     public function createsaasgoods()
     {
         $GoodsService = new GoodsService();
-        $categorical_data = $GoodsService->threelevellinkagesaas();
+        $categorical_data = $GoodsService->threeLevelLinkAgeSaas();
         return $this->view('createsaasgoods',['lv1'=>json_encode($categorical_data['arr1']),'lv2'=>json_encode($categorical_data['arr2'])]);
     }
 
@@ -130,7 +128,7 @@ class GoodsController extends BaseController {
     {
         $GoodsService = new GoodsService();
         $data = $GoodsService->getsaasFindcategorical($id);
-        $categorical_data = $GoodsService->threelevellinkagesaas();
+        $categorical_data = $GoodsService->threeLevelLinkAgeSaas();
         return $this->view('updatesaasgoods',['lv1'=>json_encode($categorical_data['arr1']),'lv2'=>json_encode($categorical_data['arr2']),'data'=>$data]);
     }
 

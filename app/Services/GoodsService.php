@@ -16,6 +16,7 @@ use App\Export\UserExport;
 use App\Models\Goods;
 use App\Models\Goodsclassification;
 use Auth;
+use Carbon\Carbon;
 
 class GoodsService
 {
@@ -88,58 +89,67 @@ class GoodsService
         return $data;
     }
 
-
-    public function data_listsaas($param)
+    /**
+     * 商品列表-SaaS
+     * @param $param
+     * @return array|\Illuminate\Contracts\Pagination\LengthAwarePaginator
+     */
+    public function dataListSaaS($param)
     {
-        $where = "deleted=0 and is_saas=1";
-        if ($param['info']) {
-            $where .= " and {$param['query_type']}={$param['info']}";
+        $query = Goods::query()
+            ->leftJoin('goods_classification', 'goods.level1', '=', 'goods_classification.id')
+            ->where('goods.deleted', 0)
+            ->where('goods.is_saas', 1);
+
+        if (isset($param['info']) && $param['info']) {
+            $query->where('goods.' . $param['query_type'], $param['info']);
         }
-        if ($param['level1']) {
-            $where .= " and level1={$param['level1']}";
+        if (isset($param['level1']) && $param['level1']) {
+            $query->where('goods.level1', $param['level1']);
         }
-        if ($param['level2']) {
-            $where .= " and level2={$param['level2']}";
+        if (isset($param['level2']) && $param['level2']) {
+            $query->where('goods.level2', $param['level2']);
         }
-        if ($param['status']) {
-            $param['status'] = $param['status'] - 1;
-            $where .= " and status={$param['status']}";
-        }
-        if (isset($param['start_date']) && $param['start_date'] && isset($param['end_date']) && $param['end_date']) {
-            $where .= " AND created_at BETWEEN '" . $param['start_date'] . "' AND '" . $param['end_date'] . "'";
-        } elseif (isset($param['start_date']) && $param['start_date'] && empty($param['end_date'])) {
-            $where .= " AND created_at >= '" . $param['start_date'] . "'";
-        } elseif (isset($param['end_date']) && $param['end_date'] && empty($param['start_date'])) {
-            $where .= " AND created_at <= '" . $param['end_date'] . "'";
+        if (isset($param['status']) && $param['status']) {
+            $query->where('goods.status', $param['status']);
         }
 
-        if (isset($param['updated_at']) && $param['updated_at'] && isset($param['endupdated_at']) && $param['endupdated_at']) {
-            $where .= " AND updated_at BETWEEN '" . $param['updated_at'] . "' AND '" . $param['endupdated_at'] . "'";
-        } elseif (isset($param['updated_at']) && $param['updated_at'] && empty($param['endupdated_at'])) {
-            $where .= " AND updated_at >= '" . $param['updated_at'] . "'";
-        } elseif (isset($param['endupdated_at']) && $param['endupdated_at'] && empty($param['updated_at'])) {
-            $where .= " AND updated_at <= '" . $param['endupdated_at'] . "'";
+        $created_at = $param['created_at'] ?? '';
+        if($created_at) {
+            $created_at = explode('/', $created_at);
+            $start_data = $created_at[0];
+            $end_data = Carbon::parse($created_at[1])->addDay()->format('Y-m-d H:i:s');
+            $query->where('goods.created_at', '>=', $start_data);
+            $query->where('goods.created_at', '<=', $end_data);
         }
 
-        if (isset($param['shelf_at']) && $param['shelf_at'] && isset($param['endshelf_at']) && $param['endshelf_at']) {
-            $where .= " AND shelf_at BETWEEN '" . $param['shelf_at'] . "' AND '" . $param['endshelf_at'] . "'";
-        } elseif (isset($param['shelf_at']) && $param['shelf_at'] && empty($param['endshelf_at'])) {
-            $where .= " AND shelf_at >= '" . $param['shelf_at'] . "'";
-        } elseif (isset($param['endshelf_at']) && $param['endshelf_at'] && empty($param['shelf_at'])) {
-            $where .= " AND shelf_at <= '" . $param['endshelf_at'] . "'";
+        $updated_at = $param['updated_at'] ?? '';
+        if($updated_at) {
+            $updated_at = explode('/', $updated_at);
+            $start_data = $updated_at[0];
+            $end_data = Carbon::parse($updated_at[1])->addDay()->format('Y-m-d H:i:s');
+            $query->where('goods.updated_at', '>=', $start_data);
+            $query->where('goods.updated_at', '<=', $end_data);
         }
 
+        $shelf_at = $param['shelf_at'] ?? '';
+        if($shelf_at) {
+            $shelf_at = explode('/', $shelf_at);
+            $start_data = $shelf_at[0];
+            $end_data = Carbon::parse($shelf_at[1])->addDay()->format('Y-m-d H:i:s');
+            $query->where('goods.shelf_at', '>=', $start_data);
+            $query->where('goods.shelf_at', '<=', $end_data);
+        }
 
-        $goods = new Goods();
-
-        if ($param['export'] == 1) {
-            return $goods->whereRaw($where)->orderByRaw('id desc')->get()->toArray();
+        $query->orderByRaw('goods_classification.displayorder, goods.sort_num asc')->select('goods.*');
+        if (isset($param['export']) && $param['export'] == 1) {
+            return (clone $query)->get()->toArray();
         } else {
-            $data = $goods->whereRaw($where)->orderByRaw('id desc')->paginate(10);
+            $data = $query->paginate(10);
         }
 
         if (!empty($data)) {
-            $classification = $this->assembly_saasclassification();
+            $classification = $this->assemblySaaSClassifyCation();
             foreach ($data as $k => $v) {
                 $v->products = $classification[$v['level1']]['title'];
                 $v->platform = $classification[$v['level2']]['title'];
@@ -158,7 +168,7 @@ class GoodsService
         }
         return $arr;
     }
-    function assembly_saasclassification()
+    function assemblySaaSClassifyCation()
     {
         $Goodsclassification = new Goodsclassification();
         $data = $Goodsclassification->_where("deleted=0 and is_saas=1",'displayorder');
@@ -214,7 +224,7 @@ class GoodsService
     }
 
 
-    public function threelevellinkagesaas()
+    public function threeLevelLinkAgeSaas()
     {
         $where = "deleted=0 and is_saas=1";
         $goods = new Goodsclassification();
@@ -343,12 +353,12 @@ class GoodsService
         $Goods = new Goods();
         $data = $Goods->_find("deleted=0 and id='{$id}'");
         $data = $Goods->objToArr($data);
-        $classification = $this->assembly_saasclassification();
+        $classification = $this->assemblySaaSClassifyCation();
         if($data['info']){
             $data['info'] = unserialize($data['info']);
         }
-        $data['level1name'] = $classification[$data['level1']]['title'];
-        $data['level2name'] = $classification[$data['level2']]['title'];
+        $data['level1name'] = $classification[$data['level1']]['title'] ?? '';
+        $data['level2name'] = $classification[$data['level2']]['title'] ?? '';
         return $data;
     }
 
@@ -424,7 +434,7 @@ class GoodsService
             'shelf_at' => '上架时间',
         ];
 
-        $classification = $this->assembly_saasclassification();
+        $classification = $this->assemblySaaSClassifyCation();
 
         $field = explode(',', $field);
 
