@@ -23,7 +23,7 @@
     <div class="row">
         <div class="col-sm-12">
             <div class="ibox-title">
-                <h5>New SaaSGoods</h5>
+                <h5>新增商品</h5>
             </div>
             <div class="ibox-content">
                 <a href="{{route('goods.saasIndex')}}" style="margin-bottom: 8px">
@@ -41,7 +41,7 @@
                 </div>
 
                     <div class="form-group">
-                        <label class="col-sm-2 control-label no-padding-right" for="form-field-1">档位：</label>
+                        <label class="col-sm-2 control-label no-padding-right" for="form-field-1">档位（资产数）：</label>
                         <div class="col-sm-6 col-xs-12">
                         <select name="data[level2]" id="city" class="form-control"></select>
                     </div>
@@ -49,14 +49,14 @@
 
 
                 <div class="form-group">
-                    <label class="col-sm-2 control-label no-padding-right" for="form-field-1"> Pricing(USD)：</label>
+                    <label class="col-sm-2 control-label no-padding-right" for="form-field-1"> 价格（$）：</label>
                     <div class="col-sm-6 col-xs-12">
                         <input style="float: left" id="price"  type="number" class="form-control" name="data[price]" max="99999999" step="0.01" oninput="if(value.length>8)value=value.slice(0,8)" value="0.00" required>
                     </div>
                 </div>
 
                 <div class="form-group">
-                    <label class="col-sm-2 control-label no-padding-right" for="form-field-1"> status(是否上架)：</label>
+                    <label class="col-sm-2 control-label no-padding-right" for="form-field-1"> 商品状态：</label>
                     <div class="col-sm-6 col-xs-12">
                         <input type="radio" name="data[status]" value="1" checked >上架
                         <input type="radio" name="data[status]" value="0">下架
@@ -64,7 +64,7 @@
                 </div>
 
                 <div class="form-group">
-                    <label class="col-sm-2 control-label no-padding-right" for="form-field-1"> order_num(排序 从小到大)：</label>
+                    <label class="col-sm-2 control-label no-padding-right" for="form-field-1"> 排序：</label>
                     <div class="col-sm-6 col-xs-12">
                         <input id="displayorder"  type="number" class="form-control" name="data[sort_num]" min="1" max="99999999" oninput="if(value.length>8)value=value.slice(0,8)" value="{{$sort}}" required>
                         <span class="lbl">商品的排序对应API官网Pricing页面展示顺序，月订阅 > 年订阅 > 打包购买（官网tab顺序），同一套餐类型下的商品在官网会根据序号升序排列</span>

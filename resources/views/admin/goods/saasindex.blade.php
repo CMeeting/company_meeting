@@ -46,10 +46,10 @@
     <div class="row">
         <div class="col-sm-12">
             <div class="ibox-title">
-                <h5>SaaSGoods</h5>
+                <h5>商品列表</h5>
                 <button id="export" class="btn layui-btn-primary btn-sm" type="button" style="float: right;margin-left: 5px"><i class="fa fa-paste"></i>导出数据</button>
                 <a style="float: right;margin-left: 5px" href="{{route('goods.createsaasgoods')}}" link-url="javascript:void(0)">
-                    <button class="btn btn-primary btn-sm" type="button"><i class="fa fa-plus-circle"></i> 添加 SaaSGoods</button>
+                    <button class="btn btn-primary btn-sm" type="button"><i class="fa fa-plus-circle"></i> 新增商品</button>
                 </a>
             </div>
             <div style="width: 100%;padding-bottom: 15px;padding-top: 10px;background: #fbfffa">
@@ -103,7 +103,7 @@
 
                             <div class="input-group-btn" style="display: inline-block;width: 250px;margin-left:20px;">
                                 <input type="text" name="shelf_at" class="form-control"
-                                       style="display: inline-block;width: 200px;" id="shelf_at" placeholder="上架时间"
+                                       style="display: inline-block;width: 200px;" id="shelf_at" placeholder="起止时间"
                                        value="@if(isset($query)){{$query['shelf_at']}}@endif"/>
                             </div>
 
@@ -123,12 +123,12 @@
                     <tr>
                         <th class="text-center" style="width: 5%">序号</th>
                         <th class="text-center" style="width: 9%">套餐类型</th>
-                        <th class="text-center" style="width: 9%">文件档位</th>
-                        <th class="text-center" style="width: 8%">Pricing(USD)</th>
-                        <th class="text-center" style="width: 6%">状态</th>
+                        <th class="text-center" style="width: 9%">档位（资产数）</th>
+                        <th class="text-center" style="width: 8%">价格（$）</th>
+                        <th class="text-center" style="width: 6%">商品状态</th>
                         <th class="text-center" style="width: 11%">创建时间</th>
                         <th class="text-center" style="width: 11%">更新时间</th>
-                        <th class="text-center" style="width: 11%">上架时间</th>
+                        <th class="text-center" style="width: 11%">起止时间</th>
                         <th class="text-center" style="width: 10%">操作</th>
                     </tr>
                     </thead>

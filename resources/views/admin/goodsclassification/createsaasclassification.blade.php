@@ -15,14 +15,14 @@
     <div class="row">
         <div class="col-sm-12">
             <div class="ibox-title">
-                <h5>New SaaSGoodsclassification</h5>
+                <h5>新增商品类型</h5>
             </div>
             <div class="ibox-content">
                 <form class="form-horizontal" name="form"  method="post" action="{{route('goodsclassification.createRunsaasgoodsclassification')}}" >
                     {{ csrf_field() }}
 
                     <div class="form-group">
-                        <label class="col-sm-2 control-label no-padding-right" for="form-field-1"> classification(上级分类)：</label>
+                        <label class="col-sm-2 control-label no-padding-right" for="form-field-1"> 上级分类：</label>
                         <div class="col-sm-6 col-xs-12">
                             <select name="data[pid]" class="form-control sels"  id="selectid" @if(isset($pid) && $pid) style="pointer-events: none;color: #9f9f9f" @endif>
                                 <option value="0">--默认属于套餐--</option>
@@ -39,7 +39,7 @@
                     </div>
 
                     <div class="form-group">
-                        <label class="col-sm-2 control-label no-padding-right" for="form-field-1"> order_num(排序 从小到大)：</label>
+                        <label class="col-sm-2 control-label no-padding-right" for="form-field-1"> 排序：</label>
                         <div class="col-sm-6 col-xs-12">
                             <input id="displayorder"  type="number" class="form-control" name="data[displayorder]" min="1" max="99999999" oninput="if(value.length>8)value=value.slice(0,8)" value="1" required>
                             <span class="lbl"></span>
@@ -47,7 +47,7 @@
                     </div>
 
                     <div class="form-group">
-                        <label class="col-sm-2 control-label no-padding-right" for="form-field-1">title(套餐/档位名称)</label>
+                        <label class="col-sm-2 control-label no-padding-right" for="form-field-1">档位（资产数）</label>
                         <div class="col-sm-6 col-xs-12">
                             <input id="name"  class="form-control" name="data[title]" required>
                             <span class="lbl"></span>

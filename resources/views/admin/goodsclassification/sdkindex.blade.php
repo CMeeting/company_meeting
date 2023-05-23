@@ -75,7 +75,7 @@
 
     <div style="width: 100%;margin-bottom: 15px;">
         <a class="ab" href="{{route('goodsclassification.index')}}">SDK</a>
-        <a class="ab" style="background: #b4b7b3" href="{{route('goodsclassification.sdkindex')}}">SaaS</a>
+        <a class="ab" style="background: #b4b7b3" href="{{route('goodsclassification.sdkindex')}}">API</a>
     </div>
 
     <div class="row" id="onType">
@@ -84,7 +84,7 @@
                 <div class="portlet-title tabbable-line">
                     <div class="actions">
                         <a id="cc" class="addClassify btn btn-md  blue  dropdown-toggle mt-ladda-btn ladda-button" data-style="zoom-in"  type="button" href="{{route('goodsclassification.createsaasgoodsClassification')}}">
-                            <i class="fa fa-plus-circle"></i> New SaaSGoodsclassification
+                            <i class="fa fa-plus-circle"></i> 新增商品类型
                         </a>
                     </div>
 
