@@ -55,7 +55,7 @@
                         <label class="col-sm-2 control-label no-padding-right" for="form-field-1"> Pricing(USD)：</label>
                         <div class="col-sm-6 col-xs-12">
                             <input style="float: left" id="price" type="number" class="form-control" name="data[price]"
-                                   min="0.01" max="99999999" step="0.01"
+                                   min="0.00" max="99999999" step="0.01"
                                    oninput="if(value.length>8)value=value.slice(0,8)" value="{{$data['price']}}"
                                    required>
                         </div>
@@ -114,9 +114,9 @@
                 return false;
             }
 
-            if ($("#price").val() < 0.01) {
+            if ($("#price").val() < 0.00) {
                 layer.close(index);
-                layer.msg("价格不能低于0.01", {time: 1500, anim: 6});
+                layer.msg("价格不能低于0.00", {time: 1500, anim: 6});
                 return false;
             }
             var form_data = new FormData($("#forms")[0]);
@@ -139,8 +139,6 @@
                         layer.msg(data.msg, {time: 1500, anim: 6});
                         return false;
                     }
-                }, error: function (ret) {
-
                 }
             })
         }

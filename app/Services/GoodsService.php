@@ -254,6 +254,57 @@ class GoodsService
 
 
 
+    public function addsaasEditcaregorical($param)
+    {
+        $Goods = new Goods();
+        if (isset($param['data'])) {
+            $data = $param['data'];
+        }
+        if (isset($data['id'])) {
+            $where = "id='{$data['id']}' and is_saas=1";
+            $is_find = $Goods->_find($where);
+            $is_find = $Goods->objToArr($is_find);
+            if (($is_find['level1'] != $data['level1']) || ($is_find['level2'] != $data['level2']) ) {
+                $names = $Goods->find("level1={$data['level1']} and level2={$data['level2']}  and deleted=0 and id!={$data['id']} and is_saas=1");
+                $names = $Goods->objToArr($names);
+                if ((isset($names) && $names)) {
+                    return "repeat";
+                }
+            }
+
+            $exists_sort = $this->existsSort($data['sort_num'], $data['id']);
+            if($exists_sort){
+                return 'repeat_sort';
+            }
+
+            $bool = $Goods->_update($data, $where);
+        } elseif (isset($param['delid'])) {
+            $bool = $Goods->_update(['deleted' => 1], "id=" . $param['delid']);
+        } else {
+            $names = $Goods->_find("level1='" . $data['level1'] . "' and level2={$data['level2']} and deleted=0 and is_saas=1");
+            $names = $Goods->objToArr($names);
+            if (isset($names) && $names) {
+                return "repeat";
+            }
+
+            $exists_sort = $this->existsSort($data['sort_num']);
+            if($exists_sort){
+                return 'repeat_sort';
+            }
+
+            if ($data['status'] == 1) {
+                $data['shelf_at'] = date("Y-m-d H:i:s");
+            }
+
+            $data['created_at'] = date("Y-m-d H:i:s");
+            $data['updated_at'] = date("Y-m-d H:i:s");
+            $data['is_saas'] = 1;
+            $bool = $Goods->_insert($data);
+        }
+        return $bool;
+
+    }
+
     public function addEditcaregorical($param)
     {
         $Goods = new Goods();
@@ -288,44 +339,6 @@ class GoodsService
             }
             $data['created_at'] = date("Y-m-d H:i:s");
             $data['updated_at'] = date("Y-m-d H:i:s");
-            $bool = $Goods->_insert($data);
-        }
-        return $bool;
-
-    }
-
-    public function addsaasEditcaregorical($param)
-    {
-        $Goods = new Goods();
-        if (isset($param['data'])) {
-            $data = $param['data'];
-        }
-        if (isset($data['id'])) {
-            $where = "id='{$data['id']}' and is_saas=1";
-            $is_find = $Goods->_find($where);
-            $is_find = $Goods->objToArr($is_find);
-            if (($is_find['level1'] != $data['level1']) || ($is_find['level2'] != $data['level2']) ) {
-                $names = $Goods->find("level1={$data['level1']} and level2={$data['level2']}  and deleted=0 and id!={$data['id']} and is_saas=1");
-                $names = $Goods->objToArr($names);
-                if ((isset($names) && $names)) {
-                    return "repeat";
-                }
-            }
-            $bool = $Goods->_update($data, $where);
-        } elseif (isset($param['delid'])) {
-            $bool = $Goods->_update(['deleted' => 1], "id=" . $param['delid']);
-        } else {
-            $names = $Goods->_find("level1='" . $data['level1'] . "' and level2={$data['level2']} and deleted=0 and is_saas=1");
-            $names = $Goods->objToArr($names);
-            if (isset($names) && $names) {
-                return "repeat";
-            }
-            if ($data['status'] == 1) {
-                $data['shelf_at'] = date("Y-m-d H:i:s");
-            }
-            $data['created_at'] = date("Y-m-d H:i:s");
-            $data['updated_at'] = date("Y-m-d H:i:s");
-            $data['is_saas'] = 1;
             $bool = $Goods->_insert($data);
         }
         return $bool;
@@ -523,6 +536,29 @@ class GoodsService
         }
         return $arr;
 
+    }
+
+    /**
+     * SaaS商品管理-排序是否存在
+     * @param $sort
+     * @param $id
+     * @return bool
+     */
+    public function existsSort($sort, $id = ''){
+        $query = Goods::query()->where('is_saas', 1)->where('sort_num', $sort)->where('deleted', 0);
+        if($id){
+            $query->where('id', '!=', $id);
+        }
+
+        return $query->exists();
+    }
+
+    /**
+     * 获取目前最大排序
+     * @return mixed
+     */
+    public function getMaxSort(){
+        return Goods::query()->where('is_saas', 1)->where('deleted', 0)->orderByDesc('sort_num')->value('sort_num');
     }
 
 }

@@ -66,8 +66,8 @@
                 <div class="form-group">
                     <label class="col-sm-2 control-label no-padding-right" for="form-field-1"> order_num(排序 从小到大)：</label>
                     <div class="col-sm-6 col-xs-12">
-                        <input id="displayorder"  type="number" class="form-control" name="data[sort_num]" min="1" max="99999999" oninput="if(value.length>8)value=value.slice(0,8)" value="1" required>
-                        <span class="lbl">商品的排序对应API官网Pricing页面展示顺序，月订阅 > 年订阅 > 打包购买（从左到右依次展示），序号1-5为月订阅套餐商品，6-10为年订阅商品，11-15为打包购买商品</span>
+                        <input id="displayorder"  type="number" class="form-control" name="data[sort_num]" min="1" max="99999999" oninput="if(value.length>8)value=value.slice(0,8)" value="{{$sort}}" required>
+                        <span class="lbl">商品的排序对应API官网Pricing页面展示顺序，月订阅 > 年订阅 > 打包购买（官网tab顺序），同一套餐类型下的商品在官网会根据序号升序排列</span>
                     </div>
                 </div>
 
@@ -121,6 +121,7 @@
                 type: "post",
                 data: form_data,
                 success: function (data) {
+                    console.log(data)
                     if (data.code == 1) {
                         layer.close(index);
                         layer.msg("添加成功", {time: 1500, anim: 1});
@@ -131,8 +132,6 @@
                         layer.msg(data.msg, {time: 1500, anim: 6});
                         return false;
                     }
-                }, error: function (ret) {
-
                 }
             })
         }

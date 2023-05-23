@@ -66,7 +66,9 @@ class GoodsController extends BaseController {
     {
         $GoodsService = new GoodsService();
         $categorical_data = $GoodsService->threeLevelLinkAgeSaas();
-        return $this->view('createsaasgoods',['lv1'=>json_encode($categorical_data['arr1']),'lv2'=>json_encode($categorical_data['arr2'])]);
+        $max_sort = $GoodsService->getMaxSort();
+        $sort = $max_sort ? ($max_sort + 1) : 1;
+        return $this->view('createsaasgoods',['lv1'=>json_encode($categorical_data['arr1']),'lv2'=>json_encode($categorical_data['arr2']), 'sort'=>$sort]);
     }
 
     public function createrungoods(Request $request)
@@ -103,6 +105,10 @@ class GoodsController extends BaseController {
                 flash('该套餐档位商品已存在')->error()->important();
                 $result['code'] = 200;
                 $result['msg'] = "该套餐档位商品已存在";
+            } elseif($bool && $bool === 'repeat_sort'){
+                flash('该序号已存在')->error()->important();
+                $result['code'] = 200;
+                $result['msg'] = "该序号已存在";
             } else {
                 if ($bool) {
                     flash('添加成功')->success()->important();
@@ -139,11 +145,15 @@ class GoodsController extends BaseController {
 
         if (!empty($param)) {
             $bool = $GoodsService->addsaasEditcaregorical($param);
-            if ($bool == "repeat") {
+            if ($bool === "repeat") {
                 flash('该套餐档位商品已存在')->error()->important();
                 $result['code'] = 200;
                 $result['msg'] = "该套餐档位商品已存在";
-            } else {
+            } else if($bool === 'repeat_sort'){
+                flash('该序号已存在')->error()->important();
+                $result['code'] = 200;
+                $result['msg'] = "该序号已存在";
+            } else{
                 if ($bool==1) {
                     $result['code'] = 1;
                 }elseif ($bool==0){
@@ -153,8 +163,8 @@ class GoodsController extends BaseController {
                     $result['code'] = 200;
                     $result['msg'] = "修改失败";
                 }
-                return $result;
             }
+            return $result;
         }
     }
 

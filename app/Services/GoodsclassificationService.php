@@ -238,7 +238,7 @@ class GoodsclassificationService
             $is_find = $Goodsclassification->_find($where);
             $is_find = $Goodsclassification->objToArr($is_find);
             if ($is_find['title'] != $data['title']) {
-                $names = $Goodsclassification->_find("title='" . $data['title'] . "' and pid='{$is_find['pid']}' and deleted=0 and is_saas=1");
+                $names = $Goodsclassification->_find("title='" . $data['title'] . "' and pid='{$is_find['pid']}' and deleted=0 and is_saas=1 and id != {$is_find['id']}");
                 $names = $Goodsclassification->objToArr($names);
                 if ((isset($names) && $names)) {
                     return "repeat";
