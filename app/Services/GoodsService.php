@@ -561,4 +561,46 @@ class GoodsService
         return Goods::query()->where('is_saas', 1)->where('deleted', 0)->orderByDesc('sort_num')->value('sort_num');
     }
 
+    /**
+     * 获取SaaS产品
+     * @return array
+     */
+    public function getSaaSGoods(){
+        //套餐
+        $combos = Goodsclassification::getComboOrGear(1);
+        //档位
+        $gear = Goodsclassification::getComboOrGear(2);
+        //商品
+        $goods = Goods::getGoods();
+        $goods = $goods->groupBy('level1')->toArray();
+
+        $data = [];
+        //循环套餐
+        foreach ($combos as $combo){
+            $result = ['combo' => $combo['title'], 'plan'=>[]];
+            //获取套餐下产品
+            $combo_goods = $goods[$combo['id']] ?? [];
+            foreach ($combo_goods as $combo_good){
+                //只返回排序前五的商品
+                if(count($result['plan']) == 5){
+                    break;
+                }
+
+                $level2 = $combo_good['level2'];
+                $goods_gear = array_get($gear, "$level2.title");
+
+                //不返回手动配置
+                if($goods_gear == '手动配置'){
+                    continue;
+                }
+
+                $price = $combo_good['price'];
+                $result['plan'][] = ['id'=>$combo_good['id'], 'gear' => $goods_gear, 'price' => $price];
+            }
+
+            $data[] = $result;
+        }
+        return $data;
+    }
+
 }

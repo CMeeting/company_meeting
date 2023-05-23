@@ -15,4 +15,14 @@ use Illuminate\Database\Eloquent\Model;
 class Goods extends Model
 {
     protected $table = 'goods';
+
+    public static function getGoods(){
+        return Goods::query()
+            ->where('is_saas', 1)
+            ->where('deleted', 0)
+            ->where('status', 1)
+            ->select(['id', 'level1', 'level2', 'price'])
+            ->orderBy('sort_num')
+            ->get();
+    }
 }
