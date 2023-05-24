@@ -35,12 +35,12 @@
                 <h5>Order</h5>
                 <button id="export" class="btn layui-btn-primary btn-sm" type="button" style="float: right;margin-left: 5px"><i class="fa fa-paste"></i>导出数据</button>
                 <a style="float: right;margin-left: 5px" href="{{route('order.saascreate')}}" link-url="javascript:void(0)">
-                    <button class="btn btn-primary btn-sm" type="button"><i class="fa fa-plus-circle"></i> 添加 SaasOrder</button>
+                    <button class="btn btn-primary btn-sm" type="button"><i class="fa fa-plus-circle"></i> 新增订单</button>
                 </a>
             </div>
             <div style="width: 100%;padding-bottom: 15px;padding-top: 10px;background: #fbfffa">
                 <a class="ab"  href="{{route('order.index')}}">SDK</a>
-                <a class="ab" style="background: #b4b7b3" href="{{route('order.saasindex')}}">SaaS</a>
+                <a class="ab" style="background: #b4b7b3" href="{{route('order.saasindex')}}">API</a>
             </div>
             <div class="ibox-content">
 
@@ -52,7 +52,7 @@
                                 <select id="query_type" name="query_type" class="form-control"
                                         style="display: inline-block;width: 100px;">
                                     <option value="orders.id" @if(isset($query)&&$query['query_type']=='orders.id') selected @endif>
-                                        ID
+                                        序号
                                     </option>
                                     <option value="orders_goods.goods_no" @if(isset($query)&&$query['query_type']=='orders_goods.goods_no') selected @endif>
                                         订单号
@@ -72,46 +72,60 @@
                                         <option value="">订单状态</option>
                                         <option value="1" @if(isset($query)&&$query['status']==1) selected @endif>待支付</option>
                                         <option value="2" @if(isset($query)&&$query['status']==2) selected @endif>已支付</option>
-                                        <option value="3" @if(isset($query)&&$query['status']==3) selected @endif>已完成</option>
+{{--                                        <option value="3" @if(isset($query)&&$query['status']==3) selected @endif>已完成</option>--}}
 {{--                                        <option value="4" @if(isset($query)&&$query['status']==4) selected @endif>待退款</option>--}}
                                         <option value="5" @if(isset($query)&&$query['status']==5) selected @endif>已关闭</option>
                                     </select>
                                 </div>
                             </div>
 
-                            <div class="col-md-4 col-lg-3 col-sm-6 col-xs-12">
-                                <div class="form-group">
-                                    <select id="pay_type" class="form-control"  name="pay_type" tabindex="1">
-                                        <option value="">支付方式</option>
-                                        <option value="1" @if(isset($query)&&$query['pay_type']==1) selected @endif>未支付</option>
-                                        <option value="2" @if(isset($query)&&$query['pay_type']==2) selected @endif>Paddle</option>
-                                        <option value="3" @if(isset($query)&&$query['pay_type']==3) selected @endif>支付宝</option>
-                                        <option value="4" @if(isset($query)&&$query['pay_type']==4) selected @endif>微信</option>
-                                        {{--                                        <option value="4" @if(isset($query)&&$query['status']==4) selected @endif>待退款</option>--}}
-                                        <option value="5" @if(isset($query)&&$query['pay_type']==5) selected @endif>无需支付</option>
-                                    </select>
-                                </div>
-                            </div>
+{{--                            <div class="col-md-4 col-lg-3 col-sm-6 col-xs-12">--}}
+{{--                                <div class="form-group">--}}
+{{--                                    <select id="pay_type" class="form-control"  name="pay_type" tabindex="1">--}}
+{{--                                        <option value="">支付方式</option>--}}
+{{--                                        <option value="1" @if(isset($query)&&$query['pay_type']==1) selected @endif>未支付</option>--}}
+{{--                                        <option value="2" @if(isset($query)&&$query['pay_type']==2) selected @endif>Paddle</option>--}}
+{{--                                        <option value="3" @if(isset($query)&&$query['pay_type']==3) selected @endif>支付宝</option>--}}
+{{--                                        <option value="4" @if(isset($query)&&$query['pay_type']==4) selected @endif>微信</option>--}}
+{{--                                        --}}{{--                                        <option value="4" @if(isset($query)&&$query['status']==4) selected @endif>待退款</option>--}}
+{{--                                        <option value="5" @if(isset($query)&&$query['pay_type']==5) selected @endif>无需支付</option>--}}
+{{--                                    </select>--}}
+{{--                                </div>--}}
+{{--                            </div>--}}
+
                             <div class="col-md-4 col-lg-3 col-sm-6 col-xs-12">
                                 <div class="form-group">
                                     <select id="type" class="form-control"  name="type" tabindex="1">
-                                        <option value="">订单来源</option>
+                                        <option value="">订单类型</option>
                                         <option value="1" @if(isset($query)&&$query['type']==1) selected @endif>后台创建</option>
                                         <option value="2" @if(isset($query)&&$query['type']==2) selected @endif>用户购买</option>
                                     </select>
                                 </div>
                             </div>
 
-
-                            <div class="input-group-btn" style="display: inline-block;width: 150px;">
-                                <input type="text" name="shelf_at" class="form-control"
-                                       style="display: inline-block;width: 160px;" id="shelf_at" placeholder="创建时间--开始"
-                                       value="@if(isset($query)){{$query['shelf_at']}}@endif"/>
+                            <div class="col-md-4 col-lg-3 col-sm-6 col-xs-12">
+                                <div class="form-group">
+                                    <select id="combo" class="form-control"  name="combo" tabindex="1" onchange="comboChange()">
+                                        <option value="">请选择套餐</option>
+                                        @foreach($combos as $combo)
+                                            <option value="{{$combo['id']}}" @if(isset($query)&&$query['combo']==$combo['id']) selected @endif>{{$combo['title']}}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
                             </div>
-                            <div class="input-group-btn" style="display: inline-block;width: 150px;">
-                                <input type="text" name="endshelf_at" class="form-control"
-                                       style="display: inline-block;width: 160px;" id="endshelf_at" placeholder="创建时间--结束"
-                                       value="@if(isset($query)){{$query['endshelf_at']}}@endif"/>
+
+                            <div class="col-md-4 col-lg-3 col-sm-6 col-xs-12">
+                                <div class="form-group">
+                                    <select id="gear" class="form-control"  name="gear" tabindex="1">
+                                        <option value="">请选择档位</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="input-group-btn" style="display: inline-block;width: 250px;margin-left:20px;">
+                                <input type="text" name="created_at" class="form-control"
+                                       style="display: inline-block;width: 200px;" id="created_at" placeholder="创建时间"
+                                       value="@if(isset($query)){{$query['created_at']}}@endif"/>
                             </div>
 
 {{--                            <div class="input-group-btn" style="display: inline-block;width: 150px;">--}}
@@ -148,9 +162,9 @@
                         <li class="@if(isset($query)&&$query['status']=="2") active @endif goodsstatus goodsstatus_1" id="goodsstatus_1">
                             <a onclick="orderList(1)" class="orderTab"  > 已支付订单 </a>
                         </li>
-                        <li class="@if(isset($query)&&$query['status']=="3") active @endif goodsstatus goodsstatus_2" id="goodsstatus_2">
-                            <a onclick="orderList(2)"  class="orderTab" > 已完成订单 </a>
-                        </li>
+{{--                        <li class="@if(isset($query)&&$query['status']=="3") active @endif goodsstatus goodsstatus_2" id="goodsstatus_2">--}}
+{{--                            <a onclick="orderList(2)"  class="orderTab" > 已完成订单 </a>--}}
+{{--                        </li>--}}
 {{--                        <li class="@if(isset($query)&&$query['status']=="4") active @endif goodsstatus goodsstatus_3" id="goodsstatus_3">--}}
 {{--                            <a onclick="orderList(3)" class="orderTab" > 待退款订单 </a>--}}
 {{--                        </li>--}}
@@ -163,16 +177,30 @@
                 <table class="table table-striped table-bordered table-hover m-t-md" style="margin-top: 3px">
                     <thead>
                     <tr>
-                        <th class="text-center" style="width: 5%">ID</th>
+                        <th class="text-center" style="width: 5%">序号</th>
                         <th class="text-center" style="width: 9%">子订单编号</th>
                         <th class="text-center" style="width: 9%">用户账号</th>
                         <th class="text-center" style="width: 11%">套餐类型</th>
-                        <th class="text-center" style="width: 8%">档位</th>
-                        <th class="text-center" style="width: 9%">订单金额</th>
+                        <th class="text-center" style="width: 8%">档位（资产数）</th>
+                        <th class="text-center" style="width: 9%">订单金额（$）</th>
                         <th class="text-center" style="width: 6%">支付方式</th>
-                        <th class="text-center" style="width: 6%">订单类型</th>
-                        <th class="text-center" style="width: 11%">订单状态</th>
-                        <th class="text-center" style="width: 11%">创建时间</th>
+                        @if(isset($query) && $query['status'] != 1)
+                            <th class="text-center" style="width: 6%">订单类型</th>
+                        @endif
+
+                        @if(isset($query) && !$query['status'])
+                            <th class="text-center" style="width: 11%">订单状态</th>
+                        @endif
+
+                        @if(isset($query) && ($query['status'] == 1 || !$query['status']))
+                            <th class="text-center" style="width: 11%">创建时间</th>
+                        @elseif($query && $query['status'] == 2)
+                            <th class="text-center" style="width: 11%">支付时间</th>
+                        @elseif($query && $query['status'] == 5)
+                            <th class="text-center" style="width: 11%">关闭时间</th>
+                            <th class="text-center" style="width: 11%">是否为退款订单</th>
+                        @endif
+
                         <th class="text-center" style="width: 10%">操作</th>
                     </tr>
                     </thead>
@@ -193,27 +221,29 @@
                                     @elseif($item['pay_type'] == 3)
                                             <span class="ladda-label">微信</span>
                                     @elseif($item['pay_type'] == 4)
-                                        <span class="ladda-label">无需支付</span>
-                                    @elseif($item['type'] == 1 && $item['status']==0)
-                                            <span class="ladda-label">未支付</span>
+                                        <span class="ladda-label">其他支付</span>
+{{--                                    @elseif($item['type'] == 1 && $item['status']==0)--}}
+{{--                                            <span class="ladda-label">未支付</span>--}}
                                     @endif
 
                             </td>
+                            @if(isset($query) && $query['status'] != 1)
                             <td>
-                                @if($item['type'] == 1)
-                                    <span class="ladda-label">后台创建</span>
-                                @elseif($item['type'] == 2)
-                                    <span class="ladda-label">用户购买</span>
-                                @else
-                                    <span class="ladda-label">未知</span>
-                                @endif
-
+                                    @if($item['type'] == 1)
+                                        <span class="ladda-label">后台创建</span>
+                                    @elseif($item['type'] == 2)
+                                        <span class="ladda-label">用户购买</span>
+                                    @else
+                                        <span class="ladda-label">未知</span>
+                                    @endif
                             </td>
+                            @endif
+                            @if(isset($query) && !$query['status'])
                             <td>
                                 @if($item['status'] == 1)
                                     <span class="ladda-label">已支付</span>
-                                @elseif($item['status'] == 2)
-                                    <span class="ladda-label">已完成</span>
+{{--                                @elseif($item['status'] == 2)--}}
+{{--                                    <span class="ladda-label">已完成</span>--}}
                                 @elseif($item['status'] == 3)
                                     <span class="ladda-label">待退款</span>
                                 @elseif($item['status'] == 4)
@@ -221,9 +251,17 @@
                                 @else
                                     <span class="ladda-label">待支付</span>
                                 @endif
-
                             </td>
-                            <td>{{$item['created_at']}}</td>
+                            @endif
+
+                            @if(isset($query) && ($query['status'] == 1 || !$query['status']))
+                                <td>{{$item['created_at']}}</td>
+                            @elseif($query && $query['status'] == 2)
+                                <td>{{$item['pay_time'] ?? '--'}}</td>
+                            @elseif($query && $query['status'] == 5)
+                                <td>{{$item['closetime']}}</td>
+                                <td>{{$item['remark']}}</td>
+                            @endif
 
                             <td class="text-center">
                                 <div class="btn-group">
@@ -289,36 +327,12 @@
         layui.use('laydate', function () {
             var laydate = layui.laydate;
 
-            //执行一个laydate实例
-            var start = laydate.render({
-                elem: '#shelf_at', //指定元素
-                max: 1,//最大值为当前日期
+            laydate.render({
+                elem: '#created_at', //指定元素
+                max: 0 ,//最大值为当前日期
                 trigger: 'click',
-                type: 'datetime',//日期时间选择器
-                // value: getRecentDay(-30),//默认值30天前
-                done: function (value, date) {
-                    if (value && (value > $("#endshelf_at").val())) {
-                        /*开始时间大于结束时间时，清空结束时间*/
-                        $("#endshelf_at").val("");
-                    }
-                    end.config.min = {
-                        year: date.year,
-                        month: date.month - 1,
-                        date: date.date,
-                        hours: date.hours,//可注释
-                        minutes: date.minutes,//可注释
-                        seconds: date.seconds//可注释
-                    };
-                }
-            });
-            var end = laydate.render({
-                elem: '#endshelf_at', //指定元素
-                max: 1,//最大值为当前日期
-                type: 'datetime',//日期时间选择器
-                // value: getRecentDay(-1),//默认值昨天
-                choose: function (datas) {
-                    start.max = datas; //结束日选好后，重置开始日的最大日期
-                }
+                type: 'date',//日期时间选择器
+                range:'/'
             });
         });
 
@@ -362,7 +376,6 @@
 
 
         $(function () {
-
             //导出
             $("#export").click(function () {
                 html =  '<div style="display: flex; justify-content: left;flex-wrap: wrap; padding: 10px">' +
@@ -375,7 +388,7 @@
                     '<div>' +
                     '<label style="margin-right: 10px; width: 120px"><input name="price"  type="checkbox"  value="price" checked="checked"/>订单金额(USD)</label>' +
                     '<label style="margin-right: 10px; width: 100px"><input name="pay_type"  type="checkbox"  value="pay_type" checked="checked"/>支付方式</label>' +
-                    '<label style="margin-right: 10px; width: 100px"><input name="type"  type="checkbox"  value="type" checked="checked"/>订单来源</label>' +
+                    '<label style="margin-right: 10px; width: 100px"><input name="type"  type="checkbox"  value="type" checked="checked"/>订单类型</label>' +
                     '<label style="margin-right: 10px; width: 100px"><input name="status"  type="checkbox"  value="status" checked="checked"/>订单状态</label></div></div>';
 
                 layer.open({
@@ -417,6 +430,28 @@
                     }
                 });
             });
+
+            comboChange()
         })
+
+        function comboChange() {
+            let gears = @json($gears);
+            let query = @json($query);
+            let gear = query['gear'];
+            let combo = $('#combo').val();
+            if(combo){
+                let combo_gear = gears[combo];
+                $('#gear').empty();
+                $('#gear').append($('<option></option>').attr('value', '').text('请选择档位'));
+                $.each(combo_gear, function(index, gear) {
+                    $('#gear').append($('<option></option>').attr('value', gear['id']).text(gear['title']));
+                });
+
+                $("#gear").find("option[value=" + gear + "]").attr("selected", true);
+            }else{
+                $('#gear').empty();
+                $('#gear').append($('<option></option>').attr('value', '').text('请选择档位'));
+            }
+        }
     </script>
 @endsection

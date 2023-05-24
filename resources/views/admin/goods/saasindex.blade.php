@@ -103,7 +103,7 @@
 
                             <div class="input-group-btn" style="display: inline-block;width: 250px;margin-left:20px;">
                                 <input type="text" name="shelf_at" class="form-control"
-                                       style="display: inline-block;width: 200px;" id="shelf_at" placeholder="起止时间"
+                                       style="display: inline-block;width: 200px;" id="shelf_at" placeholder="上架时间"
                                        value="@if(isset($query)){{$query['shelf_at']}}@endif"/>
                             </div>
 
@@ -128,7 +128,7 @@
                         <th class="text-center" style="width: 6%">商品状态</th>
                         <th class="text-center" style="width: 11%">创建时间</th>
                         <th class="text-center" style="width: 11%">更新时间</th>
-                        <th class="text-center" style="width: 11%">起止时间</th>
+                        <th class="text-center" style="width: 11%">上架时间</th>
                         <th class="text-center" style="width: 10%">操作</th>
                     </tr>
                     </thead>

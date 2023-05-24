@@ -26,7 +26,7 @@ class Goodsclassification extends Model
             ->where('is_saas', 1)
             ->where('deleted', 0)
             ->where('lv', $level)
-            ->select(['id', 'title'])
+            ->select(['id', 'title', 'pid'])
             ->orderBy('displayorder')
             ->get();
 
@@ -35,5 +35,21 @@ class Goodsclassification extends Model
         }else{
             return $result->keyBy('id')->toArray();
         }
+    }
+
+    /**
+     * 获取套餐下的档位
+     * @return array
+     */
+    public static function getGearGroupByCombo(){
+        $result = Goodsclassification::query()
+            ->where('is_saas', 1)
+            ->where('deleted', 0)
+            ->where('lv', 2)
+            ->select(['id', 'title', 'pid'])
+            ->orderBy('displayorder')
+            ->get();
+
+        return $result->groupBy('pid')->toArray();
     }
 }

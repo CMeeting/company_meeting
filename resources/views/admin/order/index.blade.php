@@ -40,7 +40,7 @@
             </div>
             <div style="width: 100%;padding-bottom: 15px;padding-top: 10px;background: #fbfffa">
                 <a class="ab" style="background: #b4b7b3"   href="{{route('order.index')}}">SDK</a>
-                <a class="ab" href="{{route('order.saasindex')}}">SaaS</a>
+                <a class="ab" href="{{route('order.saasindex')}}">API</a>
             </div>
             <div class="ibox-content">
 
