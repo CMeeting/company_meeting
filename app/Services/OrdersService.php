@@ -502,6 +502,13 @@ class OrdersService
             $where .= " and goods.level2 = {$param['gear']}";
         }
 
+        if(isset($param['created_at']) && $param['created_at']){
+            $created_at_arr = explode('/', $param['created_at']);
+            $start_data = $created_at_arr[0];
+            $end_data = Carbon::parse($created_at_arr[1])->addDay()->format('Y-m-d H:i:s');
+            $where .= " AND orders.created_at BETWEEN '" . $start_data . "' AND '" . $end_data . "'";
+        }
+
         if (isset($param['pay_at']) && $param['pay_at'] && isset($param['endpay_at']) && $param['endpay_at']) {
             $where .= " AND orders.pay_time BETWEEN '" . $param['pay_at'] . "' AND '" . $param['endpay_at'] . "'";
         } elseif (isset($param['pay_at']) && $param['pay_at'] && empty($param['endpay_at'])) {
@@ -509,6 +516,7 @@ class OrdersService
         } elseif (isset($param['endpay_at']) && $param['endpay_at'] && empty($param['pay_at'])) {
             $where .= " AND orders.pay_time <= '" . $param['endpay_at'] . "'";
         }
+
         if (isset($param['shelf_at']) && $param['shelf_at'] && isset($param['endshelf_at']) && $param['endshelf_at']) {
             $where .= " AND orders.created_at BETWEEN '" . $param['shelf_at'] . "' AND '" . $param['endshelf_at'] . "'";
         } elseif (isset($param['shelf_at']) && $param['shelf_at'] && empty($param['endshelf_at'])) {
@@ -516,12 +524,15 @@ class OrdersService
         } elseif (isset($param['endshelf_at']) && $param['endshelf_at'] && empty($param['shelf_at'])) {
             $where .= " AND orders.created_at <= '" . $param['endshelf_at'] . "'";
         }
-        $goods = new Order();
-        $data = $goods->leftJoin('users', 'orders.user_id', '=', 'users.id')
+
+        $order = new Order();
+        $data = $order->leftJoin('users', 'orders.user_id', '=', 'users.id')
             ->leftJoin('orders_goods', 'orders_goods.order_id', '=', 'orders.id')
-            ->leftJoin('goods', 'orders_goods.goods_id', '=', 'goods_id')
+            ->leftJoin('goods', 'orders_goods.goods_id', '=', 'goods.id')
             ->whereRaw($where)
+            ->select(['orders.id', 'orders.status', 'orders.price'])
             ->get()->toArray();
+
         $arr = [];
         $price = 0;
         $sumcount = 0;
