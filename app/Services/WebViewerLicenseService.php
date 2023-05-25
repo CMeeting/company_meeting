@@ -35,7 +35,7 @@ class WebViewerLicenseService
                $encryption = new EncryptionService();
                $slat_code = $encryption->getSaltCode($email);
                $password = $email . $slat_code;
-               $user_id = $userService->add($email, $full_name, $password, User::SOURCE_3_WEBVIEWER);
+               $user_id = $userService->add($email, $full_name, $password, User::SOURCE_3_WEBVIEWER, User::IS_VERIFY_2_YES);
 
                //保存用户公司信息
                $bill = new UserBillingInformation();
