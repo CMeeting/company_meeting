@@ -32,7 +32,7 @@
     <div class="row">
         <div class="col-sm-12">
             <div class="ibox-title">
-                <h5>Order</h5>
+                <h5>订单</h5>
                 <button id="export" class="btn layui-btn-primary btn-sm" type="button" style="float: right;margin-left: 5px"><i class="fa fa-paste"></i>导出数据</button>
                 <a style="float: right;margin-left: 5px" href="{{route('order.saascreate')}}" link-url="javascript:void(0)">
                     <button class="btn btn-primary btn-sm" type="button"><i class="fa fa-plus-circle"></i> 新增订单</button>
@@ -209,11 +209,11 @@
                         <tr id="del_{{$item['id']}}">
                             <td class="text-center">{{$item['id']}}</td>
                             <td class="text-center">{{$item['goods_no']}}</td>
-                            <td>{{$item['email']}}</td>
-                            <td>{{$item['level1name']}}</td>
-                            <td>{{$item['level2name']}}</td>
-                            <td>{{$item['price']}}</td>
-                            <td>
+                            <td class="text-center">{{$item['email']}}</td>
+                            <td class="text-center">{{$item['level1name']}}</td>
+                            <td class="text-center">{{$item['level2name']}}</td>
+                            <td class="text-center">{{$item['price']}}</td>
+                            <td class="text-center">
                                     @if($item['pay_type'] == 1)
                                             <span class="ladda-label">paddle</span>
                                     @elseif($item['pay_type'] == 2)
@@ -228,7 +228,7 @@
 
                             </td>
                             @if(isset($query) && $query['status'] != 1)
-                            <td>
+                            <td class="text-center">
                                     @if($item['type'] == 1)
                                         <span class="ladda-label">后台创建</span>
                                     @elseif($item['type'] == 2)
@@ -239,7 +239,7 @@
                             </td>
                             @endif
                             @if(isset($query) && !$query['status'])
-                            <td>
+                            <td class="text-center">
                                 @if($item['status'] == 1)
                                     <span class="ladda-label">已支付</span>
 {{--                                @elseif($item['status'] == 2)--}}
@@ -255,12 +255,12 @@
                             @endif
 
                             @if(isset($query) && ($query['status'] == 1 || !$query['status']))
-                                <td>{{$item['created_at']}}</td>
+                                <td class="text-center">{{$item['created_at']}}</td>
                             @elseif($query && $query['status'] == 2)
-                                <td>{{$item['pay_time'] ?? '--'}}</td>
+                                <td class="text-center">{{$item['pay_time'] ?? '--'}}</td>
                             @elseif($query && $query['status'] == 5)
-                                <td>{{$item['closetime']}}</td>
-                                <td>{{$item['remark']}}</td>
+                                <td class="text-center">{{$item['closetime']}}</td>
+                                <td class="text-center">{{$item['remark']}}</td>
                             @endif
 
                             <td class="text-center">

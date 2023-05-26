@@ -14,6 +14,29 @@ use Illuminate\Database\Eloquent\Model;
 /**
  * Class Order
  * @package App\Models
+ * @property    $id
+ * @property    $order_no
+ * @property    $merchant_no
+ * @property    $pay_type
+ * @property    $status
+ * @property    $pay_time
+ * @property    $type
+ * @property    $details_type
+ * @property    $price
+ * @property    $user_id
+ * @property    $user_bill
+ * @property    $closetime
+ * @property    $goodstotal
+ * @property    $created_at
+ * @property    $updated_at
+ * @property    $bill_no
+ * @property    $bill_url
+ * @property    $paddle_no
+ * @property    $pay_url
+ * @property    $isrenwe
+ * @property    $renwe_id
+ * @property    $tax
+ * @property    $remark
  * @mixin       \Eloquent
  */
 
@@ -37,5 +60,22 @@ class Order extends Model
         \DB::table("orders")
             ->whereRaw("order_no='$order_no'")
             ->update(['status' => Order::STATUS_1_PAYED, 'pay_time' => date("Y-m-d H:i:s"), 'bill_url' => $invoice_url, 'paddle_no' => $third_trade_no]);
+    }
+
+    public static function add($order_no, $pay_type, $status, $type, $details_type, $price, $user_id, $goodstotal, $user_bill = ''){
+        $model = new Order();
+        $model->order_no = $order_no;
+        $model->pay_type = $pay_type;
+        $model->status = $status;
+        $model->type = $type;
+        $model->details_type = $details_type;
+        $model->price = $price;
+        $model->user_id = $user_id;
+        $model->user_bill = $user_bill;
+        $model->goodstotal = $goodstotal;
+
+        $model->save();
+
+        return $model->id;
     }
 }

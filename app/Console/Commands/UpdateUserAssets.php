@@ -61,9 +61,9 @@ class UpdateUserAssets extends Command
             $created_at = $order_good['created_at'];
             //档位
             $gear = $classification[$order_good['level2']];
-            $zican = $order_good['zican'];
-            if($zican){
-                $gear = $zican;
+            $special_assets = $order_good['special_assets'];
+            if($special_assets){
+                $gear = $special_assets;
             }
 
             $user_id = $order_good['user_id'];

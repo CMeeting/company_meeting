@@ -13,6 +13,10 @@ namespace App\Services;
 
 use App\Export\GoodsExport;
 use App\Http\Controllers\Api\biz\PaypalBiz;
+use App\Models\BackGroundUser;
+use App\Models\BackGroundUserBalance;
+use App\Models\BackGroundUserRemain;
+use App\Models\OrderCashFlow;
 use App\Models\UserAssets;
 use Carbon\Carbon;
 use PDF;
@@ -727,125 +731,94 @@ class OrdersService
     }
 
 
-
-    public function saasrundata($param)
+    /**
+     * 新增SaaS订单
+     * @param $param
+     * @return array
+     */
+    public function saasRunData($param)
     {
         $data = $param['data'];
-        $user = new User();
-        $email = new EmailService();
-        $maile = new MailmagicboardService();
-        $goods = new Goods();
-        $order = new Order();
-        $orderGoods = new OrderGoods();
-        $is_user = $user->existsEmail($data['email']);
-        if (!$is_user) {
-            $password = User::getRandStr();
-            $arr['full_name'] = $data['full_name'];
-            $arr['email'] = $data['email'];
-            $arr['flag'] = 2;
-            $arr['password'] = User::encryptPassword($password);
-            $arr['created_at'] = date("Y-m-d H:i:s");
-            $arr['updated_at'] = date("Y-m-d H:i:s");
-            $user_id = Db::table("users")->insertGetId($arr);
-            //自动订阅电子报
-            $subsService = new SubscriptionService();
-            $subsService->update_status(['email'=>$data['email'], 'subscribed'=>1], false);
-            //发送邮件
-            $emailModel = Mailmagicboard::getByName('后台新增订单（用户注册成功邮件）');
-            $data['title'] = $emailModel->title;
-            $data['info'] = $emailModel->info;
-            $data['info'] = str_replace("#@username", $arr['full_name'], $data['info']);
-            $data['info'] = str_replace("#@mail", $arr['email'], $data['info']);
-            $data['info'] = str_replace("#@password", $password, $data['info']);
-            $url = env('WEB_HOST') . '/login';
-            $url_info = "<a href='$url'>$url</a>";
-            $data['info'] = str_replace("#@url", $url_info, $data['info']);
-            $data['id'] = $emailModel->id;
-            $email->sendDiyContactEmail($data, 0, $arr['email']);
-            $emailarr['username']=$arr['full_name'];
-            $user_email=$arr['email'];
-        } else {
-            $users = DB::table('users')->where('email', $data['email'])->first();
-            $user_id = $users->id;
-            $emailarr['username']=$users->full_name;
-            $user_email=$users->email;
+        $user = UserService::getByEmail($data['email']);
+        if (!$user instanceof User) {
+            return ['code'=>500, 'message'=>'该邮箱未注册，不能创建订单'];
         }
 
-        $goods_data = $goods->_where("deleted=0 and status=1 and is_saas=1");
-        $arr = [];
-        $sumprice = 0;
-        $goodstotal = 0;
-        if ($data['status'] == 1) {
-            $pay_type = 4;
-        } else {
-            $pay_type = 0;
+        if($this->existsSubscriptionPlan($user->id)){
+            return ['code'=>500, 'message'=>'该邮箱已存在订阅中订单，不能重复创建'];
         }
+
         $classification = $this->assembly_saasorderclassification();
-        foreach ($data['level1'] as $k => $v) {
-            $goodsid=0;
-
-            foreach ($goods_data as $ks => $vs) {
-                if ($v == $vs['level1'] && $data['level2'][$k] == $vs['level2']) {
-                    $goodsid = $vs['id'];
-                    if($classification[$vs['level2']] == '手动配置'){
-                        $price=$data['price'];
-                    }else{
-                        $price = $vs['price'];
-                    }
-                }
-            }
-
-            if (!$goodsid) return ['code' => 500, 'msg' => $classification[$v]['title'] . '-' . $classification[$data['level2'][$k]]['title'] . '下没有商品'];
-            $ordergoods_no = chr(rand(65, 90)) .chr(rand(65, 90)) .chr(rand(65, 90)). time();
-            $s = $k + 1;
-            $arr[] = [
-                'goods_no' => $ordergoods_no,
-                'status' => $data['status'],
-                'type' => 1,
-                'details_type' => 3,
-                'pay_type' => $pay_type,
-                'price' => $price,
-                'pay_years' => $data['pay_years']?$data['pay_years']:0,
-                'user_id' => $user_id,
-                'goods_id' => $goodsid,
-                'created_at' => date("Y-m-d H:i:s"),
-                'updated_at' => date("Y-m-d H:i:s")
-            ];
-            $goodstotal++;
-            $sumprice += $price;
+        $combo = $classification[$data['level1']] ?? '';
+        $gear = $classification[$data['level2']] ?? '';
+        if(!$combo || !$gear){
+            return ['code'=>500, 'message'=>'套餐或档位不存在'];
         }
-        $orderno = chr(rand(65, 90)) .chr(rand(65, 90)) .chr(rand(65, 90)) .time();
-        $orderdata = [
-            'pay_type' => $pay_type,
-            'order_no' => $orderno,
-            'status' => $data['status'],
-            'type' => 1,
-            'details_type' => 3,
-            'user_bill' => serialize(['email'=>$user_email]),
-            'price' => $sumprice,
-            'user_id' => $user_id,
-            'goodstotal' => $goodstotal
-        ];
+
+        $goodService = new GoodsService();
+        $goods = $goodService->getGoodsByGear($data['level1'], $data['level2']);
+        if(!$goods instanceof Goods){
+            return ['code'=>500, 'message'=>'该套餐档位下没有商品，请先新增商品'];
+        }
+
+        $pay_years = $data['pay_years'] ? $data['pay_years'] : 0;
+        if(strstr($combo, '年订阅') && $data['pay_years'] < 12){
+            return ['code'=>500, 'message'=>'年订阅有效期必须大于12个月'];
+        }
+
+        if($gear == '手动配置'){
+            $price = $data['price'];
+            $special_assets = $data['special_assets'];
+        }else {
+            $price = $goods['price'];
+            $special_assets = '';
+        }
+
+        //新增订单
+        $pay_type = OrderGoods::PAY_TYPE_4_OTHER;
+        $order_no = $this->getOrderGoodsNum();
+        $status = OrderGoods::STATUS_1_PAID;
+        $type = OrderGoods::TYPE_1_BACKGROUND;
+        $details_type = OrderGoods::DETAILS_TYPE_3_SAAS;
+        $order_id = Order::add($order_no, $pay_type, $status, $type, $details_type, $price, $user->id, 1);
+
+        //新增子订单
+        $order_goods_no = $this->getOrderGoodsNum();
+        if(strtolower($combo) == 'package'){
+            $package_type = OrderGoods::PACKAGE_TYPE_2_PACKAGE;
+        }else{
+            $package_type = OrderGoods::PACKAGE_TYPE_1_PLAN;
+        }
+        OrderGoods::add($order_id, $order_no, $order_goods_no, $pay_type, $status, $type, $details_type, $price, $user->id, $pay_years, $goods->id, $package_type, $special_assets);
 
         //更新用户类型
-        if($data['status'] == 1){
-            $user_service = new UserService();
-            $user_service->changeType(Order::DETAILS_STATUS_3_SAAS, $user_id);
+        $user_service = new UserService();
+        $user_service->changeType(Order::DETAILS_STATUS_3_SAAS, $user->id);
+
+        //更新用户资产
+        $backgroundUser = BackGroundUser::getByCompdfkitId($user->id);
+        if(!$backgroundUser instanceof BackGroundUser){
+            //TODO 调用SaaS激活
+            sleep(1);
         }
 
-        $assets_service = new UserAssetsService();
-        try {
-            $order_id = $order->insertGetId($orderdata);
-            foreach ($arr as $k => $v) {
-                $arr[$k]['order_id'] = $order_id;
-                $arr[$k]['order_no'] = $orderno;
-                $order_goods_id = $orderGoods->insertGetId($arr[$k]);
-                $assets_service->addUserAssetsFromOrder($order_goods_id, $user_id, $classification[$data['level1'][0]]['title'], $classification[$data['level2'][0]]['title'], $data['zican'] ?? null);
-            }
-        } catch (\Exception $e) {
-            return ['code' => 500, 'message' => 'Invalid Token'];
+        //更新流水信息
+        OrderCashFlow::add($order_id, $pay_type, $package_type, $price, 0, 0, $price, '', '', OrderCashFlow::CURRENCY_1_USD);
+
+        //更新用户资产余额
+        $remain = BackGroundUserRemain::getByTypeUserId($backgroundUser->id, $package_type);
+        $total_files = $special_assets ?: $gear;
+        if(!$remain instanceof BackGroundUserRemain){
+            BackGroundUserRemain::add($backgroundUser->tenant_id, $backgroundUser->id, $package_type, $total_files);
+        }else{
+            BackGroundUserRemain::updateAssetType($remain, $total_files);
         }
-        return ['code' => 200];
+        //更新用户资产充值记录
+        BackGroundUserBalance::add($backgroundUser->id, $backgroundUser->tenant_id, $package_type, $total_files);
+
+        //TODO 推送资产变更到SaaS
+
+        return ['code'=>200, 'message'=>'创建成功'];
     }
 
     public function data_info($id)
@@ -1661,5 +1634,27 @@ class OrdersService
             \Log::info('支付成功生成序列码失败#', ['order_no'=>$order_no, 'merchant_no'=>$third_trade_no, 'message'=>$e->getMessage()]);
             return false;
         }
+    }
+
+    /**
+     * SaaS 判断用户是否存在订阅中的订单
+     * @param $user_id
+     * @return bool
+     */
+    public function existsSubscriptionPlan($user_id){
+        return OrderGoods::query()
+            ->where('details_type', OrderGoods::DETAILS_TYPE_3_SAAS)
+            ->where('user_id', $user_id)
+            ->where('package_type', OrderGoods::PACKAGE_TYPE_1_PLAN)
+            ->where('status', OrderGoods::STATUS_1_PAID)
+            ->exists();
+    }
+
+    /**
+     * 生成子订单编号
+     * @return string
+     */
+    public function getOrderGoodsNum(){
+        return chr(rand(65, 90)) .chr(rand(65, 90)) .chr(rand(65, 90)). time();
     }
 }

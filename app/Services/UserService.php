@@ -286,7 +286,7 @@ class UserService
      * @return \Illuminate\Database\Eloquent\Builder|Model|object
      */
     public static function getByEmail($email){
-        return User::where('email', $email)->first();
+        return User::where('email', $email)->where('is_verify', User::IS_VERIFY_2_YES)->first();
     }
 
     /**

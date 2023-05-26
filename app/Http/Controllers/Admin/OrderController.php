@@ -85,8 +85,8 @@ class OrderController extends BaseController {
     public function saascreaterun(Request $request){
         $param = $request->input();
         $GoodsService = new OrdersService();
-        $rest=$GoodsService->saasrundata($param);
-        return $rest;
+        $rest = $GoodsService->saasRunData($param);
+        return \Response::json($rest);
     }
 
 

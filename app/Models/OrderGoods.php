@@ -14,11 +14,57 @@ use Illuminate\Database\Eloquent\Model;
 /**
  * Class OrderGoods
  * @package App\Models
- *  * @mixin       \Eloquent
+ * @property    $id
+ * @property    $order_id
+ * @property    $order_no
+ * @property    $goods_no
+ * @property    $merchant_no
+ * @property    $details_merchant_no
+ * @property    $pay_type
+ * @property    $status
+ * @property    $pay_time
+ * @property    $type
+ * @property    $details_type
+ * @property    $appid
+ * @property    $price
+ * @property    $user_id
+ * @property    $closetime
+ * @property    $pay_years
+ * @property    $goods_id
+ * @property    $created_at
+ * @property    $updated_at
+ * @property    $paddle_no
+ * @property    $renwe_goodsid
+ * @property    $special_assets
+ * @property    $package_type
+ * @mixin       \Eloquent
  */
 
 class OrderGoods extends Model
 {
+
+    const DETAILS_TYPE_1_SDK_TRY = 1;   //SDK试用订单
+    const DETAILS_TYPE_2_SDK = 2;       //SDK购买订单
+    const DETAILS_TYPE_3_SAAS = 3;      //SaaS订单
+
+    const PACKAGE_TYPE_1_PLAN = 1;      //订阅
+    const PACKAGE_TYPE_2_PACKAGE = 2;   //package
+
+    const STATUS_0_UNPAID = 0;          //未支付
+    const STATUS_1_PAID = 1;            //package:已支付 plan:订阅中
+    const STATUS_2_COMPLETED = 2;       //已完成（以弃用）
+    const STATUS_3_PENDING_REFUND = 3;  //待退款
+    const STATUS_4_CLOSE = 4;           //已关闭
+    const STATUS_5_UNSUBSCRIBE = 5;     //取消订阅
+    const STATUS_6_REFUNDED = 6;        //已退款
+
+    const PAY_TYPE_1_PADDLE = 1;        //paddle
+    const PAY_TYPE_2_ALIPAY = 2;        //支付宝
+    const PAY_TYPE_3_WECHAT = 3;        //微信支付
+    const PAY_TYPE_4_OTHER = 4;         //其他支付
+
+    const TYPE_1_BACKGROUND = 1;        //后台创建
+    const TYPE_2_BUY = 2;               //正式购买
 
     protected $table = 'orders_goods';
 
@@ -30,5 +76,23 @@ class OrderGoods extends Model
         \DB::table("orders_goods")
             ->whereRaw("order_no='{$order_no}'")
             ->update(['status' => 1, 'pay_time' => date("Y-m-d H:i:s"), 'paddle_no' => $third_trade_no]);
+    }
+
+    public static function add($order_id, $order_no, $goods_no, $pay_type, $status, $type, $details_type, $price, $user_id, $pay_years, $goods_id, $package_type, $special_assets = 0){
+        $model = new OrderGoods();
+        $model->order_id = $order_id;
+        $model->order_no = $order_no;
+        $model->goods_no = $goods_no;
+        $model->pay_type = $pay_type;
+        $model->status = $status;
+        $model->type = $type;
+        $model->details_type = $details_type;
+        $model->price = $price;
+        $model->user_id = $user_id;
+        $model->pay_years = $pay_years;
+        $model->goods_id = $goods_id;
+        $model->package_type = $package_type;
+        $model->special_assets = $special_assets;
+        $model->save();
     }
 }

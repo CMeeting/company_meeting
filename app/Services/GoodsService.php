@@ -603,4 +603,14 @@ class GoodsService
         return $data;
     }
 
+    /**
+     * 根据档位获取商品
+     * @param $combo
+     * @param $gear
+     * @return mixed
+     */
+    public function getGoodsByGear($combo, $gear){
+        return Goods::getGoodsByGear($combo, $gear);
+    }
+
 }

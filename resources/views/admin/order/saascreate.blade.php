@@ -23,7 +23,7 @@
     <div class="row">
         <div class="col-sm-12">
             <div class="ibox-title">
-                <h5>New SaaSOrder</h5>
+                <h5>新增订单</h5>
             </div>
             <div class="ibox-content">
                 <a href="{{route('order.saasindex')}}" style="margin-bottom: 8px">
@@ -55,7 +55,7 @@
                         <div class="col-sm-6 col-xs-12">
                             <select name="data[status]" id="full_name1" class="form-control">
                                 <option value="1">已付款</option>
-                                <option value="0">待付款</option>
+{{--                                <option value="0">待付款</option>--}}
                             </select>
                         </div>
                     </div>
@@ -63,7 +63,7 @@
                     <div class="form-group">
                         <label class="col-sm-2 control-label no-padding-right" for="form-field-1">套餐：<span style="color: red;font-size: 14px">*</span></label>
                         <div class="col-sm-6 col-xs-12">
-                            <select name="data[level1][]" id="province1" class="form-control province" onchange="province(1)"></select>
+                            <select name="data[level1]" id="province1" class="form-control province" onchange="province(1)"></select>
                         </div>
                     </div>
                     <div class="form-group h1title" id="pay_yearsdiv">
@@ -76,7 +76,7 @@
                     <div class="form-group">
                         <label class="col-sm-2 control-label no-padding-right" for="form-field-1">档位：<span style="color: red;font-size: 14px">*</span></label>
                         <div class="col-sm-6 col-xs-12">
-                            <select name="data[level2][]" id="city1" class="form-control city" onchange="city(1)"></select>
+                            <select name="data[level2]" id="city1" class="form-control city" onchange="city(1)"></select>
                         </div>
                     </div>
 
@@ -84,7 +84,7 @@
                         <div class="form-group">
                             <label class="col-sm-2 control-label no-padding-right" for="form-field-1">配置资产：<span style="color: red;font-size: 14px">*</span></label>
                             <div class="col-sm-6 col-xs-12">
-                                <input name="data[zican]" id="zican" class="form-control" type="number" min="0" max="99999999" value="0">
+                                <input name="data[special_assets]" id="zican" class="form-control" type="number" min="0" max="99999999" value="0">
                             </div>
                         </div>
                         <div class="form-group">
