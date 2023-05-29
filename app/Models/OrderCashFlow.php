@@ -33,6 +33,8 @@ use Illuminate\Support\Str;
 class OrderCashFlow extends Model
 {
 
+    protected $table = 'order_cash_flow';
+
     const CURRENCY_1_USD = 1;
     const CURRENCY_2_CNY = 2;
 
@@ -52,5 +54,13 @@ class OrderCashFlow extends Model
         $model->pay_id = $pay_id;
         $model->currency = $currency;
         $model->save();
+    }
+
+    public static function getPageByOrderId($order_id){
+        return OrderCashFlow::query()
+            ->where('order_id', $order_id)
+            ->where('del_flag', 0)
+            ->orderByDesc('created_at')
+            ->paginate(10);
     }
 }

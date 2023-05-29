@@ -42,18 +42,10 @@
                         </div>
                     </div>
 
-
-                    <div class="form-group">
-                        <label class="col-sm-2 control-label no-padding-right" for="form-field-1">Full Name：<span style="color: red;font-size: 14px">*</span></label>
-                        <div class="col-sm-6 col-xs-12">
-                            <input name="data[full_name]" id="full_name" class="form-control" placeholder="请输入用户名">
-                        </div>
-                    </div>
-
                     <div class="form-group">
                         <label class="col-sm-2 control-label no-padding-right" for="form-field-1">订单状态：<span style="color: red;font-size: 14px">*</span></label>
                         <div class="col-sm-6 col-xs-12">
-                            <select name="data[status]" id="full_name1" class="form-control">
+                            <select name="data[status]" id="full_name1" class="form-control" disabled>
                                 <option value="1">已付款</option>
 {{--                                <option value="0">待付款</option>--}}
                             </select>

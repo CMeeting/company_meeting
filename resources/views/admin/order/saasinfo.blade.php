@@ -16,13 +16,21 @@
                     <div class="text " style="float: left;width: 79.9%">
                         <p><span style="font-family:'FontAwesome';font-weight:400;font-style:normal;">&nbsp;</span><span style="font-family:'Arial Normal', 'Arial';font-weight:400;"> </span><span style="font-family:'微软雅黑';font-weight:400;">当前订单状态：
                                 @if($data[0]['status'] == 1)
-                                    <span class="ladda-label">已付款</span>
-                                @elseif($data[0]['status'] == 2)
-                                    <span class="ladda-label">已完成</span>
+                                    @if($data[0]['package_type'] == 1){
+                                    <span class="ladda-label">已支付</span>
+                                    @else
+                                        <span class="ladda-label">订阅中</span>
+                                    @endif
+                                    {{--                                @elseif($item['status'] == 2)--}}
+                                    {{--                                    <span class="ladda-label">已完成</span>--}}
                                 @elseif($data[0]['status'] == 3)
                                     <span class="ladda-label">待退款</span>
                                 @elseif($data[0]['status'] == 4)
                                     <span class="ladda-label">已关闭</span>
+                                @elseif($data[0]['status'] == 5)
+                                    <span class="ladda-label">取消订阅</span>
+                                @elseif($data[0]['status'] == 6)
+                                    <span class="ladda-label">已退款</span>
                                 @else
                                     <span class="ladda-label">待支付</span>
                                 @endif
@@ -43,75 +51,52 @@
                         <thead>
                         <tr>
                             <th class="text-center" style="width: 12%">子订单编号</th>
-                            <th class="text-center" style="width: 15%">套餐类型</th>
-                            <th class="text-center" style="width: 9%">档位</th>
-                            <th class="text-center" style="width: 9%">有效期(月）</th>
-                            <th class="text-center" style="width: 9%">提交时间</th>
                             <th class="text-center" style="width: 8%">用户账号</th>
-                            <th class="text-center" style="width: 6%">订单金额</th>
-                            <th class="text-center" style="width: 11%">支付方式</th>
-                            <th class="text-center" style="width: 6%">订单来源</th>
+                            <th class="text-center" style="width: 6%">订单类型</th>
                             <th class="text-center" style="width: 11%">订单状态</th>
+                            <th class="text-center" style="width: 9%">创建时间</th>
                         </tr>
                         </thead>
                         <tbody>
                         @foreach($data as $key => $item)
                             <tr id="del_{{$item['id']}}">
                                 <td class="text-center">{{$item['goods_no']}}</td>
-                                <td class="text-center">{{$item['products']}}</td>
-                                <td>{{$item['platform']}}</td>
-                                @if($item['pay_years']>0)
-                                    <td>{{$item['pay_years']}}/月</td>
-                                @else
-                                    <td>无期限</td>
-                                @endif
-                                <td>{{$item['created_at']}}</td>
                                 <td>{{$item['email']}}</td>
-                                <td>${{$item['price']}}</td>
-                                <td>
-                                    @if($item['pay_type'] == 1)
-                                        <span class="ladda-label">paddle支付</span>
-                                    @elseif($item['pay_type'] == 2)
-                                        <span class="ladda-label">支付宝</span>
-                                    @elseif($item['pay_type'] == 3)
-                                        <span class="ladda-label">微信</span>
-                                    @elseif($item['pay_type'] == 4)
-                                        <span class="ladda-label">不需支付</span>
-                                    @else
-                                        <span class="ladda-label">未支付</span>
-                                    @endif
-
-                                </td>
                                 <td>
                                     @if($item['type'] == 1)
                                         <span class="ladda-label">后台创建</span>
                                     @elseif($item['type'] == 2)
-                                        <span class="ladda-label">用户购买</span>
+                                        <span class="ladda-label">在线支付</span>
                                     @else
                                         <span class="ladda-label">未知</span>
                                     @endif
-
                                 </td>
                                 <td>
                                     @if($item['status'] == 1)
-                                        <span class="ladda-label">已付款</span>
-                                    @elseif($item['status'] == 2)
-                                        <span class="ladda-label">已完成</span>
+                                        @if($item['package_type'] == 1){
+                                        <span class="ladda-label">已支付</span>
+                                        @else
+                                            <span class="ladda-label">订阅中</span>
+                                        @endif
+                                        {{--                                @elseif($item['status'] == 2)--}}
+                                        {{--                                    <span class="ladda-label">已完成</span>--}}
                                     @elseif($item['status'] == 3)
                                         <span class="ladda-label">待退款</span>
                                     @elseif($item['status'] == 4)
                                         <span class="ladda-label">已关闭</span>
+                                    @elseif($item['status'] == 5)
+                                        <span class="ladda-label">取消订阅</span>
+                                    @elseif($item['status'] == 6)
+                                        <span class="ladda-label">已退款</span>
                                     @else
                                         <span class="ladda-label">待支付</span>
                                     @endif
-
                                 </td>
+                                <td>{{$item['created_at']}}</td>
                             </tr>
                         @endforeach
                         </tbody>
                     </table>
-
-
 
                     <div class="form-group">
                         <label for="form-field-1" style="margin-left: 15px;"> 商品信息：</label>
@@ -121,24 +106,72 @@
                         <thead>
                         <tr>
                             <th class="text-center" style="width: 35%">套餐类型</th>
-                            <th class="text-center" style="width: 9%">档位</th>
-                            <th class="text-center" style="width: 9%">折扣</th>
-                            <th class="text-center" style="width: 9%">合计</th>
+                            <th class="text-center" style="width: 9%">档位（资产数）</th>
+                            <th class="text-center" style="width: 9%">订单金额（$）</th>
+                            <th class="text-center" style="width: 9%">订单类型</th>
+                            <th class="text-center" style="width: 9%">支付方式</th>
                         </tr>
                         </thead>
                         <tbody>
                         <?php $sum=0;?>
                         @foreach($data as $key => $item)
-                            <?php $sum+=$item['price'] ;?>
                         <tr id="de">
                             <td class="text-center">{{$item['products']}}</td>
                             <td class="text-center">{{$item['platform']}}</td>
-                            <td class="text-center"></td>
-                            <td class="text-center">${{$item['price']}}</td>
+                            <td class="text-center">{{$item['price']}}</td>
+                            <td>
+                                @if($item['type'] == 1)
+                                    <span class="ladda-label">后台创建</span>
+                                @elseif($item['type'] == 2)
+                                    <span class="ladda-label">在线支付</span>
+                                @else
+                                    <span class="ladda-label">未知</span>
+                                @endif
+                            </td>
+                            <td>
+                                @if($item['pay_type'] == 1)
+                                    <span class="ladda-label">paddle支付</span>
+                                @elseif($item['pay_type'] == 2)
+                                    <span class="ladda-label">支付宝</span>
+                                @elseif($item['pay_type'] == 3)
+                                    <span class="ladda-label">微信</span>
+                                @elseif($item['pay_type'] == 4)
+                                    <span class="ladda-label">其他支付</span>
+                                @elseif($item['pay_type'] == 5)
+                                    <span class="ladda-label">PayPal</span>
+                                @endif
+                            </td>
                         </tr>
                         @endforeach
                         </tbody>
                     </table>
+
+                    <div class="form-group">
+                        <label for="form-field-1" style="margin-left: 15px;"> 流水信息：</label>
+                    </div>
+                    <table class="table table-striped table-bordered table-hover m-t-md"
+                           style="word-wrap:break-word; word-break:break-all;text-align: center">
+                        <thead>
+                        <tr>
+                            <th class="text-center" style="width: 35%">期数</th>
+                            <th class="text-center" style="width: 9%">流水号</th>
+                            <th class="text-center" style="width: 9%">扣款日期</th>
+                            <th class="text-center" style="width: 9%">扣费金额</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        @foreach($cash_flow as $key => $item)
+                            <tr id="de">
+                                <td class="text-center">{{$key}}</td>
+                                <td class="text-center">{{$item->serial_number}}</td>
+                                <td class="text-center">{{$item->created_at}}</td>
+                                <td class="text-center">{{$item->price}}</td>
+                            </tr>
+                        @endforeach
+                        </tbody>
+                    </table>
+                    {{$cash_flow->links()}}
+                </form>
         </div>
     </div>
 

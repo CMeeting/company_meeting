@@ -149,7 +149,14 @@ class OrdersService
         }
         if ($param['status']) {
             $param['status'] = $param['status'] - 1;
-            $where .= " and orders.status={$param['status']}";
+            //已支付订单包括取消订阅, 关闭订单包括退款
+            if($param['status'] == OrderGoods::STATUS_1_PAID){
+                $where .= " and orders.status in (1, 5)";
+            }elseif ($param['status'] == OrderGoods::STATUS_4_CLOSE){
+                $where .= " and orders.status in (4, 6)";
+            }else{
+                $where .= " and orders.status = {$param['status']}";
+            }
         }
         if ($param['pay_type']) {
             $param['pay_type'] = $param['pay_type'] - 1;
@@ -201,7 +208,7 @@ class OrdersService
                 ->leftJoin('goods', 'goods.id', '=', 'orders_goods.goods_id')
                 ->whereRaw($where)
                 ->orderByRaw('orders.id desc')
-                ->selectRaw("orders.*,users.email,goods.level1,goods.level2,orders_goods.goods_no")->paginate(10);
+                ->selectRaw("orders.*,users.email,goods.level1,goods.level2,orders_goods.goods_no,orders_goods.package_type")->paginate(10);
               foreach ($data as $k=>$v){
                   $v->level1name = $classification[$v->level1]['title'];
                   $v->level2name = $classification[$v->level2]['title'];

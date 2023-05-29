@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Models\Goodsclassification;
 use App\Services\GoodsclassificationService;
+use App\Services\OrderCashFlowService;
 use Illuminate\Http\Request;
 use App\Services\OrdersService;
 use App\Services\GoodsService;
@@ -108,7 +109,12 @@ class OrderController extends BaseController {
         $order = new OrdersService();
         $data = $order->data_saasinfo($id);
 //        $info = $order->getOrderInfo($id);//获取发票信息
-        return $this->view('saasinfo', ['data' => $data]);
+
+        //流水信息
+        $service = new OrderCashFlowService();
+        $cash_flow = $service->getPageByOrderId($id);
+
+        return $this->view('saasinfo', ['data'=>$data, 'cash_flow'=>$cash_flow]);
     }
 
     public function updatestatus(Request $request){

@@ -70,11 +70,11 @@
                                 <div class="form-group">
                                     <select id="status" class="form-control"  name="status" tabindex="1">
                                         <option value="">订单状态</option>
-                                        <option value="1" @if(isset($query)&&$query['status']==1) selected @endif>待支付</option>
-                                        <option value="2" @if(isset($query)&&$query['status']==2) selected @endif>已支付</option>
+                                        <option value="1" @if(isset($query) && $query['status']==1) selected @endif>待支付</option>
+                                        <option value="2" @if(isset($query) && $query['status']==2) selected @endif>已支付</option>
 {{--                                        <option value="3" @if(isset($query)&&$query['status']==3) selected @endif>已完成</option>--}}
 {{--                                        <option value="4" @if(isset($query)&&$query['status']==4) selected @endif>待退款</option>--}}
-                                        <option value="5" @if(isset($query)&&$query['status']==5) selected @endif>已关闭</option>
+                                        <option value="5" @if(isset($query) && $query['status']==5) selected @endif>已关闭</option>
                                     </select>
                                 </div>
                             </div>
@@ -188,7 +188,7 @@
                             <th class="text-center" style="width: 6%">订单类型</th>
                         @endif
 
-                        @if(isset($query) && !$query['status'])
+                        @if(isset($query))
                             <th class="text-center" style="width: 11%">订单状态</th>
                         @endif
 
@@ -232,22 +232,30 @@
                                     @if($item['type'] == 1)
                                         <span class="ladda-label">后台创建</span>
                                     @elseif($item['type'] == 2)
-                                        <span class="ladda-label">用户购买</span>
+                                        <span class="ladda-label">在线支付</span>
                                     @else
                                         <span class="ladda-label">未知</span>
                                     @endif
                             </td>
                             @endif
-                            @if(isset($query) && !$query['status'])
+                            @if(isset($query))
                             <td class="text-center">
                                 @if($item['status'] == 1)
-                                    <span class="ladda-label">已支付</span>
+                                    @if($item['package_type'] == 1){
+                                        <span class="ladda-label">已支付</span>
+                                    @else
+                                        <span class="ladda-label">订阅中</span>
+                                    @endif
 {{--                                @elseif($item['status'] == 2)--}}
 {{--                                    <span class="ladda-label">已完成</span>--}}
                                 @elseif($item['status'] == 3)
                                     <span class="ladda-label">待退款</span>
                                 @elseif($item['status'] == 4)
                                     <span class="ladda-label">已关闭</span>
+                                @elseif($item['status'] == 5)
+                                    <span class="ladda-label">取消订阅</span>
+                                @elseif($item['status'] == 6)
+                                    <span class="ladda-label">已退款</span>
                                 @else
                                     <span class="ladda-label">待支付</span>
                                 @endif
