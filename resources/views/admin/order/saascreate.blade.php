@@ -132,12 +132,6 @@
                 layer.msg('邮件地址不合法', {time: 1500, anim: 6});
                 return false;
             }
-            if(!$("#full_name").val()){
-                layer.closeAll('loading');
-                layer.close(index);
-                layer.msg("请输入Full Name", {time: 1500, anim: 6});
-                return false;
-            }
 
             $(".province").each(function (){
                 if(!$(this).val() || $(this).val()==0){

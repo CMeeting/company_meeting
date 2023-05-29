@@ -613,4 +613,14 @@ class GoodsService
         return Goods::getGoodsByGear($combo, $gear);
     }
 
+    public function findById($id){
+        return Goods::query()->where('id', $id)->first();
+    }
+
+    public function getGearByGoods($id){
+        $goods = $this->findById($id);
+        $gear = $goods['level2'];
+
+    }
+
 }

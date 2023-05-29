@@ -798,32 +798,17 @@ class OrdersService
         }
         OrderGoods::add($order_id, $order_no, $order_goods_no, $pay_type, $status, $type, $details_type, $price, $user->id, $pay_years, $goods->id, $package_type, $special_assets);
 
+        //更新流水信息
+        OrderCashFlow::add($order_id, $pay_type, $package_type, $price, 0, 0, $price, '', '', OrderCashFlow::CURRENCY_1_USD);
+
         //更新用户类型
         $user_service = new UserService();
         $user_service->changeType(Order::DETAILS_STATUS_3_SAAS, $user->id);
 
-        //更新用户资产
-        $backgroundUser = BackGroundUser::getByCompdfkitId($user->id);
-        if(!$backgroundUser instanceof BackGroundUser){
-            //TODO 调用SaaS激活
-            sleep(1);
-        }
-
-        //更新流水信息
-        OrderCashFlow::add($order_id, $pay_type, $package_type, $price, 0, 0, $price, '', '', OrderCashFlow::CURRENCY_1_USD);
-
-        //更新用户资产余额
-        $remain = BackGroundUserRemain::getByTypeUserId($backgroundUser->id, $package_type);
+        //更新用户SaaS资产信息
+        $remain_service = new UserRemainService();
         $total_files = $special_assets ?: $gear;
-        if(!$remain instanceof BackGroundUserRemain){
-            BackGroundUserRemain::add($backgroundUser->tenant_id, $backgroundUser->id, $package_type, $total_files);
-        }else{
-            BackGroundUserRemain::updateAssetType($remain, $total_files);
-        }
-        //更新用户资产充值记录
-        BackGroundUserBalance::add($backgroundUser->id, $backgroundUser->tenant_id, $package_type, $total_files);
-
-        //TODO 推送资产变更到SaaS
+        $remain_service->resetRemain($user->id, $total_files, $package_type);
 
         return ['code'=>200, 'message'=>'创建成功'];
     }
