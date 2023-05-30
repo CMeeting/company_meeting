@@ -193,7 +193,7 @@
                             <td class="text-center">{{$item['order_no']}}</td>
                             <td class="text-center">
                                 @if($item['pay_type'] == 1)
-                                    {{$item['paddle_no']}}
+                                    {{$item['third_trade_no']}}
                                 @else
                                     {{$item['merchant_no']}}
                                 @endif

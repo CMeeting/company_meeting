@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Models\Goodsclassification;
 use App\Services\GoodsclassificationService;
 use App\Services\OrderCashFlowService;
+use App\Services\SaaSOrderService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Services\OrdersService;
@@ -86,7 +87,7 @@ class OrderController extends BaseController {
 
     public function saascreaterun(Request $request){
         $param = $request->input();
-        $GoodsService = new OrdersService();
+        $GoodsService = new SaaSOrderService();
         $rest = $GoodsService->saasRunData($param);
         return \Response::json($rest);
     }

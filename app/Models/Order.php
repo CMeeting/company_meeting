@@ -59,7 +59,7 @@ class Order extends Model
     public static function orderComplete($third_trade_no, $order_no, $invoice_url){
         \DB::table("orders")
             ->whereRaw("order_no='$order_no'")
-            ->update(['status' => Order::STATUS_1_PAYED, 'pay_time' => date("Y-m-d H:i:s"), 'bill_url' => $invoice_url, 'paddle_no' => $third_trade_no]);
+            ->update(['status' => Order::STATUS_1_PAYED, 'pay_time' => date("Y-m-d H:i:s"), 'bill_url' => $invoice_url, 'third_trade_no' => $third_trade_no]);
     }
 
     public static function add($order_no, $pay_type, $status, $type, $details_type, $price, $user_id, $goodstotal, $user_bill = ''){

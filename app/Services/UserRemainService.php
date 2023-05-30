@@ -57,7 +57,7 @@ class UserRemainService
             'Accept' => 'application/json',
             'Authorization' => $token
         ];
-        $url = '192.168.10.43:8088/user-api/v1/user/verify';
+        $url = env('BACKGROUND_USER_SAAS') . '/user-api/v1/user/verify';
 
         return HttpClientService::get($url, $headers);
     }

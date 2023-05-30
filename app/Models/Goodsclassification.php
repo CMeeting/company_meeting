@@ -52,4 +52,17 @@ class Goodsclassification extends Model
 
         return $result->groupBy('pid')->toArray();
     }
+
+    /**
+     * 获取索引为id的数组
+     * @return array
+     */
+    public static function getKeyById(){
+        $set = Goodsclassification::query()
+            ->where('is_saas', Goods::IS_SAAS_1_YES)
+            ->where('deleted', Goods::DELETE_0_NO)
+            ->get();
+
+        return $set->keyBy('id')->toArray();
+    }
 }

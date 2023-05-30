@@ -62,6 +62,9 @@ Route::group(['middleware' => ['jwt.auth', 'cors'], 'namespace' => 'Api'], funct
     Route::post('/newOrder', 'OrderController@newOrder');
     Route::post('/rewinfo', 'OrderController@rewinfo');
     Route::post('/send-payment-failed-email', 'OrderController@sendPaymentFailedEmail');
+
+    //SaaS
+    Route::post('/create-saas-order', 'SaaSOrderController@createOrder');
 });
 
 //用户管理

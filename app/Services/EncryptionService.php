@@ -85,7 +85,7 @@ NNwRVQIDAQAB';
             $this->rsa_public = $this->rsa_public_webview;
         }else{
             $this->rsa_private = $this->rsa_private_saas;
-            $this->rsa_public = $this->rsa_private_saas;
+            $this->rsa_public = $this->rsa_public_saas;
         }
     }
 

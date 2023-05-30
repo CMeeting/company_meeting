@@ -29,7 +29,11 @@ class HttpClientService
             return ['code'=>500, 'message'=>'接口请求失败'];
         }
 
-        return ['code'=>200, 'message'=>'success', 'data'=>$res->getBody()->getContents()];
+        // TODO 状态码处理
+        $data = json_decode($res->getBody()->getContents());
+
+
+        return ['code'=>200, 'message'=>'success', 'data'=>$data];
     }
 
     /**

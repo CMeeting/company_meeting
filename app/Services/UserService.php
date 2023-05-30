@@ -292,17 +292,11 @@ class UserService
     /**
      * 获取当前用户
      * @param Request $request
-     * @return \Illuminate\Database\Eloquent\Builder|Model|JsonResponse|object
+     * @return \Illuminate\Database\Eloquent\Builder|Model|object
      */
     public static function getCurrentUser(Request $request){
         $email = $request->input('login_user_email');
-        $user = self::getByEmail($email);
-
-        if(!$user instanceof User){
-            return Response::json(['code'=>500, 'message'=>'System Error']);
-        }
-        return $user;
-
+        return self::getByEmail($email);
     }
 
     /**

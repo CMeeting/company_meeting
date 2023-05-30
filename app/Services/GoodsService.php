@@ -613,14 +613,11 @@ class GoodsService
         return Goods::getGoodsByGear($combo, $gear);
     }
 
+    /**
+     * @param $id
+     * @return \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Model|object|null
+     */
     public function findById($id){
         return Goods::query()->where('id', $id)->first();
     }
-
-    public function getGearByGoods($id){
-        $goods = $this->findById($id);
-        $gear = $goods['level2'];
-
-    }
-
 }

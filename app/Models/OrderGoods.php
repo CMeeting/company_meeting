@@ -62,9 +62,10 @@ class OrderGoods extends Model
     const PAY_TYPE_2_ALIPAY = 2;        //支付宝
     const PAY_TYPE_3_WECHAT = 3;        //微信支付
     const PAY_TYPE_4_OTHER = 4;         //其他支付
+    const PAY_TYPE_5_PAYPAL = 5;         //paypal
 
     const TYPE_1_BACKGROUND = 1;        //后台创建
-    const TYPE_2_BUY = 2;               //正式购买
+    const TYPE_2_BUY = 2;               //在线购买
 
     protected $table = 'orders_goods';
 
@@ -75,10 +76,10 @@ class OrderGoods extends Model
     public static function orderComplete($order_no, $third_trade_no){
         \DB::table("orders_goods")
             ->whereRaw("order_no='{$order_no}'")
-            ->update(['status' => 1, 'pay_time' => date("Y-m-d H:i:s"), 'paddle_no' => $third_trade_no]);
+            ->update(['status' => 1, 'pay_time' => date("Y-m-d H:i:s"), 'third_trade_no' => $third_trade_no]);
     }
 
-    public static function add($order_id, $order_no, $goods_no, $pay_type, $status, $type, $details_type, $price, $user_id, $pay_years, $goods_id, $package_type, $special_assets = 0){
+    public static function add($order_id, $order_no, $goods_no, $pay_type, $status, $type, $details_type, $price, $user_id, $goods_id, $package_type, $pay_years = '', $special_assets = 0){
         $model = new OrderGoods();
         $model->order_id = $order_id;
         $model->order_no = $order_no;
