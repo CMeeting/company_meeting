@@ -808,7 +808,7 @@ class OrdersService
         //更新用户SaaS资产信息
         $remain_service = new UserRemainService();
         $total_files = $special_assets ?: $gear;
-        $remain_service->resetRemain($user->id, $total_files, $package_type);
+        $remain_service->resetRemain($user->id, $user->email, $total_files, $package_type);
 
         return ['code'=>200, 'message'=>'创建成功'];
     }

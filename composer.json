@@ -20,7 +20,8 @@
         "paypal/rest-api-sdk-php": "1.7.4",
         "predis/predis": "^1.1",
         "zhuzhichao/ip-location-zh": "^2.4",
-        "carlos-meneses/laravel-mpdf": "2.1.*"
+        "carlos-meneses/laravel-mpdf": "2.1.10",
+        "guzzlehttp/guzzle": "^6.3"
     },
     "require-dev": {
         "barryvdh/laravel-debugbar": "^3.1",

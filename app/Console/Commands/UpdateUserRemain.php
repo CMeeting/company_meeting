@@ -52,9 +52,10 @@ class UpdateUserRemain extends Command
 
         $order_goods_arr = OrderGoods::query()
             ->leftJoin('goods', 'order_goods.goods_id', '=', 'goods.id')
+            ->leftJoin('users', 'users.id', '=', 'order_goods.user_id')
             ->where('order_goods.status', OrderGoods::STATUS_1_PAID)
             ->where('order_goods.package_type', OrderGoods::PACKAGE_TYPE_1_PLAN)
-            ->select(['order_goods.id', 'order_goods.created_at', 'order_goods.pay_years', 'order_goods.order_id', 'order_goods.special_assets', 'goods.level1', 'goods.level2'])
+            ->select(['order_goods.id', 'order_goods.created_at', 'order_goods.pay_years', 'order_goods.order_id', 'order_goods.special_assets', 'order_goods.user_id', 'users.email', 'goods.level1', 'goods.level2'])
             ->get()
             ->toArray();
 
@@ -65,6 +66,8 @@ class UpdateUserRemain extends Command
             if($order_goods['type'] == OrderGoods::TYPE_2_BUY && strstr($combo, '年订阅')){
                 continue;
             }
+
+            // TODO 年订阅没有有效期字段处理
 
             $created_at = Carbon::parse($order_goods['created_at']);
             $validity_period = $order_goods['pay_years']; //有效期
@@ -85,13 +88,14 @@ class UpdateUserRemain extends Command
 
             // 变更资产数
             $total_files = $order_goods['special_assets'] ? $order_goods['special_assets'] : $gear;
+            $user_id = $order_goods['user_id'];
+            $email = $order_goods['email'];
 
             for($i = 1; $i < $validity_period; $i++){
                 $next_date = $created_at->addMonths($i)->addDay();
                 //重置资产
                 if($now->format('Y-m-d') == $next_date->format('Y-m-d')){
-                    $user_id = $order_goods['user_id'];
-                    $remain_service->resetRemain($user_id, $total_files, OrderGoods::PACKAGE_TYPE_1_PLAN);
+                    $remain_service->resetRemain($user_id, $email, $total_files, OrderGoods::PACKAGE_TYPE_1_PLAN);
                     continue;
                 }
             }

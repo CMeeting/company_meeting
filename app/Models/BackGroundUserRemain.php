@@ -31,7 +31,7 @@ class BackGroundUserRemain extends Model
     const UPDATED_AT = 'update_date';
 
     const STATUS_1_ACTIVE = 1;
-    const STATUS_2_INACTIVE = 2;
+    const STATUS_2_INACTIVE = 0;
 
     public static function getByTypeUserId($user_id, $type){
         return BackGroundUserRemain::query()
