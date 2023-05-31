@@ -28,15 +28,29 @@ class SaaSOrderService
         $type = OrderGoods::TYPE_2_BUY;
         $details_type = OrderGoods::DETAILS_TYPE_3_SAAS;
         $price = $goods->price;
-        $order_id = Order::add($order_no, $pay_type, $status, $type, $details_type, $price, $user->id, 1);
+        $order = Order::add($order_no, $pay_type, $status, $type, $details_type, $price, $user->id, 1);
 
         //新增子订单
         $order_goods_no = $this->getOrderGoodsNum();
-        OrderGoods::add($order_id, $order_no, $order_goods_no, $pay_type, $status, $type, $details_type, $price, $user->id, $goods->id, $package_type, null);
+        $order_goods = OrderGoods::add($order->id, $order_no, $order_goods_no, $pay_type, $status, $type, $details_type, $price, $user->id, $goods->id, $package_type, null);
 
         //调用支付中心生成支付链接
         $payService = new PayCenterService();
-        return $payService->createOrder($order_no, $price);
+        $result = $payService->createOrder($order_no, $price);
+        if($result['code'] == 200){
+            $third_trade_no = array_get($result, 'data.id');
+            $url = array_get($result, 'data.pay_url');
+            $order->third_trade_no = $third_trade_no;
+            $order->pay_url = $url;
+            $order->save();
+
+            $order_goods->third_trade_no = $third_trade_no;
+            $order_goods->save();
+
+            return ['code'=>200, 'data'=>['order_no'=>$order->order_no, 'pay_url'=>$url]];
+        }else{
+            return ['code'=>500, 'message'=>'创建订单失败'];
+        }
     }
 
     /**
@@ -88,7 +102,8 @@ class SaaSOrderService
         $status = OrderGoods::STATUS_1_PAID;
         $type = OrderGoods::TYPE_1_BACKGROUND;
         $details_type = OrderGoods::DETAILS_TYPE_3_SAAS;
-        $order_id = Order::add($order_no, $pay_type, $status, $type, $details_type, $price, $user->id, 1);
+        $order_model = Order::add($order_no, $pay_type, $status, $type, $details_type, $price, $user->id, 1);
+        $order_id = $order_model->id;
 
         //新增子订单
         $order_goods_no = $this->getOrderGoodsNum();
@@ -134,5 +149,39 @@ class SaaSOrderService
      */
     public function getOrderGoodsNum(){
         return chr(rand(65, 90)) .chr(rand(65, 90)) .chr(rand(65, 90)). time();
+    }
+
+    /**
+     * 根据订单编号获取订单
+     * @param $order_no
+     * @return \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Model|object|null
+     */
+    public function getByOrderNo($order_no){
+        return Order::query()
+            ->where('order_no', $order_no)
+            ->first();
+    }
+
+    public function completeOrder(Order $order, User $user){
+        //修改订单为已支付状态
+        $order->status = OrderGoods::STATUS_1_PAID;
+        $order->save();
+
+        //修改子订单为已支付状态
+        $order_goods = OrderGoods::getByOrderId($order->id);
+        $order_goods->status = OrderGoods::STATUS_1_PAID;
+        $order_goods->save();
+
+        //更新流水信息
+        OrderCashFlow::add($order->id, $order->pay_type, $order_goods->package_type, $order->price, 0, 0, $order->price, $order->third_trade_no, '', OrderCashFlow::CURRENCY_1_USD);
+
+        //更新用户类型
+        $user_service = new UserService();
+        $user_service->changeType(Order::DETAILS_STATUS_3_SAAS, $user->id);
+
+        //更新用户SaaS资产信息
+        $remain_service = new UserRemainService();
+        $total_files = Goods::getTotalFilesByGoods($order_goods->goods_id);
+        $remain_service->resetRemain($user->id, $user->email, $total_files, $order_goods->package_type);
     }
 }

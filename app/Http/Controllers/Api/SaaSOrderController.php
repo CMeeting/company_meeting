@@ -7,19 +7,28 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Goods;
 use App\Models\Goodsclassification;
+use App\Models\Order;
 use App\Models\OrderGoods;
 use App\Models\User;
 use App\Services\GoodsService;
+use App\Services\OrdersService;
+use App\Services\PayCenterService;
 use App\Services\SaaSOrderService;
 use App\Services\UserService;
 use Illuminate\Http\Request;
+use Mpdf\Http\Response;
 
 class SaaSOrderController extends Controller
 {
+    /**
+     * 创建订单
+     * @param Request $request
+     * @return array|\Illuminate\Http\JsonResponse
+     */
     public function createOrder(Request $request){
         $current_user = UserService::getCurrentUser($request);
         if(!$current_user instanceof User){
-            return \Response::json(['code'=>501, 'message'=>'未登录，不能购买']);
+            return \Response::json(['code'=>401, 'message'=>'未登录，不能购买']);
         }
 
         $goods_id = $request->input('goods_id');
@@ -47,7 +56,7 @@ class SaaSOrderController extends Controller
         $orderService = new SaaSOrderService();
         if(strstr($combo, '订阅')){
             if($orderService->existsSubscriptionPlan($current_user->id)){
-                return ['code'=>500, 'message'=>'该账号已存在订阅中订单，不能重复购买'];
+                return ['code'=>505, 'message'=>'该账号已存在订阅中订单，不能重复购买'];
             }
             $package_type = OrderGoods::PACKAGE_TYPE_1_PLAN;
         }else{
@@ -55,6 +64,46 @@ class SaaSOrderController extends Controller
         }
 
         $result = $orderService->createOrder($current_user, $goods, $package_type);
-        dd($result);
+
+        if($result['code'] == 200){
+            return \Response::json(['code'=>200, 'message'=>'success', 'data'=>$result['data']]);
+        }else{
+            return \Response::json(['code'=>506, 'message'=>'系统错误', 'data'=>[]]);
+        }
+    }
+
+    public function getOrderStatus(Request $request){
+        $order_no = $request->input('order_no');
+
+        $current_user = UserService::getCurrentUser($request);
+        if(!$current_user instanceof User){
+            return \Response::json(['code'=>401, 'message'=>'未登录，不能购买']);
+        }
+
+        $orderService = new SaaSOrderService();
+        $order = $orderService->getByOrderNo($order_no);
+
+        if(!$order instanceof Order){
+            return \Response::json(['code'=>501, 'message'=>'订单不存在', 'data'=>[]]);
+        }
+
+        if($order->status == OrderGoods::STATUS_1_PAID){
+            return \Response::json(['code'=>200, 'message'=>'success', 'data'=>['order_no'=>$order_no, 'status'=>$order->status]]);
+        }
+
+        //调用支付中心订单状态查询接口
+        if($order->status == OrderGoods::STATUS_0_UNPAID){
+            $payService = new PayCenterService();
+            $result = $payService->getOrderStatus($order->third_trade_no);
+
+            if($result['code'] == 200){
+                //支付成功
+                if($result['data']['status'] == 'APPROVED'){
+                    $orderService->completeOrder($order, $current_user);
+                }
+            }
+        }
+
+        return \Response::json(['code'=>200, 'message'=>'success', 'data'=>['order_no'=>$order_no, 'status'=>$order->status]]);
     }
 }

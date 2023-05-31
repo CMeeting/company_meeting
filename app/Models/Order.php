@@ -31,7 +31,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property    $updated_at
  * @property    $bill_no
  * @property    $bill_url
- * @property    $paddle_no
+ * @property    $third_trade_no
  * @property    $pay_url
  * @property    $isrenwe
  * @property    $renwe_id
@@ -76,6 +76,6 @@ class Order extends Model
 
         $model->save();
 
-        return $model->id;
+        return $model;
     }
 }

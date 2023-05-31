@@ -69,4 +69,16 @@ class Goods extends Model
             ->where('level2', $gear)
             ->first();
     }
+
+    /**
+     * 获取商品的可用文件数量
+     * @param $goods_id
+     * @return mixed
+     */
+    public static function getTotalFilesByGoods($goods_id){
+        return Goods::query()
+            ->leftJoin('goods_classification', 'goods.level2', '=', 'goods_classification.id')
+            ->where('goods.id', $goods_id)
+            ->value('goods_classification.title');
+    }
 }

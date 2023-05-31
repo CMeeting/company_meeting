@@ -33,7 +33,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property    $goods_id
  * @property    $created_at
  * @property    $updated_at
- * @property    $paddle_no
+ * @property    $third_trade_no
  * @property    $renwe_goodsid
  * @property    $special_assets
  * @property    $package_type
@@ -95,5 +95,29 @@ class OrderGoods extends Model
         $model->package_type = $package_type;
         $model->special_assets = $special_assets;
         $model->save();
+
+        return $model;
+    }
+
+    /**
+     * 修改子订单状态
+     * @param $order_id
+     * @param $status
+     */
+    public static function updateStatus($order_id, $status){
+        OrderGoods::query()
+            ->where('order_id', $order_id)
+            ->update(['status'=>$status]);
+    }
+
+    /**
+     * 获取订单
+     * @param $order_id
+     * @return \Illuminate\Database\Eloquent\Builder|Model|object|null
+     */
+    public static function getByOrderId($order_id){
+        return OrderGoods::query()
+            ->where('order_id', $order_id)
+            ->first();
     }
 }

@@ -59,6 +59,6 @@ class UserRemainService
         ];
         $url = env('BACKGROUND_USER_SAAS') . '/user-api/v1/user/verify';
 
-        return HttpClientService::get($url, $headers);
+        return HttpClientService::get($url, [], $headers);
     }
 }

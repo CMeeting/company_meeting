@@ -65,6 +65,7 @@ Route::group(['middleware' => ['jwt.auth', 'cors'], 'namespace' => 'Api'], funct
 
     //SaaS
     Route::post('/create-saas-order', 'SaaSOrderController@createOrder');
+    Route::get('/get-order-status', 'SaaSOrderController@getOrderStatus');
 });
 
 //用户管理
