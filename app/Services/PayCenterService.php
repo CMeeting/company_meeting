@@ -88,12 +88,13 @@ class PayCenterService
     /**
      * 查询订单状态接口
      * @param $trade_id
+     * @param $package_type
      * @return array
      */
-    public function getOrderStatus($trade_id){
+    public function getOrderStatus($trade_id, $package_type){
         $url = env('PAY_CENTER') . '/v1/payCenterOrder/getOrder';
 
-        $query = ['tradeId' => $trade_id];
+        $query = ['tradeId' => $trade_id, 'tradeType' => $package_type];
 
         $encryptionService = new EncryptionService(EncryptionService::PROJECT_2_SAAS);
         $token = $encryptionService->encryption(json_encode(['configId' => 3]));

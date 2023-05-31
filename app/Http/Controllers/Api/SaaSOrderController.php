@@ -15,6 +15,7 @@ use App\Services\OrdersService;
 use App\Services\PayCenterService;
 use App\Services\SaaSOrderService;
 use App\Services\UserService;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Mpdf\Http\Response;
 
@@ -91,6 +92,8 @@ class SaaSOrderController extends Controller
         $orderService = new SaaSOrderService();
         $order = $orderService->getByOrderNo($order_no);
 
+        $orderGoods = OrderGoods::getByOrderId($order->id);
+
         if(!$order instanceof Order){
             return \Response::json(['code'=>501, 'message'=>'订单不存在', 'data'=>[]]);
         }
@@ -102,7 +105,7 @@ class SaaSOrderController extends Controller
         //调用支付中心订单状态查询接口
         if($order->status == OrderGoods::STATUS_0_UNPAID){
             $payService = new PayCenterService();
-            $result = $payService->getOrderStatus($order->third_trade_no);
+            $result = $payService->getOrderStatus($order->third_trade_no, $orderGoods->package_type);
 
             if($result['code'] == 200){
                 //支付成功

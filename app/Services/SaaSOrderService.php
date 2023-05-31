@@ -178,6 +178,11 @@ class SaaSOrderService
             ->first();
     }
 
+    /**
+     * 订单支付成功
+     * @param Order $order
+     * @param User $user
+     */
     public function completeOrder(Order $order, User $user){
         //修改订单为已支付状态
         $order->status = OrderGoods::STATUS_1_PAID;
