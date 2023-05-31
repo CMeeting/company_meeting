@@ -11,11 +11,11 @@ class HttpClientService
 {
 
     /**
-     * post请求
+     * post
      * @param $url
-     * @param $body
-     * @param $headers
-     * @return array
+     * @param array $body
+     * @param array $headers
+     * @return array|mixed
      */
     public static function post($url, $body = [], $headers = [])
     {
@@ -34,7 +34,7 @@ class HttpClientService
 
             \Log::info('接口请求结果', ['url'=>$url, 'body'=>$body, 'result'=>$res]);
 
-            return ['code'=>200, 'message'=>'success', 'data'=>json_decode($res->getBody()->getContents())];
+            return json_decode($res->getBody()->getContents());
         }catch (GuzzleException $e){
             \Log::info('接口请求失败', ['url'=>$url, 'body'=>$body, 'message'=>$e->getMessage()]);
             return ['code'=>500, 'message'=>'接口请求失败'];
@@ -64,9 +64,7 @@ class HttpClientService
             $res = $client->request('GET', $url, $options);
             \Log::info('接口请求结果', ['url'=>$url, 'query'=>$query, 'result'=>$res]);
 
-            $data = json_decode($res->getBody()->getContents());
-
-            return ['code'=>200, 'message'=>'success', 'data'=>$data];
+            return json_decode($res->getBody()->getContents());
         }catch (GuzzleException $e){
             \Log::info('接口请求失败', ['url'=>$url, 'query'=>$query, 'message'=>$e->getMessage()]);
             return ['code'=>500, 'message'=>'接口请求失败'];

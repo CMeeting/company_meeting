@@ -9,12 +9,12 @@ use App\Models\OrderCashFlow;
 class PayCenterService
 {
     /**
-     * 调用支付中心接口，生成支付链接
+     * 调用支付中心接口，生成支付链接(package商品，调用付款的接口)
      * @param $order_no
      * @param $price
      * @return array
      */
-    public function createOrder($order_no, $price){
+    public function createPackageOrder($order_no, $price){
         $serverName = 'https://' . $_SERVER['SERVER_NAME'] . '/api/paypal-callback';
         $url = env('PAY_CENTER') . '/v1/payCenterOrder/createOrder';
         $body = [
@@ -42,19 +42,47 @@ class PayCenterService
         $result = HttpClientService::post($url, $body, $headers);
         \Log::info('创建订单返回结果', ['body'=>$body, 'result'=>$result]);
 
-        //接口正常返回结果
-        if($result['code'] == 200){
-            $data = $result['data'];
-            //订单创建成功
-            if($data->code == 200){
-                $content = $data->data;
-                return ['code'=>200, 'message'=>'创建订单成功', 'data'=>['id'=>$content->id, 'pay_url'=>$content->payHref]];
-            }else{
-                return ['code'=>500, 'message'=>'创建订单失败'];
-            }
-        }else{
-            return ['code'=>500, 'message'=>'创建订单失败'];
-        }
+        return $result;
+    }
+
+    /**
+     * 调用支付中心接口，生成支付链接(订阅制商品，调用订阅的接口)
+     * @param $order_no
+     * @param $price
+     * @param $cycle
+     * @return array|mixed
+     */
+    public function createPlanOrder($order_no, $price, $cycle){
+        $serverName = 'https://' . $_SERVER['SERVER_NAME'] . '/api/paypal-callback';
+        $url = env('PAY_CENTER') . '/v1/payCenterOrder/createSubscription';
+        $body = [
+            'orderNum' => $order_no,
+            'currency' => 'USD',
+            'price' => $price,
+            'cycle' => $cycle,
+            'returnUrl' => $serverName . '?success=true',
+            'cancelUrl' => $serverName . '?success=false',
+            'orderGoodsList' => [
+                [
+                    'unitPrice' => $price,
+                    'num' => 1
+                ]
+            ]
+        ];
+
+        $encryptionService = new EncryptionService(EncryptionService::PROJECT_2_SAAS);
+        $token = $encryptionService->encryption(json_encode(['configId' => 3]));
+        $headers = [
+            'Content-type' =>  'application/json',
+            'Accept' => 'application/json',
+            'Authorization' => $token
+        ];
+
+        $result = HttpClientService::post($url, $body, $headers);
+
+        \Log::info('创建订单返回结果', ['body'=>$body, 'result'=>$result]);
+
+        return $result;
     }
 
     /**
@@ -79,15 +107,16 @@ class PayCenterService
         \Log::info('查询订单状态返回结果', ['query'=>$query, 'result'=>$result]);
 
         //接口正常返回结果
-        if($result['code'] == 200){
-            $data = $result['data'];
-            //查询成功
-            if($data->code == 200){
-                $content = $data->data;
-                return ['code'=>200, 'message'=>'查询成功', 'data'=>['status'=>$content->status]];
-            }else{
-                return ['code'=>500, 'message'=>'查询失败'];
-            }
+        if(is_array($result)){
+            $code = $result['code'];
+        }else{
+            $code = $result->code;
+        }
+
+        //订单创建成功
+        if($code == 200){
+            $data = $result->data;
+            return ['code'=>200, 'message'=>'查询成功', 'data'=>['status'=>$data->status]];
         }else{
             return ['code'=>500, 'message'=>'查询失败'];
         }

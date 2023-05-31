@@ -18,9 +18,10 @@ class SaaSOrderService
      * @param User $user
      * @param Goods $goods
      * @param $package_type
+     * @param $cycle
      * @return array
      */
-    public function createOrder(User $user, Goods $goods, $package_type){
+    public function createOrder(User $user, Goods $goods, $package_type, $cycle = ''){
         //新增订单
         $pay_type = OrderGoods::PAY_TYPE_5_PAYPAL;
         $order_no = $this->getOrderGoodsNum();
@@ -36,18 +37,33 @@ class SaaSOrderService
 
         //调用支付中心生成支付链接
         $payService = new PayCenterService();
-        $result = $payService->createOrder($order_no, $price);
-        if($result['code'] == 200){
-            $third_trade_no = array_get($result, 'data.id');
-            $url = array_get($result, 'data.pay_url');
+
+        if($package_type == OrderGoods::PACKAGE_TYPE_2_PACKAGE){
+            $result = $payService->createPackageOrder($order_no, $price);
+        }else{
+            $result = $payService->createPlanOrder($order_no, $price, $cycle);
+        }
+
+        //接口正常返回结果
+        if(is_array($result)){
+            $code = $result['code'];
+        }else{
+            $code = $result->code;
+        }
+
+        //订单创建成功
+        if($code == 200){
+            $data = $result->data;
+            $third_trade_no = $data->id;
+            $pay_url = $data->payHref;
             $order->third_trade_no = $third_trade_no;
-            $order->pay_url = $url;
+            $order->pay_url = $pay_url;
             $order->save();
 
             $order_goods->third_trade_no = $third_trade_no;
             $order_goods->save();
 
-            return ['code'=>200, 'data'=>['order_no'=>$order->order_no, 'pay_url'=>$url]];
+            return ['code'=>200, 'data'=>['order_no'=>$order->order_no, 'pay_url'=>$pay_url]];
         }else{
             return ['code'=>500, 'message'=>'创建订单失败'];
         }

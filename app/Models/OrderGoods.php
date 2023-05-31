@@ -67,6 +67,9 @@ class OrderGoods extends Model
     const TYPE_1_BACKGROUND = 1;        //后台创建
     const TYPE_2_BUY = 2;               //在线购买
 
+    const CYCLE_1_MONTH = 1;            //月订阅
+    const CYCLE_2_YEAR = 2;             //年订阅
+
     protected $table = 'orders_goods';
 
     public function order(){

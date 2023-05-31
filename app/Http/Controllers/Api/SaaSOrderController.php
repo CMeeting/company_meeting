@@ -53,17 +53,25 @@ class SaaSOrderController extends Controller
             return \Response::json(['code'=>504, 'message'=>'商品套餐或者档位不存在']);
         }
 
+        $cycle = '';
         $orderService = new SaaSOrderService();
         if(strstr($combo, '订阅')){
             if($orderService->existsSubscriptionPlan($current_user->id)){
                 return ['code'=>505, 'message'=>'该账号已存在订阅中订单，不能重复购买'];
             }
             $package_type = OrderGoods::PACKAGE_TYPE_1_PLAN;
+
+            if(strstr($combo, '月')){
+                $cycle = OrderGoods::CYCLE_1_MONTH;
+            }else{
+                $cycle = OrderGoods::CYCLE_2_YEAR;
+            }
+
         }else{
             $package_type = OrderGoods::PACKAGE_TYPE_2_PACKAGE;
         }
 
-        $result = $orderService->createOrder($current_user, $goods, $package_type);
+        $result = $orderService->createOrder($current_user, $goods, $package_type, $cycle);
 
         if($result['code'] == 200){
             return \Response::json(['code'=>200, 'message'=>'success', 'data'=>$result['data']]);
