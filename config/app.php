@@ -248,6 +248,8 @@ return [
         App\Providers\ResponseMacServiceProvider::class,
 
         \Meneses\LaravelMpdf\LaravelMpdfServiceProvider::class,
+
+        VladimirYuldashev\LaravelQueueRabbitMQ\LaravelQueueRabbitMQServiceProvider::class,
     ],
 
     /*

@@ -95,7 +95,7 @@ class UpdateUserRemain extends Command
                 $next_date = $created_at->addMonths($i)->addDay();
                 //重置资产
                 if($now->format('Y-m-d') == $next_date->format('Y-m-d')){
-                    $remain_service->resetRemain($user_id, $email, $total_files, OrderGoods::PACKAGE_TYPE_1_PLAN);
+                    $remain_service->resetRemain($user_id, $email, $total_files, OrderGoods::PACKAGE_TYPE_1_PLAN, );
                     continue;
                 }
             }

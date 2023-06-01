@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 
 
 use App\Http\Controllers\Controller;
+use App\Jobs\SyncSaaSAssets;
 use App\Models\Goods;
 use App\Models\Goodsclassification;
 use App\Models\Order;
@@ -27,6 +28,8 @@ class SaaSOrderController extends Controller
      * @return array|\Illuminate\Http\JsonResponse
      */
     public function createOrder(Request $request){
+        $this->dispatch(new SyncSaaSAssets(111222, '测试成功'));
+        dd(3123);
         $current_user = UserService::getCurrentUser($request);
         if(!$current_user instanceof User){
             return \Response::json(['code'=>401, 'message'=>'未登录，不能购买']);
@@ -81,6 +84,11 @@ class SaaSOrderController extends Controller
         }
     }
 
+    /**
+     * 查询订单状态
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function getOrderStatus(Request $request){
         $order_no = $request->input('order_no');
 
@@ -110,11 +118,47 @@ class SaaSOrderController extends Controller
             if($result['code'] == 200){
                 //支付成功
                 if($result['data']['status'] == 'APPROVED'){
-                    $orderService->completeOrder($order, $current_user);
+                    $orderService->completeOrder($order, $current_user, $result['data']['next_billing_time']);
                 }
             }
         }
 
         return \Response::json(['code'=>200, 'message'=>'success', 'data'=>['order_no'=>$order_no, 'status'=>$order->status]]);
+    }
+
+    /**
+     * 回调事件处理
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function webHook(Request $request){
+        $event_type = $request->input('event_type');
+        $third_trade_no = $request->input('third_trade_id');
+        $next_billing_time = $request->input('next_billing_time');
+
+        $order = Order::getByTradeNo($third_trade_no);
+        if(!$order instanceof Order){
+            return \Response::json(['code'=>501, 'message'=>'订单不存在']);
+        }
+
+        $orderService = new SaaSOrderService();
+        switch ($event_type){
+            case OrderGoods::EVENT_1_PAYMENT_SUCCESS:
+                $orderService->completeOrder($order, $next_billing_time);
+                break;
+            case OrderGoods::EVENT_3_DEDUCTION_SUCCESS:
+                $orderService->deductionSuccess($order, $next_billing_time);
+                break;
+            case  OrderGoods::EVENT_4_DEDUCTION_FAILED:
+                $orderService->deductionFailed($order);
+                break;
+            case OrderGoods::EVENT_5_PLAN_CANCEL:
+                $orderService->cancelPlan($order);
+                break;
+            default:
+                break;
+        }
+
+        return \Response::json(['code'=>200, 'message'=>'success']);
     }
 }

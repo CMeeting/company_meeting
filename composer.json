@@ -21,7 +21,8 @@
         "predis/predis": "^1.1",
         "zhuzhichao/ip-location-zh": "^2.4",
         "carlos-meneses/laravel-mpdf": "2.1.10",
-        "guzzlehttp/guzzle": "^6.3"
+        "guzzlehttp/guzzle": "^6.3",
+        "vladimir-yuldashev/laravel-queue-rabbitmq":"6.0"
     },
     "require-dev": {
         "barryvdh/laravel-debugbar": "^3.1",

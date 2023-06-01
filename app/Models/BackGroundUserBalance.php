@@ -34,9 +34,10 @@ class BackGroundUserBalance extends Model
     const DESCRIPTION_TYPE_1_PACKAGE = 1;
     const DESCRIPTION_TYPE_2_SUBSCRIPTION = 2;
 
-    const CHANGE_TYPE_1_RECHARGE = 1;
+    const CHANGE_TYPE_1_RECHARGE = 1;   //充值
+    const CHANGE_TYPE_2_used = 2;   //消费
 
-    public static function add($user_id, $tenant_id, $asset_type, $balance_change){
+    public static function add($user_id, $tenant_id, $asset_type, $balance_change, $change_type){
         if($asset_type == OrderGoods::PACKAGE_TYPE_1_PLAN){
             $description_type = self::DESCRIPTION_TYPE_2_SUBSCRIPTION;
             $description = "Monthly Subscription($balance_change files)";
@@ -53,7 +54,7 @@ class BackGroundUserBalance extends Model
         $model->date = date('Y-m-d H:i:s');
         $model->description_type = $description_type;
         $model->description = $description;
-        $model->change_type = self::CHANGE_TYPE_1_RECHARGE;
+        $model->change_type = $change_type;
         $model->balance_change = $balance_change;
         $model->remaining_files = $remaining_files;
         $model->save();

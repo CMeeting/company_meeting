@@ -32,7 +32,7 @@ class UserRemainService
             BackGroundUserRemain::updateAssetType($remain, $total_files);
         }
         //更新用户资产充值记录
-        BackGroundUserBalance::add($backgroundUser->id, $backgroundUser->tenant_id, $package_type, $total_files);
+        BackGroundUserBalance::add($backgroundUser->id, $backgroundUser->tenant_id, $package_type, $total_files, BackGroundUserBalance::CHANGE_TYPE_1_RECHARGE);
 
         //TODO 推送资产变更到SaaS
     }

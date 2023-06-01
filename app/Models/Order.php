@@ -78,4 +78,10 @@ class Order extends Model
 
         return $model;
     }
+
+    public static function getByTradeNo($third_trade_no){
+        return Order::query()
+            ->where('third_trade_no', $third_trade_no)
+            ->first();
+    }
 }

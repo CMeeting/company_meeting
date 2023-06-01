@@ -46,6 +46,7 @@ Route::group(['namespace' => 'Api'], function () {
     Route::post('upload-attachments', 'ContactEmailController@uploadAttachments');
 
     Route::get('get-saas-goods', 'GoodsController@getSaaSGoods');
+    Route::post('/webhook', 'SaaSOrderController@webHook');
 });
 
 Route::group(['middleware' => ['jwt.auth', 'cors'], 'namespace' => 'Api'], function () {

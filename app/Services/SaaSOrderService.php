@@ -9,7 +9,9 @@ use App\Models\Goodsclassification;
 use App\Models\Order;
 use App\Models\OrderCashFlow;
 use App\Models\OrderGoods;
+use App\Models\OrderGoodsCancel;
 use App\Models\User;
+use Carbon\Carbon;
 
 class SaaSOrderService
 {
@@ -181,28 +183,107 @@ class SaaSOrderService
     /**
      * 订单支付成功
      * @param Order $order
-     * @param User $user
+     * @param $next_billing_time
      */
-    public function completeOrder(Order $order, User $user){
+    public function completeOrder(Order $order, $next_billing_time = null){
         //修改订单为已支付状态
-        $order->status = OrderGoods::STATUS_1_PAID;
-        $order->save();
+        if($order->status == OrderGoods::STATUS_0_UNPAID){
+            $order->status = OrderGoods::STATUS_1_PAID;
+            $order->pay_time = date('Y-m-d H:i:s');
+            $order->save();
 
-        //修改子订单为已支付状态
+            $user = User::find($order->user_id);
+
+            //修改子订单为已支付状态
+            $order_goods = OrderGoods::getByOrderId($order->id);
+            $order_goods->status = OrderGoods::STATUS_1_PAID;
+            $order_goods->next_billing_time = $next_billing_time;
+            $order_goods->pay_time = date('Y-m-d H:i:s');
+            $order_goods->save();
+
+            //更新流水信息
+            OrderCashFlow::add($order->id, $order->pay_type, $order_goods->package_type, $order->price, 0, 0, $order->price, $order->third_trade_no, '', OrderCashFlow::CURRENCY_1_USD);
+
+            //更新用户类型
+            $user_service = new UserService();
+            $user_service->changeType(Order::DETAILS_STATUS_3_SAAS, $user->id);
+
+            //更新用户SaaS资产信息
+            $remain_service = new UserRemainService();
+            $total_files = Goods::getTotalFilesByGoods($order_goods->goods_id);
+            $remain_service->resetRemain($user->id, $user->email, $total_files, $order_goods->package_type);
+        }
+    }
+
+    /**
+     * 订阅周期扣款成功
+     * @param Order $order
+     * @param $next_billing_time
+     */
+    public function deductionSuccess(Order $order, $next_billing_time){
+        $user = User::find($order->user_id);
+
+        //更新下次扣款时间
         $order_goods = OrderGoods::getByOrderId($order->id);
-        $order_goods->status = OrderGoods::STATUS_1_PAID;
+        $order_goods->next_billing_time = $next_billing_time;
         $order_goods->save();
 
         //更新流水信息
         OrderCashFlow::add($order->id, $order->pay_type, $order_goods->package_type, $order->price, 0, 0, $order->price, $order->third_trade_no, '', OrderCashFlow::CURRENCY_1_USD);
 
-        //更新用户类型
-        $user_service = new UserService();
-        $user_service->changeType(Order::DETAILS_STATUS_3_SAAS, $user->id);
-
         //更新用户SaaS资产信息
         $remain_service = new UserRemainService();
         $total_files = Goods::getTotalFilesByGoods($order_goods->goods_id);
         $remain_service->resetRemain($user->id, $user->email, $total_files, $order_goods->package_type);
+    }
+
+    /**
+     * 订阅周期扣款失败
+     * @param Order $order
+     */
+    public function deductionFailed(Order $order){
+        $user = User::find($order->user_id);
+
+        if($order->status == OrderGoods::STATUS_1_PAID){
+            //扣款失败修改状态为取消订阅
+            $order->status = OrderGoods::STATUS_5_UNSUBSCRIBE;
+            $order->save();
+
+            $order_goods = OrderGoods::getByOrderId($order->id);
+            $order_goods->status = OrderGoods::STATUS_5_UNSUBSCRIBE;
+            $order_goods->save();
+
+            //更新用户SaaS资产信息
+            $remain_service = new UserRemainService();
+            $remain_service->resetRemain($user->id, $user->email, 0, $order_goods->package_type);
+
+            //新增订阅取消记录
+            $reset_date = date('Y-m-d');
+            $remark = '扣款失败回调事件';
+            OrderGoodsCancel::add($order_goods->id, OrderGoodsCancel::STATUS_2_PROCESSED, $reset_date, $remark);
+        }
+    }
+
+    /**
+     * 取消订阅
+     * @param Order $order
+     */
+    public function cancelPlan(Order $order){
+        if($order->status == OrderGoods::STATUS_1_PAID){
+            //修改状态为取消订阅
+            $order->status = OrderGoods::STATUS_5_UNSUBSCRIBE;
+            $order->save();
+
+            $order_goods = OrderGoods::getByOrderId($order->id);
+            $order_goods->status = OrderGoods::STATUS_5_UNSUBSCRIBE;
+            $order_goods->save();
+
+            //新增订阅取消记录
+            //获取处理时间
+            $next_billing_time = $order_goods->next_billing_time;
+            $reset_date = Carbon::parse($next_billing_time)->addMonth()->format('Y-m-d');
+            $remark = '取消订阅回调事件';
+            OrderGoodsCancel::add($order_goods->id, OrderGoodsCancel::STATUS_1_UNPROCESSED, $reset_date, $remark);
+        }
     }
 }

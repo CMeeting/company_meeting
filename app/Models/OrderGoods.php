@@ -37,6 +37,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property    $renwe_goodsid
  * @property    $special_assets
  * @property    $package_type
+ * @property    $next_billing_time
  * @mixin       \Eloquent
  */
 
@@ -69,6 +70,12 @@ class OrderGoods extends Model
 
     const CYCLE_1_MONTH = 1;            //月订阅
     const CYCLE_2_YEAR = 2;             //年订阅
+
+    const EVENT_1_PAYMENT_SUCCESS = 1;  //支付成功
+    const EVENT_2_PAYMENT_FAILED = 2;   //支付失败
+    const EVENT_3_DEDUCTION_SUCCESS = 3;//订阅自动扣款成功
+    const EVENT_4_DEDUCTION_FAILED = 4; //订阅自动扣款失败
+    const EVENT_5_PLAN_CANCEL = 5;      //取消订阅
 
     protected $table = 'orders_goods';
 
