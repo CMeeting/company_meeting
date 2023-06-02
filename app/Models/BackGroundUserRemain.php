@@ -40,17 +40,17 @@ class BackGroundUserRemain extends Model
             ->first();
     }
 
-    public static function add($tenant_id, $user_id, $asset_type, $total_files){
+    public static function add($tenant_id, $user_id, $asset_type, $total_files, $status){
         $model = new BackGroundUserRemain();
         $model->tenant_id = $tenant_id;
         $model->user_id = $user_id;
         $model->asset_type = $asset_type;
         $model->total_files = $total_files;
-        $model->status = self::STATUS_1_ACTIVE;
+        $model->status = $status;
         $model->save();
     }
 
-    public static function updateAssetType(BackGroundUserRemain $model, $total_files){
+    public static function updateAssetType(BackGroundUserRemain $model, $total_files, $status){
         if($model->asset_type == OrderGoods::PACKAGE_TYPE_1_PLAN){
             //订阅资产新增时，使用次数改为0, 直接重置资产
             $model->used_files = 0;
@@ -60,7 +60,7 @@ class BackGroundUserRemain extends Model
             $model->total_files = $model->total_files + $total_files;
         }
 
-        $model->status = self::STATUS_1_ACTIVE;
+        $model->status = $status;
         $model->save();
     }
 }

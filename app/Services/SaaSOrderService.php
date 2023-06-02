@@ -4,6 +4,7 @@
 namespace App\Services;
 
 
+use App\Models\BackGroundUserRemain;
 use App\Models\Goods;
 use App\Models\Goodsclassification;
 use App\Models\Order;
@@ -34,8 +35,12 @@ class SaaSOrderService
         $order = Order::add($order_no, $pay_type, $status, $type, $details_type, $price, $user->id, 1);
 
         //新增子订单
+        $pay_years = null;
         $order_goods_no = $this->getOrderGoodsNum();
-        $order_goods = OrderGoods::add($order->id, $order_no, $order_goods_no, $pay_type, $status, $type, $details_type, $price, $user->id, $goods->id, $package_type, null);
+        if($cycle == OrderGoods::CYCLE_2_YEAR){
+            $pay_years = 12;
+        }
+        $order_goods = OrderGoods::add($order->id, $order_no, $order_goods_no, $pay_type, $status, $type, $details_type, $price, $user->id, $goods->id, $package_type, $pay_years);
 
         //调用支付中心生成支付链接
         $payService = new PayCenterService();
@@ -142,7 +147,7 @@ class SaaSOrderService
         //更新用户SaaS资产信息
         $remain_service = new UserRemainService();
         $total_files = $special_assets ?: $gear;
-        $remain_service->resetRemain($user->id, $user->email, $total_files, $package_type);
+        $remain_service->resetRemain($user->id, $user->email, $total_files, $package_type, BackGroundUserRemain::STATUS_1_ACTIVE);
 
         return ['code'=>200, 'message'=>'创建成功'];
     }
@@ -187,6 +192,9 @@ class SaaSOrderService
      */
     public function completeOrder(Order $order, $next_billing_time = null){
         //修改订单为已支付状态
+
+        //TODO 发送支付成功的邮件
+
         if($order->status == OrderGoods::STATUS_0_UNPAID){
             $order->status = OrderGoods::STATUS_1_PAID;
             $order->pay_time = date('Y-m-d H:i:s');
@@ -211,7 +219,7 @@ class SaaSOrderService
             //更新用户SaaS资产信息
             $remain_service = new UserRemainService();
             $total_files = Goods::getTotalFilesByGoods($order_goods->goods_id);
-            $remain_service->resetRemain($user->id, $user->email, $total_files, $order_goods->package_type);
+            $remain_service->resetRemain($user->id, $user->email, $total_files, $order_goods->package_type, BackGroundUserRemain::STATUS_1_ACTIVE);
         }
     }
 
@@ -225,6 +233,11 @@ class SaaSOrderService
 
         //更新下次扣款时间
         $order_goods = OrderGoods::getByOrderId($order->id);
+        $combo = Goodsclassification::getComboById($order_goods->level1);
+        //年订阅更新有效期
+        if(strstr($combo, '年')){
+            $order_goods->pay_years += 12;
+        }
         $order_goods->next_billing_time = $next_billing_time;
         $order_goods->save();
 
@@ -234,7 +247,7 @@ class SaaSOrderService
         //更新用户SaaS资产信息
         $remain_service = new UserRemainService();
         $total_files = Goods::getTotalFilesByGoods($order_goods->goods_id);
-        $remain_service->resetRemain($user->id, $user->email, $total_files, $order_goods->package_type);
+        $remain_service->resetRemain($user->id, $user->email, $total_files, $order_goods->package_type, BackGroundUserRemain::STATUS_1_ACTIVE);
     }
 
     /**
@@ -255,7 +268,7 @@ class SaaSOrderService
 
             //更新用户SaaS资产信息
             $remain_service = new UserRemainService();
-            $remain_service->resetRemain($user->id, $user->email, 0, $order_goods->package_type);
+            $remain_service->resetRemain($user->id, $user->email, 0, $order_goods->package_type, BackGroundUserRemain::STATUS_2_INACTIVE);
 
             //新增订阅取消记录
             $reset_date = date('Y-m-d');
@@ -281,7 +294,7 @@ class SaaSOrderService
             //新增订阅取消记录
             //获取处理时间
             $next_billing_time = $order_goods->next_billing_time;
-            $reset_date = Carbon::parse($next_billing_time)->addMonth()->format('Y-m-d');
+            $reset_date = Carbon::parse($next_billing_time)->addMonthsNoOverflow(1)->addDay()->format('Y-m-d');
             $remark = '取消订阅回调事件';
             OrderGoodsCancel::add($order_goods->id, OrderGoodsCancel::STATUS_1_UNPROCESSED, $reset_date, $remark);
         }

@@ -46,8 +46,11 @@ class Kernel extends ConsoleKernel
         //订单到期续订提醒
         //$schedule->command('command:order:renew:notice')->hourly();
 
-        //SaaS订阅资产更新
-        $schedule->command('command:update:user:assets')->daily();
+        //SaaS订阅资产重置
+        $schedule->command('command:update:user:remain')->daily();
+
+        //取消订阅资产处理
+        $schedule->command('command:cancel:plan:process')->daily();
     }
 
     /**

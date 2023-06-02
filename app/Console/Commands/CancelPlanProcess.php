@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Models\BackGroundUserRemain;
 use App\Models\OrderGoods;
 use App\Models\OrderGoodsCancel;
 use App\Models\User;
@@ -36,7 +37,6 @@ class CancelPlanProcess extends Command
 
     /**
      * Execute the console command.
-     *
      * @return mixed
      */
     public function handle()
@@ -53,7 +53,9 @@ class CancelPlanProcess extends Command
         foreach ($orders as $order){
             //取消订阅的用户修改资产为0
             $remain_service = new UserRemainService();
-            $remain_service->resetRemain($order['id'], $order['email'], 0, $order['package_type']);
+            $remain_service->resetRemain($order['id'], $order['email'], 0, $order['package_type'], BackGroundUserRemain::STATUS_2_INACTIVE);
         }
+
+        return;
     }
 }

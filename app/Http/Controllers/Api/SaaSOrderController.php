@@ -11,7 +11,9 @@ use App\Models\Goodsclassification;
 use App\Models\Order;
 use App\Models\OrderGoods;
 use App\Models\User;
+use App\Services\EmailService;
 use App\Services\GoodsService;
+use App\Services\MailmagicboardService;
 use App\Services\OrdersService;
 use App\Services\PayCenterService;
 use App\Services\SaaSOrderService;
@@ -159,5 +161,16 @@ class SaaSOrderController extends Controller
         }
 
         return \Response::json(['code'=>200, 'message'=>'success']);
+    }
+
+    /**
+     * 发送支付失败邮件
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function sendPaymentFailedEmail(Request $request){
+        $order_no = $request->input('order_no');
+
+        return \Response::json(['code'=>200, 'message'=>'发送成功']);
     }
 }

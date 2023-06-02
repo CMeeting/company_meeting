@@ -11,9 +11,9 @@ class RabbitMQService
 {
     public function sendMessage($data){
         $data = \GuzzleHttp\json_encode($data);
-        $exchange = 'PJY-TEST-2';
-        $query = 'PJY-TEST-2';
-        $routing_key = 'PJY.TEST.2';
+        $exchange = 'background-exchange';
+        $query = 'operation-back-asset-queue';
+        $routing_key = 'operation.back.asset';
         $connection = new AMQPStreamConnection(env('RABBITMQ_HOST'), env('RABBITMQ_PORT'), env('RABBITMQ_LOGIN'), env('RABBITMQ_PASSWORD'));
         $channel = $connection->channel();
 

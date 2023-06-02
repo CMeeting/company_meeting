@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Models\BackGroundUserRemain;
 use App\Models\Order;
 use App\Models\OrderGoods;
 use App\Services\OrdersService;
@@ -59,6 +60,7 @@ class UpdateUserRemain extends Command
             ->get()
             ->toArray();
 
+        $now = Carbon::now();
         foreach ($order_goods_arr as $order_goods){
             $combo = $classification[$order_goods['level1']] ?? '';
             $gear = $classification[$order_goods['level2']] ?? '';
@@ -67,12 +69,9 @@ class UpdateUserRemain extends Command
                 continue;
             }
 
-            // TODO 年订阅没有有效期字段处理
-
             $created_at = Carbon::parse($order_goods['created_at']);
             $validity_period = $order_goods['pay_years']; //有效期
-            $now = Carbon::now();
-            $max_date = $created_at->addMonths($validity_period)->addDay();
+            $max_date = $created_at->addMonthsNoOverflow($validity_period)->addDay();
 
             //到达有效期，修改订单状态为取消订阅
             if($now->format('Y-m-d') == $max_date->format('Y-m-d')){
@@ -92,10 +91,10 @@ class UpdateUserRemain extends Command
             $email = $order_goods['email'];
 
             for($i = 1; $i < $validity_period; $i++){
-                $next_date = $created_at->addMonths($i)->addDay();
+                $next_date = $created_at->addMonthsNoOverflow($i)->addDay();
                 //重置资产
                 if($now->format('Y-m-d') == $next_date->format('Y-m-d')){
-                    $remain_service->resetRemain($user_id, $email, $total_files, OrderGoods::PACKAGE_TYPE_1_PLAN, );
+                    $remain_service->resetRemain($user_id, $email, $total_files, OrderGoods::PACKAGE_TYPE_1_PLAN, BackGroundUserRemain::STATUS_1_ACTIVE);
                     continue;
                 }
             }

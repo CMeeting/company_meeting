@@ -65,4 +65,15 @@ class Goodsclassification extends Model
 
         return $set->keyBy('id')->toArray();
     }
+
+    /**
+     * 获取套餐
+     * @param $id
+     * @return mixed
+     */
+    public static function getComboById($id){
+        return Goodsclassification::query()
+            ->where('id', $id)
+            ->value('title');
+    }
 }

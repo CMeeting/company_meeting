@@ -16,8 +16,9 @@ class UserRemainService
      * @param $email
      * @param $total_files
      * @param $package_type
+     * @param $status
      */
-    public function resetRemain($user_id, $email, $total_files, $package_type){
+    public function resetRemain($user_id, $email, $total_files, $package_type, $status){
         //更新用户资产
         $backgroundUser = BackGroundUser::getByCompdfkitId($user_id);
         if(!$backgroundUser instanceof BackGroundUser){
@@ -27,11 +28,11 @@ class UserRemainService
         //更新用户资产余额
         $remain = BackGroundUserRemain::getByTypeUserId($backgroundUser->id, $package_type);
         if(!$remain instanceof BackGroundUserRemain){
-            BackGroundUserRemain::add($backgroundUser->tenant_id, $backgroundUser->id, $package_type, $total_files);
+            BackGroundUserRemain::add($backgroundUser->tenant_id, $backgroundUser->id, $package_type, $total_files, $status);
         }else{
-            BackGroundUserRemain::updateAssetType($remain, $total_files);
+            BackGroundUserRemain::updateAssetType($remain, $total_files, $status);
         }
-        //更新用户资产充值记录
+        // TODO 重置资产应该有两条记录（还是不需要处理）更新用户资产充值记录
         BackGroundUserBalance::add($backgroundUser->id, $backgroundUser->tenant_id, $package_type, $total_files, BackGroundUserBalance::CHANGE_TYPE_1_RECHARGE);
 
         //推送资产到SaaS

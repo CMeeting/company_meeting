@@ -12,6 +12,7 @@ use Illuminate\Console\Command;
 
 class UpdateUserAssets extends Command
 {
+    //已弃用
     /**
      * The name and signature of the console command.
      *
