@@ -5,6 +5,8 @@ namespace App\Services;
 
 
 use App\Export\UserExport;
+use App\Models\BackGroundUser;
+use App\Models\BackGroundUserRemain;
 use App\Models\LogoutUser;
 use App\Models\Mailmagicboard;
 use App\Models\Order;
@@ -186,7 +188,7 @@ class UserService
         foreach ($data as $value){
             $rows = [];
             foreach ($fields as $field){
-                $content = $value[$field];
+                $content = array_get($value, $field);
 
                 if($field == 'type'){
                     $content = array_get(User::$typeArr, $content);
@@ -330,7 +332,7 @@ class UserService
     }
 
     /**
-     * 发送修改密码的邮件
+     * 发送 修改密码 的邮件
      * @param $email
      * @param $name
      * @param $source
@@ -424,17 +426,6 @@ class UserService
             ->first();
     }
 
-    /**
-     * 获取用户资产
-     * @param $user_id
-     * @return array
-     */
-    public function getSaaSAssetByUser($user_id){
-        return UserAssets::where('user_id', $user_id)->where('status', UserAssets::STATUS_1_ENABLE)
-            ->get()
-            ->toArray();
-    }
-
     public function sendVerifyEmail($email, $name){
         //主站官网地址
         $website = env('WEB_HOST');
@@ -461,5 +452,26 @@ class UserService
         $data['info'] = str_replace("#@login_url", $login_url, $data['info']);
 
         $emailService->sendDiyContactEmail($data, 0, $email);
+    }
+
+    /**
+     * 获取用户资产
+     * @param $user_id
+     * @return array
+     */
+    public function getSaaSAssetByUser($user_id){
+        return UserAssets::where('user_id', $user_id)->where('status', UserAssets::STATUS_1_ENABLE)
+            ->get()
+            ->toArray();
+    }
+
+    public function getRemainByUser($user_id){
+        return BackGroundUserRemain::query()
+            ->leftJoin('background_user', 'background_user.id', '=', 'background_user_remain.id')
+            ->where('background_user.compdfkit_id', $user_id)
+            ->select(['background_user_remain.*'])
+            ->get()
+            ->keyBy('asset_type')
+            ->toArray();
     }
 }
