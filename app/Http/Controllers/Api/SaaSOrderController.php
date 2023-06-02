@@ -15,6 +15,7 @@ use App\Services\GoodsService;
 use App\Services\OrdersService;
 use App\Services\PayCenterService;
 use App\Services\SaaSOrderService;
+use App\Services\RabbitMQService;
 use App\Services\UserService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -28,8 +29,6 @@ class SaaSOrderController extends Controller
      * @return array|\Illuminate\Http\JsonResponse
      */
     public function createOrder(Request $request){
-        $this->dispatch(new SyncSaaSAssets(111222, '测试成功'));
-        dd(3123);
         $current_user = UserService::getCurrentUser($request);
         if(!$current_user instanceof User){
             return \Response::json(['code'=>401, 'message'=>'未登录，不能购买']);
@@ -118,7 +117,7 @@ class SaaSOrderController extends Controller
             if($result['code'] == 200){
                 //支付成功
                 if($result['data']['status'] == 'APPROVED'){
-                    $orderService->completeOrder($order, $current_user, $result['data']['next_billing_time']);
+                    $orderService->completeOrder($order, $result['data']['next_billing_time']);
                 }
             }
         }

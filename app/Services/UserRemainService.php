@@ -34,7 +34,9 @@ class UserRemainService
         //更新用户资产充值记录
         BackGroundUserBalance::add($backgroundUser->id, $backgroundUser->tenant_id, $package_type, $total_files, BackGroundUserBalance::CHANGE_TYPE_1_RECHARGE);
 
-        //TODO 推送资产变更到SaaS
+        //推送资产到SaaS
+        $mqService = new RabbitMQService();
+        $mqService->sendMessage(['tenant_id'=>$backgroundUser->tenant_id, 'asset'=>$remain->total_files, 'assetType'=>$remain->asset_type, 'status'=>$remain->status]);
     }
 
     /**
