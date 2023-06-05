@@ -53,7 +53,10 @@ class GoodsController extends BaseController {
         if(isset($query['export']) && $query['export'] == 1){
             return $GoodsService->exportSaaS($data, $query['field']);
         }
-        return $this->view('saasindex',['data'=>$data,'query'=>$query,'lv1'=>json_encode($categorical_data['arr1']),'lv2'=>json_encode($categorical_data['arr2'])]);
+
+        $pricing_url = env('WEB_HOST_SAAS') . '/api/pricing';
+
+        return $this->view('saasindex',['data'=>$data,'query'=>$query,'lv1'=>json_encode($categorical_data['arr1']),'lv2'=>json_encode($categorical_data['arr2']),'pricing_url'=>$pricing_url]);
     }
 
     public function creategoods()

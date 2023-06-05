@@ -47,10 +47,13 @@
         <div class="col-sm-12">
             <div class="ibox-title">
                 <h5>商品列表</h5>
-                <button id="export" class="btn layui-btn-primary btn-sm" type="button" style="float: right;margin-left: 5px"><i class="fa fa-paste"></i>导出数据</button>
-                <a style="float: right;margin-left: 5px" href="{{route('goods.createsaasgoods')}}" link-url="javascript:void(0)">
-                    <button class="btn btn-primary btn-sm" type="button"><i class="fa fa-plus-circle"></i> 新增商品</button>
-                </a>
+                <div style="float: right; width: 300px">
+                    <a style="margin-left: 2%" href="{{route('goods.createsaasgoods')}}" link-url="javascript:void(0)">
+                        <button class="btn btn-primary btn-sm" type="button"><i class="fa fa-plus-circle"></i> 新增商品</button>
+                    </a>
+                    <button id="previews" class="btn layui-btn-primary btn-sm" type="button" style="margin-left: 2%;">页面预览</button>
+                    <button id="export" class="btn layui-btn-primary btn-sm" type="button" style="margin-left: 2%">导出数据</button>
+                </div>
             </div>
             <div style="width: 100%;padding-bottom: 15px;padding-top: 10px;background: #fbfffa">
                 <a class="ab"  href="{{route('goods.index')}}">SDK</a>
@@ -60,7 +63,7 @@
 
                 <div class="col-xs-10 col-sm-11 margintop5" style="margin-bottom: 5px">
                     <form name="admin_list_sea" class="form-search" method="get" action="{{route('goods.saasIndex')}}">
-                        <div class="input-group">
+                        <div class="input-group" style="display: block">
 
                             <div class="input-group-btn" style="display: block;">
                                 <select id="query_type" name="query_type" class="form-control"
@@ -89,19 +92,19 @@
                                 </div>
                             </div>
 
-                            <div class="input-group-btn" style="display: inline-block;width: 250px;margin-left:20px;">
+                            <div class="input-group-btn" style="display: inline-block;width: 200px;margin-left:20px;">
                                 <input type="text" name="created_at" class="form-control"
                                        style="display: inline-block;width: 200px;" id="created_at" placeholder="创建时间"
                                        value="@if(isset($query)){{$query['created_at']}}@endif"/>
                             </div>
 
-                            <div class="input-group-btn" style="display: inline-block;width: 250px;margin-left:20px;">
+                            <div class="input-group-btn" style="display: inline-block;width: 200px;margin-left:20px;">
                                 <input type="text" name="updated_at" class="form-control"
                                        style="display: inline-block;width: 200px;" id="updated_at" placeholder="更新时间"
                                        value="@if(isset($query)){{$query['updated_at']}}@endif"/>
                             </div>
 
-                            <div class="input-group-btn" style="display: inline-block;width: 250px;margin-left:20px;">
+                            <div class="input-group-btn" style="display: inline-block;width: 200px;margin-left:20px;">
                                 <input type="text" name="shelf_at" class="form-control"
                                        style="display: inline-block;width: 200px;" id="shelf_at" placeholder="上架时间"
                                        value="@if(isset($query)){{$query['shelf_at']}}@endif"/>
@@ -129,7 +132,7 @@
                         <th class="text-center" style="width: 11%">创建时间</th>
                         <th class="text-center" style="width: 11%">更新时间</th>
                         <th class="text-center" style="width: 11%">上架时间</th>
-                        <th class="text-center" style="width: 10%">操作</th>
+                        <th class="text-center" style="width: 15%">操作</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -151,12 +154,14 @@
                             <td>{{$item['shelf_at']}}</td>
                             <td class="text-center">
                                 <div class="btn-group">
-                                    <a class="btn  btn-xs" style="text-decoration: none;color: #f6fff8;background: #0b94ea" title="预览 " href="{{route('goods.saasinfo',$item['id'])}}">
-                                        <i class="fa fa-users"></i> 预览
+                                    <a class="btn  btn-xs" href="{{route('goods.saasinfo',$item['id'])}}">
+                                        <button class="btn btn-primary layui-btn-xs layui-btn-normal" type="button">
+                                            <i class="fa fa-users"></i> 预览
+                                        </button>
                                     </a>
                                     <a id="update_{{$item['id']}}" href="{{route('goods.updatesaasgoods',$item['id'])}}">
-                                        <button class="btn btn-primary btn-xs" type="button"><i class="fa fa-paste"></i>
-                                            修改
+                                        <button class="btn btn-primary btn-xs" type="button">
+                                            <i class="fa fa-paste"></i> 修改
                                         </button>
                                     </a>
                                     <font class="open_{{$item['id']}}">
@@ -173,8 +178,8 @@
                                         @endif
                                     </font>
                                     <a onclick="del('{{$item['id']}}')">
-                                        <button class="btn btn-danger del btn-xs" type="button"><i
-                                                    class="fa fa-trash-o"></i> 删除
+                                        <button class="btn btn-danger del btn-xs" type="button">
+                                            <i class="fa fa-trash-o"></i> 删除
                                         </button>
                                     </a>
                                 </div>
@@ -410,6 +415,12 @@
                             "&start_date=" + startDate + "&end_date=" + endDate + "&status=" + status + "&field=" + field.join(',');
                     }
                 });
+            });
+
+            //页面预览
+            $("#previews").click(function () {
+                var url = "{{$pricing_url}}";
+                window.open(url, "_blank")
             });
         })
     </script>
