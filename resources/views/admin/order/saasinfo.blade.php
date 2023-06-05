@@ -4,7 +4,7 @@
     <div class="row">
         <div class="col-sm-12">
             <div class="ibox-title">
-                <h5 style="width: 20%;float: left">查看SaaS订单</h5>
+                <h5 style="width: 20%;float: left">查看API订单</h5>
                 <div class="clearfix form-actions" style="float: right;width: 79.5%">
                     <div class="col-md-offset-5 col-md-9" style="margin-left: 94.5%">
                         <a id="reset" class="menuid btn btn-primary btn-sm" onclick="returnHistory()">返回</a>
@@ -162,7 +162,7 @@
                         <tbody>
                         @foreach($cash_flow as $key => $item)
                             <tr id="de">
-                                <td class="text-center">{{$key}}</td>
+                                <td class="text-center">{{$key+1}}</td>
                                 <td class="text-center">{{$item->serial_number}}</td>
                                 <td class="text-center">{{$item->created_at}}</td>
                                 <td class="text-center">{{$item->price}}</td>

@@ -13,6 +13,7 @@ use App\Models\OrderGoods;
 use App\Models\OrderGoodsCancel;
 use App\Models\User;
 use Carbon\Carbon;
+use DB;
 
 class SaaSOrderService
 {
@@ -89,10 +90,6 @@ class SaaSOrderService
             return ['code'=>500, 'message'=>'该邮箱未注册，不能创建订单'];
         }
 
-        if($this->existsSubscriptionPlan($user->id)){
-            return ['code'=>500, 'message'=>'该邮箱已存在订阅中订单，不能重复创建'];
-        }
-
         $classification = Goodsclassification::getKeyById();
         $combo = array_get($classification, "{$data['level1']}.title");
         $gear = array_get($classification, "{$data['level2']}.title");
@@ -111,6 +108,10 @@ class SaaSOrderService
             return ['code'=>500, 'message'=>'年订阅有效期必须大于12个月'];
         }
 
+        if(strtolower($combo) != 'package' && $this->existsSubscriptionPlan($user->id)){
+            return ['code'=>500, 'message'=>'该邮箱已存在订阅中订单，不能重复创建'];
+        }
+
         if($gear == '手动配置'){
             $price = $data['price'];
             $special_assets = $data['special_assets'];
@@ -120,34 +121,42 @@ class SaaSOrderService
         }
 
         //新增订单
-        $pay_type = OrderGoods::PAY_TYPE_4_OTHER;
-        $order_no = $this->getOrderGoodsNum();
-        $status = OrderGoods::STATUS_1_PAID;
-        $type = OrderGoods::TYPE_1_BACKGROUND;
-        $details_type = OrderGoods::DETAILS_TYPE_3_SAAS;
-        $order_model = Order::add($order_no, $pay_type, $status, $type, $details_type, $price, $user->id, 1);
-        $order_id = $order_model->id;
+        try{
+            DB::beginTransaction();
+            $pay_type = OrderGoods::PAY_TYPE_4_OTHER;
+            $order_no = $this->getOrderGoodsNum();
+            $status = OrderGoods::STATUS_1_PAID;
+            $type = OrderGoods::TYPE_1_BACKGROUND;
+            $details_type = OrderGoods::DETAILS_TYPE_3_SAAS;
+            $order_model = Order::add($order_no, $pay_type, $status, $type, $details_type, $price, $user->id, 1);
+            $order_id = $order_model->id;
 
-        //新增子订单
-        $order_goods_no = $this->getOrderGoodsNum();
-        if(strtolower($combo) == 'package'){
-            $package_type = OrderGoods::PACKAGE_TYPE_2_PACKAGE;
-        }else{
-            $package_type = OrderGoods::PACKAGE_TYPE_1_PLAN;
+            //新增子订单
+            $order_goods_no = $this->getOrderGoodsNum();
+            if(strtolower($combo) == 'package'){
+                $package_type = OrderGoods::PACKAGE_TYPE_2_PACKAGE;
+            }else{
+                $package_type = OrderGoods::PACKAGE_TYPE_1_PLAN;
+            }
+            OrderGoods::add($order_id, $order_no, $order_goods_no, $pay_type, $status, $type, $details_type, $price, $user->id, $goods->id, $package_type, $pay_years, $special_assets);
+
+            //更新流水信息
+            OrderCashFlow::add($order_id, $pay_type, $package_type, $price, 0, 0, $price, '', '', OrderCashFlow::CURRENCY_1_USD);
+
+            //更新用户类型
+            $user_service = new UserService();
+            $user_service->changeType(Order::DETAILS_STATUS_3_SAAS, $user->id);
+
+            //更新用户SaaS资产信息
+            $remain_service = new UserRemainService();
+            $total_files = $special_assets ?: $gear;
+            $remain_service->resetRemain($user->id, $user->email, $total_files, $package_type, BackGroundUserRemain::STATUS_1_ACTIVE, 'add');
+
+            DB::commit();
+        }catch (\Exception $e){
+            return ['code'=>500, 'message'=>'创建失败', 'error'=>$e->getMessage()];
         }
-        OrderGoods::add($order_id, $order_no, $order_goods_no, $pay_type, $status, $type, $details_type, $price, $user->id, $goods->id, $package_type, $pay_years, $special_assets);
 
-        //更新流水信息
-        OrderCashFlow::add($order_id, $pay_type, $package_type, $price, 0, 0, $price, '', '', OrderCashFlow::CURRENCY_1_USD);
-
-        //更新用户类型
-        $user_service = new UserService();
-        $user_service->changeType(Order::DETAILS_STATUS_3_SAAS, $user->id);
-
-        //更新用户SaaS资产信息
-        $remain_service = new UserRemainService();
-        $total_files = $special_assets ?: $gear;
-        $remain_service->resetRemain($user->id, $user->email, $total_files, $package_type, BackGroundUserRemain::STATUS_1_ACTIVE);
 
         return ['code'=>200, 'message'=>'创建成功'];
     }
@@ -219,7 +228,7 @@ class SaaSOrderService
             //更新用户SaaS资产信息
             $remain_service = new UserRemainService();
             $total_files = Goods::getTotalFilesByGoods($order_goods->goods_id);
-            $remain_service->resetRemain($user->id, $user->email, $total_files, $order_goods->package_type, BackGroundUserRemain::STATUS_1_ACTIVE);
+            $remain_service->resetRemain($user->id, $user->email, $total_files, $order_goods->package_type, BackGroundUserRemain::STATUS_1_ACTIVE, 'add');
         }
     }
 
@@ -247,7 +256,7 @@ class SaaSOrderService
         //更新用户SaaS资产信息
         $remain_service = new UserRemainService();
         $total_files = Goods::getTotalFilesByGoods($order_goods->goods_id);
-        $remain_service->resetRemain($user->id, $user->email, $total_files, $order_goods->package_type, BackGroundUserRemain::STATUS_1_ACTIVE);
+        $remain_service->resetRemain($user->id, $user->email, $total_files, $order_goods->package_type, BackGroundUserRemain::STATUS_1_ACTIVE, 'reset');
     }
 
     /**
@@ -268,7 +277,7 @@ class SaaSOrderService
 
             //更新用户SaaS资产信息
             $remain_service = new UserRemainService();
-            $remain_service->resetRemain($user->id, $user->email, 0, $order_goods->package_type, BackGroundUserRemain::STATUS_2_INACTIVE);
+            $remain_service->resetRemain($user->id, $user->email, 0, $order_goods->package_type, BackGroundUserRemain::STATUS_2_INACTIVE, 'cancel');
 
             //新增订阅取消记录
             $reset_date = date('Y-m-d');

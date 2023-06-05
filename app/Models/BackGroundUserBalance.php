@@ -35,7 +35,7 @@ class BackGroundUserBalance extends Model
     const DESCRIPTION_TYPE_2_SUBSCRIPTION = 2;
 
     const CHANGE_TYPE_1_RECHARGE = 1;   //充值
-    const CHANGE_TYPE_2_used = 2;   //消费
+    const CHANGE_TYPE_2_USED = 2;   //消费
 
     public static function add($user_id, $tenant_id, $asset_type, $balance_change, $change_type){
         if($asset_type == OrderGoods::PACKAGE_TYPE_1_PLAN){
@@ -46,7 +46,7 @@ class BackGroundUserBalance extends Model
             $description = "Package($balance_change files)";
         }
 
-        $remaining_files = self::getRemainingFiles($user_id, $balance_change);
+        $remaining_files = self::getRemainingFiles($user_id);
 
         $model = new BackGroundUserBalance();
         $model->user_id = $user_id;
@@ -60,10 +60,9 @@ class BackGroundUserBalance extends Model
         $model->save();
     }
 
-    public static function getRemainingFiles($user_id, $description_type){
+    public static function getRemainingFiles($user_id){
         return BackGroundUserBalance::query()
             ->where('user_id', $user_id)
-            ->where('description_type', $description_type)
             ->orderByDesc('create_date')
             ->value('remaining_files');
     }

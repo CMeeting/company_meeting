@@ -18,10 +18,10 @@ class RabbitMQService
         $channel = $connection->channel();
 
         //新建交换机
-        $channel->exchange_declare($exchange, 'topic', false, false, false);
+        $channel->exchange_declare($exchange, 'topic', true, true, false);
 
         //新建队列
-        $channel->queue_declare($query);
+        $channel->queue_declare($query, true, true, false, false);
 
         $channel->queue_bind($query, $exchange, $routing_key);
 

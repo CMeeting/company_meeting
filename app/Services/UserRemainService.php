@@ -17,8 +17,9 @@ class UserRemainService
      * @param $total_files
      * @param $package_type
      * @param $status
+     * @param $type
      */
-    public function resetRemain($user_id, $email, $total_files, $package_type, $status){
+    public function resetRemain($user_id, $email, $total_files, $package_type, $status, $type){
         //更新用户资产
         $backgroundUser = BackGroundUser::getByCompdfkitId($user_id);
         if(!$backgroundUser instanceof BackGroundUser){
@@ -26,23 +27,28 @@ class UserRemainService
         }
 
         //更新用户资产余额
-        //有用户资产数据，推送到SaaS后，由SaaS同步到管理后台 BackGroundUserRemain::updateAssetType($remain, $total_files, $status);
+        //有用户资产数据，推送到SaaS后，由SaaS同步到管理后台
         $remain = BackGroundUserRemain::getByTypeUserId($backgroundUser->id, $package_type);
         if(!$remain instanceof BackGroundUserRemain){
-            BackGroundUserRemain::add($backgroundUser->tenant_id, $backgroundUser->id, $package_type, $total_files, $status);
+            $remain = BackGroundUserRemain::add($backgroundUser->tenant_id, $backgroundUser->id, $package_type, $total_files, $status);
+        }else{
+            $remain = BackGroundUserRemain::updateAssetType($remain, $total_files, $status);
         }
 
-        $remain_files = BackGroundUserBalance::getRemainingFiles($user_id, $package_type);
-        //清空上个月订阅剩余数量记录
-        BackGroundUserBalance::add($backgroundUser->id, $backgroundUser->tenant_id, $package_type, $remain_files, BackGroundUserBalance::CHANGE_TYPE_2_used);
-        //这个月订阅重新赋值
-        if($total_files != 0){
+        $remain_files = BackGroundUserBalance::getRemainingFiles($user_id);
+
+        if($type == 'add'){
             BackGroundUserBalance::add($backgroundUser->id, $backgroundUser->tenant_id, $package_type, $total_files, BackGroundUserBalance::CHANGE_TYPE_1_RECHARGE);
+        }elseif($type == 'reset'){
+            BackGroundUserBalance::add($backgroundUser->id, $backgroundUser->tenant_id, $package_type, $remain_files, BackGroundUserBalance::CHANGE_TYPE_2_USED);
+            BackGroundUserBalance::add($backgroundUser->id, $backgroundUser->tenant_id, $package_type, $total_files, BackGroundUserBalance::CHANGE_TYPE_1_RECHARGE);
+        }elseif($type == 'cancel'){
+            BackGroundUserBalance::add($backgroundUser->id, $backgroundUser->tenant_id, $package_type, $total_files, BackGroundUserBalance::CHANGE_TYPE_2_USED);
         }
 
         //推送资产到SaaS
         $mqService = new RabbitMQService();
-        $mqService->sendMessage(['tenant_id'=>$backgroundUser->tenant_id, 'asset'=>$remain->total_files, 'assetType'=>$remain->asset_type, 'status'=>$remain->status]);
+        $mqService->sendMessage(['tenant_id'=>$backgroundUser->tenant_id, 'asset'=>$total_files, 'assetType'=>$remain->asset_type, 'status'=>$remain->status]);
     }
 
     /**

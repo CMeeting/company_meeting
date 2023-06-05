@@ -48,12 +48,13 @@ class BackGroundUserRemain extends Model
         $model->total_files = $total_files;
         $model->status = $status;
         $model->save();
+
+        return $model;
     }
 
     public static function updateAssetType(BackGroundUserRemain $model, $total_files, $status){
         if($model->asset_type == OrderGoods::PACKAGE_TYPE_1_PLAN){
-            //订阅资产新增时，使用次数改为0, 直接重置资产
-            $model->used_files = 0;
+            //订阅重置 total_files
             $model->total_files = $total_files;
         }else{
             //package 累加资产
@@ -62,5 +63,7 @@ class BackGroundUserRemain extends Model
 
         $model->status = $status;
         $model->save();
+
+        return $model;
     }
 }

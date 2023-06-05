@@ -186,7 +186,7 @@
                     } else {
                         layer.closeAll('loading');
                         layer.close(index);
-                        layer.msg(data.msg, {time: 1500, anim: 6});
+                        layer.msg(data.message, {time: 1500, anim: 6});
                         return false;
                     }
                 }, error: function (ret) {
