@@ -242,9 +242,9 @@
                             <td class="text-center">
                                 @if($item['status'] == 1)
                                     @if($item['package_type'] == 1)
-                                        <span class="ladda-label">已支付</span>
-                                    @else
                                         <span class="ladda-label">订阅中</span>
+                                    @else
+                                        <span class="ladda-label">已支付</span>
                                     @endif
 {{--                                @elseif($item['status'] == 2)--}}
 {{--                                    <span class="ladda-label">已完成</span>--}}
