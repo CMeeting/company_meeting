@@ -56,20 +56,15 @@ class BackGroundUserBalance extends Model
         $model->description = $description;
         $model->change_type = $change_type;
         $model->balance_change = $balance_change;
-        $model->remaining_files = $remaining_files;
+        $model->remaining_files = $remaining_files + $balance_change;
         $model->save();
     }
 
-    public static function getRemainingFiles($user_id, $balance_change){
-        $remaining_files = BackGroundUserBalance::query()
+    public static function getRemainingFiles($user_id, $description_type){
+        return BackGroundUserBalance::query()
             ->where('user_id', $user_id)
+            ->where('description_type', $description_type)
             ->orderByDesc('create_date')
             ->value('remaining_files');
-
-        if(!$remaining_files && $remaining_files != 0){
-            $remaining_files = 0;
-        }
-
-        return $remaining_files + $balance_change;
     }
 }
