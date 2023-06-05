@@ -105,11 +105,11 @@
                            style="word-wrap:break-word; word-break:break-all;text-align: center">
                         <thead>
                         <tr>
-                            <th class="text-center" style="width: 35%">套餐类型</th>
-                            <th class="text-center" style="width: 9%">档位（资产数）</th>
-                            <th class="text-center" style="width: 9%">订单金额（$）</th>
-                            <th class="text-center" style="width: 9%">订单类型</th>
-                            <th class="text-center" style="width: 9%">支付方式</th>
+                            <th class="text-center" style="width: 10%">套餐类型</th>
+                            <th class="text-center" style="width: 10%">档位（资产数）</th>
+                            <th class="text-center" style="width: 10%">订单金额（$）</th>
+                            <th class="text-center" style="width: 10%">订单类型</th>
+                            <th class="text-center" style="width: 10%">支付方式</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -153,10 +153,10 @@
                            style="word-wrap:break-word; word-break:break-all;text-align: center">
                         <thead>
                         <tr>
-                            <th class="text-center" style="width: 35%">期数</th>
-                            <th class="text-center" style="width: 9%">流水号</th>
-                            <th class="text-center" style="width: 9%">扣款日期</th>
-                            <th class="text-center" style="width: 9%">扣费金额</th>
+                            <th class="text-center" style="width: 10%">期数</th>
+                            <th class="text-center" style="width: 20%">流水号</th>
+                            <th class="text-center" style="width: 20%">扣款日期</th>
+                            <th class="text-center" style="width: 20%">扣费金额</th>
                         </tr>
                         </thead>
                         <tbody>

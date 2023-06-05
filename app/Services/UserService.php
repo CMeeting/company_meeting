@@ -465,11 +465,18 @@ class UserService
             ->toArray();
     }
 
+    /**
+     * 获取用户资产 新
+     * @param $user_id
+     * @return array
+     */
     public function getRemainByUser($user_id){
+        $tenant_id = BackGroundUser::query()
+            ->where('compdfkit_id', $user_id)
+            ->value('tenant_id');
+
         return BackGroundUserRemain::query()
-            ->leftJoin('background_user', 'background_user.id', '=', 'background_user_remain.id')
-            ->where('background_user.compdfkit_id', $user_id)
-            ->select(['background_user_remain.*'])
+            ->where('tenant_id', $tenant_id)
             ->get()
             ->keyBy('asset_type')
             ->toArray();
