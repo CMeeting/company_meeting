@@ -4,8 +4,10 @@
 namespace App\Http\Controllers\Admin;
 
 
+use App\Models\BackGroundUserRemain;
 use App\Models\Mailmagicboard;
 use App\Models\Order;
+use App\Models\OrderGoods;
 use App\Models\User;
 use App\Models\UserAssets;
 use App\Models\UserBillingInformation;
@@ -228,6 +230,7 @@ class UserController extends BaseController
 
         //统计信息 SaaS
         $saas_info = ['order_amount' => 0.00, 'order_num' => 0, 'total_assets' => 0, 'total_assets_balance' => 0, 'sub_assets_balance' => 0, 'package_assets_balance' => 0];
+
         $saas_info_temp = $userService->getOrderTotalByUser($id, [Order::DETAILS_STATUS_3_SAAS]);
         if($saas_info_temp){
             $saas_info['order_amount'] = $saas_info_temp['order_amount'];
@@ -235,19 +238,17 @@ class UserController extends BaseController
         }
 
         //资产信息
-        $assets_info = $userService->getSaaSAssetByUser($id);
-        if(!empty($assets_info)){
-            foreach ($assets_info as $assets){
-                if($assets['type'] == UserAssets::TYPE_1_SUB){
-                    $saas_info['sub_assets_balance'] += $assets['balance'];
-                }elseif($assets['type'] == UserAssets::TYPE_2_PACKAGE){
-                    $saas_info['package_assets_balance'] += $assets['balance'];
-                }
-
-                $saas_info['total_assets'] += $assets['total'];
-                $saas_info['total_assets_balance'] += $assets['balance'];
+        $assets_info = $userService->getRemainByUser($id);
+        foreach ($assets_info as $type => $assets){
+            $balance = $assets['total_files'] - $assets['used_files'];
+            if($type == OrderGoods::PACKAGE_TYPE_1_PLAN){
+                $saas_info['sub_assets_balance'] = $balance;
+            }elseif($type == OrderGoods::PACKAGE_TYPE_2_PACKAGE){
+                $saas_info['package_assets_balance'] = $balance;
             }
 
+            $saas_info['total_assets'] += $assets['total_files'];
+            $saas_info['total_assets_balance'] += $balance;
         }
 
         //TODO 后续声明常量
