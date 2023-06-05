@@ -395,7 +395,7 @@ class UserService
         if($old_type == User::TYPE_1_FREE){
             //免费用户直接更改为新类型
             $user->type = $type;
-        }elseif($old_type == User::TYPE_2_SDK_TRY_OUT){
+        }elseif($old_type == User::TYPE_2_SDK_TRY_OUT || $old_type == User::TYPE_6_SAAS_TRY_OUT){
             if($type > 2){
                 //试用用户，如果是购买则更改为新类型
                 $user->type = $type;
