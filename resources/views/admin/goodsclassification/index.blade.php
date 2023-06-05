@@ -75,7 +75,7 @@
 
     <div style="width: 100%;margin-bottom: 15px;">
         <a class="ab" style="background: #b4b7b3" href="{{route('goodsclassification.index')}}">SDK</a>
-        <a class="ab"  href="{{route('goodsclassification.sdkindex')}}">SaaS</a>
+        <a class="ab"  href="{{route('goodsclassification.sdkindex')}}">API</a>
     </div>
 
     <div class="row" id="onType">

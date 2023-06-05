@@ -25,7 +25,7 @@
                         <label class="col-sm-2 control-label no-padding-right" for="form-field-1"> 上级分类：</label>
                         <div class="col-sm-6 col-xs-12">
                             <select name="data[pid]" class="form-control sels"  id="selectid" @if(isset($pid) && $pid) style="pointer-events: none;color: #9f9f9f" @endif>
-                                <option value="0">--默认属于套餐--</option>
+                                <option value="0">--默认属于套餐，下拉选择其他一级分类--</option>
                                 @foreach($material as $vs)
                                     <option value="{{$vs['id']}}"
                                             @if(isset($pid) && $pid==$vs['id'])
