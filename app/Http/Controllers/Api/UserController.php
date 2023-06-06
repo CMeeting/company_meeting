@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 
 
 use App\Http\Controllers\Controller;
+use App\Jobs\ActivateUserRemain;
 use App\Jobs\SendEmail;
 use App\Models\LogoutUser;
 use App\Models\Mailmagicboard;
@@ -492,6 +493,9 @@ class UserController extends Controller
         }
         $user->is_verify = User::IS_VERIFY_2_YES;
         $user->save();
+
+        //激活资产
+        dispatch(new ActivateUserRemain($user));
 
         Cache::tags($tag)->forget($token);
 

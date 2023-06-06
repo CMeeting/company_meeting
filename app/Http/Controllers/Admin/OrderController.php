@@ -54,6 +54,8 @@ class OrderController extends BaseController {
         $query['gear'] = array_get($param, 'gear', '');
         $query['export'] = array_get($param, 'export', 0);
         $query ['field'] = array_get($param, 'field', '');
+        $query['closetime'] = array_get($param, 'closetime', '');
+
         $data = $GoodsService->data_saaslist($query);
         $sum = $GoodsService->sum_saasdata($query);
         if($query['export'] == 1){

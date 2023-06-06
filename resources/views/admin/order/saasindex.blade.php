@@ -44,13 +44,13 @@
             </div>
             <div class="ibox-content">
 
-                <div class="col-xs-10 col-sm-11 margintop5" style="margin-bottom: 5px">
+                <div class="col-xs-10 col-sm-11 margintop5" style="margin-bottom: 5px; width: 100%; padding: 0;">
                     <form name="admin_list_sea" class="form-search" method="get" action="{{route('order.saasindex')}}">
-                        <div class="input-group">
+                        <div class="input-group" style="height: 34px; width: 100%;">
 
-                            <div class="input-group-btn" style="display: block;">
+                            <div class="input-group-btn" style="display: block; width: 10%">
                                 <select id="query_type" name="query_type" class="form-control"
-                                        style="display: inline-block;width: 100px;">
+                                        style="display: inline-block;">
                                     <option value="orders.id" @if(isset($query)&&$query['query_type']=='orders.id') selected @endif>
                                         序号
                                     </option>
@@ -58,16 +58,15 @@
                                         订单号
                                     </option>
                                     <option value="users.email" @if(isset($query)&&$query['query_type']=='users.email') selected @endif>
-                                        用户邮箱
+                                        用户账号
                                     </option>
                                 </select>
                             </div>
-                            <input id="info" type="text" name="info" placeholder="请输入筛选内容" class="form-control" style="display: inline-block;width: 150px;
+                            <input id="info" type="text" name="info" placeholder="请输入筛选内容" class="form-control" style="display: inline-block; width: 10%;
                                    value="@if(isset($query['info']))value="{{$query['info']}}"@endif"/>
 
 
-                            <div class="col-md-4 col-lg-3 col-sm-6 col-xs-12">
-                                <div class="form-group">
+                            <div class="col-md-4 col-lg-3 col-sm-6 col-xs-12" style="width: 10%">
                                     <select id="status" class="form-control"  name="status" tabindex="1">
                                         <option value="">订单状态</option>
                                         <option value="1" @if(isset($query) && $query['status']==1) selected @endif>待支付</option>
@@ -76,7 +75,6 @@
 {{--                                        <option value="4" @if(isset($query)&&$query['status']==4) selected @endif>待退款</option>--}}
                                         <option value="5" @if(isset($query) && $query['status']==5) selected @endif>已关闭</option>
                                     </select>
-                                </div>
                             </div>
 
 {{--                            <div class="col-md-4 col-lg-3 col-sm-6 col-xs-12">--}}
@@ -93,39 +91,41 @@
 {{--                                </div>--}}
 {{--                            </div>--}}
 
-                            <div class="col-md-4 col-lg-3 col-sm-6 col-xs-12">
-                                <div class="form-group">
-                                    <select id="type" class="form-control"  name="type" tabindex="1">
+                            <div class="col-md-4 col-lg-3 col-sm-6 col-xs-12" style="width: 10%">
+                                    <select id="type" class="form-control"  name="type">
                                         <option value="">订单类型</option>
                                         <option value="1" @if(isset($query)&&$query['type']==1) selected @endif>后台创建</option>
                                         <option value="2" @if(isset($query)&&$query['type']==2) selected @endif>用户购买</option>
                                     </select>
-                                </div>
                             </div>
 
-                            <div class="col-md-4 col-lg-3 col-sm-6 col-xs-12">
-                                <div class="form-group">
-                                    <select id="combo" class="form-control"  name="combo" tabindex="1" onchange="comboChange()">
+                            <div class="col-md-4 col-lg-3 col-sm-6 col-xs-12" style="width: 15%">
+                                    <select id="combo" class="form-control"  name="combo" onchange="comboChange()">
                                         <option value="">请选择套餐</option>
                                         @foreach($combos as $combo)
                                             <option value="{{$combo['id']}}" @if(isset($query)&&$query['combo']==$combo['id']) selected @endif>{{$combo['title']}}</option>
                                         @endforeach
                                     </select>
-                                </div>
                             </div>
 
-                            <div class="col-md-4 col-lg-3 col-sm-6 col-xs-12">
-                                <div class="form-group">
-                                    <select id="gear" class="form-control"  name="gear" tabindex="1">
+                            <div class="col-md-4 col-lg-3 col-sm-6 col-xs-12" style="width: 15%">
+                                    <select id="gear" class="form-control"  name="gear">
                                         <option value="">请选择档位</option>
                                     </select>
-                                </div>
+                            </div>
+                        </div>
+
+                        <div class="input-group" style="height: 34px; width: 100%; margin-top: 5px">
+                            <div class="input-group-btn" style="display: inline-block;width: 15%;">
+                                <input type="text" name="created_at" class="form-control"
+                                       style="display: inline-block;" id="created_at" placeholder="创建时间"
+                                       value="@if(isset($query)){{$query['created_at']}}@endif"/>
                             </div>
 
-                            <div class="input-group-btn" style="display: inline-block;width: 250px;margin-left:20px;">
-                                <input type="text" name="created_at" class="form-control"
-                                       style="display: inline-block;width: 200px;" id="created_at" placeholder="创建时间"
-                                       value="@if(isset($query)){{$query['created_at']}}@endif"/>
+                            <div class="input-group-btn" style="display: inline-block;width: 15%; margin-left: 20px">
+                                <input type="text" name="closetime" class="form-control"
+                                       style="display: inline-block;" id="closetime" placeholder="关闭时间"
+                                       value="@if(isset($query)){{$query['closetime']}}@endif"/>
                             </div>
 
 {{--                            <div class="input-group-btn" style="display: inline-block;width: 150px;">--}}
@@ -139,13 +139,11 @@
 {{--                                       value="@if(isset($query)){{$query['endpay_at']}}@endif"/>--}}
 {{--                            </div>--}}
 
-                            <span class="input-group-btn" style="display: inline-block;">
-                                                    <button type="submit" class="btn btn-purple btn-sm"
-                                                            style="margin-left: 20px;" id="selectd">
-                                                        <span class="ace-icon fa fa-search icon-on-right bigger-110"></span>
-                                                        搜索
-                                                    </button>
-                                                </span>
+                            <div class="input-group-btn" style="display: inline-block; margin-left: 10px">
+                                <button type="submit" class="btn btn-purple btn-sm" id="selectd">
+                                    <span class="ace-icon fa fa-search icon-on-right bigger-110">搜索</span>
+                                </button>
+                            </div>
                         </div>
                     </form>
                 </div>
@@ -198,7 +196,7 @@
                             <th class="text-center" style="width: 11%">支付时间</th>
                         @elseif($query && $query['status'] == 5)
                             <th class="text-center" style="width: 11%">关闭时间</th>
-                            <th class="text-center" style="width: 11%">是否为退款订单</th>
+                            <th class="text-center" style="width: 11%">备注</th>
                         @endif
 
                         <th class="text-center" style="width: 10%">操作</th>
@@ -232,7 +230,7 @@
                                     @if($item['type'] == 1)
                                         <span class="ladda-label">后台创建</span>
                                     @elseif($item['type'] == 2)
-                                        <span class="ladda-label">在线支付</span>
+                                        <span class="ladda-label">在线购买</span>
                                     @else
                                         <span class="ladda-label">未知</span>
                                     @endif
@@ -337,6 +335,18 @@
 
             laydate.render({
                 elem: '#created_at', //指定元素
+                max: 0 ,//最大值为当前日期
+                trigger: 'click',
+                type: 'date',//日期时间选择器
+                range:'/'
+            });
+        });
+
+        layui.use('laydate', function () {
+            var laydate = layui.laydate;
+
+            laydate.render({
+                elem: '#closetime', //指定元素
                 max: 0 ,//最大值为当前日期
                 trigger: 'click',
                 type: 'date',//日期时间选择器

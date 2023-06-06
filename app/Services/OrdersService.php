@@ -190,6 +190,13 @@ class OrdersService
             $where .= " AND orders.created_at BETWEEN '" . $start_data . "' AND '" . $end_data . "'";
         }
 
+        if(isset($param['closetime']) && $param['closetime']){
+            $close_at_arr = explode('/', $param['closetime']);
+            $start_data = $close_at_arr[0];
+            $end_data = Carbon::parse($close_at_arr[1])->addDay()->format('Y-m-d H:i:s');
+            $where .= " AND orders.closetime BETWEEN '" . $start_data . "' AND '" . $end_data . "'";
+        }
+
         $goods = new Order();
         $classification = $this->assembly_saasclassification();
         if ($param['export'] == 1) {

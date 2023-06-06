@@ -102,7 +102,7 @@ class GoodsService
             ->where('goods.is_saas', 1);
 
         if (isset($param['info']) && $param['info']) {
-            $query->where('goods.' . $param['query_type'], $param['info']);
+            $query->where('goods.sort_num', $param['info']);
         }
         if (isset($param['level1']) && $param['level1']) {
             $query->where('goods.level1', $param['level1']);
@@ -229,7 +229,7 @@ class GoodsService
         $where = "deleted=0 and is_saas=1";
         $goods = new Goodsclassification();
         $data = $goods->_where($where, "lv,displayorder");
-        $lv1 = array(['id'=>0,'title'=>'请选择套餐']);
+        $lv1 = array(['id'=>0,'title'=>'下拉选择套餐']);
         $lv2 = array();
         if ($data) {
             foreach ($data as $k => $v) {
@@ -238,7 +238,7 @@ class GoodsService
                 }
             }
             foreach ($lv1 as $ks => $vs) {  //循环一级数组数据
-                $lv2[$vs['title']][] = ['id'=>0,'title'=>'请选择档位'];
+                $lv2[$vs['title']][] = ['id'=>0,'title'=>'下拉选择档位'];
                 foreach ($data as $kb => $vb) {         //循环二级数组数据
                     $s = 0;
                     if ($vb['lv'] == 2 && $vb['pid'] === $vs['id']) {

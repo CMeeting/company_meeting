@@ -37,7 +37,6 @@ class GoodsController extends BaseController {
     {
         $GoodsService = new GoodsService();
 
-        $query['query_type'] = $request->input('query_type');
         $query['info'] = $request->input('info');
         $query['level1'] = $request->input('level1');
         $query['level2'] = $request->input('level2');

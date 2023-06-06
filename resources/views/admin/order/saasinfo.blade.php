@@ -4,7 +4,7 @@
     <div class="row">
         <div class="col-sm-12">
             <div class="ibox-title">
-                <h5 style="width: 20%;float: left">查看API订单</h5>
+                <h5 style="width: 20%;float: left">订单详情</h5>
                 <div class="clearfix form-actions" style="float: right;width: 79.5%">
                     <div class="col-md-offset-5 col-md-9" style="margin-left: 94.5%">
                         <a id="reset" class="menuid btn btn-primary btn-sm" onclick="returnHistory()">返回</a>
@@ -13,29 +13,29 @@
             </div>
             <div class="ibox-content">
                 <div class="form-group">
-                    <div class="text " style="float: left;width: 79.9%">
-                        <p><span style="font-family:'FontAwesome';font-weight:400;font-style:normal;">&nbsp;</span><span style="font-family:'Arial Normal', 'Arial';font-weight:400;"> </span><span style="font-family:'微软雅黑';font-weight:400;">当前订单状态：
-                                @if($data[0]['status'] == 1)
-                                    @if($data[0]['package_type'] == 1){
-                                    <span class="ladda-label">已支付</span>
-                                    @else
-                                        <span class="ladda-label">订阅中</span>
-                                    @endif
-                                    {{--                                @elseif($item['status'] == 2)--}}
-                                    {{--                                    <span class="ladda-label">已完成</span>--}}
-                                @elseif($data[0]['status'] == 3)
-                                    <span class="ladda-label">待退款</span>
-                                @elseif($data[0]['status'] == 4)
-                                    <span class="ladda-label">已关闭</span>
-                                @elseif($data[0]['status'] == 5)
-                                    <span class="ladda-label">取消订阅</span>
-                                @elseif($data[0]['status'] == 6)
-                                    <span class="ladda-label">已退款</span>
-                                @else
-                                    <span class="ladda-label">待支付</span>
-                                @endif
-                            </span></p>
-                    </div>
+{{--                    <div class="text " style="float: left;width: 79.9%">--}}
+{{--                        <p><span style="font-family:'FontAwesome';font-weight:400;font-style:normal;">&nbsp;</span><span style="font-family:'Arial Normal', 'Arial';font-weight:400;"> </span><span style="font-family:'微软雅黑';font-weight:400;">当前订单状态：--}}
+{{--                                @if($data[0]['status'] == 1)--}}
+{{--                                    @if($data[0]['package_type'] == 1){--}}
+{{--                                    <span class="ladda-label">已支付</span>--}}
+{{--                                    @else--}}
+{{--                                        <span class="ladda-label">订阅中</span>--}}
+{{--                                    @endif--}}
+{{--                                    --}}{{--                                @elseif($item['status'] == 2)--}}
+{{--                                    --}}{{--                                    <span class="ladda-label">已完成</span>--}}
+{{--                                @elseif($data[0]['status'] == 3)--}}
+{{--                                    <span class="ladda-label">待退款</span>--}}
+{{--                                @elseif($data[0]['status'] == 4)--}}
+{{--                                    <span class="ladda-label">已关闭</span>--}}
+{{--                                @elseif($data[0]['status'] == 5)--}}
+{{--                                    <span class="ladda-label">取消订阅</span>--}}
+{{--                                @elseif($data[0]['status'] == 6)--}}
+{{--                                    <span class="ladda-label">已退款</span>--}}
+{{--                                @else--}}
+{{--                                    <span class="ladda-label">待支付</span>--}}
+{{--                                @endif--}}
+{{--                            </span></p>--}}
+{{--                    </div>--}}
                     <div style="float: right;width: 20%;height: 30px">
                         @if($data[0]['status'] == 0)
                         <a style="display: inline-block;width: 80px;height: 30px;text-align: center;padding-top:2px;border: 1px solid cadetblue;color: #0a0a0a" onclick="statusupdate({{$data[0]['order_id']}})">关闭订单</a>
@@ -66,7 +66,7 @@
                                     @if($item['type'] == 1)
                                         <span class="ladda-label">后台创建</span>
                                     @elseif($item['type'] == 2)
-                                        <span class="ladda-label">在线支付</span>
+                                        <span class="ladda-label">在线购买</span>
                                     @else
                                         <span class="ladda-label">未知</span>
                                     @endif
@@ -123,7 +123,7 @@
                                 @if($item['type'] == 1)
                                     <span class="ladda-label">后台创建</span>
                                 @elseif($item['type'] == 2)
-                                    <span class="ladda-label">在线支付</span>
+                                    <span class="ladda-label">在线购买</span>
                                 @else
                                     <span class="ladda-label">未知</span>
                                 @endif

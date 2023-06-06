@@ -58,15 +58,8 @@
                             <select name="data[level1]" id="province1" class="form-control province" onchange="province(1)"></select>
                         </div>
                     </div>
-                    <div class="form-group h1title" id="pay_yearsdiv">
-                        <label class="col-sm-2 control-label no-padding-right" for="form-field-1"> 有效期：<span style="color: red;font-size: 14px">*</span></label>
-                        <div class="col-sm-6 col-xs-12">
-                            <input id="pay_years" type="number" min="1" class="form-control" name="data[pay_years]" required placeholder="请输入有效期">
-                        </div>
-                        <span class="lbl">/月</span>
-                    </div>
                     <div class="form-group">
-                        <label class="col-sm-2 control-label no-padding-right" for="form-field-1">档位：<span style="color: red;font-size: 14px">*</span></label>
+                        <label class="col-sm-2 control-label no-padding-right" for="form-field-1">档位（资产数）：<span style="color: red;font-size: 14px">*</span></label>
                         <div class="col-sm-6 col-xs-12">
                             <select name="data[level2]" id="city1" class="form-control city" onchange="city(1)"></select>
                         </div>
@@ -74,7 +67,7 @@
 
                     <div id="peizhi" style="display: none">
                         <div class="form-group">
-                            <label class="col-sm-2 control-label no-padding-right" for="form-field-1">配置资产：<span style="color: red;font-size: 14px">*</span></label>
+                            <label class="col-sm-2 control-label no-padding-right" for="form-field-1">配置资产数量：<span style="color: red;font-size: 14px">*</span></label>
                             <div class="col-sm-6 col-xs-12">
                                 <input name="data[special_assets]" id="zican" class="form-control" type="number" min="0" max="99999999" value="0">
                             </div>
@@ -85,6 +78,13 @@
                                 <input name="data[price]" id="price" class="form-control" type="number" min="0.01" max="99999999" step="0.01" oninput="if(value.length>8)value=value.slice(0,8)" value="0.00" required>
                             </div>
                         </div>
+                    </div>
+                    <div class="form-group h1title" id="pay_yearsdiv">
+                        <label class="col-sm-2 control-label no-padding-right" for="form-field-1"> 有效期：<span style="color: red;font-size: 14px">*</span></label>
+                        <div class="col-sm-6 col-xs-12">
+                            <input id="pay_years" type="number" min="1" class="form-control" name="data[pay_years]" required placeholder="请输入有效期">
+                        </div>
+                        <span class="lbl">/月</span>
                     </div>
 
 

@@ -61,28 +61,27 @@
             </div>
             <div class="ibox-content">
 
-                <div class="col-xs-10 col-sm-11 margintop5" style="margin-bottom: 5px">
+                <div class="col-xs-10 col-sm-11 margintop5" style="margin-bottom: 5px; padding: 0;">
                     <form name="admin_list_sea" class="form-search" method="get" action="{{route('goods.saasIndex')}}">
-                        <div class="input-group" style="display: block">
+                        <div class="input-group" style="display: block;height: 34px">
+{{--                            <div class="input-group-btn" style="display: block;">--}}
+{{--                                <select id="query_type" name="query_type" class="form-control"--}}
+{{--                                        style="display: inline-block;width: 100px;">--}}
+{{--                                    <option value="sort_num" @if(isset($query)&&$query['query_type']=='sort_num') selected @endif>--}}
+{{--                                        序号--}}
+{{--                                    </option>--}}
+{{--                                </select>--}}
+{{--                            </div>--}}
+                            <input id="info" type="text" name="info" placeholder="请输入序号" class="form-control" style="display: inline-block;width: 10%;"
+                                   value="@if(isset($query)){{$query['info']}}@endif"/>
 
-                            <div class="input-group-btn" style="display: block;">
-                                <select id="query_type" name="query_type" class="form-control"
-                                        style="display: inline-block;width: 100px;">
-                                    <option value="sort_num" @if(isset($query)&&$query['query_type']=='sort_num') selected @endif>
-                                        序号
-                                    </option>
-                                </select>
-                            </div>
-                            <input id="info" type="text" name="info" placeholder="请输入序号" class="form-control" style="display: inline-block;width: 150px;
-                                   value="@if(isset($query))value="{{$query['info']}}"@endif"/>
-
-                            <div class="col-md-4 col-lg-2 col-sm-6 col-xs-12">
+                            <div class="col-md-4 col-lg-2 col-sm-6 col-xs-12" style="width: 20%;">
                                 <select name="level1" id="province" class="form-control"></select>
                             </div>
-                            <div class="col-md-4 col-lg-2 col-sm-6 col-xs-12">
+                            <div class="col-md-4 col-lg-2 col-sm-6 col-xs-12" style="width: 20%;">
                                 <select name="level2" id="city" class="form-control"></select>
                             </div>
-                            <div class="col-md-4 col-lg-2 col-sm-6 col-xs-12">
+                            <div class="col-md-4 col-lg-2 col-sm-6 col-xs-12" style="width: 20%;">
                                 <div class="form-group">
                                     <select id="status" class="form-control"  name="status" tabindex="1">
                                         <option value="">筛选状态</option>
@@ -91,32 +90,33 @@
                                     </select>
                                 </div>
                             </div>
+                        </div>
 
-                            <div class="input-group-btn" style="display: inline-block;width: 200px;margin-left:20px;">
+                        <div class="input-group" style="display: block;height: 34px; margin-top: 5px">
+
+                            <div class="input-group-btn" style="display: inline-block;width: 15%;">
                                 <input type="text" name="created_at" class="form-control"
-                                       style="display: inline-block;width: 200px;" id="created_at" placeholder="创建时间"
+                                       style="display: inline-block;" id="created_at" placeholder="创建时间"
                                        value="@if(isset($query)){{$query['created_at']}}@endif"/>
                             </div>
 
-                            <div class="input-group-btn" style="display: inline-block;width: 200px;margin-left:20px;">
+                            <div class="input-group-btn" style="display: inline-block;width: 15%; margin-left: 12px">
                                 <input type="text" name="updated_at" class="form-control"
-                                       style="display: inline-block;width: 200px;" id="updated_at" placeholder="更新时间"
+                                       style="display: inline-block;" id="updated_at" placeholder="更新时间"
                                        value="@if(isset($query)){{$query['updated_at']}}@endif"/>
                             </div>
 
-                            <div class="input-group-btn" style="display: inline-block;width: 200px;margin-left:20px;">
+                            <div class="input-group-btn" style="display: inline-block;width: 15%; margin-left: 12px">
                                 <input type="text" name="shelf_at" class="form-control"
-                                       style="display: inline-block;width: 200px;" id="shelf_at" placeholder="上架时间"
+                                       style="display: inline-block;" id="shelf_at" placeholder="上架时间"
                                        value="@if(isset($query)){{$query['shelf_at']}}@endif"/>
                             </div>
 
                             <span class="input-group-btn" style="display: inline-block;">
-                                                    <button type="submit" class="btn btn-purple btn-sm"
-                                                            style="margin-left: 20px;">
-                                                        <span class="ace-icon fa fa-search icon-on-right bigger-110"></span>
-                                                        搜索
-                                                    </button>
-                                                </span>
+                                <button type="submit" class="btn btn-purple btn-sm" style="margin-left: 20px;">
+                                    <span class="ace-icon fa fa-search icon-on-right bigger-110">搜索</span>
+                                </button>
+                            </span>
                         </div>
                     </form>
                 </div>
@@ -271,9 +271,9 @@
         function show(id,status) {
 
             if(status==1){
-                var ale="你确定下架此商品吗？"
+                var ale="商品下架后将不在官网进行展示，你确定下架此商品吗？"
             }else{
-                var ale="你确定上架此商品吗？"
+                var ale="商品上架后将在官网进行展示，你确定要上架此商品吗？"
             }
             layer.confirm(ale, {
                 btn: ['确定', '取消']
