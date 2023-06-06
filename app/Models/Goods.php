@@ -79,6 +79,6 @@ class Goods extends Model
         return Goods::query()
             ->leftJoin('goods_classification', 'goods.level2', '=', 'goods_classification.id')
             ->where('goods.id', $goods_id)
-            ->value('goods_classification.title');
+            ->value('title');
     }
 }

@@ -154,6 +154,7 @@ class SaaSOrderService
 
             DB::commit();
         }catch (\Exception $e){
+            DB::rollBack();
             return ['code'=>500, 'message'=>'创建失败', 'error'=>$e->getMessage()];
         }
 
@@ -198,114 +199,167 @@ class SaaSOrderService
      * 订单支付成功
      * @param Order $order
      * @param $next_billing_time
+     * @return bool
      */
     public function completeOrder(Order $order, $next_billing_time = null){
-        //修改订单为已支付状态
-
         //TODO 发送支付成功的邮件
-
         if($order->status == OrderGoods::STATUS_0_UNPAID){
-            $order->status = OrderGoods::STATUS_1_PAID;
-            $order->pay_time = date('Y-m-d H:i:s');
-            $order->save();
+            try{
+                DB::beginTransaction();
+                $order->status = OrderGoods::STATUS_1_PAID;
+                $order->pay_time = date('Y-m-d H:i:s');
+                $order->save();
 
-            $user = User::find($order->user_id);
+                $user = User::find($order->user_id);
 
-            //修改子订单为已支付状态
-            $order_goods = OrderGoods::getByOrderId($order->id);
-            $order_goods->status = OrderGoods::STATUS_1_PAID;
-            $order_goods->next_billing_time = $next_billing_time;
-            $order_goods->pay_time = date('Y-m-d H:i:s');
-            $order_goods->save();
+                //修改子订单为已支付状态
+                $order_goods = OrderGoods::getByOrderId($order->id);
+                $order_goods->status = OrderGoods::STATUS_1_PAID;
+                $order_goods->next_billing_time = $next_billing_time;
+                $order_goods->pay_time = date('Y-m-d H:i:s');
+                $order_goods->save();
 
-            //更新流水信息
-            OrderCashFlow::add($order->id, $order->pay_type, $order_goods->package_type, $order->price, 0, 0, $order->price, $order->third_trade_no, '', OrderCashFlow::CURRENCY_1_USD);
+                //更新流水信息
+                \Log::info('支付成功更新流水信息', ['order_id'=>$order->id]);
+                OrderCashFlow::add($order->id, $order->pay_type, $order_goods->package_type, $order->price, 0, 0, $order->price, $order->third_trade_no, '', OrderCashFlow::CURRENCY_1_USD);
 
-            //更新用户类型
-            $user_service = new UserService();
-            $user_service->changeType(Order::DETAILS_STATUS_3_SAAS, $user->id);
+                //更新用户类型
+                $user_service = new UserService();
+                $user_service->changeType(Order::DETAILS_STATUS_3_SAAS, $user->id);
 
-            //更新用户SaaS资产信息
-            $remain_service = new UserRemainService();
-            $total_files = Goods::getTotalFilesByGoods($order_goods->goods_id);
-            $remain_service->resetRemain($user->id, $user->email, $total_files, $order_goods->package_type, BackGroundUserRemain::STATUS_1_ACTIVE, 'add');
+                //更新用户SaaS资产信息
+                $remain_service = new UserRemainService();
+                $total_files = Goods::getTotalFilesByGoods($order_goods->goods_id);
+                \Log::info('支付成功更新资产信息', ['order_id'=>$order->id, 'user_id'=>$user->id, 'total_files'=>$total_files, 'package_type'=>$order_goods->package_type]);
+                $remain_service->resetRemain($user->id, $user->email, $total_files, $order_goods->package_type, BackGroundUserRemain::STATUS_1_ACTIVE, 'add');
+
+                DB::commit();
+                \Log::info('订单支付成功回调处理成功', ['third_trade_id'=>$order->third_trade_no]);
+            }catch (\Exception $e){
+                DB::rollBack();
+                \Log::error('订单支付成功回调处理失败', ['third_trade_id'=>$order->third_trade_no, 'message'=>$e->getMessage(), 'line'=>$e->getLine(), 'file'=>$e->getFile()]);
+
+                return false;
+            }
         }
+
+        return true;
     }
 
     /**
      * 订阅周期扣款成功
      * @param Order $order
      * @param $next_billing_time
+     * @return bool
      */
     public function deductionSuccess(Order $order, $next_billing_time){
         $user = User::find($order->user_id);
 
         //更新下次扣款时间
-        $order_goods = OrderGoods::getByOrderId($order->id);
-        $combo = Goodsclassification::getComboById($order_goods->level1);
-        //年订阅更新有效期
-        if(strstr($combo, '年')){
-            $order_goods->pay_years += 12;
+        try{
+            DB::beginTransaction();
+            $order_goods = OrderGoods::getByOrderId($order->id);
+            $combo = Goodsclassification::getComboById($order_goods->level1);
+            //年订阅更新有效期
+            if(strstr($combo, '年')){
+                $order_goods->pay_years += 12;
+            }
+            $order_goods->next_billing_time = $next_billing_time;
+            $order_goods->save();
+
+            //更新流水信息
+            \Log::info('订阅扣款成功更新流水信息', ['order_id'=>$order->id]);
+            OrderCashFlow::add($order->id, $order->pay_type, $order_goods->package_type, $order->price, 0, 0, $order->price, $order->third_trade_no, '', OrderCashFlow::CURRENCY_1_USD);
+
+            //更新用户SaaS资产信息
+            $remain_service = new UserRemainService();
+            $total_files = Goods::getTotalFilesByGoods($order_goods->goods_id);
+            \Log::info('订阅扣款成功更新资产信息', ['order_id'=>$order->id, 'user_id'=>$user->id, 'total_files'=>$total_files, 'package_type'=>$order_goods->package_type]);
+            $remain_service->resetRemain($user->id, $user->email, $total_files, $order_goods->package_type, BackGroundUserRemain::STATUS_1_ACTIVE, 'reset');
+            DB::commit();
+        }catch (\Exception $e){
+            DB::rollBack();
+            \Log::error('订阅扣款成功回调处理失败', ['third_trade_id'=>$order->third_trade_no, 'message'=>$e->getMessage(), 'line'=>$e->getLine(), 'file'=>$e->getFile()]);
+
+            return false;
         }
-        $order_goods->next_billing_time = $next_billing_time;
-        $order_goods->save();
 
-        //更新流水信息
-        OrderCashFlow::add($order->id, $order->pay_type, $order_goods->package_type, $order->price, 0, 0, $order->price, $order->third_trade_no, '', OrderCashFlow::CURRENCY_1_USD);
-
-        //更新用户SaaS资产信息
-        $remain_service = new UserRemainService();
-        $total_files = Goods::getTotalFilesByGoods($order_goods->goods_id);
-        $remain_service->resetRemain($user->id, $user->email, $total_files, $order_goods->package_type, BackGroundUserRemain::STATUS_1_ACTIVE, 'reset');
+        return true;
     }
 
     /**
      * 订阅周期扣款失败
      * @param Order $order
+     * @return bool
      */
     public function deductionFailed(Order $order){
         $user = User::find($order->user_id);
 
         if($order->status == OrderGoods::STATUS_1_PAID){
-            //扣款失败修改状态为取消订阅
-            $order->status = OrderGoods::STATUS_5_UNSUBSCRIBE;
-            $order->save();
+            try{
+                DB::beginTransaction();
+                //扣款失败修改状态为取消订阅
+                $order->status = OrderGoods::STATUS_5_UNSUBSCRIBE;
+                $order->save();
 
-            $order_goods = OrderGoods::getByOrderId($order->id);
-            $order_goods->status = OrderGoods::STATUS_5_UNSUBSCRIBE;
-            $order_goods->save();
+                $order_goods = OrderGoods::getByOrderId($order->id);
+                $order_goods->status = OrderGoods::STATUS_5_UNSUBSCRIBE;
+                $order_goods->save();
 
-            //更新用户SaaS资产信息
-            $remain_service = new UserRemainService();
-            $remain_service->resetRemain($user->id, $user->email, 0, $order_goods->package_type, BackGroundUserRemain::STATUS_2_INACTIVE, 'cancel');
+                //更新用户SaaS资产信息
+                \Log::info('订阅周期扣款失败更新资产信息', ['order_id'=>$order->id]);
+                $remain_service = new UserRemainService();
+                $remain_service->resetRemain($user->id, $user->email, 0, $order_goods->package_type, BackGroundUserRemain::STATUS_2_INACTIVE, 'cancel');
 
-            //新增订阅取消记录
-            $reset_date = date('Y-m-d');
-            $remark = '扣款失败回调事件';
-            OrderGoodsCancel::add($order_goods->id, OrderGoodsCancel::STATUS_2_PROCESSED, $reset_date, $remark);
+                //新增订阅取消记录
+                \Log::info('订阅周期扣款失败增加已处理取消订阅记录', ['order_id'=>$order->id]);
+                $reset_date = date('Y-m-d');
+                $remark = '扣款失败回调事件';
+                OrderGoodsCancel::add($order_goods->id, OrderGoodsCancel::STATUS_2_PROCESSED, $reset_date, $remark);
+
+                DB::commit();
+            }catch (\Exception $e){
+                DB::rollBack();
+                \Log::error('订阅周期扣款失败回调处理失败', ['third_trade_id'=>$order->third_trade_no, 'message'=>$e->getMessage(), 'line'=>$e->getLine(), 'file'=>$e->getFile()]);
+
+                return false;
+            }
         }
+
+        return true;
     }
 
     /**
      * 取消订阅
      * @param Order $order
+     * @return bool
      */
     public function cancelPlan(Order $order){
         if($order->status == OrderGoods::STATUS_1_PAID){
-            //修改状态为取消订阅
-            $order->status = OrderGoods::STATUS_5_UNSUBSCRIBE;
-            $order->save();
+            try{
+                DB::beginTransaction();
+                //修改状态为取消订阅
+                $order->status = OrderGoods::STATUS_5_UNSUBSCRIBE;
+                $order->save();
 
-            $order_goods = OrderGoods::getByOrderId($order->id);
-            $order_goods->status = OrderGoods::STATUS_5_UNSUBSCRIBE;
-            $order_goods->save();
+                $order_goods = OrderGoods::getByOrderId($order->id);
+                $order_goods->status = OrderGoods::STATUS_5_UNSUBSCRIBE;
+                $order_goods->save();
 
-            //新增订阅取消记录
-            //获取处理时间
-            $next_billing_time = $order_goods->next_billing_time;
-            $reset_date = Carbon::parse($next_billing_time)->addMonthsNoOverflow(1)->addDay()->format('Y-m-d');
-            $remark = '取消订阅回调事件';
-            OrderGoodsCancel::add($order_goods->id, OrderGoodsCancel::STATUS_1_UNPROCESSED, $reset_date, $remark);
+                //新增订阅取消记录
+                //获取处理时间
+                \Log::info('取消订阅回调增加待处理的取消订阅记录', ['order_id'=>$order->id]);
+                $next_billing_time = $order_goods->next_billing_time;
+                $reset_date = Carbon::parse($next_billing_time)->addMonthsNoOverflow(1)->addDay()->format('Y-m-d');
+                $remark = '取消订阅回调事件';
+                OrderGoodsCancel::add($order_goods->id, OrderGoodsCancel::STATUS_1_UNPROCESSED, $reset_date, $remark);
+            }catch (\Exception $e){
+                DB::rollBack();
+                \Log::error('取消订阅回调处理失败', ['third_trade_id'=>$order->third_trade_no, 'message'=>$e->getMessage(), 'line'=>$e->getLine(), 'file'=>$e->getFile()]);
+
+                return false;
+            }
         }
+        return true;
     }
 }

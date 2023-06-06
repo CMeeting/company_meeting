@@ -112,19 +112,23 @@ class SaaSOrderController extends Controller
         }
 
         //调用支付中心订单状态查询接口
-        if($order->status == OrderGoods::STATUS_0_UNPAID){
+        $status = $order->status;
+        if($status == OrderGoods::STATUS_0_UNPAID){
             $payService = new PayCenterService();
             $result = $payService->getOrderStatus($order->third_trade_no, $orderGoods->package_type);
 
             if($result['code'] == 200){
                 //支付成功
                 if($result['data']['status'] == 'APPROVED'){
-                    $orderService->completeOrder($order, $result['data']['next_billing_time']);
+                    $bool = $orderService->completeOrder($order, $result['data']['next_billing_time']);
+                    if($bool){
+                        $status = OrderGoods::STATUS_1_PAID;
+                    }
                 }
             }
         }
 
-        return \Response::json(['code'=>200, 'message'=>'success', 'data'=>['order_no'=>$order_no, 'status'=>$order->status]]);
+        return \Response::json(['code'=>200, 'message'=>'success', 'data'=>['order_no'=>$order_no, 'status'=>$status]]);
     }
 
     /**
@@ -141,6 +145,8 @@ class SaaSOrderController extends Controller
         if(!$order instanceof Order){
             return \Response::json(['code'=>501, 'message'=>'订单不存在']);
         }
+
+        \Log::info('支付回调日志', ['event_type'=>$event_type, 'order_status'=>$order->status, 'third_trade_id'=>$third_trade_no, 'next_billing_time'=>$next_billing_time]);
 
         $orderService = new SaaSOrderService();
         switch ($event_type){

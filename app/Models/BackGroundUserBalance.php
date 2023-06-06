@@ -48,6 +48,12 @@ class BackGroundUserBalance extends Model
 
         $remaining_files = self::getRemainingFiles($user_id);
 
+        if($change_type == self::CHANGE_TYPE_1_RECHARGE){
+            $remaining_files = $remaining_files + $balance_change;
+        }else{
+            $remaining_files = $remaining_files - $balance_change;
+        }
+
         $model = new BackGroundUserBalance();
         $model->user_id = $user_id;
         $model->tenant_id = $tenant_id;
@@ -56,14 +62,18 @@ class BackGroundUserBalance extends Model
         $model->description = $description;
         $model->change_type = $change_type;
         $model->balance_change = $balance_change;
-        $model->remaining_files = $remaining_files + $balance_change;
+        $model->remaining_files = $remaining_files;
         $model->save();
     }
 
-    public static function getRemainingFiles($user_id){
-        return BackGroundUserBalance::query()
-            ->where('user_id', $user_id)
-            ->orderByDesc('create_date')
-            ->value('remaining_files');
+    public static function getRemainingFiles($user_id, $description_type = ''){
+        $query = BackGroundUserBalance::query()
+            ->where('user_id', $user_id);
+
+        if($description_type){
+            $query->where('description_type', $description_type);
+        }
+
+        return $query->orderByDesc('create_date')->value('remaining_files');
     }
 }

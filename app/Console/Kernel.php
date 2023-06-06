@@ -32,7 +32,7 @@ class Kernel extends ConsoleKernel
         //          ->hourly();
 
         //订单关闭脚本
-        $schedule->command('command:close:order')->dailyAt('15:59');
+        $schedule->command('command:close:order')->daily();
 
         //未支付订单提醒
         //$schedule->command('command:unpaid:order:notice')->hourly();
@@ -41,7 +41,7 @@ class Kernel extends ConsoleKernel
         //$schedule->command('command:trial:order:notice')->hourly();
 
         //序列码过期状态改变
-        $schedule->command('command:expire:license:code')->dailyAt('00:30');
+        $schedule->command('command:expire:license:code')->daily();
 
         //订单到期续订提醒
         //$schedule->command('command:order:renew:notice')->hourly();
