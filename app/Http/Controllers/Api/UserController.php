@@ -15,6 +15,7 @@ use App\Services\EmailService;
 use App\Services\JWTService;
 use App\Services\SubscriptionService;
 use App\Services\UserBillingInfoService;
+use App\Services\UserRemainService;
 use App\Services\UserService;
 use Cache;
 use Carbon\Carbon;
@@ -537,8 +538,10 @@ class UserController extends Controller
     public function activateTest(Request $request){
         $id = $request->input('id');
         $user = User::find($id);
-        ActivateUserRemain::dispatch($user);
+//        ActivateUserRemain::dispatch($user);
+        $service = new UserRemainService();
+        $res = $service->activateUserRemain($user->id, $user->email);
 
-        return Response::json(['code'=>200, 'message'=>'success']);
+        return Response::json(['code'=>200, 'message'=>'success', 'result'=>$res]);
     }
 }
