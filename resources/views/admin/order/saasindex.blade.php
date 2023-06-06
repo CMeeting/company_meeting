@@ -222,6 +222,8 @@
                                         <span class="ladda-label">其他支付</span>
 {{--                                    @elseif($item['type'] == 1 && $item['status']==0)--}}
 {{--                                            <span class="ladda-label">未支付</span>--}}
+                                    @elseif($item['pay_type'] == 5)
+                                        <span class="ladda-label">PayPal</span>
                                     @endif
 
                             </td>
