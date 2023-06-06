@@ -47,6 +47,8 @@ Route::group(['namespace' => 'Api'], function () {
 
     Route::get('get-saas-goods', 'GoodsController@getSaaSGoods');
     Route::post('/webhook', 'SaaSOrderController@webHook');
+
+    Route::get('activate-test', 'UserController@activateTest');
 });
 
 Route::group(['middleware' => ['jwt.auth', 'cors'], 'namespace' => 'Api'], function () {

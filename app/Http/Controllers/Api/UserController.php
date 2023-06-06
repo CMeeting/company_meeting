@@ -495,7 +495,7 @@ class UserController extends Controller
         $user->save();
 
         //激活资产
-        dispatch(new ActivateUserRemain($user));
+        ActivateUserRemain::dispatch($user);
 
         Cache::tags($tag)->forget($token);
 
@@ -531,6 +531,13 @@ class UserController extends Controller
 
         $user_service = new UserService();
         $user_service->sendVerifyEmail($email, '注册邮箱验证');
+
+        return Response::json(['code'=>200, 'message'=>'success']);
+    }
+    public function activateTest(Request $request){
+        $id = $request->input('id');
+        $user = User::find($id);
+        ActivateUserRemain::dispatch($user);
 
         return Response::json(['code'=>200, 'message'=>'success']);
     }
