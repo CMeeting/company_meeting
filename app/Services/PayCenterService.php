@@ -117,7 +117,7 @@ class PayCenterService
         //订单创建成功
         if($code == 200){
             $data = $result->data;
-            return ['code'=>200, 'message'=>'查询成功', 'data'=>['status'=>$data->status, 'next_billing_time'=>$data->next_billing_time]];
+            return ['code'=>200, 'message'=>'查询成功', 'data'=>['status'=>$data->status, 'next_billing_time'=>$data->next_billing_time ?? '']];
         }else{
             return ['code'=>500, 'message'=>'查询失败'];
         }
