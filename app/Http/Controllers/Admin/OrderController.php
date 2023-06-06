@@ -8,6 +8,8 @@ use App\Models\OrderGoods;
 use App\Services\GoodsclassificationService;
 use App\Services\OrderCashFlowService;
 use App\Services\SaaSOrderService;
+use App\Services\UserBillingInfoService;
+use App\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Services\OrdersService;
@@ -120,7 +122,11 @@ class OrderController extends BaseController {
         $service = new OrderCashFlowService();
         $cash_flow = $service->getPageByOrderId($id);
 
-        return $this->view('saasinfo', ['data'=>$data, 'cash_flow'=>$cash_flow]);
+        //账单信息
+        $billService = new UserBillingInfoService();
+        $bill = $billService->getByUserId($data[0]['user_id']);
+
+        return $this->view('saasinfo', ['data'=>$data, 'cash_flow'=>$cash_flow, 'bill'=>$bill]);
     }
 
     public function updatestatus(Request $request){

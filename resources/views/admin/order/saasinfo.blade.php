@@ -173,6 +173,43 @@
                         </tbody>
                     </table>
                     {{$cash_flow->links()}}
+
+                    <br/>
+                    <div class="form-group">
+                        <label for="form-field-1" style="margin-left: 15px;"> 账单信息：</label>
+                    </div>
+                    <table class="table table-striped" style="text-align: left; width: 40%">
+                        <tbody>
+                            <tr id="de">
+                                <td>名：</td>
+                                <td>{{$bill->first_name ?? ''}}</td>
+                            </tr>
+                            <tr id="de">
+                                <td>姓：</td>
+                                <td>{{$bill->last_name ?? ''}}</td>
+                            </tr>
+                            <tr id="de">
+                                <td>公司名称：</td>
+                                <td>{{$bill->company ?? ''}}</td>
+                            </tr>
+                            <tr id="de">
+                                <td>公司地址：</td>
+                                <td>{{$bill->address ?? ''}}</td>
+                            </tr>
+                            <tr id="de">
+                                <td>国家：</td>
+                                <td>{{$bill->country ?? ''}}</td>
+                            </tr>
+                            <tr id="de">
+                                <td>州/省：</td>
+                                <td>{{$bill->province ?? ''}}</td>
+                            </tr>
+                            <tr id="de">
+                                <td>邮编：</td>
+                                <td>{{$bill->zip ?? ''}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </form>
         </div>
     </div>
