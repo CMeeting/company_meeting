@@ -538,10 +538,10 @@ class UserController extends Controller
     public function activateTest(Request $request){
         $id = $request->input('id');
         $user = User::find($id);
-//        ActivateUserRemain::dispatch($user);
-        $service = new UserRemainService();
-        $res = $service->activateUserRemain($user->id, $user->email);
+        ActivateUserRemain::dispatch($user);
+//        $service = new UserRemainService();
+//        $res = $service->activateUserRemain($user->id, $user->email);
 
-        return Response::json(['code'=>200, 'message'=>'success', 'result'=>$res]);
+        return Response::json(['code'=>200, 'message'=>'success']);
     }
 }
