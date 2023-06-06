@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Models\Goodsclassification;
+use App\Models\Order;
+use App\Models\OrderGoods;
 use App\Services\GoodsclassificationService;
 use App\Services\OrderCashFlowService;
 use App\Services\SaaSOrderService;

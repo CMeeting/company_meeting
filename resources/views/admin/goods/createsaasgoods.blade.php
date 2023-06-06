@@ -58,8 +58,8 @@
                 <div class="form-group">
                     <label class="col-sm-2 control-label no-padding-right" for="form-field-1"> 商品状态：</label>
                     <div class="col-sm-6 col-xs-12">
-                        <input type="radio" name="data[status]" value="1" checked >上架
-                        <input type="radio" name="data[status]" value="0">下架
+                        <input type="radio" name="data[status]" value="0">待上架
+                        <input type="radio" name="data[status]" value="1" checked >架上商品
                     </div>
                 </div>
 

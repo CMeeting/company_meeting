@@ -176,7 +176,7 @@
                     <thead>
                     <tr>
                         <th class="text-center" style="width: 5%">序号</th>
-                        <th class="text-center" style="width: 9%">子订单编号</th>
+                        <th class="text-center" style="width: 9%">订单编号</th>
                         <th class="text-center" style="width: 9%">用户账号</th>
                         <th class="text-center" style="width: 11%">套餐类型</th>
                         <th class="text-center" style="width: 8%">档位（资产数）</th>

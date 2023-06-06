@@ -85,8 +85,8 @@
                                 <div class="form-group">
                                     <select id="status" class="form-control"  name="status" tabindex="1">
                                         <option value="">筛选状态</option>
-                                        <option value="2" @if(isset($query)&&$query['status']==2) selected @endif>上架</option>
-                                        <option value="1" @if(isset($query)&&$query['status']==1) selected @endif>下架</option>
+                                        <option value="2" @if(isset($query)&&$query['status']==2) selected @endif>架上商品</option>
+                                        <option value="1" @if(isset($query)&&$query['status']==1) selected @endif>待上架</option>
                                     </select>
                                 </div>
                             </div>
@@ -144,9 +144,9 @@
                             <td>{{$item['price']}}</td>
                             <td id="status_{{$item['id']}}">
                                     @if($item['status'] == 1)
-                                            <span class="ladda-label">上架</span>
+                                            <span class="ladda-label">架上商品</span>
                                     @else
-                                            <span class="ladda-label">下架</span>
+                                            <span class="ladda-label">待上架</span>
                                     @endif
                             </td>
                             <td>{{$item['created_at']}}</td>
@@ -290,10 +290,10 @@
                         if (resp.code == 0) {
                             if (resp.status == 0) {
                                 var htmls = '<a type="button" style="text-decoration: none;color: #f6fff8"   data-id="{$v.id}"  class="openBtn_' + id + ' abutton cloros" data-style="zoom-out" onclick="show(' + id + ','+resp.status+');" title="当前下架状态"> <span class="ladda-label">上架</span></a>';
-                                $("#status_"+id).html('<span class="ladda-label">下架</span>');
+                                $("#status_"+id).html('<span class="ladda-label">待上架</span>');
                             } else {
                                 var htmls = '<a type="button" style="text-decoration: none;color: #f6fff8"  data-id="{$v.id}"  class="openBtn_' + id + ' abutton cloros1" data-style="zoom-out" onclick="show(' + id + ','+resp.status+');" title="当前上架状态"> <span class="ladda-label">下架</span></a>';
-                                $("#status_"+id).html('<span class="ladda-label">上架</span>');
+                                $("#status_"+id).html('<span class="ladda-label">架上商品</span>');
                             }
 
                             $(".open_" + id).html(htmls);

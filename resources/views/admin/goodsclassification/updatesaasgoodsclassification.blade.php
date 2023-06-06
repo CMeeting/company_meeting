@@ -47,7 +47,7 @@
                     </div>
 
                     <div class="form-group">
-                        <label class="col-sm-2 control-label no-padding-right" for="form-field-1">套餐/档位名称</label>
+                        <label class="col-sm-2 control-label no-padding-right" for="form-field-1">档位（资产数）</label>
                         <div class="col-sm-6 col-xs-12">
                             <input id="title"  class="form-control" name="data[title]" value="{{$data['title']}}" required>
                             <span class="lbl"></span>

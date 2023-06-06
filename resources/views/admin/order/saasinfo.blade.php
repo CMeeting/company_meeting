@@ -50,11 +50,12 @@
                            style="word-wrap:break-word; word-break:break-all;text-align: center">
                         <thead>
                         <tr>
-                            <th class="text-center" style="width: 12%">子订单编号</th>
+                            <th class="text-center" style="width: 12%">订单编号</th>
                             <th class="text-center" style="width: 8%">用户账号</th>
                             <th class="text-center" style="width: 6%">订单类型</th>
                             <th class="text-center" style="width: 11%">订单状态</th>
                             <th class="text-center" style="width: 9%">创建时间</th>
+                            <th class="text-center" style="width: 11%">备注</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -93,6 +94,7 @@
                                     @endif
                                 </td>
                                 <td>{{$item['created_at']}}</td>
+                                <td>{{$item['remark']}}</td>
                             </tr>
                         @endforeach
                         </tbody>
