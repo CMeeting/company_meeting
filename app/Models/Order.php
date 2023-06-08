@@ -84,4 +84,10 @@ class Order extends Model
             ->where('third_trade_no', $third_trade_no)
             ->first();
     }
+
+    public static function getByOrderNo($order_no){
+        return Order::query()
+            ->where('order_no', $order_no)
+            ->first();
+    }
 }

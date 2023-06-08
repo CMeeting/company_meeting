@@ -52,11 +52,11 @@ class UpdateUserRemain extends Command
         $classification = $order_service->assembly_saasorderclassification();
 
         $order_goods_arr = OrderGoods::query()
-            ->leftJoin('goods', 'order_goods.goods_id', '=', 'goods.id')
-            ->leftJoin('users', 'users.id', '=', 'order_goods.user_id')
-            ->where('order_goods.status', OrderGoods::STATUS_1_PAID)
-            ->where('order_goods.package_type', OrderGoods::PACKAGE_TYPE_1_PLAN)
-            ->select(['order_goods.id', 'order_goods.created_at', 'order_goods.pay_years', 'order_goods.order_id', 'order_goods.special_assets', 'order_goods.user_id', 'users.email', 'goods.level1', 'goods.level2'])
+            ->leftJoin('goods', 'orders_goods.goods_id', '=', 'goods.id')
+            ->leftJoin('users', 'users.id', '=', 'orders_goods.user_id')
+            ->where('orders_goods.status', OrderGoods::STATUS_1_PAID)
+            ->where('orders_goods.package_type', OrderGoods::PACKAGE_TYPE_1_PLAN)
+            ->select(['orders_goods.id', 'orders_goods.created_at', 'orders_goods.pay_years', 'orders_goods.order_id', 'orders_goods.special_assets', 'orders_goods.user_id', 'users.email', 'goods.level1', 'goods.level2'])
             ->get()
             ->toArray();
 

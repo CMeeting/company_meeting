@@ -130,4 +130,10 @@ class OrderGoods extends Model
             ->where('order_id', $order_id)
             ->first();
     }
+
+    public static function getByOrderNo($order_no){
+        return OrderGoods::query()
+            ->where('order_no', $order_no)
+            ->first();
+    }
 }

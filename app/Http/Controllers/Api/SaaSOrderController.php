@@ -119,7 +119,7 @@ class SaaSOrderController extends Controller
 
             if($result['code'] == 200){
                 //支付成功
-                if($result['data']['status'] == 'APPROVED'){
+                if($result['data']['status'] == 'APPROVED' || $result['data']['status'] == 'ACTIVE'){
                     $bool = $orderService->completeOrder($order, $result['data']['next_billing_time']);
                     if($bool){
                         $status = OrderGoods::STATUS_1_PAID;
@@ -129,6 +129,28 @@ class SaaSOrderController extends Controller
         }
 
         return \Response::json(['code'=>200, 'message'=>'success', 'data'=>['order_no'=>$order_no, 'status'=>$status]]);
+    }
+
+    /**
+     * 发送支付失败邮件
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function sendFailedEmail(Request $request){
+        $user = UserService::getCurrentUser($request);
+
+        $order_no = $request->input('order_no');
+
+        $order = Order::getByOrderNo($order_no);
+        $order_goods = OrderGoods::getByOrderNo($order_no);
+
+        $service = new SaaSOrderService();
+        $goods = OrderGoods::find($order_goods->goods_id);
+        $combo = Goodsclassification::getComboById($goods->level1);
+
+        $service->sendPayEmail('API购买失败', $order_no, $order->created_at, $order->price, $combo, $user);
+
+        return \Response::json(['code'=>200, 'message'=>'success']);
     }
 
     /**

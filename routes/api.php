@@ -45,7 +45,7 @@ Route::group(['namespace' => 'Api'], function () {
     Route::post('support', 'ContactEmailController@support');
     Route::post('upload-attachments', 'ContactEmailController@uploadAttachments');
 
-    Route::get('get-saas-goods', 'GoodsController@getSaaSGoods');
+    Route::get('/saas/get-goods', 'GoodsController@getSaaSGoods');
     Route::post('/webhook', 'SaaSOrderController@webHook');
 
     Route::get('activate-test', 'UserController@activateTest');
@@ -65,10 +65,6 @@ Route::group(['middleware' => ['jwt.auth', 'cors'], 'namespace' => 'Api'], funct
     Route::post('/newOrder', 'OrderController@newOrder');
     Route::post('/rewinfo', 'OrderController@rewinfo');
     Route::post('/send-payment-failed-email', 'OrderController@sendPaymentFailedEmail');
-
-    //SaaS
-    Route::post('/create-saas-order', 'SaaSOrderController@createOrder');
-    Route::get('/get-order-status', 'SaaSOrderController@getOrderStatus');
 });
 
 //用户管理
@@ -117,5 +113,13 @@ Route::post('verify', 'Admin\LicenseController@verifyLicenseCode');
 
 Route::group(['namespace'=>'Common'], function(){
     Route::post('get-invoice', 'FileController@getInvoice')->name('get-invoice'); //下载文件
+});
+
+
+//SaaS相关
+Route::group(['middleware' => ['jwt.auth', 'cors'], 'namespace' => 'Api', 'prefix' => 'saas'], function (){
+    Route::post('/create-order', 'SaaSOrderController@createOrder');
+    Route::get('/get-order-status', 'SaaSOrderController@getOrderStatus');
+    Route::post('/send-failed-email', 'SaaSOrderController@sendFailedEmail');
 });
 

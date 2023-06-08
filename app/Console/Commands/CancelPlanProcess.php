@@ -43,11 +43,11 @@ class CancelPlanProcess extends Command
     {
         $date = date('Y-m-d');
         $orders = OrderGoodsCancel::query()
-            ->leftJoin('order_goods', 'order_goods_cancel.order_goods_id', '=', 'order_goods.id')
-            ->leftJoin('users', 'order_goods.user_id', '=', 'users.id')
+            ->leftJoin('orders_goods', 'order_goods_cancel.order_goods_id', '=', 'orders_goods.id')
+            ->leftJoin('users', 'orders_goods.user_id', '=', 'users.id')
             ->where('order_goods_cancel.status', OrderGoodsCancel::STATUS_1_UNPROCESSED)
             ->where('order_goods_cancel.reset_date', $date)
-            ->select(['users.id', 'users.email', 'order_goods.package_type'])
+            ->select(['users.id', 'users.email', 'orders_goods.package_type'])
             ->get();
 
         foreach ($orders as $order){

@@ -4,9 +4,11 @@
 namespace App\Services;
 
 
+use App\Jobs\SendEmailAttachment;
 use App\Models\BackGroundUserRemain;
 use App\Models\Goods;
 use App\Models\Goodsclassification;
+use App\Models\Mailmagicboard;
 use App\Models\Order;
 use App\Models\OrderCashFlow;
 use App\Models\OrderGoods;
@@ -202,7 +204,6 @@ class SaaSOrderService
      * @return bool
      */
     public function completeOrder(Order $order, $next_billing_time = null){
-        //TODO 发送支付成功的邮件
         if($order->status == OrderGoods::STATUS_0_UNPAID){
             try{
                 DB::beginTransaction();
@@ -241,6 +242,11 @@ class SaaSOrderService
 
                 return false;
             }
+
+            //发送支付成功邮件
+            $goods = OrderGoods::find($order_goods->goods_id);
+            $combo = Goodsclassification::getComboById($goods->level1);
+            $this->sendPayEmail('API购买成功', $order->order_no, $order->pay_time, $order->price, $combo, $user);
         }
 
         return true;
@@ -361,5 +367,66 @@ class SaaSOrderService
             }
         }
         return true;
+    }
+
+    /**
+     * 发送支付成功或者失败邮件
+     * @param $email_name
+     * @param $order_no
+     * @param $pay_time
+     * @param $price
+     * @param $combo
+     * @param $user
+     */
+    public function sendPayEmail($email_name, $order_no, $pay_time, $price, $combo, User $user){
+        //主站官网地址
+        $website = env('WEB_HOST');
+        //SAAS官网地址
+        $website_saas = env('WEB_HOST_SAAS');
+
+        //发送邮件
+        $email_model = Mailmagicboard::getByName($email_name);
+
+        $data['title'] = $email_model->title;
+        $data['info'] = $email_model->info;
+        $data['id'] = $email_model->id;
+        $data['info'] = str_replace("#@website", $website, $data['info']);
+        $data['info'] = str_replace("#@saas_site", $website_saas, $data['info']);
+
+        $data['info'] = str_replace("#@username", $user->full_name, $data['info']);
+
+        $data['info'] = str_replace("#@order_no", $order_no, $data['info']);
+
+        $pay_time = Carbon::parse($pay_time)->format('Y/m/d H:i:s');
+        $data['info'] = str_replace("#@pay_date", $pay_time, $data['info']);
+
+        if(strstr($combo, '年')){
+            $plan = 'Annually';
+        }elseif(strstr($combo, '月')){
+            $plan = 'Monthly';
+        }else{
+            $plan = 'Package';
+        }
+        $data['info'] = str_replace("#@plan", $plan, $data['info']);
+
+        $taxes = $price * 0.05;
+        $taxes = round($taxes);
+        $data['info'] = str_replace("#@taxes", '$' . $taxes, $data['info']);
+
+        $product_price = $price - $taxes;
+        $data['info'] = str_replace("#@product_price", '$' . $product_price, $data['info']);
+
+        $data['info'] = str_replace("#@price", '$' . $price, $data['info']);
+
+        $dashboard_url = env('WEB_BACKGROUND_USER_SAAS') . '/dashboard';
+        $data['info'] = str_replace("#@dashboard_url", $dashboard_url, $data['info']);
+
+        $doc_url = env('WEB_HOST_SAAS') . '/api-reference/overview';
+        $data['info'] = str_replace("#@doc_url", $doc_url, $data['info']);
+
+        $buy_url = env('WEB_HOST_SAAS') . '/api/pricing';
+        $data['info'] = str_replace("#@buy_url", $buy_url, $data['info']);
+
+        dispatch(new SendEmailAttachment($data['info'], $data['title'], $user->email));
     }
 }
