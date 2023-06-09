@@ -4,6 +4,7 @@
 namespace App\Services;
 
 
+use App\Jobs\CloseOrder;
 use App\Jobs\SendEmailAttachment;
 use App\Models\BackGroundUserRemain;
 use App\Models\Goods;
@@ -44,6 +45,9 @@ class SaaSOrderService
             $pay_years = 12;
         }
         $order_goods = OrderGoods::add($order->id, $order_no, $order_goods_no, $pay_type, $status, $type, $details_type, $price, $user->id, $goods->id, $package_type, $pay_years);
+
+        //订单未支付三小时后关闭
+        dispatch(new CloseOrder($order->id))->delay(Carbon::now()->addHours(3));
 
         //调用支付中心生成支付链接
         $payService = new PayCenterService();
