@@ -209,6 +209,10 @@ class SaaSOrderService
      */
     public function completeOrder(Order $order, $next_billing_time = null){
         if($order->status == OrderGoods::STATUS_0_UNPAID){
+            $order_goods = OrderGoods::getByOrderId($order->id);
+            //删除订单缓存
+            $this->delOrderCache($order->user_id, $order_goods->goods_id);
+
             try{
                 DB::beginTransaction();
                 $order->status = OrderGoods::STATUS_1_PAID;
@@ -218,7 +222,6 @@ class SaaSOrderService
                 $user = User::find($order->user_id);
 
                 //修改子订单为已支付状态
-                $order_goods = OrderGoods::getByOrderId($order->id);
                 $order_goods->status = OrderGoods::STATUS_1_PAID;
                 $order_goods->next_billing_time = $next_billing_time;
                 $order_goods->pay_time = date('Y-m-d H:i:s');
@@ -432,5 +435,41 @@ class SaaSOrderService
         $data['info'] = str_replace("#@buy_url", $buy_url, $data['info']);
 
         dispatch(new SendEmailAttachment($data['info'], $data['title'], $user->email));
+    }
+
+    /**
+     * 新增订单缓存
+     * @param $user_id
+     * @param $goods_id
+     * @param $data
+     */
+    public function addOrderCache($user_id, $goods_id, $data){
+        $user = User::find($user_id);
+        $key = md5($user->email . '-' . $goods_id);
+        \Cache::put($key, $data, 3 * 60);
+    }
+
+    /**
+     * 获取订单缓存
+     * @param $user_id
+     * @param $goods_id
+     * @return mixed
+     */
+    public function getOrderCache($user_id, $goods_id){
+        $user = User::find($user_id);
+        $key = md5($user->email . '-' . $goods_id);
+        return \Cache::get($key);
+    }
+
+    /**
+     * 删除订单缓存
+     * @param $user_id
+     * @param $goods_id
+     * @return bool
+     */
+    public function delOrderCache($user_id, $goods_id){
+        $user = User::find($user_id);
+        $key = md5($user->email . '-' . $goods_id);
+        return \Cache::forget($key);
     }
 }

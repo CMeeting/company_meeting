@@ -32,7 +32,7 @@ class Kernel extends ConsoleKernel
         //          ->hourly();
 
         //订单关闭脚本
-        $schedule->command('command:close:order')->daily();
+        //$schedule->command('command:close:order')->daily();
 
         //未支付订单提醒
         //$schedule->command('command:unpaid:order:notice')->hourly();

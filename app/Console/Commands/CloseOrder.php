@@ -21,7 +21,7 @@ class CloseOrder extends Command
      *
      * @var string
      */
-    protected $description = '关闭订单任务';
+    protected $description = '关闭订单任务（已弃用）';
 
     /**
      * Create a new command instance.

@@ -41,6 +41,13 @@ class SaaSOrderController extends Controller
             return \Response::json(['code'=>502, 'message'=>'缺少商品ID']);
         }
 
+        //已有未支付订单直接返回
+        $orderService = new SaaSOrderService();
+        $cache_order = $orderService->getOrderCache($current_user->id, $goods_id);
+        if($cache_order){
+            return \Response::json(['code'=>200, 'message'=>'success', 'data'=>$cache_order]);
+        }
+
         $goodsService = new GoodsService();
         $goods = $goodsService->findById($goods_id);
 
@@ -59,7 +66,6 @@ class SaaSOrderController extends Controller
         }
 
         $cycle = '';
-        $orderService = new SaaSOrderService();
         if(strstr($combo, '订阅')){
             if($orderService->existsSubscriptionPlan($current_user->id)){
                 return ['code'=>505, 'message'=>'该账号已存在订阅中订单，不能重复购买'];
@@ -79,6 +85,9 @@ class SaaSOrderController extends Controller
         $result = $orderService->createOrder($current_user, $goods, $package_type, $cycle);
 
         if($result['code'] == 200){
+            //新增订单缓存
+            $orderService->addOrderCache($current_user->id, $goods_id, $result['data']);
+
             return \Response::json(['code'=>200, 'message'=>'success', 'data'=>$result['data']]);
         }else{
             return \Response::json(['code'=>506, 'message'=>'系统错误', 'data'=>[]]);
