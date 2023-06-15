@@ -136,6 +136,17 @@ class GoodsclassificationService
         return $arr_project ?? [];
     }
 
+    public function getSaaSCombo(){
+        return Goodsclassification::query()
+            ->where('deleted', 0)
+            ->where('lv', 1)
+            ->where('is_saas', 1)
+            ->orderByRaw('displayorder,id desc')
+            ->select(['id', 'title'])
+            ->get()
+            ->toArray();
+    }
+
 
     function menuLeft($menu, $id_field = 'id', $pid_field = 'pid', $lefthtml = '─', $pid = 0, $lvl = 0, $leftpin = 0)
     {

@@ -32,7 +32,7 @@ class GoodsclassificationController extends BaseController {
     public function createsaasgoodsClassification($pid=0){
         $GoodsclassificationService = new GoodsclassificationService();
         $data['pid'] = $pid;
-        $categorical_data = $GoodsclassificationService->getsaasCategorical();
+        $categorical_data = $GoodsclassificationService->getSaaSCombo();
         return $this->view('createsaasclassification',['pid'=>$pid,'data'=>$data,"material"=>$categorical_data]);
     }
 
