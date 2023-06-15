@@ -217,8 +217,10 @@ class OrdersService
                 ->orderByRaw('orders.id desc')
                 ->selectRaw("orders.*,users.email,goods.level1,goods.level2,orders_goods.goods_no,orders_goods.package_type")->paginate(10);
               foreach ($data as $k=>$v){
-                  $v->level1name = $classification[$v->level1]['title'];
-                  $v->level2name = $classification[$v->level2]['title'];
+                  $level1 = $v->level1;
+                  $level2 = $v->level2;
+                  $v->level1name = array_get($classification, "$level1.title");
+                  $v->level2name = array_get($classification, "$level2.title");
               }
 
         }
