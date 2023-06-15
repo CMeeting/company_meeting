@@ -416,10 +416,12 @@ class OrdersService
                     }
                 }
                 elseif ($key == 'level1name'){
-                    $value = $classification[$data['level1']]['title'];
+                    $level1 = $data['level1'];
+                    $value = array_get($classification, "$level1.title");
                 }
                 elseif($key == 'level2name'){
-                    $value = $classification[$data['level2']]['title'];
+                    $level2 = $data['level2'];
+                    $value = array_get($classification, "$level2.title");
                 }
                 $row[] = $value;
             }

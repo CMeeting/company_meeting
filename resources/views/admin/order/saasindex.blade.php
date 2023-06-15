@@ -68,7 +68,7 @@
 
                             <div class="col-md-4 col-lg-3 col-sm-6 col-xs-12" style="width: 10%">
                                     <select id="status" class="form-control"  name="status" tabindex="1">
-                                        <option value="">订单状态</option>
+                                        <option value="0">订单状态</option>
                                         <option value="1" @if(isset($query) && $query['status']==1) selected @endif>待支付</option>
                                         <option value="2" @if(isset($query) && $query['status']==2) selected @endif>已支付</option>
 {{--                                        <option value="3" @if(isset($query)&&$query['status']==3) selected @endif>已完成</option>--}}
@@ -93,7 +93,7 @@
 
                             <div class="col-md-4 col-lg-3 col-sm-6 col-xs-12" style="width: 10%">
                                     <select id="type" class="form-control"  name="type">
-                                        <option value="">订单类型</option>
+                                        <option value="0">订单类型</option>
                                         <option value="1" @if(isset($query)&&$query['type']==1) selected @endif>后台创建</option>
                                         <option value="2" @if(isset($query)&&$query['type']==2) selected @endif>用户购买</option>
                                     </select>
@@ -101,7 +101,7 @@
 
                             <div class="col-md-4 col-lg-3 col-sm-6 col-xs-12" style="width: 15%">
                                     <select id="combo" class="form-control"  name="combo" onchange="comboChange()">
-                                        <option value="">请选择套餐</option>
+                                        <option value="0">请选择套餐</option>
                                         @foreach($combos as $combo)
                                             <option value="{{$combo['id']}}" @if(isset($query)&&$query['combo']==$combo['id']) selected @endif>{{$combo['title']}}</option>
                                         @endforeach
@@ -110,7 +110,7 @@
 
                             <div class="col-md-4 col-lg-3 col-sm-6 col-xs-12" style="width: 15%">
                                     <select id="gear" class="form-control"  name="gear">
-                                        <option value="">请选择档位</option>
+                                        <option value="0">请选择档位</option>
                                     </select>
                             </div>
                         </div>
@@ -439,13 +439,13 @@
                         let type = $('#type').find("option:selected").val()
                         let details_type = $('#details_type').find("option:selected").val()
                         let status = $('#status').find("option:selected").val()
-                        let pay_type = $('#pay_type').find("option:selected").val()
+                        // let pay_type = $('#pay_type').find("option:selected").val()
                         let pay_at = $('#pay_at').val()
                         let endpay_at = $('#endpay_at').val()
                         let shelf_at = $('#shelf_at').val()
                         let endshelf_at = $('#endshelf_at').val()
 
-                        location.href = "/admin/order/saasindex?query_type="+ query_type + "info=" + info + "&type=" + type + "&details_type=" + details_type + "&pay_type=" + pay_type +"&shelf_at=" + shelf_at +"&endshelf_at=" + endshelf_at + "&status=" + status + "&pay_at=" + pay_at + "&endpay_at=" + endpay_at
+                        location.href = "/admin/order/saasindex?query_type="+ query_type + "info=" + info + "&type=" + type + "&details_type=" + details_type + "&shelf_at=" + shelf_at +"&endshelf_at=" + endshelf_at + "&status=" + status + "&pay_at=" + pay_at + "&endpay_at=" + endpay_at
                         + "&field=" + field.join(',') + "&export=1";
                     }
                 });
