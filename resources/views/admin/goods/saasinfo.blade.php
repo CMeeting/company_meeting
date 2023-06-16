@@ -4,7 +4,7 @@
     <div class="row">
         <div class="col-sm-12">
             <div class="ibox-title">
-                <h5>Goods Info</h5>
+                <h5>商品详情</h5>
             </div>
             <div class="ibox-content">
                 <form class="form-horizontal" id="forms" name="form"  method="post" action="{{route('goods.createrungoods')}}" >
@@ -15,13 +15,13 @@
                     </div>
                 </div>
                 <div class="form-group">
-                    <label class="col-sm-4 control-label no-padding-right" for="form-field-1"> 档位：</label>
+                    <label class="col-sm-4 control-label no-padding-right" for="form-field-1"> 档位（资产数）：</label>
                     <div class="col-sm-6 col-xs-12" style="padding-top: 0.5%">
                         {{$data['level2name']}}
                     </div>
                 </div>
                 <div class="form-group">
-                    <label class="col-sm-4 control-label no-padding-right" for="form-field-1"> Pricing(USD)：</label>
+                    <label class="col-sm-4 control-label no-padding-right" for="form-field-1"> 价格（$）：</label>
                     <div class="col-sm-6 col-xs-12" style="padding-top: 0.5%">
                         {{$data['price']}}
                     </div>

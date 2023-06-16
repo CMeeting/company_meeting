@@ -74,7 +74,7 @@
                                 </td>
                                 <td>
                                     @if($item['status'] == 1)
-                                        @if($item['package_type'] == 1){
+                                        @if($item['package_type'] == 1)
                                         <span class="ladda-label">已支付</span>
                                         @else
                                             <span class="ladda-label">订阅中</span>

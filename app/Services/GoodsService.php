@@ -110,7 +110,8 @@ class GoodsService
         if (isset($param['level2']) && $param['level2']) {
             $query->where('goods.level2', $param['level2']);
         }
-        if (isset($param['status']) && $param['status']) {
+
+        if (!($param['status'] === null || $param['status'] === '')) {
             $query->where('goods.status', $param['status']);
         }
 
@@ -439,9 +440,9 @@ class GoodsService
         $title_arr = [
             'id' => 'ID',
             'level1' => '套餐类型',
-            'level2' => '文件档位',
-            'price' => 'Pricing(USD)',
-            'status' => '状态',
+            'level2' => '档位（资产数）',
+            'price' => '价格（$）',
+            'status' => '商品状态',
             'created_at' => '创建时间',
             'updated_at' => '更新时间',
             'shelf_at' => '上架时间',

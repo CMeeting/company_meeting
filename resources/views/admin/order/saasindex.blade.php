@@ -95,7 +95,7 @@
                                     <select id="type" class="form-control"  name="type">
                                         <option value="0">订单类型</option>
                                         <option value="1" @if(isset($query)&&$query['type']==1) selected @endif>后台创建</option>
-                                        <option value="2" @if(isset($query)&&$query['type']==2) selected @endif>用户购买</option>
+                                        <option value="2" @if(isset($query)&&$query['type']==2) selected @endif>在线购买</option>
                                     </select>
                             </div>
 
@@ -399,14 +399,14 @@
             //导出
             $("#export").click(function () {
                 html =  '<div style="display: flex; justify-content: left;flex-wrap: wrap; padding: 10px">' +
-                    '<div style="margin-bottom: 20px"><label style="margin-right: 10px; width: 50px"><input name="id"  type="checkbox"  value="id" checked="checked"/>ID</label>' +
+                    '<div style="margin-bottom: 20px"><label style="margin-right: 10px; width: 50px"><input name="id"  type="checkbox"  value="id" checked="checked"/>序号</label>' +
                     '<label style="margin-right: 10px; width: 100px"><input name="order_no"  type="checkbox"  value="order_no" checked="checked"/>订单编号</label>' +
                     '<label style="margin-right: 10px; width: 100px"><input name="email"  type="checkbox"  value="email" checked="checked"/>用户账号</label>' +
                     '<label style="margin-right: 10px; width: 120px"><input name="level1name"  type="checkbox"  value="level1name" checked="checked"/>套餐类型</label>' +
-                    '<label style="margin-right: 10px; width: 120px"><input name="level2name"  type="checkbox"  value="level2name" checked="checked"/>档位</label></div>' +
+                    '<label style="margin-right: 10px; width: 120px"><input name="level2name"  type="checkbox"  value="level2name" checked="checked"/>档位（资产数）</label></div>' +
 
                     '<div>' +
-                    '<label style="margin-right: 10px; width: 120px"><input name="price"  type="checkbox"  value="price" checked="checked"/>订单金额(USD)</label>' +
+                    '<label style="margin-right: 10px; width: 120px"><input name="price"  type="checkbox"  value="price" checked="checked"/>订单金额（$）</label>' +
                     '<label style="margin-right: 10px; width: 100px"><input name="pay_type"  type="checkbox"  value="pay_type" checked="checked"/>支付方式</label>' +
                     '<label style="margin-right: 10px; width: 100px"><input name="type"  type="checkbox"  value="type" checked="checked"/>订单类型</label>' +
                     '<label style="margin-right: 10px; width: 100px"><input name="status"  type="checkbox"  value="status" checked="checked"/>订单状态</label></div></div>';

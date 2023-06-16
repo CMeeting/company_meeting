@@ -82,7 +82,7 @@
                                     @if($item['type'] == 1)
                                         <span class="ladda-label">后台创建</span>
                                     @elseif($item['type'] == 2)
-                                        <span class="ladda-label">用户购买</span>
+                                        <span class="ladda-label">在线购买</span>
                                     @else
                                         <span class="ladda-label">未知</span>
                                     @endif

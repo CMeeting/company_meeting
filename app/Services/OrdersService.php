@@ -314,7 +314,7 @@ class OrdersService
                             $value = "后台创建";
                             break;
                         case 2:
-                            $value = "用户购买";
+                            $value = "在线购买";
                             break;
                     }
                 }
@@ -345,9 +345,9 @@ class OrdersService
             'id' => 'ID',
             'order_no' => '订单编号',
             'email' => '用户账号',
-            'level1name' => '套餐',
-            'level2name' => '档位',
-            'price' => '订单金额',
+            'level1name' => '套餐类型',
+            'level2name' => '档位（资产数）',
+            'price' => '订单金额（$）',
             'pay_type' => '支付方式',
             'type' => '订单来源',
             'status' => '订单状态',
@@ -411,7 +411,7 @@ class OrdersService
                             $value = "后台创建";
                             break;
                         case 2:
-                            $value = "用户购买";
+                            $value = "在线购买";
                             break;
                     }
                 }

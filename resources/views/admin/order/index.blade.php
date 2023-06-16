@@ -106,7 +106,7 @@
                                     <select id="type" class="form-control"  name="type" tabindex="1">
                                         <option value="">订单来源</option>
                                         <option value="1" @if(isset($query)&&$query['type']==1) selected @endif>后台创建</option>
-                                        <option value="2" @if(isset($query)&&$query['type']==2) selected @endif>用户购买</option>
+                                        <option value="2" @if(isset($query)&&$query['type']==2) selected @endif>在线购买</option>
                                     </select>
                                 </div>
                             </div>
@@ -232,7 +232,7 @@
                                 @if($item['type'] == 1)
                                     <span class="ladda-label">后台创建</span>
                                 @elseif($item['type'] == 2)
-                                    <span class="ladda-label">用户购买</span>
+                                    <span class="ladda-label">在线购买</span>
                                 @else
                                     <span class="ladda-label">未知</span>
                                 @endif

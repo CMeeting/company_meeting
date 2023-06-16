@@ -84,9 +84,9 @@
                             <div class="col-md-4 col-lg-2 col-sm-6 col-xs-12" style="width: 20%;">
                                 <div class="form-group">
                                     <select id="status" class="form-control"  name="status" tabindex="1">
-                                        <option value="">筛选状态</option>
-                                        <option value="2" @if(isset($query)&&$query['status']==2) selected @endif>架上商品</option>
-                                        <option value="1" @if(isset($query)&&$query['status']==1) selected @endif>待上架</option>
+                                        <option value="">商品状态</option>
+                                        <option value="1" @if(isset($query)&&$query['status'] == 1) selected @endif>架上商品</option>
+                                        <option value="0" @if(isset($query)&&$query['status'] === "0") selected @endif>待上架</option>
                                     </select>
                                 </div>
                             </div>
@@ -369,11 +369,11 @@
             //导出
             $("#export").click(function () {
                 html =  '<div style="display: flex; justify-content: left;flex-wrap: wrap; padding: 10px">' +
-                    '<div style="margin-bottom: 20px"><label style="margin-right: 10px; width: 50px"><input name="id"  type="checkbox"  value="id" checked="checked"/>ID</label>' +
+                    '<div style="margin-bottom: 20px"><label style="margin-right: 10px; width: 50px"><input name="id"  type="checkbox"  value="id" checked="checked"/>序号</label>' +
                     '<label style="margin-right: 10px; width: 100px"><input name="products"  type="checkbox"  value="level1" checked="checked"/>套餐类型</label>' +
-                    '<label style="margin-right: 10px; width: 100px"><input name="platform"  type="checkbox"  value="level2" checked="checked"/>文件档位</label>' +
-                    '<label style="margin-right: 10px; width: 120px"><input name="price"  type="checkbox"  value="price" checked="checked"/>Pricing(USD)</label></div>' +
-                    '<div><label style="margin-right: 10px; width: 50px"><input name="status"  type="checkbox"  value="status" checked="checked"/>状态</label>' +
+                    '<label style="margin-right: 10px; width: 120px"><input name="platform"  type="checkbox"  value="level2" checked="checked"/>档位（资产数）</label>' +
+                    '<label style="margin-right: 10px; width: 120px"><input name="price"  type="checkbox"  value="price" checked="checked"/>价格（$）</label></div>' +
+                    '<div><label style="margin-right: 10px; width: 100px"><input name="status"  type="checkbox"  value="status" checked="checked"/>商品状态</label>' +
                     '<label style="margin-right: 10px; width: 100px"><input name="created_at"  type="checkbox"  value="created_at" checked="checked"/>创建时间</label>' +
                     '<label style="margin-right: 10px; width: 100px"><input name="updated_at"  type="checkbox"  value="updated_at" checked="checked"/>更新时间</label>' +
                     '<label style="margin-right: 10px; width: 100px"><input name="shelf_at"  type="checkbox"  value="shelf_at" checked="checked"/>上架时间</label></div></div>';

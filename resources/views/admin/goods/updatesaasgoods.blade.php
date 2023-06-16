@@ -23,7 +23,7 @@
     <div class="row">
         <div class="col-sm-12">
             <div class="ibox-title">
-                <h5>Edit SaaSGoods</h5>
+                <h5>编辑商品</h5>
             </div>
             <div class="ibox-content">
                 <a href="{{route('goods.saasIndex')}}" style="margin-bottom: 8px">
@@ -44,7 +44,7 @@
                     </div>
 
                     <div class="form-group">
-                        <label class="col-sm-2 control-label no-padding-right" for="form-field-1">档位：</label>
+                        <label class="col-sm-2 control-label no-padding-right" for="form-field-1">档位（资产数）：</label>
                         <div class="col-sm-6 col-xs-12">
                             <select name="data[level2]" id="city" class="form-control"
                                     style="pointer-events: none;color: #9f9f9f"></select>
@@ -52,7 +52,7 @@
                     </div>
 
                     <div class="form-group">
-                        <label class="col-sm-2 control-label no-padding-right" for="form-field-1"> Pricing(USD)：</label>
+                        <label class="col-sm-2 control-label no-padding-right" for="form-field-1"> 价格（$）：</label>
                         <div class="col-sm-6 col-xs-12">
                             <input style="float: left" id="price" type="number" class="form-control" name="data[price]"
                                    min="0.00" max="99999999" step="0.01"
@@ -72,10 +72,10 @@
                     </div>
 
                     <div class="form-group">
-                        <label class="col-sm-2 control-label no-padding-right" for="form-field-1"> status(是否上架)：</label>
+                        <label class="col-sm-2 control-label no-padding-right" for="form-field-1"> 商品状态：</label>
                         <div class="col-sm-6 col-xs-12">
-                            <input type="radio" name="data[status]" value="1" @if($data['status']==1) checked @endif >上架
-                            <input type="radio" name="data[status]" value="0" @if($data['status']==0) checked @endif>下架
+                            <input type="radio" name="data[status]" value="0" @if($data['status']==0) checked @endif>待上架
+                            <input type="radio" name="data[status]" value="1" @if($data['status']==1) checked @endif >架上商品
                         </div>
                     </div>
 

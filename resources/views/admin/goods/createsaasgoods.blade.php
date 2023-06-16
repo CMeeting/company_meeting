@@ -31,7 +31,7 @@
                         返回列表
                     </button>
                 </a>
-                <form class="form-horizontal" id="forms" name="form"  method="post" action="{{route('goods.createrunsaasgoods')}}" >
+                <form class="form-horizontal" id="forms" name="form"  method="post">
                     {{ csrf_field() }}
                     <div class="form-group">
                         <label class="col-sm-2 control-label no-padding-right" for="form-field-1">套餐：</label>
@@ -51,15 +51,15 @@
                 <div class="form-group">
                     <label class="col-sm-2 control-label no-padding-right" for="form-field-1"> 价格（$）：</label>
                     <div class="col-sm-6 col-xs-12">
-                        <input style="float: left" id="price"  type="number" class="form-control" name="data[price]" max="99999999" step="0.01" oninput="if(value.length>8)value=value.slice(0,8)" value="0.00" required>
+                        <input style="float: left" id="price" type="number" class="form-control" name="data[price]" min="0" max="99999999" step="0.01" oninput="if(value.length>8)value=value.slice(0,8)" value="0.00" required>
                     </div>
                 </div>
 
                 <div class="form-group">
                     <label class="col-sm-2 control-label no-padding-right" for="form-field-1"> 商品状态：</label>
                     <div class="col-sm-6 col-xs-12">
-                        <input type="radio" name="data[status]" value="0">待上架
-                        <input type="radio" name="data[status]" value="1" checked >架上商品
+                        <input type="radio" name="data[status]" value="0" checked>待上架
+                        <input type="radio" name="data[status]" value="1">架上商品
                     </div>
                 </div>
 
@@ -105,9 +105,21 @@
                 return false;
             }
 
+            if(!$("#price").val()){
+                layer.close(index);
+                layer.msg("价格不能为空", {time: 1500, anim: 6});
+                return false;
+            }
+
             if($("#price").val() < 0.00){
                 layer.close(index);
                 layer.msg("价格不能低于0.00", {time: 1500, anim: 6});
+                return false;
+            }
+
+            if(!$("#displayorder").val()){
+                layer.close(index);
+                layer.msg("排序不能为空", {time: 1500, anim: 6});
                 return false;
             }
 
