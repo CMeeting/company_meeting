@@ -279,44 +279,47 @@
                 btn: ['确定', '取消']
             },function () {
                 let index = layer.index;
+                layer.close(index);
+                var indexLoad = layer.load();
                 $.ajax({
                     url: "{{route('goods.show')}}",
                     data: {id: id, _token: '{{ csrf_token() }}'},
                     type: 'post',
                     //dataType: "json",
                     success: function (resp) {
-                        layer.close(index);
-                        layer.close(index);
-                        if (resp.code == 0) {
-                            if (resp.status == 0) {
-                                var htmls = '<a type="button" style="text-decoration: none;color: #f6fff8"   data-id="{$v.id}"  class="openBtn_' + id + ' abutton cloros" data-style="zoom-out" onclick="show(' + id + ','+resp.status+');" title="当前下架状态"> <span class="ladda-label">上架</span></a>';
-                                $("#status_"+id).html('<span class="ladda-label">待上架</span>');
-                            } else {
-                                var htmls = '<a type="button" style="text-decoration: none;color: #f6fff8"  data-id="{$v.id}"  class="openBtn_' + id + ' abutton cloros1" data-style="zoom-out" onclick="show(' + id + ','+resp.status+');" title="当前上架状态"> <span class="ladda-label">下架</span></a>';
-                                $("#status_"+id).html('<span class="ladda-label">架上商品</span>');
-                            }
-
-                            $(".open_" + id).html(htmls);
-
-                        } else {
-                            //失败提示
-                            layer.msg(resp.msg, {
-                                icon: 2,
-                                time: 2000
-                            });
-                        }
-                    }, error: function (response) {
+                        // if (resp.code == 0) {
+                        //     if (resp.status == 0) {
+                        //         var htmls = '<a type="button" style="text-decoration: none;color: #f6fff8"   data-id="{$v.id}"  class="openBtn_' + id + ' abutton cloros" data-style="zoom-out" onclick="show(' + id + ','+resp.status+');" title="当前下架状态"> <span class="ladda-label">上架</span></a>';
+                        //         $("#status_"+id).html('<span class="ladda-label">待上架</span>');
+                        //     } else {
+                        //         var htmls = '<a type="button" style="text-decoration: none;color: #f6fff8"  data-id="{$v.id}"  class="openBtn_' + id + ' abutton cloros1" data-style="zoom-out" onclick="show(' + id + ','+resp.status+');" title="当前上架状态"> <span class="ladda-label">下架</span></a>';
+                        //         $("#status_"+id).html('<span class="ladda-label">架上商品</span>');
+                        //     }
+                        //
+                        //     $(".open_" + id).html(htmls);
+                        //
+                        // } else {
+                        //     //失败提示
+                        //     layer.msg(resp.msg, {
+                        //         icon: 2,
+                        //         time: 2000
+                        //     });
+                        // };
+                        layer.close(indexLoad);
+                        location.href = "{{route('goods.saasIndex')}}";
+                    },
+                    error: function (response) {
+                        layer.close(indexLoad);
                         layer.msg("请检查网络或权限设置！", {
                             icon: 2,
                             time: 2000
                         });
-                        layer.close(index);
+                        location.href = "{{route('goods.saasIndex')}}";
                     }
                 });
             }, function (index) {
                 layer.close(index);
             });
-
         }
 
 
