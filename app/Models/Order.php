@@ -9,6 +9,7 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -73,6 +74,11 @@ class Order extends Model
         $model->user_id = $user_id;
         $model->user_bill = $user_bill;
         $model->goodstotal = $goodstotal;
+
+        //后台创建，支付时间等于当前时间
+        if($type == self::TYPE_1_BACKGROUND_CREATE){
+            $model->pay_time = Carbon::now('Y-m-d H:i:s');
+        }
 
         $model->save();
 

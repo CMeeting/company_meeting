@@ -109,6 +109,7 @@ class SaaSOrderService
             return ['code'=>500, 'message'=>'该套餐档位下没有商品，请先新增商品'];
         }
 
+        //实际的单位是月份
         $pay_years = $data['pay_years'] ? $data['pay_years'] : 0;
         if(strstr($combo, '年订阅') && $data['pay_years'] < 12){
             return ['code'=>500, 'message'=>'年订阅有效期必须大于12个月'];
@@ -156,7 +157,13 @@ class SaaSOrderService
             //更新用户SaaS资产信息
             $remain_service = new UserRemainService();
             $total_files = $special_assets ?: $gear;
-            $remain_service->resetRemain($user->id, $user->email, $total_files, $package_type, BackGroundUserRemain::STATUS_1_ACTIVE, 'add');
+
+            //获取套餐有效期
+            $start_date = Carbon::now();
+            $start_date_string = (clone $start_date)->format('Y-m-d H:i:s');
+            $end_date = $start_date->addMonthsNoOverflow($pay_years)->format('Y-m-d H:i:s');
+
+            $remain_service->resetRemain($user->id, $user->email, $total_files, $package_type, BackGroundUserRemain::STATUS_1_ACTIVE, 'add', $start_date_string, $end_date);
 
             DB::commit();
         }catch (\Exception $e){
@@ -215,8 +222,10 @@ class SaaSOrderService
 
             try{
                 DB::beginTransaction();
+                $pay_time = Carbon::now();
+                $pay_time_string = $pay_time->format('Y-m-d H:i:s');
                 $order->status = OrderGoods::STATUS_1_PAID;
-                $order->pay_time = date('Y-m-d H:i:s');
+                $order->pay_time = $pay_time_string;
                 $order->save();
 
                 $user = User::find($order->user_id);
@@ -224,7 +233,7 @@ class SaaSOrderService
                 //修改子订单为已支付状态
                 $order_goods->status = OrderGoods::STATUS_1_PAID;
                 $order_goods->next_billing_time = $next_billing_time;
-                $order_goods->pay_time = date('Y-m-d H:i:s');
+                $order_goods->pay_time = $pay_time_string;
                 $order_goods->save();
 
                 //更新流水信息
@@ -239,7 +248,15 @@ class SaaSOrderService
                 $remain_service = new UserRemainService();
                 $total_files = Goods::getTotalFilesByGoods($order_goods->goods_id);
                 \Log::info('支付成功更新资产信息', ['order_id'=>$order->id, 'user_id'=>$user->id, 'total_files'=>$total_files, 'package_type'=>$order_goods->package_type]);
-                $remain_service->resetRemain($user->id, $user->email, $total_files, $order_goods->package_type, BackGroundUserRemain::STATUS_1_ACTIVE, 'add');
+
+                //获取套餐有效期
+                $start_date = $end_date = null;
+                if($order_goods->package_type == OrderGoods::PACKAGE_TYPE_1_PLAN){
+                    $start_date = $pay_time_string;
+                    $end_date = $next_billing_time;
+                }
+
+                $remain_service->resetRemain($user->id, $user->email, $total_files, $order_goods->package_type, BackGroundUserRemain::STATUS_1_ACTIVE, 'add', $start_date, $end_date);
 
                 DB::commit();
                 \Log::info('订单支付成功回调处理成功', ['third_trade_id'=>$order->third_trade_no]);
@@ -288,7 +305,8 @@ class SaaSOrderService
             $remain_service = new UserRemainService();
             $total_files = Goods::getTotalFilesByGoods($order_goods->goods_id);
             \Log::info('订阅扣款成功更新资产信息', ['order_id'=>$order->id, 'user_id'=>$user->id, 'total_files'=>$total_files, 'package_type'=>$order_goods->package_type]);
-            $remain_service->resetRemain($user->id, $user->email, $total_files, $order_goods->package_type, BackGroundUserRemain::STATUS_1_ACTIVE, 'reset');
+            $start_date = Carbon::now()->format('Y-m-d H:i:s');
+            $remain_service->resetRemain($user->id, $user->email, $total_files, $order_goods->package_type, BackGroundUserRemain::STATUS_1_ACTIVE, 'reset', $start_date, $next_billing_time);
             DB::commit();
         }catch (\Exception $e){
             DB::rollBack();

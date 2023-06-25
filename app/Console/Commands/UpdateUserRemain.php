@@ -65,19 +65,20 @@ class UpdateUserRemain extends Command
             $combo = $classification[$order_goods['level1']] ?? '';
             $gear = $classification[$order_goods['level2']] ?? '';
             //在线购买只有年订阅定时任务重置资产，月订阅扣款成功后才重置资产
-            if($order_goods['type'] == OrderGoods::TYPE_2_BUY && strstr($combo, '年订阅')){
+            if($order_goods['type'] == OrderGoods::TYPE_2_BUY && !strstr($combo, '年订阅')){
                 continue;
             }
 
-            $created_at = Carbon::parse($order_goods['created_at']);
+            $pay_at = Carbon::parse($order_goods['pay_time']);
             $validity_period = $order_goods['pay_years']; //有效期
-            $max_date = $created_at->addMonthsNoOverflow($validity_period)->addDay();
+            $max_date = $pay_at->addMonthsNoOverflow($validity_period)->addDay();
 
             //到达有效期，修改订单状态为取消订阅
             if($now->format('Y-m-d') == $max_date->format('Y-m-d')){
                 OrderGoods::query()
                     ->where('id', $order_goods['id'])
                     ->update(['status' => OrderGoods::STATUS_5_UNSUBSCRIBE]);
+
                 Order::query()
                     ->where('id', $order_goods['order_id'])
                     ->update(['status' => OrderGoods::STATUS_5_UNSUBSCRIBE]);
@@ -91,7 +92,7 @@ class UpdateUserRemain extends Command
             $email = $order_goods['email'];
 
             for($i = 1; $i < $validity_period; $i++){
-                $next_date = $created_at->addMonthsNoOverflow($i)->addDay();
+                $next_date = $pay_at->addMonthsNoOverflow($i)->addDay();
                 //重置资产
                 if($now->format('Y-m-d') == $next_date->format('Y-m-d')){
                     $remain_service->resetRemain($user_id, $email, $total_files, OrderGoods::PACKAGE_TYPE_1_PLAN, BackGroundUserRemain::STATUS_1_ACTIVE, 'reset');

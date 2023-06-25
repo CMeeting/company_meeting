@@ -21,6 +21,8 @@ use Illuminate\Database\Eloquent\Model;
  * @property    $create_by
  * @property    $update_date
  * @property    $update_by
+ * @property    $start_date
+ * @property    $end_date
  */
 
 class BackGroundUserRemain extends Model
@@ -40,25 +42,35 @@ class BackGroundUserRemain extends Model
             ->first();
     }
 
-    public static function add($tenant_id, $user_id, $asset_type, $total_files, $status){
+    public static function add($tenant_id, $user_id, $asset_type, $total_files, $status, $start_date, $end_date){
         $model = new BackGroundUserRemain();
         $model->tenant_id = $tenant_id;
         $model->user_id = $user_id;
         $model->asset_type = $asset_type;
         $model->total_files = $total_files;
         $model->status = $status;
+        $model->start_date = $start_date;
+        $model->end_date = $end_date;
         $model->save();
 
         return $model;
     }
 
-    public static function updateAssetType(BackGroundUserRemain $model, $total_files, $status){
+    public static function updateAssetType(BackGroundUserRemain $model, $total_files, $status, $start_date = null, $end_date = null){
         if($model->asset_type == OrderGoods::PACKAGE_TYPE_1_PLAN){
             //订阅重置 total_files
             $model->total_files = $total_files;
         }else{
             //package 累加资产
             $model->total_files = $model->total_files + $total_files;
+        }
+
+        if($start_date != null){
+            $model->start_date = $start_date;
+        }
+
+        if($end_date != null){
+            $model->end_date = $end_date;
         }
 
         $model->status = $status;

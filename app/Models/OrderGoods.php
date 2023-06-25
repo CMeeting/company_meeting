@@ -9,6 +9,7 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -104,6 +105,12 @@ class OrderGoods extends Model
         $model->goods_id = $goods_id;
         $model->package_type = $package_type;
         $model->special_assets = $special_assets;
+
+        //后台创建，支付时间等于当前时间
+        if($type == self::TYPE_1_BACKGROUND){
+            $model->pay_time = Carbon::now('Y-m-d H:i:s');
+        }
+
         $model->save();
 
         return $model;

@@ -19,8 +19,10 @@ class UserRemainService
      * @param $package_type
      * @param $status
      * @param $type
+     * @param $start_date
+     * @param $end_date
      */
-    public function resetRemain($user_id, $email, $total_files, $package_type, $status, $type){
+    public function resetRemain($user_id, $email, $total_files, $package_type, $status, $type, $start_date = null, $end_date = null){
         //更新用户资产
         $backgroundUser = BackGroundUser::getByCompdfkitId($user_id);
         if(!$backgroundUser instanceof BackGroundUser){
@@ -32,10 +34,10 @@ class UserRemainService
         $remain = BackGroundUserRemain::getByTypeUserId($backgroundUser->id, $package_type);
 
         if(!$remain instanceof BackGroundUserRemain){
-            $remain = BackGroundUserRemain::add($backgroundUser->tenant_id, $backgroundUser->id, $package_type, $total_files, $status);
+            $remain = BackGroundUserRemain::add($backgroundUser->tenant_id, $backgroundUser->id, $package_type, $total_files, $status, $start_date, $end_date);
         }else{
             $balance_change = $remain->total_files - $remain->used_files;
-            $remain = BackGroundUserRemain::updateAssetType($remain, $total_files, $status);
+            $remain = BackGroundUserRemain::updateAssetType($remain, $total_files, $status, $start_date, $end_date);
         }
 
         //新增资产只增加新增消费记录，重置资产增加消费，充值两条记录，取消订阅增加消费记录
