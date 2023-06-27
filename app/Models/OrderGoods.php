@@ -108,7 +108,7 @@ class OrderGoods extends Model
 
         //后台创建，支付时间等于当前时间
         if($type == self::TYPE_1_BACKGROUND){
-            $model->pay_time = Carbon::now('Y-m-d H:i:s');
+            $model->pay_time = Carbon::now()->format('Y-m-d H:i:s');
         }
 
         $model->save();

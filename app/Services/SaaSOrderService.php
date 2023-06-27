@@ -168,7 +168,7 @@ class SaaSOrderService
             DB::commit();
         }catch (\Exception $e){
             DB::rollBack();
-            return ['code'=>500, 'message'=>'创建失败', 'error'=>$e->getMessage()];
+            return ['code'=>500, 'message'=>'创建失败', 'error'=>$e->getTrace()];
         }
 
 
