@@ -65,7 +65,7 @@ class UpdateUserRemain extends Command
             $combo = $classification[$order_goods['level1']] ?? '';
             $gear = $classification[$order_goods['level2']] ?? '';
             //在线购买只有年订阅定时任务重置资产，月订阅扣款成功后才重置资产
-            if($order_goods['type'] == OrderGoods::TYPE_2_BUY && !strstr($combo, '年订阅')){
+            if($order_goods['type'] == OrderGoods::TYPE_2_BUY && $combo != 'Annually'){
                 continue;
             }
 

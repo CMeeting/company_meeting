@@ -111,8 +111,8 @@ class SaaSOrderService
 
         //实际的单位是月份
         $pay_years = $data['pay_years'] ? $data['pay_years'] : 0;
-        if(strstr($combo, '年订阅') && $data['pay_years'] < 12){
-            return ['code'=>500, 'message'=>'年订阅有效期必须大于12个月'];
+        if($combo == 'Annually' && $data['pay_years'] < 12){
+            return ['code'=>500, 'message'=>'Annually有效期必须大于12个月'];
         }
 
         if(strtolower($combo) != 'package' && $this->existsSubscriptionPlan($user->id)){
@@ -291,7 +291,7 @@ class SaaSOrderService
             $order_goods = OrderGoods::getByOrderId($order->id);
             $combo = Goodsclassification::getComboById($order_goods->level1);
             //年订阅更新有效期
-            if(strstr($combo, '年')){
+            if($combo == 'Annually'){
                 $order_goods->pay_years += 12;
             }
             $order_goods->next_billing_time = $next_billing_time;

@@ -47,7 +47,7 @@ class UserAssetsService
      * @return int
      */
     public function getTypeByCombo($combo){
-        if($combo == '月订阅制' || $combo == '年订阅制'){
+        if($combo == 'Monthly' || $combo == 'Annually'){
             return UserAssets::TYPE_1_SUB;
         }else{
             return UserAssets::TYPE_2_PACKAGE;
