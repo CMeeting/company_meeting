@@ -33,12 +33,14 @@ class SaaSOrderController extends Controller
     public function createOrder(Request $request){
         $current_user = UserService::getCurrentUser($request);
         if(!$current_user instanceof User){
-            return \Response::json(['code'=>401, 'message'=>'未登录，不能购买']);
+            return \Response::json(['code'=>401, 'message'=>'Unauthorized']);
         }
+
+        \Log::info('创建订单参数', ['email' => $current_user->email, 'params' => $request->all()]);
 
         $goods_id = $request->input('goods_id');
         if(!$goods_id){
-            return \Response::json(['code'=>502, 'message'=>'缺少商品ID']);
+            return \Response::json(['code'=>502, 'message'=>'Parameter error']);
         }
 
         //已有未支付订单直接返回
@@ -52,7 +54,7 @@ class SaaSOrderController extends Controller
         $goods = $goodsService->findById($goods_id);
 
         if(!$goods instanceof Goods || $goods->status == Goods::STATUS_0_INACTIVE || $goods->deleted == Goods::DELETE_1_YES){
-            return \Response::json(['code'=>503, 'message'=>'商品已下架或者删除']);
+            return \Response::json(['code'=>503, 'message'=>'The product you are trying to purchase has been updated. Please reload the page and try again.']);
         }
 
         $combo_id = $goods->level1;
@@ -62,22 +64,21 @@ class SaaSOrderController extends Controller
         $gear = array_get($classify, "$gear_id.title");
 
         if(!$combo || !$gear){
-            return \Response::json(['code'=>504, 'message'=>'商品套餐或者档位不存在']);
+            return \Response::json(['code'=>504, 'message'=>'The product package or tier does not exist.']);
         }
 
         $cycle = '';
-        if(strstr($combo, '订阅')){
+        if($combo != 'Package'){
             if($orderService->existsSubscriptionPlan($current_user->id)){
-                return ['code'=>505, 'message'=>'该账号已存在订阅中订单，不能重复购买'];
+                return ['code'=>505, 'message'=>'You cannot purchase the same subscription plan while your current subscription is active. If you need to process more files, you can choose a package plan instead.'];
             }
             $package_type = OrderGoods::PACKAGE_TYPE_1_PLAN;
 
-            if(strstr($combo, '月')){
+            if($combo == 'Monthly'){
                 $cycle = OrderGoods::CYCLE_1_MONTH;
             }else{
                 $cycle = OrderGoods::CYCLE_2_YEAR;
             }
-
         }else{
             $package_type = OrderGoods::PACKAGE_TYPE_2_PACKAGE;
         }
@@ -90,7 +91,7 @@ class SaaSOrderController extends Controller
 
             return \Response::json(['code'=>200, 'message'=>'success', 'data'=>$result['data']]);
         }else{
-            return \Response::json(['code'=>506, 'message'=>'系统错误', 'data'=>[]]);
+            return \Response::json(['code'=>506, 'message'=>'System error.', 'data'=>[]]);
         }
     }
 
