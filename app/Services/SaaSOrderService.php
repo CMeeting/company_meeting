@@ -425,14 +425,7 @@ class SaaSOrderService
         $pay_time = Carbon::parse($pay_time)->format('Y/m/d H:i:s');
         $data['info'] = str_replace("#@pay_date", $pay_time, $data['info']);
 
-        if(strstr($combo, '年')){
-            $plan = 'Annually';
-        }elseif(strstr($combo, '月')){
-            $plan = 'Monthly';
-        }else{
-            $plan = 'Package';
-        }
-        $data['info'] = str_replace("#@plan", $plan, $data['info']);
+        $data['info'] = str_replace("#@plan", $combo, $data['info']);
 
         $taxes = $price * 0.05;
         $taxes = round($taxes);
