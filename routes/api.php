@@ -121,5 +121,6 @@ Route::group(['middleware' => ['jwt.auth', 'cors'], 'namespace' => 'Api', 'prefi
     Route::post('/create-order', 'SaaSOrderController@createOrder');
     Route::get('/get-order-status', 'SaaSOrderController@getOrderStatus');
     Route::post('/send-failed-email', 'SaaSOrderController@sendFailedEmail');
+    Route::post('/verify-sub-goods', 'SaaSOrderController@verifySubOrGoods');
 });
 

@@ -17,34 +17,58 @@ use App\Models\OrderGoodsCancel;
 use App\Models\User;
 use Carbon\Carbon;
 use DB;
+use Illuminate\Http\Request;
 
 class SaaSOrderService
 {
+
+    const INVALID_1_NULL = 1;
+    const INVALID_2_GOODS = 2;
+    const INVALID_3_GOODS_CLASSIFICATION = 3;
+    const INVALID_4_SUB = 4;
+
+
     /**
      * 创建订单
      * @param User $user
-     * @param Goods $goods
-     * @param $package_type
-     * @param $cycle
+     * @param string $goods_id
      * @return array
      */
-    public function createOrder(User $user, Goods $goods, $package_type, $cycle = ''){
+    public function createOrder(User $user, $goods_id){
         //新增订单
         $pay_type = OrderGoods::PAY_TYPE_5_PAYPAL;
         $order_no = $this->getOrderGoodsNum();
         $status = OrderGoods::STATUS_0_UNPAID;
         $type = OrderGoods::TYPE_2_BUY;
         $details_type = OrderGoods::DETAILS_TYPE_3_SAAS;
-        $price = $goods->price;
-        $order = Order::add($order_no, $pay_type, $status, $type, $details_type, $price, $user->id, 1);
+
+        //套餐
+        $goods = Goods::query()->find($goods_id);
+        $combo_id = $goods->level1;
+        $classify = Goodsclassification::getKeyById();
+        $combo = array_get($classify, "$combo_id.title");
+
+        $cycle = $pay_years = null;
+        if($combo != 'Package'){
+            $package_type = OrderGoods::PACKAGE_TYPE_1_PLAN;
+
+            if($combo == 'Monthly'){
+                $cycle = OrderGoods::CYCLE_1_MONTH;
+            }else{
+                $cycle = OrderGoods::CYCLE_2_YEAR;
+                //年订阅资产重置需要用到$pay_years
+                $pay_years = 12;
+            }
+        }else{
+            $package_type = OrderGoods::PACKAGE_TYPE_2_PACKAGE;
+        }
+
+        //新增总订单
+        $order = Order::add($order_no, $pay_type, $status, $type, $details_type, $goods->price, $user->id, 1);
 
         //新增子订单
-        $pay_years = null;
         $order_goods_no = $this->getOrderGoodsNum();
-        if($cycle == OrderGoods::CYCLE_2_YEAR){
-            $pay_years = 12;
-        }
-        $order_goods = OrderGoods::add($order->id, $order_no, $order_goods_no, $pay_type, $status, $type, $details_type, $price, $user->id, $goods->id, $package_type, $pay_years);
+        $order_goods = OrderGoods::add($order->id, $order_no, $order_goods_no, $pay_type, $status, $type, $details_type, $goods->price, $user->id, $goods->id, $package_type, $pay_years);
 
         //订单未支付三小时后关闭
         dispatch(new CloseOrder($order->id))->delay(Carbon::now()->addHours(3));
@@ -53,9 +77,9 @@ class SaaSOrderService
         $payService = new PayCenterService();
 
         if($package_type == OrderGoods::PACKAGE_TYPE_2_PACKAGE){
-            $result = $payService->createPackageOrder($order_no, $price);
+            $result = $payService->createPackageOrder($order_no, $goods->price);
         }else{
-            $result = $payService->createPlanOrder($order_no, $price, $cycle);
+            $result = $payService->createPlanOrder($order_no, $goods->price, $cycle);
         }
 
         //接口正常返回结果
@@ -77,7 +101,7 @@ class SaaSOrderService
             $order_goods->third_trade_no = $third_trade_no;
             $order_goods->save();
 
-            return ['code'=>200, 'data'=>['order_no'=>$order->order_no, 'pay_url'=>$pay_url]];
+            return ['code'=>200, 'data'=>['order_no'=>$order->order_no, 'pay_url'=>$pay_url, 'third_trade_no'=>$third_trade_no]];
         }else{
             return ['code'=>500, 'message'=>'创建订单失败'];
         }
@@ -375,11 +399,14 @@ class SaaSOrderService
 
                 $order_goods = OrderGoods::getByOrderId($order->id);
                 $order_goods->status = OrderGoods::STATUS_5_UNSUBSCRIBE;
+
                 $order_goods->save();
 
                 //新增订阅取消记录
                 //获取处理时间
                 \Log::info('取消订阅回调增加待处理的取消订阅记录', ['order_id'=>$order->id]);
+
+
                 $next_billing_time = $order_goods->next_billing_time;
                 $reset_date = Carbon::parse($next_billing_time)->addMonthsNoOverflow(1)->addDay()->format('Y-m-d');
                 $remark = '取消订阅回调事件';
@@ -482,5 +509,40 @@ class SaaSOrderService
         $user = User::find($user_id);
         $key = md5($user->email . '-' . $goods_id);
         return \Cache::forget($key);
+    }
+
+    /**
+     * 验证商品或者订阅
+     * @param $goods_id
+     * @param $user_id
+     * @param $verify_sub
+     * @return bool
+     */
+    public function verifyGoodsOrSub($goods_id, $user_id, $verify_sub){
+        $goodsService = new GoodsService();
+        $goods = $goodsService->findById($goods_id);
+
+        //商品是否下架或者删除
+        if(!$goods instanceof Goods || $goods->status == Goods::STATUS_0_INACTIVE || $goods->deleted == Goods::DELETE_1_YES){
+            return self::INVALID_2_GOODS;
+        }
+
+        //商品分类是否存在
+        $combo_id = $goods->level1;
+        $gear_id = $goods->level2;
+        $classify = Goodsclassification::getKeyById();
+        $combo = array_get($classify, "$combo_id.title");
+        $gear = array_get($classify, "$gear_id.title");
+
+        if(!$combo || !$gear){
+            return self::INVALID_3_GOODS_CLASSIFICATION;
+        }
+
+        //需要验证用户是否存在订阅
+        if($verify_sub && $combo != 'Package' && $this->existsSubscriptionPlan($user_id)){
+            return self::INVALID_4_SUB;
+        }
+
+        return self::INVALID_1_NULL;
     }
 }

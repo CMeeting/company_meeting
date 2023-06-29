@@ -23,8 +23,8 @@ class Goodsclassification extends Model
      */
     public static function getComboOrGear($level){
         $result = Goodsclassification::query()
-            ->where('is_saas', 1)
-            ->where('deleted', 0)
+            ->where('is_saas', Goods::IS_SAAS_1_YES)
+            ->where('deleted', Goods::DELETE_0_NO)
             ->where('lv', $level)
             ->select(['id', 'title', 'pid'])
             ->orderBy('displayorder')
@@ -43,8 +43,8 @@ class Goodsclassification extends Model
      */
     public static function getGearGroupByCombo(){
         $result = Goodsclassification::query()
-            ->where('is_saas', 1)
-            ->where('deleted', 0)
+            ->where('is_saas', Goods::IS_SAAS_1_YES)
+            ->where('deleted', Goods::DELETE_0_NO)
             ->where('lv', 2)
             ->select(['id', 'title', 'pid'])
             ->orderBy('displayorder')

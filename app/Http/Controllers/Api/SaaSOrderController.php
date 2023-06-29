@@ -47,43 +47,23 @@ class SaaSOrderController extends Controller
         $orderService = new SaaSOrderService();
         $cache_order = $orderService->getOrderCache($current_user->id, $goods_id);
         if($cache_order){
+            \Log::info('创建订单存在未支付的订单缓存', ['email' => $current_user->email, 'params' => $request->all()]);
             return \Response::json(['code'=>200, 'message'=>'success', 'data'=>$cache_order]);
         }
 
-        $goodsService = new GoodsService();
-        $goods = $goodsService->findById($goods_id);
-
-        if(!$goods instanceof Goods || $goods->status == Goods::STATUS_0_INACTIVE || $goods->deleted == Goods::DELETE_1_YES){
+        //验证商品以及用户是否存在订阅
+        $result = $orderService->verifyGoodsOrSub($goods_id, $current_user->id, true);
+        if ($result == SaaSOrderService::INVALID_2_GOODS){
             return \Response::json(['code'=>503, 'message'=>'The product you are trying to purchase has been updated. Please reload the page and try again.']);
-        }
-
-        $combo_id = $goods->level1;
-        $gear_id = $goods->level2;
-        $classify = Goodsclassification::getKeyById();
-        $combo = array_get($classify, "$combo_id.title");
-        $gear = array_get($classify, "$gear_id.title");
-
-        if(!$combo || !$gear){
+        }elseif($result == SaaSOrderService::INVALID_3_GOODS_CLASSIFICATION){
             return \Response::json(['code'=>504, 'message'=>'The product package or tier does not exist.']);
+        }elseif($result == SaaSOrderService::INVALID_4_SUB){
+            return \Response::json(['code'=>505, 'message'=>'You cannot purchase the same subscription plan while your current subscription is active. If you need to process more files, you can choose a package plan instead.']);
         }
 
-        $cycle = '';
-        if($combo != 'Package'){
-            if($orderService->existsSubscriptionPlan($current_user->id)){
-                return ['code'=>505, 'message'=>'You cannot purchase the same subscription plan while your current subscription is active. If you need to process more files, you can choose a package plan instead.'];
-            }
-            $package_type = OrderGoods::PACKAGE_TYPE_1_PLAN;
+        $result = $orderService->createOrder($current_user, $goods_id);
 
-            if($combo == 'Monthly'){
-                $cycle = OrderGoods::CYCLE_1_MONTH;
-            }else{
-                $cycle = OrderGoods::CYCLE_2_YEAR;
-            }
-        }else{
-            $package_type = OrderGoods::PACKAGE_TYPE_2_PACKAGE;
-        }
-
-        $result = $orderService->createOrder($current_user, $goods, $package_type, $cycle);
+        \Log::info('创建订单结果', ['email' => $current_user->email, 'result' => $result]);
 
         if($result['code'] == 200){
             //新增订单缓存
@@ -178,37 +158,59 @@ class SaaSOrderController extends Controller
             return \Response::json(['code'=>501, 'message'=>'订单不存在']);
         }
 
-        \Log::info('支付回调日志', ['event_type'=>$event_type, 'order_status'=>$order->status, 'third_trade_id'=>$third_trade_no, 'next_billing_time'=>$next_billing_time]);
+        $lock = 'webhook' . $third_trade_no;
+        try {
+            \Cache::lock($lock)->get(function () use($event_type, $order, $next_billing_time){
+                $orderService = new SaaSOrderService();
+                switch ($event_type){
+                    case OrderGoods::EVENT_1_PAYMENT_SUCCESS:
+                        $orderService->completeOrder($order, $next_billing_time);
+                        break;
+                    case OrderGoods::EVENT_3_DEDUCTION_SUCCESS:
+                        $orderService->deductionSuccess($order, $next_billing_time);
+                        break;
+                    case  OrderGoods::EVENT_4_DEDUCTION_FAILED:
+                        $orderService->deductionFailed($order);
+                        break;
+                    case OrderGoods::EVENT_5_PLAN_CANCEL:
+                        $orderService->cancelPlan($order);
+                        break;
+                    default:
+                        break;
+                }
+            });
+        }catch (\Exception $e){
+            \Log::info('支付回调处理失败', ['event_type'=>$event_type, 'third_trade_id'=>$third_trade_no, 'error'=>$e->getTrace()]);
+            //释放锁
+            \Cache::forget($lock);
 
-        $orderService = new SaaSOrderService();
-        switch ($event_type){
-            case OrderGoods::EVENT_1_PAYMENT_SUCCESS:
-                $orderService->completeOrder($order, $next_billing_time);
-                break;
-            case OrderGoods::EVENT_3_DEDUCTION_SUCCESS:
-                $orderService->deductionSuccess($order, $next_billing_time);
-                break;
-            case  OrderGoods::EVENT_4_DEDUCTION_FAILED:
-                $orderService->deductionFailed($order);
-                break;
-            case OrderGoods::EVENT_5_PLAN_CANCEL:
-                $orderService->cancelPlan($order);
-                break;
-            default:
-                break;
+            return \Response::json(['code'=>500, 'message'=>'system error']);
         }
 
         return \Response::json(['code'=>200, 'message'=>'success']);
     }
 
     /**
-     * 发送支付失败邮件
+     * 验证商品或者是否已存在订阅
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function sendPaymentFailedEmail(Request $request){
-        $order_no = $request->input('order_no');
+    public function verifySubOrGoods(Request $request){
+        $user = UserService::getCurrentUser($request);
+        $goods_id = $request->input('goods_id');
+        $verify_sub = $request->input('verify_sub', false);
 
-        return \Response::json(['code'=>200, 'message'=>'发送成功']);
+        $service = new SaaSOrderService();
+        $result = $service->verifyGoodsOrSub($goods_id, $user->id, $verify_sub);
+
+        if($result == SaaSOrderService::INVALID_1_NULL){
+            return \Response::json(['code'=>200, 'message'=>'success']);
+        }elseif ($result == SaaSOrderService::INVALID_2_GOODS){
+            return \Response::json(['code'=>503, 'message'=>'The product you are trying to purchase has been updated. Please reload the page and try again.']);
+        }elseif($result == SaaSOrderService::INVALID_3_GOODS_CLASSIFICATION){
+            return \Response::json(['code'=>504, 'message'=>'The product package or tier does not exist.']);
+        }else{
+            return \Response::json(['code'=>505, 'message'=>'You cannot purchase the same subscription plan while your current subscription is active. If you need to process more files, you can choose a package plan instead.']);
+        }
     }
 }
