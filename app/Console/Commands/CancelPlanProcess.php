@@ -53,7 +53,7 @@ class CancelPlanProcess extends Command
         foreach ($orders as $order){
             //取消订阅的用户修改资产为0
             $remain_service = new UserRemainService();
-            $remain_service->resetRemain($order['id'], $order['email'], 0, $order['package_type'], BackGroundUserRemain::STATUS_2_INACTIVE, 'cancel');
+            $remain_service->resetRemain($order['id'], $order['email'], 0, $order['package_type'], BackGroundUserRemain::STATUS_2_INACTIVE, BackGroundUserRemain::OPERATE_TYPE_3_CANCEL);
         }
 
         return;

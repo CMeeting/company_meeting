@@ -37,17 +37,19 @@ class UserRemainService
             $remain = BackGroundUserRemain::add($backgroundUser->tenant_id, $backgroundUser->id, $package_type, $total_files, $status, $start_date, $end_date);
         }else{
             $balance_change = $remain->total_files - $remain->used_files;
-            $remain = BackGroundUserRemain::updateAssetType($remain, $total_files, $status, $start_date, $end_date);
+            $remain = BackGroundUserRemain::updateAssetType($remain, $total_files, $type, $start_date, $end_date);
         }
 
         //新增资产只增加新增消费记录，重置资产增加消费，充值两条记录，取消订阅增加消费记录
-        if($type == 'add'){
+        if($type == BackGroundUserRemain::OPERATE_TYPE_1_ADD){
             BackGroundUserBalance::add($backgroundUser->id, $backgroundUser->tenant_id, $package_type, $total_files, BackGroundUserBalance::CHANGE_TYPE_1_RECHARGE);
-        }elseif($type == 'reset'){
-            BackGroundUserBalance::add($backgroundUser->id, $backgroundUser->tenant_id, $package_type, $balance_change ?? 0, BackGroundUserBalance::CHANGE_TYPE_2_USED);
+        }elseif($type == BackGroundUserRemain::OPERATE_TYPE_2_RESET){
+            if(isset($balance_change) && !$balance_change){
+                BackGroundUserBalance::add($backgroundUser->id, $backgroundUser->tenant_id, $package_type, $balance_change, BackGroundUserBalance::CHANGE_TYPE_2_USED);
+            }
             BackGroundUserBalance::add($backgroundUser->id, $backgroundUser->tenant_id, $package_type, $total_files, BackGroundUserBalance::CHANGE_TYPE_1_RECHARGE);
-        }elseif($type == 'cancel'){
-            BackGroundUserBalance::add($backgroundUser->id, $backgroundUser->tenant_id, $package_type, $balance_change ?? 0, BackGroundUserBalance::CHANGE_TYPE_2_USED);
+        }elseif($type == BackGroundUserRemain::OPERATE_TYPE_3_CANCEL && isset($balance_change) && !$balance_change){
+            BackGroundUserBalance::add($backgroundUser->id, $backgroundUser->tenant_id, $package_type, $balance_change, BackGroundUserBalance::CHANGE_TYPE_2_USED);
         }
 
         //推送资产到SaaS
@@ -78,9 +80,5 @@ class UserRemainService
         $url = env('BACKGROUND_USER_SAAS') . '/user-api/v1/user/verify';
 
         return HttpClientService::get($url, [], $headers);
-    }
-
-    public function getResetFiles($user_id){
-
     }
 }

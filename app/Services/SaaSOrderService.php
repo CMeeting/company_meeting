@@ -187,7 +187,7 @@ class SaaSOrderService
             $start_date_string = (clone $start_date)->format('Y-m-d H:i:s');
             $end_date = $start_date->addMonthsNoOverflow($pay_years)->format('Y-m-d H:i:s');
 
-            $remain_service->resetRemain($user->id, $user->email, $total_files, $package_type, BackGroundUserRemain::STATUS_1_ACTIVE, 'add', $start_date_string, $end_date);
+            $remain_service->resetRemain($user->id, $user->email, $total_files, $package_type, BackGroundUserRemain::STATUS_1_ACTIVE, BackGroundUserRemain::OPERATE_TYPE_1_ADD, $start_date_string, $end_date);
 
             DB::commit();
         }catch (\Exception $e){
@@ -280,7 +280,7 @@ class SaaSOrderService
                     $end_date = $next_billing_time;
                 }
 
-                $remain_service->resetRemain($user->id, $user->email, $total_files, $order_goods->package_type, BackGroundUserRemain::STATUS_1_ACTIVE, 'add', $start_date, $end_date);
+                $remain_service->resetRemain($user->id, $user->email, $total_files, $order_goods->package_type, BackGroundUserRemain::STATUS_1_ACTIVE, BackGroundUserRemain::OPERATE_TYPE_1_ADD, $start_date, $end_date);
 
                 DB::commit();
                 \Log::info('订单支付成功回调处理成功', ['third_trade_id'=>$order->third_trade_no]);
@@ -330,7 +330,7 @@ class SaaSOrderService
             $total_files = Goods::getTotalFilesByGoods($order_goods->goods_id);
             \Log::info('订阅扣款成功更新资产信息', ['order_id'=>$order->id, 'user_id'=>$user->id, 'total_files'=>$total_files, 'package_type'=>$order_goods->package_type]);
             $start_date = Carbon::now()->format('Y-m-d H:i:s');
-            $remain_service->resetRemain($user->id, $user->email, $total_files, $order_goods->package_type, BackGroundUserRemain::STATUS_1_ACTIVE, 'reset', $start_date, $next_billing_time);
+            $remain_service->resetRemain($user->id, $user->email, $total_files, $order_goods->package_type, BackGroundUserRemain::STATUS_1_ACTIVE, BackGroundUserRemain::OPERATE_TYPE_2_RESET, $start_date, $next_billing_time);
             DB::commit();
         }catch (\Exception $e){
             DB::rollBack();
@@ -364,7 +364,7 @@ class SaaSOrderService
                 //更新用户SaaS资产信息
                 \Log::info('订阅周期扣款失败更新资产信息', ['order_id'=>$order->id]);
                 $remain_service = new UserRemainService();
-                $remain_service->resetRemain($user->id, $user->email, 0, $order_goods->package_type, BackGroundUserRemain::STATUS_2_INACTIVE, 'cancel');
+                $remain_service->resetRemain($user->id, $user->email, 0, $order_goods->package_type, BackGroundUserRemain::STATUS_2_INACTIVE, BackGroundUserRemain::OPERATE_TYPE_3_CANCEL);
 
                 //新增订阅取消记录
                 \Log::info('订阅周期扣款失败增加已处理取消订阅记录', ['order_id'=>$order->id]);
