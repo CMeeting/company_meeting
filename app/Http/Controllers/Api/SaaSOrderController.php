@@ -103,6 +103,7 @@ class SaaSOrderController extends Controller
 
         //调用支付中心订单状态查询接口
         $status = $order->status;
+        $start_date = $end_date = null;
         if($status == OrderGoods::STATUS_0_UNPAID){
             $payService = new PayCenterService();
             $result = $payService->getOrderStatus($order->third_trade_no, $orderGoods->package_type);
@@ -110,15 +111,17 @@ class SaaSOrderController extends Controller
             if($result['code'] == 200){
                 //支付成功
                 if($result['data']['status'] == 'APPROVED' || $result['data']['status'] == 'ACTIVE'){
-                    $bool = $orderService->completeOrder($order, $result['data']['next_billing_time']);
-                    if($bool){
+                    $order_result = $orderService->completeOrder($order_no, $result['data']['next_billing_time']);
+                    if(!empty($order_result)){
                         $status = OrderGoods::STATUS_1_PAID;
+                        $start_date = $order_result['start_date'] ? Carbon::parse($order_result['start_date'])->format('Y-m-d') : '';
+                        $end_date = $order_result['end_date'] ? Carbon::parse($order_result['end_date'])->format('Y-m-d') : '';
                     }
                 }
             }
         }
 
-        return \Response::json(['code'=>200, 'message'=>'success', 'data'=>['order_no'=>$order_no, 'status'=>$status]]);
+        return \Response::json(['code'=>200, 'message'=>'success', 'data'=>['order_no'=>$order_no, 'status'=>$status, 'start_date'=>$start_date, 'end_date'=>$end_date]]);
     }
 
     /**
@@ -158,27 +161,32 @@ class SaaSOrderController extends Controller
             return \Response::json(['code'=>501, 'message'=>'订单不存在']);
         }
 
-        $lock = 'webhook' . $third_trade_no;
+        $lock = 'webhook:' . $third_trade_no;
         try {
-            \Cache::lock($lock)->get(function () use($event_type, $order, $next_billing_time){
-                $orderService = new SaaSOrderService();
-                switch ($event_type){
-                    case OrderGoods::EVENT_1_PAYMENT_SUCCESS:
-                        $orderService->completeOrder($order, $next_billing_time);
-                        break;
-                    case OrderGoods::EVENT_3_DEDUCTION_SUCCESS:
-                        $orderService->deductionSuccess($order, $next_billing_time);
-                        break;
-                    case  OrderGoods::EVENT_4_DEDUCTION_FAILED:
-                        $orderService->deductionFailed($order);
-                        break;
-                    case OrderGoods::EVENT_5_PLAN_CANCEL:
-                        $orderService->cancelPlan($order);
-                        break;
-                    default:
-                        break;
-                }
-            });
+            $orderService = new SaaSOrderService();
+            switch ($event_type){
+                case OrderGoods::EVENT_1_PAYMENT_SUCCESS:
+                    //在方法里面上锁，还有其他地方调用了这个方法
+                    $orderService->completeOrder($third_trade_no, $next_billing_time);
+                    break;
+                case OrderGoods::EVENT_3_DEDUCTION_SUCCESS:
+                    \Cache::lock($lock)->get(function () use($orderService, $third_trade_no, $next_billing_time){
+                        $orderService->deductionSuccess($third_trade_no, $next_billing_time);
+                    });
+                    break;
+                case  OrderGoods::EVENT_4_DEDUCTION_FAILED:
+                    \Cache::lock($lock)->get(function () use($orderService, $third_trade_no, $next_billing_time){
+                        $orderService->deductionFailed($third_trade_no);
+                    });
+                    break;
+                case OrderGoods::EVENT_5_PLAN_CANCEL:
+                    \Cache::lock($lock)->get(function () use($orderService, $third_trade_no, $next_billing_time){
+                        $orderService->cancelPlan($third_trade_no);
+                    });
+                    break;
+                default:
+                    break;
+            }
         }catch (\Exception $e){
             \Log::info('支付回调处理失败', ['event_type'=>$event_type, 'third_trade_id'=>$third_trade_no, 'error'=>$e->getTrace()]);
             //释放锁

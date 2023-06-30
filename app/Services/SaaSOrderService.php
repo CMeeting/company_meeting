@@ -18,6 +18,7 @@ use App\Models\User;
 use Carbon\Carbon;
 use DB;
 use Illuminate\Http\Request;
+use function foo\func;
 
 class SaaSOrderService
 {
@@ -234,79 +235,90 @@ class SaaSOrderService
 
     /**
      * 订单支付成功
-     * @param Order $order
+     * @param $third_trade_no
      * @param $next_billing_time
-     * @return bool
+     * @return array
      */
-    public function completeOrder(Order $order, $next_billing_time = null){
-        if($order->status == OrderGoods::STATUS_0_UNPAID){
-            $order_goods = OrderGoods::getByOrderId($order->id);
-            //删除订单缓存
-            $this->delOrderCache($order->user_id, $order_goods->goods_id);
+    public function completeOrder($third_trade_no, $next_billing_time = null){
+        $lock = 'webhook:' . $third_trade_no;
+        $order = Order::getByTradeNo($third_trade_no);
+        $lock = \Cache::lock($lock, 60*60);
 
-            try{
-                DB::beginTransaction();
-                $pay_time = Carbon::now();
-                $pay_time_string = $pay_time->format('Y-m-d H:i:s');
-                $order->status = OrderGoods::STATUS_1_PAID;
-                $order->pay_time = $pay_time_string;
-                $order->save();
+        $result = [];
+        if ($lock->get()) {
+            if($order->status == OrderGoods::STATUS_0_UNPAID){
+                $order_goods = OrderGoods::getByOrderId($order->id);
 
-                $user = User::find($order->user_id);
+                try{
+                    DB::beginTransaction();
+                    //删除订单缓存
+                    $this->delOrderCache($order->user_id, $order_goods->goods_id);
 
-                //修改子订单为已支付状态
-                $order_goods->status = OrderGoods::STATUS_1_PAID;
-                $order_goods->next_billing_time = $next_billing_time;
-                $order_goods->pay_time = $pay_time_string;
-                $order_goods->save();
+                    //修改订单和子订单为已支付状态
+                    $pay_time = Carbon::now();
+                    $pay_time_string = $pay_time->format('Y-m-d H:i:s');
+                    $order->status = OrderGoods::STATUS_1_PAID;
+                    $order->pay_time = $pay_time_string;
+                    $order->save();
 
-                //更新流水信息
-                \Log::info('支付成功更新流水信息', ['order_id'=>$order->id]);
-                OrderCashFlow::add($order->id, $order->pay_type, $order_goods->package_type, $order->price, 0, 0, $order->price, $order->third_trade_no, '', OrderCashFlow::CURRENCY_1_USD);
+                    $order_goods->status = OrderGoods::STATUS_1_PAID;
+                    $order_goods->next_billing_time = $next_billing_time;
+                    $order_goods->pay_time = $pay_time_string;
+                    $order_goods->save();
 
-                //更新用户类型
-                $user_service = new UserService();
-                $user_service->changeType(Order::DETAILS_STATUS_3_SAAS, $user->id);
+                    //更新流水信息
+                    \Log::info('支付成功更新流水信息', ['order_id'=>$order->id]);
+                    OrderCashFlow::add($order->id, $order->pay_type, $order_goods->package_type, $order->price, 0, 0, $order->price, $order->third_trade_no, '', OrderCashFlow::CURRENCY_1_USD);
 
-                //更新用户SaaS资产信息
-                $remain_service = new UserRemainService();
-                $total_files = Goods::getTotalFilesByGoods($order_goods->goods_id);
-                \Log::info('支付成功更新资产信息', ['order_id'=>$order->id, 'user_id'=>$user->id, 'total_files'=>$total_files, 'package_type'=>$order_goods->package_type]);
+                    //更新用户类型
+                    $user = User::find($order->user_id);
+                    $user_service = new UserService();
+                    $user_service->changeType(Order::DETAILS_STATUS_3_SAAS, $user->id);
 
-                //获取套餐有效期
-                $start_date = $end_date = null;
-                if($order_goods->package_type == OrderGoods::PACKAGE_TYPE_1_PLAN){
-                    $start_date = $pay_time_string;
-                    $end_date = $next_billing_time;
+                    //更新用户SaaS资产信息
+                    $remain_service = new UserRemainService();
+                    $total_files = Goods::getTotalFilesByGoods($order_goods->goods_id);
+                    \Log::info('支付成功更新资产信息', ['order_id'=>$order->id, 'user_id'=>$user->id, 'total_files'=>$total_files, 'package_type'=>$order_goods->package_type]);
+
+                    //获取套餐有效期
+                    $start_date = $end_date = null;
+                    if($order_goods->package_type == OrderGoods::PACKAGE_TYPE_1_PLAN){
+                        $start_date = $pay_time_string;
+                        $end_date = $next_billing_time;
+                    }
+
+                    $remain_service->resetRemain($user->id, $user->email, $total_files, $order_goods->package_type, BackGroundUserRemain::STATUS_1_ACTIVE, BackGroundUserRemain::OPERATE_TYPE_1_ADD, $start_date, $end_date);
+
+                    DB::commit();
+                    \Log::info('订单支付成功回调处理成功', ['third_trade_id'=>$order->third_trade_no]);
+
+                    //发送支付成功邮件
+                    $goods = OrderGoods::find($order_goods->goods_id);
+                    $combo = Goodsclassification::getComboById($goods->level1);
+                    $this->sendPayEmail('API购买成功', $order->order_no, $order->pay_time, $order->price, $combo, $user);
+
+                    $result = ['start_date'=>$start_date, 'end_date'=>$end_date];
+                }catch (\Exception $e){
+                    DB::rollBack();
+                    \Log::error('订单支付成功回调处理失败', ['third_trade_id'=>$order->third_trade_no, 'message'=>$e->getMessage(), 'line'=>$e->getLine(), 'file'=>$e->getFile()]);
                 }
-
-                $remain_service->resetRemain($user->id, $user->email, $total_files, $order_goods->package_type, BackGroundUserRemain::STATUS_1_ACTIVE, BackGroundUserRemain::OPERATE_TYPE_1_ADD, $start_date, $end_date);
-
-                DB::commit();
-                \Log::info('订单支付成功回调处理成功', ['third_trade_id'=>$order->third_trade_no]);
-            }catch (\Exception $e){
-                DB::rollBack();
-                \Log::error('订单支付成功回调处理失败', ['third_trade_id'=>$order->third_trade_no, 'message'=>$e->getMessage(), 'line'=>$e->getLine(), 'file'=>$e->getFile()]);
-
-                return false;
             }
 
-            //发送支付成功邮件
-            $goods = OrderGoods::find($order_goods->goods_id);
-            $combo = Goodsclassification::getComboById($goods->level1);
-            $this->sendPayEmail('API购买成功', $order->order_no, $order->pay_time, $order->price, $combo, $user);
+            //释放锁
+            $lock->release();
         }
 
-        return true;
+        return $result;
     }
 
     /**
      * 订阅周期扣款成功
-     * @param Order $order
+     * @param $third_trade_no
      * @param $next_billing_time
      * @return bool
      */
-    public function deductionSuccess(Order $order, $next_billing_time){
+    public function deductionSuccess($third_trade_no, $next_billing_time){
+        $order = Order::getByTradeNo($third_trade_no);
         $user = User::find($order->user_id);
 
         //更新下次扣款时间
@@ -344,10 +356,11 @@ class SaaSOrderService
 
     /**
      * 订阅周期扣款失败
-     * @param Order $order
+     * @param  $third_trade_no
      * @return bool
      */
-    public function deductionFailed(Order $order){
+    public function deductionFailed($third_trade_no){
+        $order = Order::getByTradeNo($third_trade_no);
         $user = User::find($order->user_id);
 
         if($order->status == OrderGoods::STATUS_1_PAID){
@@ -386,10 +399,11 @@ class SaaSOrderService
 
     /**
      * 取消订阅
-     * @param Order $order
+     * @param  $third_trade_no
      * @return bool
      */
-    public function cancelPlan(Order $order){
+    public function cancelPlan($third_trade_no){
+        $order = Order::getByTradeNo($third_trade_no);
         if($order->status == OrderGoods::STATUS_1_PAID){
             try{
                 DB::beginTransaction();
@@ -405,7 +419,6 @@ class SaaSOrderService
                 //新增订阅取消记录
                 //获取处理时间
                 \Log::info('取消订阅回调增加待处理的取消订阅记录', ['order_id'=>$order->id]);
-
 
                 $next_billing_time = $order_goods->next_billing_time;
                 $reset_date = Carbon::parse($next_billing_time)->addMonthsNoOverflow(1)->addDay()->format('Y-m-d');
