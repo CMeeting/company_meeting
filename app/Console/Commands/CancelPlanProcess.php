@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Models\BackGroundUserRemain;
+use App\Models\Goods;
 use App\Models\OrderGoods;
 use App\Models\OrderGoodsCancel;
 use App\Models\User;
@@ -47,13 +48,14 @@ class CancelPlanProcess extends Command
             ->leftJoin('users', 'orders_goods.user_id', '=', 'users.id')
             ->where('order_goods_cancel.status', OrderGoodsCancel::STATUS_1_UNPROCESSED)
             ->where('order_goods_cancel.reset_date', $date)
-            ->select(['users.id', 'users.email', 'orders_goods.package_type'])
+            ->select(['users.id', 'users.email', 'orders_goods.package_type', 'orders_goods.goods_id'])
             ->get();
 
         foreach ($orders as $order){
             //取消订阅的用户修改资产为0
             $remain_service = new UserRemainService();
-            $remain_service->resetRemain($order['id'], $order['email'], 0, $order['package_type'], BackGroundUserRemain::STATUS_2_INACTIVE, BackGroundUserRemain::OPERATE_TYPE_3_CANCEL);
+            $total_files = Goods::getTotalFilesByGoods($order['goods_id']);
+            $remain_service->resetRemain($order['id'], $order['email'], $total_files, $order['package_type'], BackGroundUserRemain::STATUS_2_INACTIVE, BackGroundUserRemain::OPERATE_TYPE_3_CANCEL);
         }
 
         return;

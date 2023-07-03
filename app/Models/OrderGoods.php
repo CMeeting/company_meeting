@@ -143,4 +143,18 @@ class OrderGoods extends Model
             ->where('order_no', $order_no)
             ->first();
     }
+
+    /**
+     * SaaS 判断用户是否存在订阅中的订单
+     * @param $user_id
+     * @return bool
+     */
+    public static function existsSubscriptionPlan($user_id){
+        return OrderGoods::query()
+            ->where('details_type', OrderGoods::DETAILS_TYPE_3_SAAS)
+            ->where('user_id', $user_id)
+            ->where('package_type', OrderGoods::PACKAGE_TYPE_1_PLAN)
+            ->where('status', OrderGoods::STATUS_1_PAID)
+            ->exists();
+    }
 }

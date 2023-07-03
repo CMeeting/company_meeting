@@ -84,8 +84,7 @@ class SaaSOrderController extends Controller
             return Response::json(['code'=>401, 'message'=>'Unauthorized']);
         }
 
-        $orderService = new SaaSOrderService();
-        $order = $orderService->getByOrderNo($order_no);
+        $order = Order::getByOrderNo($order_no);
 
         if(!$order instanceof Order){
             return Response::json(['code'=>501, 'message'=>'订单不存在', 'data'=>[]]);
@@ -95,8 +94,8 @@ class SaaSOrderController extends Controller
         if($order->status == OrderGoods::STATUS_1_PAID){
             $order_goods = OrderGoods::getByOrderNo($order_no);
             if($order_goods->package_type == OrderGoods::PACKAGE_TYPE_1_PLAN){
-                $start_date = Carbon::parse($order_goods->pay_time)->format('Y-m-d');
-                $end_date = Carbon::parse($order_goods->next_billing_time)->format('Y-m-d');
+                $start_date = Carbon::parse($order_goods->pay_time)->format('Y/m/d');
+                $end_date = Carbon::parse($order_goods->next_billing_time)->format('Y/m/d');
             }
             return Response::json(['code'=>200, 'message'=>'success', 'data'=>['order_no'=>$order_no, 'status'=>$order->status, 'start_date'=>$start_date, 'end_date'=>$end_date]]);
         }
@@ -112,6 +111,7 @@ class SaaSOrderController extends Controller
             if($result['code'] == 200){
                 //支付成功
                 if($result['data']['status'] == 'APPROVED' || $result['data']['status'] == 'ACTIVE'){
+                    $orderService = new SaaSOrderService();
                     $order_result = $orderService->completeOrder($order->third_trade_no, $result['data']['next_billing_time']);
                     if(!empty($order_result)){
                         $status = OrderGoods::STATUS_1_PAID;
@@ -206,6 +206,10 @@ class SaaSOrderController extends Controller
      */
     public function verifySubOrGoods(Request $request){
         $user = UserService::getCurrentUser($request);
+        if(!$user instanceof User){
+            return Response::json(['code'=>401, 'message'=>'Unauthorized']);
+        }
+
         $goods_id = $request->input('goods_id');
         $verify_sub = $request->input('verify_sub', false);
 

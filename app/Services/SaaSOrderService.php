@@ -19,9 +19,7 @@ use Cache;
 use Carbon\Carbon;
 use DB;
 use Exception;
-use Illuminate\Http\Request;
 use Log;
-use function foo\func;
 
 class SaaSOrderService
 {
@@ -150,7 +148,7 @@ class SaaSOrderService
             return ['code'=>500, 'message'=>'Annually有效期必须大于12个月'];
         }
 
-        if(strtolower($combo) != Goods::COMBO_PACKAGE && $this->existsSubscriptionPlan($user->id)){
+        if(strtolower($combo) != Goods::COMBO_PACKAGE && OrderGoods::existsSubscriptionPlan($user->id)){
             return ['code'=>500, 'message'=>'该邮箱已存在订阅中订单，不能重复创建'];
         }
 
@@ -175,15 +173,20 @@ class SaaSOrderService
 
             //新增子订单
             $order_goods_no = $this->getOrderGoodsNum();
-            if(strtolower($combo) == Goods::COMBO_PACKAGE){
-                $package_type = OrderGoods::PACKAGE_TYPE_2_PACKAGE;
-            }else{
-                $package_type = OrderGoods::PACKAGE_TYPE_1_PLAN;
-                if($combo == Goods::COMBO_MONTHLY){
+            switch ($combo){
+                case Goods::COMBO_PACKAGE:
+                    $package_type = OrderGoods::PACKAGE_TYPE_2_PACKAGE;
+                    break;
+                case Goods::COMBO_MONTHLY:
+                    $package_type = OrderGoods::PACKAGE_TYPE_1_PLAN;
                     $cycle = OrderGoods::CYCLE_1_MONTH;
-                }elseif($combo == Goods::COMBO_ANNUALLY){
+                    break;
+                case Goods::COMBO_ANNUALLY:
+                    $package_type = OrderGoods::PACKAGE_TYPE_1_PLAN;
                     $cycle = OrderGoods::CYCLE_2_YEAR;
-                }
+                    break;
+                default:
+                    break;
             }
             OrderGoods::add($order_id, $order_no, $order_goods_no, $pay_type, $status, $type, $details_type, $price, $user->id, $goods->id, $package_type, $pay_years, $special_assets);
 
@@ -215,25 +218,11 @@ class SaaSOrderService
     }
 
     /**
-     * SaaS 判断用户是否存在订阅中的订单
-     * @param $user_id
-     * @return bool
-     */
-    public function existsSubscriptionPlan($user_id){
-        return OrderGoods::query()
-            ->where('details_type', OrderGoods::DETAILS_TYPE_3_SAAS)
-            ->where('user_id', $user_id)
-            ->where('package_type', OrderGoods::PACKAGE_TYPE_1_PLAN)
-            ->where('status', OrderGoods::STATUS_1_PAID)
-            ->exists();
-    }
-
-    /**
      * 生成子订单编号
      * @return string
      */
     public function getOrderGoodsNum(){
-        return chr(rand(65, 90)) .chr(rand(65, 90)) .chr(rand(65, 90)). time();
+        return chr(rand(65, 90)) .chr(rand(65, 90)) .chr(rand(65, 90)). uniqid();
     }
 
     /**
@@ -399,7 +388,8 @@ class SaaSOrderService
                 //更新用户SaaS资产信息
                 Log::info('订阅周期扣款失败更新资产信息', ['order_id'=>$order->id]);
                 $remain_service = new UserRemainService();
-                $remain_service->resetRemain($user->id, $user->email, 0, $order_goods->package_type, BackGroundUserRemain::STATUS_2_INACTIVE, BackGroundUserRemain::OPERATE_TYPE_3_CANCEL);
+                $total_files = Goods::getTotalFilesByGoods($order_goods->goods_id);
+                $remain_service->resetRemain($user->id, $user->email, $total_files, $order_goods->package_type, BackGroundUserRemain::STATUS_2_INACTIVE, BackGroundUserRemain::OPERATE_TYPE_3_CANCEL);
 
                 //新增订阅取消记录
                 Log::info('订阅周期扣款失败增加已处理取消订阅记录', ['order_id'=>$order->id]);
@@ -574,7 +564,7 @@ class SaaSOrderService
         }
 
         //需要验证用户是否存在订阅
-        if($verify_sub && $combo != Goods::COMBO_PACKAGE && $this->existsSubscriptionPlan($user_id)){
+        if($verify_sub && $combo != Goods::COMBO_PACKAGE && OrderGoods::existsSubscriptionPlan($user_id)){
             return self::INVALID_4_SUB;
         }
 
