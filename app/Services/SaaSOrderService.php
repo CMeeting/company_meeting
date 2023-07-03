@@ -15,9 +15,12 @@ use App\Models\OrderCashFlow;
 use App\Models\OrderGoods;
 use App\Models\OrderGoodsCancel;
 use App\Models\User;
+use Cache;
 use Carbon\Carbon;
 use DB;
+use Exception;
 use Illuminate\Http\Request;
+use Log;
 use function foo\func;
 
 class SaaSOrderService
@@ -50,10 +53,10 @@ class SaaSOrderService
         $combo = array_get($classify, "$combo_id.title");
 
         $cycle = $pay_years = null;
-        if($combo != 'Package'){
+        if($combo != Goods::COMBO_PACKAGE){
             $package_type = OrderGoods::PACKAGE_TYPE_1_PLAN;
 
-            if($combo == 'Monthly'){
+            if($combo == Goods::COMBO_MONTHLY){
                 $cycle = OrderGoods::CYCLE_1_MONTH;
             }else{
                 $cycle = OrderGoods::CYCLE_2_YEAR;
@@ -64,48 +67,55 @@ class SaaSOrderService
             $package_type = OrderGoods::PACKAGE_TYPE_2_PACKAGE;
         }
 
-        //新增总订单
-        $order = Order::add($order_no, $pay_type, $status, $type, $details_type, $goods->price, $user->id, 1);
+        try{
+            DB::beginTransaction();
+            //新增总订单
+            $order = Order::add($order_no, $pay_type, $status, $type, $details_type, $goods->price, $user->id, 1);
 
-        //新增子订单
-        $order_goods_no = $this->getOrderGoodsNum();
-        $order_goods = OrderGoods::add($order->id, $order_no, $order_goods_no, $pay_type, $status, $type, $details_type, $goods->price, $user->id, $goods->id, $package_type, $pay_years);
+            //新增子订单
+            $order_goods_no = $this->getOrderGoodsNum();
+            $order_goods = OrderGoods::add($order->id, $order_no, $order_goods_no, $pay_type, $status, $type, $details_type, $goods->price, $user->id, $goods->id, $package_type, $pay_years);
 
-        //订单未支付三小时后关闭
-        dispatch(new CloseOrder($order->id))->delay(Carbon::now()->addHours(3));
+            DB::commit();
+            //订单未支付三小时后关闭
+            dispatch(new CloseOrder($order->id))->delay(Carbon::now()->addHours(3));
 
-        //调用支付中心生成支付链接
-        $payService = new PayCenterService();
+            //调用支付中心生成支付链接
+            $payService = new PayCenterService();
 
-        if($package_type == OrderGoods::PACKAGE_TYPE_2_PACKAGE){
-            $result = $payService->createPackageOrder($order_no, $goods->price);
-        }else{
-            $result = $payService->createPlanOrder($order_no, $goods->price, $cycle);
+            if($package_type == OrderGoods::PACKAGE_TYPE_2_PACKAGE){
+                $result = $payService->createPackageOrder($order_no, $goods->price);
+            }else{
+                $result = $payService->createPlanOrder($order_no, $goods->price, $cycle);
+            }
+
+            //接口正常返回结果
+            if(is_array($result)){
+                $code = $result['code'];
+            }else{
+                $code = $result->code;
+            }
+
+            //订单创建成功
+            if($code == 200) {
+                $data = $result->data;
+                $third_trade_no = $data->id;
+                $pay_url = $data->payHref;
+                $order->third_trade_no = $third_trade_no;
+                $order->pay_url = $pay_url;
+                $order->save();
+
+                $order_goods->third_trade_no = $third_trade_no;
+                $order_goods->save();
+
+                return ['code'=>200, 'data'=>['order_no'=>$order->order_no, 'pay_url'=>$pay_url, 'third_trade_no'=>$third_trade_no]];
+            }
+        }catch (Exception $e){
+            Log::info('创建订单失败', ['user'=>$user->email, 'info'=>$e->getTrace()]);
+            DB::rollBack();
         }
 
-        //接口正常返回结果
-        if(is_array($result)){
-            $code = $result['code'];
-        }else{
-            $code = $result->code;
-        }
-
-        //订单创建成功
-        if($code == 200){
-            $data = $result->data;
-            $third_trade_no = $data->id;
-            $pay_url = $data->payHref;
-            $order->third_trade_no = $third_trade_no;
-            $order->pay_url = $pay_url;
-            $order->save();
-
-            $order_goods->third_trade_no = $third_trade_no;
-            $order_goods->save();
-
-            return ['code'=>200, 'data'=>['order_no'=>$order->order_no, 'pay_url'=>$pay_url, 'third_trade_no'=>$third_trade_no]];
-        }else{
-            return ['code'=>500, 'message'=>'创建订单失败'];
-        }
+        return ['code'=>500, 'message'=>'创建订单失败'];
     }
 
     /**
@@ -136,11 +146,11 @@ class SaaSOrderService
 
         //实际的单位是月份
         $pay_years = $data['pay_years'] ? $data['pay_years'] : 0;
-        if($combo == 'Annually' && $data['pay_years'] < 12){
+        if($combo == Goods::COMBO_ANNUALLY && $data['pay_years'] < 12){
             return ['code'=>500, 'message'=>'Annually有效期必须大于12个月'];
         }
 
-        if(strtolower($combo) != 'package' && $this->existsSubscriptionPlan($user->id)){
+        if(strtolower($combo) != Goods::COMBO_PACKAGE && $this->existsSubscriptionPlan($user->id)){
             return ['code'=>500, 'message'=>'该邮箱已存在订阅中订单，不能重复创建'];
         }
 
@@ -165,10 +175,15 @@ class SaaSOrderService
 
             //新增子订单
             $order_goods_no = $this->getOrderGoodsNum();
-            if(strtolower($combo) == 'package'){
+            if(strtolower($combo) == Goods::COMBO_PACKAGE){
                 $package_type = OrderGoods::PACKAGE_TYPE_2_PACKAGE;
             }else{
                 $package_type = OrderGoods::PACKAGE_TYPE_1_PLAN;
+                if($combo == Goods::COMBO_MONTHLY){
+                    $cycle = OrderGoods::CYCLE_1_MONTH;
+                }elseif($combo == Goods::COMBO_ANNUALLY){
+                    $cycle = OrderGoods::CYCLE_2_YEAR;
+                }
             }
             OrderGoods::add($order_id, $order_no, $order_goods_no, $pay_type, $status, $type, $details_type, $price, $user->id, $goods->id, $package_type, $pay_years, $special_assets);
 
@@ -188,14 +203,13 @@ class SaaSOrderService
             $start_date_string = (clone $start_date)->format('Y-m-d H:i:s');
             $end_date = $start_date->addMonthsNoOverflow($pay_years)->format('Y-m-d H:i:s');
 
-            $remain_service->resetRemain($user->id, $user->email, $total_files, $package_type, BackGroundUserRemain::STATUS_1_ACTIVE, BackGroundUserRemain::OPERATE_TYPE_1_ADD, $start_date_string, $end_date);
+            $remain_service->resetRemain($user->id, $user->email, $total_files, $package_type, BackGroundUserRemain::STATUS_1_ACTIVE, BackGroundUserRemain::OPERATE_TYPE_1_ADD, $start_date_string, $end_date, $cycle ?? null);
 
             DB::commit();
-        }catch (\Exception $e){
+        }catch (Exception $e){
             DB::rollBack();
             return ['code'=>500, 'message'=>'创建失败', 'error'=>$e->getTrace()];
         }
-
 
         return ['code'=>200, 'message'=>'创建成功'];
     }
@@ -242,9 +256,9 @@ class SaaSOrderService
     public function completeOrder($third_trade_no, $next_billing_time = null){
         $lock = 'webhook:' . $third_trade_no;
         $order = Order::getByTradeNo($third_trade_no);
-        $lock = \Cache::lock($lock, 60*60);
-
         $result = [];
+
+        $lock = Cache::lock($lock, 60*60);
         if ($lock->get()) {
             if($order->status == OrderGoods::STATUS_0_UNPAID){
                 $order_goods = OrderGoods::getByOrderId($order->id);
@@ -267,7 +281,7 @@ class SaaSOrderService
                     $order_goods->save();
 
                     //更新流水信息
-                    \Log::info('支付成功更新流水信息', ['order_id'=>$order->id]);
+                    Log::info('支付成功更新流水信息', ['order_id'=>$order->id]);
                     OrderCashFlow::add($order->id, $order->pay_type, $order_goods->package_type, $order->price, 0, 0, $order->price, $order->third_trade_no, '', OrderCashFlow::CURRENCY_1_USD);
 
                     //更新用户类型
@@ -278,7 +292,7 @@ class SaaSOrderService
                     //更新用户SaaS资产信息
                     $remain_service = new UserRemainService();
                     $total_files = Goods::getTotalFilesByGoods($order_goods->goods_id);
-                    \Log::info('支付成功更新资产信息', ['order_id'=>$order->id, 'user_id'=>$user->id, 'total_files'=>$total_files, 'package_type'=>$order_goods->package_type]);
+                    Log::info('支付成功更新资产信息', ['order_id'=>$order->id, 'user_id'=>$user->id, 'total_files'=>$total_files, 'package_type'=>$order_goods->package_type]);
 
                     //获取套餐有效期
                     $start_date = $end_date = null;
@@ -287,20 +301,28 @@ class SaaSOrderService
                         $end_date = $next_billing_time;
                     }
 
-                    $remain_service->resetRemain($user->id, $user->email, $total_files, $order_goods->package_type, BackGroundUserRemain::STATUS_1_ACTIVE, BackGroundUserRemain::OPERATE_TYPE_1_ADD, $start_date, $end_date);
+                    //获取周期
+                    $cycle = null;
+                    $goods = Goods::query()->find($order_goods->goods_id);
+                    $combo = Goodsclassification::getComboById($goods->level1);
+                    if($combo == Goods::COMBO_MONTHLY){
+                        $cycle = OrderGoods::CYCLE_1_MONTH;
+                    }elseif ($combo == Goods::COMBO_ANNUALLY){
+                        $cycle = OrderGoods::CYCLE_2_YEAR;
+                    }
+
+                    $remain_service->resetRemain($user->id, $user->email, $total_files, $order_goods->package_type, BackGroundUserRemain::STATUS_1_ACTIVE, BackGroundUserRemain::OPERATE_TYPE_1_ADD, $start_date, $end_date, $cycle);
 
                     DB::commit();
-                    \Log::info('订单支付成功回调处理成功', ['third_trade_id'=>$order->third_trade_no]);
+                    Log::info('订单支付成功回调处理成功', ['third_trade_id'=>$order->third_trade_no]);
 
                     //发送支付成功邮件
-                    $goods = OrderGoods::find($order_goods->goods_id);
-                    $combo = Goodsclassification::getComboById($goods->level1);
                     $this->sendPayEmail('API购买成功', $order->order_no, $order->pay_time, $order->price, $combo, $user);
 
                     $result = ['start_date'=>$start_date, 'end_date'=>$end_date];
-                }catch (\Exception $e){
+                }catch (Exception $e){
                     DB::rollBack();
-                    \Log::error('订单支付成功回调处理失败', ['third_trade_id'=>$order->third_trade_no, 'message'=>$e->getMessage(), 'line'=>$e->getLine(), 'file'=>$e->getFile()]);
+                    Log::error('订单支付成功回调处理失败', ['third_trade_id'=>$order->third_trade_no, 'message'=>$e->getMessage(), 'line'=>$e->getLine(), 'file'=>$e->getFile()]);
                 }
             }
 
@@ -327,26 +349,26 @@ class SaaSOrderService
             $order_goods = OrderGoods::getByOrderId($order->id);
             $combo = Goodsclassification::getComboById($order_goods->level1);
             //年订阅更新有效期
-            if($combo == 'Annually'){
+            if($combo == Goods::COMBO_ANNUALLY){
                 $order_goods->pay_years += 12;
             }
             $order_goods->next_billing_time = $next_billing_time;
             $order_goods->save();
 
             //更新流水信息
-            \Log::info('订阅扣款成功更新流水信息', ['order_id'=>$order->id]);
+            Log::info('订阅扣款成功更新流水信息', ['order_id'=>$order->id]);
             OrderCashFlow::add($order->id, $order->pay_type, $order_goods->package_type, $order->price, 0, 0, $order->price, $order->third_trade_no, '', OrderCashFlow::CURRENCY_1_USD);
 
             //更新用户SaaS资产信息
             $remain_service = new UserRemainService();
             $total_files = Goods::getTotalFilesByGoods($order_goods->goods_id);
-            \Log::info('订阅扣款成功更新资产信息', ['order_id'=>$order->id, 'user_id'=>$user->id, 'total_files'=>$total_files, 'package_type'=>$order_goods->package_type]);
+            Log::info('订阅扣款成功更新资产信息', ['order_id'=>$order->id, 'user_id'=>$user->id, 'total_files'=>$total_files, 'package_type'=>$order_goods->package_type]);
             $start_date = Carbon::now()->format('Y-m-d H:i:s');
             $remain_service->resetRemain($user->id, $user->email, $total_files, $order_goods->package_type, BackGroundUserRemain::STATUS_1_ACTIVE, BackGroundUserRemain::OPERATE_TYPE_2_RESET, $start_date, $next_billing_time);
             DB::commit();
-        }catch (\Exception $e){
+        }catch (Exception $e){
             DB::rollBack();
-            \Log::error('订阅扣款成功回调处理失败', ['third_trade_id'=>$order->third_trade_no, 'message'=>$e->getMessage(), 'line'=>$e->getLine(), 'file'=>$e->getFile()]);
+            Log::error('订阅扣款成功回调处理失败', ['third_trade_id'=>$order->third_trade_no, 'message'=>$e->getMessage(), 'line'=>$e->getLine(), 'file'=>$e->getFile()]);
 
             return false;
         }
@@ -375,20 +397,20 @@ class SaaSOrderService
                 $order_goods->save();
 
                 //更新用户SaaS资产信息
-                \Log::info('订阅周期扣款失败更新资产信息', ['order_id'=>$order->id]);
+                Log::info('订阅周期扣款失败更新资产信息', ['order_id'=>$order->id]);
                 $remain_service = new UserRemainService();
                 $remain_service->resetRemain($user->id, $user->email, 0, $order_goods->package_type, BackGroundUserRemain::STATUS_2_INACTIVE, BackGroundUserRemain::OPERATE_TYPE_3_CANCEL);
 
                 //新增订阅取消记录
-                \Log::info('订阅周期扣款失败增加已处理取消订阅记录', ['order_id'=>$order->id]);
+                Log::info('订阅周期扣款失败增加已处理取消订阅记录', ['order_id'=>$order->id]);
                 $reset_date = date('Y-m-d');
                 $remark = '扣款失败回调事件';
                 OrderGoodsCancel::add($order_goods->id, OrderGoodsCancel::STATUS_2_PROCESSED, $reset_date, $remark);
 
                 DB::commit();
-            }catch (\Exception $e){
+            }catch (Exception $e){
                 DB::rollBack();
-                \Log::error('订阅周期扣款失败回调处理失败', ['third_trade_id'=>$order->third_trade_no, 'message'=>$e->getMessage(), 'line'=>$e->getLine(), 'file'=>$e->getFile()]);
+                Log::error('订阅周期扣款失败回调处理失败', ['third_trade_id'=>$order->third_trade_no, 'message'=>$e->getMessage(), 'line'=>$e->getLine(), 'file'=>$e->getFile()]);
 
                 return false;
             }
@@ -418,15 +440,15 @@ class SaaSOrderService
 
                 //新增订阅取消记录
                 //获取处理时间
-                \Log::info('取消订阅回调增加待处理的取消订阅记录', ['order_id'=>$order->id]);
+                Log::info('取消订阅回调增加待处理的取消订阅记录', ['order_id'=>$order->id]);
 
                 $next_billing_time = $order_goods->next_billing_time;
                 $reset_date = Carbon::parse($next_billing_time)->addMonthsNoOverflow(1)->addDay()->format('Y-m-d');
                 $remark = '取消订阅回调事件';
                 OrderGoodsCancel::add($order_goods->id, OrderGoodsCancel::STATUS_1_UNPROCESSED, $reset_date, $remark);
-            }catch (\Exception $e){
+            }catch (Exception $e){
                 DB::rollBack();
-                \Log::error('取消订阅回调处理失败', ['third_trade_id'=>$order->third_trade_no, 'message'=>$e->getMessage(), 'line'=>$e->getLine(), 'file'=>$e->getFile()]);
+                Log::error('取消订阅回调处理失败', ['third_trade_id'=>$order->third_trade_no, 'message'=>$e->getMessage(), 'line'=>$e->getLine(), 'file'=>$e->getFile()]);
 
                 return false;
             }
@@ -496,8 +518,8 @@ class SaaSOrderService
      */
     public function addOrderCache($user_id, $goods_id, $data){
         $user = User::find($user_id);
-        $key = md5($user->email . '-' . $goods_id);
-        \Cache::put($key, $data, 3 * 60);
+        $key = md5($user->email . '-' . $user_id . '-' . $goods_id);
+        Cache::put($key, $data, 3 * 60);
     }
 
     /**
@@ -508,8 +530,8 @@ class SaaSOrderService
      */
     public function getOrderCache($user_id, $goods_id){
         $user = User::find($user_id);
-        $key = md5($user->email . '-' . $goods_id);
-        return \Cache::get($key);
+        $key = md5($user->email . '-' . $user_id . '-' . $goods_id);
+        return Cache::get($key);
     }
 
     /**
@@ -520,8 +542,8 @@ class SaaSOrderService
      */
     public function delOrderCache($user_id, $goods_id){
         $user = User::find($user_id);
-        $key = md5($user->email . '-' . $goods_id);
-        return \Cache::forget($key);
+        $key = md5($user->email . '-' . $user_id . '-' . $goods_id);
+        return Cache::forget($key);
     }
 
     /**
@@ -552,7 +574,7 @@ class SaaSOrderService
         }
 
         //需要验证用户是否存在订阅
-        if($verify_sub && $combo != 'Package' && $this->existsSubscriptionPlan($user_id)){
+        if($verify_sub && $combo != Goods::COMBO_PACKAGE && $this->existsSubscriptionPlan($user_id)){
             return self::INVALID_4_SUB;
         }
 

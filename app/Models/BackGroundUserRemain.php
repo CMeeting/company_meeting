@@ -23,7 +23,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property    $update_by
  * @property    $start_date
  * @property    $end_date
- * @property    $change_num     修改数量，数据库没有这个字段，方便代码调用添加
+ * @property    $cycle
  */
 
 class BackGroundUserRemain extends Model
@@ -47,7 +47,7 @@ class BackGroundUserRemain extends Model
             ->first();
     }
 
-    public static function add($tenant_id, $user_id, $asset_type, $total_files, $status, $start_date, $end_date){
+    public static function add($tenant_id, $user_id, $asset_type, $total_files, $status, $start_date, $end_date, $cycle){
         $model = new BackGroundUserRemain();
         $model->tenant_id = $tenant_id;
         $model->user_id = $user_id;
@@ -56,6 +56,7 @@ class BackGroundUserRemain extends Model
         $model->status = $status;
         $model->start_date = $start_date;
         $model->end_date = $end_date;
+        $model->cycle = $cycle;
         $model->save();
 
         return $model;
@@ -68,9 +69,10 @@ class BackGroundUserRemain extends Model
      * @param $type
      * @param null $start_date
      * @param null $end_date
+     * @param $cycle
      * @return BackGroundUserRemain
      */
-    public static function updateAssetType(BackGroundUserRemain $model, $total_files, $type, $start_date = null, $end_date = null){
+    public static function updateAssetType(BackGroundUserRemain $model, $total_files, $type, $start_date = null, $end_date = null, $cycle = null){
         if($model->asset_type == OrderGoods::PACKAGE_TYPE_2_PACKAGE){
             //package 累加资产
             $model->total_files += $total_files;
@@ -97,6 +99,10 @@ class BackGroundUserRemain extends Model
 
         if($end_date != null){
             $model->end_date = $end_date;
+        }
+
+        if($cycle != null){
+            $model->cycle = $cycle;
         }
 
         $model->save();

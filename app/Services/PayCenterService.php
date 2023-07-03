@@ -58,8 +58,8 @@ class PayCenterService
         $body = [
             'orderNum' => $order_no,
             'currency' => 'USD',
-            'price' => 1,
-            'cycle' => 9,
+            'price' => $price,
+            'cycle' => $cycle,
             'returnUrl' => $serverName . '?success=true',
             'cancelUrl' => $serverName . '?success=false',
             'orderGoodsList' => [

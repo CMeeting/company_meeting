@@ -4,6 +4,7 @@
 namespace App\Services;
 
 
+use App\Models\Goods;
 use App\Models\User;
 use App\Models\UserAssets;
 
@@ -47,7 +48,7 @@ class UserAssetsService
      * @return int
      */
     public function getTypeByCombo($combo){
-        if($combo == 'Monthly' || $combo == 'Annually'){
+        if($combo == Goods::COMBO_MONTHLY || $combo == Goods::COMBO_ANNUALLY){
             return UserAssets::TYPE_1_SUB;
         }else{
             return UserAssets::TYPE_2_PACKAGE;

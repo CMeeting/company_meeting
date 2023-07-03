@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Models\BackGroundUserRemain;
+use App\Models\Goods;
 use App\Models\Order;
 use App\Models\OrderGoods;
 use App\Services\OrdersService;
@@ -65,7 +66,7 @@ class UpdateUserRemain extends Command
             $combo = $classification[$order_goods['level1']] ?? '';
             $gear = $classification[$order_goods['level2']] ?? '';
             //在线购买只有年订阅定时任务重置资产，月订阅扣款成功后才重置资产
-            if($order_goods['type'] == OrderGoods::TYPE_2_BUY && $combo != 'Annually'){
+            if($order_goods['type'] == OrderGoods::TYPE_2_BUY && $combo != Goods::COMBO_ANNUALLY){
                 continue;
             }
 

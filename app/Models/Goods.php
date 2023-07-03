@@ -44,6 +44,10 @@ class Goods extends Model
     const IS_SAAS_0_NO = 0;
     const IS_SAAS_1_YES = 1;
 
+    const COMBO_MONTHLY = 'Monthly';
+    const COMBO_ANNUALLY = 'Annually';
+    const COMBO_PACKAGE = 'Package';
+
     public static function getGoods(){
         return Goods::query()
             ->where('is_saas', 1)
