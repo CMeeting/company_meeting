@@ -55,7 +55,9 @@ class UserRemainService
 
         //推送资产到SaaS
         $mqService = new RabbitMQService();
-        $mqService->sendMessage(['tenant_id'=>$backgroundUser->tenant_id, 'asset'=>$remain->total_files, 'assetType'=>$remain->asset_type, 'status'=>$remain->status]);
+        $message = ['tenant_id'=>$backgroundUser->tenant_id, 'asset'=>$remain->total_files, 'assetType'=>$remain->asset_type, 'status'=>$remain->status];
+        \Log::info('同步资产到SaaS', ['data'=>$message]);
+        $mqService->sendMessage($message);
     }
 
     /**
