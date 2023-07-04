@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 
 
 use App\Http\Controllers\Controller;
+use App\Models\Goods;
 use App\Models\Goodsclassification;
 use App\Models\Order;
 use App\Models\OrderGoods;
@@ -139,7 +140,7 @@ class SaaSOrderController extends Controller
         $order_goods = OrderGoods::getByOrderNo($order_no);
 
         $service = new SaaSOrderService();
-        $goods = OrderGoods::find($order_goods->goods_id);
+        $goods = Goods::query()->find($order_goods->goods_id);
         $combo = Goodsclassification::getComboById($goods->level1);
 
         $service->sendPayEmail('API购买失败', $order_no, $order->created_at, $order->price, $combo, $user);
