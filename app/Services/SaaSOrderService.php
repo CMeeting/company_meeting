@@ -436,6 +436,8 @@ class SaaSOrderService
                 $reset_date = Carbon::parse($next_billing_time)->addMonthsNoOverflow(1)->addDay()->format('Y-m-d');
                 $remark = '取消订阅回调事件';
                 OrderGoodsCancel::add($order_goods->id, OrderGoodsCancel::STATUS_1_UNPROCESSED, $reset_date, $remark);
+
+                DB::commit();
             }catch (Exception $e){
                 DB::rollBack();
                 Log::error('取消订阅回调处理失败', ['third_trade_id'=>$order->third_trade_no, 'message'=>$e->getMessage(), 'line'=>$e->getLine(), 'file'=>$e->getFile()]);

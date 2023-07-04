@@ -73,6 +73,9 @@ class BackGroundUserRemain extends Model
      * @return BackGroundUserRemain
      */
     public static function updateAssetType(BackGroundUserRemain $model, $total_files, $type, $start_date = null, $end_date = null, $cycle = null){
+        //默认激活资产
+        $model->status = BackGroundUserRemain::STATUS_1_ACTIVE;
+
         if($model->asset_type == OrderGoods::PACKAGE_TYPE_2_PACKAGE){
             //package 累加资产
             $model->total_files += $total_files;

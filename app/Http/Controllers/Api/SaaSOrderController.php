@@ -177,18 +177,20 @@ class SaaSOrderController extends Controller
                     });
                     break;
                 case  OrderGoods::EVENT_4_DEDUCTION_FAILED:
-                    Cache::lock($lock)->get(function () use($orderService, $third_trade_no, $next_billing_time){
+                    Cache::lock($lock)->get(function () use($orderService, $third_trade_no){
                         $orderService->deductionFailed($third_trade_no);
                     });
                     break;
                 case OrderGoods::EVENT_5_PLAN_CANCEL:
-                    Cache::lock($lock)->get(function () use($orderService, $third_trade_no, $next_billing_time){
+                    Cache::lock($lock)->get(function () use($orderService, $third_trade_no){
                         $orderService->cancelPlan($third_trade_no);
                     });
                     break;
                 default:
                     break;
             }
+
+            return Response::json(['code'=>200, 'message'=>'success']);
         }catch (\Exception $e){
             Log::info('支付回调处理失败', ['event_type'=>$event_type, 'third_trade_id'=>$third_trade_no, 'error'=>$e->getTrace()]);
             //释放锁
@@ -196,8 +198,6 @@ class SaaSOrderController extends Controller
 
             return Response::json(['code'=>500, 'message'=>'system error']);
         }
-
-        return Response::json(['code'=>200, 'message'=>'success']);
     }
 
     /**

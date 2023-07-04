@@ -45,17 +45,24 @@ class UserRemainService
         if($type == BackGroundUserRemain::OPERATE_TYPE_1_ADD){
             BackGroundUserBalance::add($backgroundUser->id, $backgroundUser->tenant_id, $package_type, $total_files, BackGroundUserBalance::CHANGE_TYPE_1_RECHARGE);
         }elseif($type == BackGroundUserRemain::OPERATE_TYPE_2_RESET){
-            if(isset($balance_change) && !$balance_change){
+            if(isset($balance_change) && $balance_change != 0){
                 BackGroundUserBalance::add($backgroundUser->id, $backgroundUser->tenant_id, $package_type, $balance_change, BackGroundUserBalance::CHANGE_TYPE_2_USED);
             }
             BackGroundUserBalance::add($backgroundUser->id, $backgroundUser->tenant_id, $package_type, $total_files, BackGroundUserBalance::CHANGE_TYPE_1_RECHARGE);
-        }elseif($type == BackGroundUserRemain::OPERATE_TYPE_3_CANCEL && isset($balance_change) && !$balance_change){
+        }elseif($type == BackGroundUserRemain::OPERATE_TYPE_3_CANCEL && isset($balance_change) && $balance_change != 0){
             BackGroundUserBalance::add($backgroundUser->id, $backgroundUser->tenant_id, $package_type, $balance_change, BackGroundUserBalance::CHANGE_TYPE_2_USED);
         }
 
         //推送资产到SaaS
         $mqService = new RabbitMQService();
-        $message = ['tenant_id'=>$backgroundUser->tenant_id, 'asset'=>$remain->total_files, 'assetType'=>$remain->asset_type, 'status'=>$remain->status];
+        if($remain->asset_type == OrderGoods::PACKAGE_TYPE_1_PLAN){
+            //订阅推送实时的资产
+            $asset = $remain->total_files;
+        }else{
+            //package推送新增资产
+            $asset = $total_files;
+        }
+        $message = ['tenant_id'=>$backgroundUser->tenant_id, 'asset'=>$asset, 'assetType'=>$remain->asset_type, 'status'=>$remain->status];
         \Log::info('同步资产到SaaS', ['data'=>$message]);
         $mqService->sendMessage($message);
     }
