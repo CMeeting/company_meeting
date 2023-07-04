@@ -363,18 +363,8 @@ class OrderController
         $param = $request->all();
         Log::info('paypal支付重定向', [$param]);
 
-        //支付成功跳转前端地址
-        if(isset($param['success'])){
-            if($param['success'] == 'true'){
-                $payment_id = $request->input('paymentId');
-                $payer_id = $request->input('PayerID');
-                $paypal = new PaypalBiz();
-                $paypal->callBack($payment_id, $payer_id);
-                return \Response::json(['code'=>200, 'message'=>'用户支付成功']);
-            }else{
-                return \Response::json(['code'=>500, 'message'=>'用户取消支付']);
-            }
-        }
+        //TODO 支付成功跳转前端地址，目前采用的弹窗形式，不需要重定向，暂不做处理
+
 
         return \Response::json();
     }
