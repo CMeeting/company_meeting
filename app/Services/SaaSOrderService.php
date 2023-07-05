@@ -148,7 +148,7 @@ class SaaSOrderService
             return ['code'=>500, 'message'=>'Annually有效期必须大于12个月'];
         }
 
-        if(strtolower($combo) != Goods::COMBO_PACKAGE && OrderGoods::existsSubscriptionPlan($user->id)){
+        if($combo != Goods::COMBO_PACKAGE && OrderGoods::existsSubscriptionPlan($user->id)){
             return ['code'=>500, 'message'=>'该邮箱已存在订阅中订单，不能重复创建'];
         }
 
