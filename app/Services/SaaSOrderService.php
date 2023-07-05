@@ -433,7 +433,7 @@ class SaaSOrderService
                 Log::info('取消订阅回调增加待处理的取消订阅记录', ['order_id'=>$order->id]);
 
                 $next_billing_time = $order_goods->next_billing_time;
-                $reset_date = Carbon::parse($next_billing_time)->addMonthsNoOverflow(1)->addDay()->format('Y-m-d');
+                $reset_date = Carbon::parse($next_billing_time)->addDay()->format('Y-m-d');
                 $remark = '取消订阅回调事件';
                 OrderGoodsCancel::add($order_goods->id, OrderGoodsCancel::STATUS_1_UNPROCESSED, $reset_date, $remark);
 
