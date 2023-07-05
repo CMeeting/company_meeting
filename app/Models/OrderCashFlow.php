@@ -20,7 +20,7 @@ use Illuminate\Support\Str;
  * @property    $rate
  * @property    $real_price
  * @property    $trade_id
- * @property    $pay_id
+ * @property    $pay_id         //弃用
  * @property    $currency
  * @property    $invoice_num
  * @property    $invoice_url

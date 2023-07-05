@@ -13,7 +13,7 @@ use App\Models\Mailmagicboard;
 use App\Models\Order;
 use App\Models\OrderCashFlow;
 use App\Models\OrderGoods;
-use App\Models\OrderGoodsCancel;
+use App\Models\UserSubscriptionProcess;
 use App\Models\User;
 use Cache;
 use Carbon\Carbon;
@@ -270,7 +270,7 @@ class SaaSOrderService
                     $order_goods->save();
 
                     //更新流水信息
-                    Log::info('支付成功更新流水信息', ['order_id'=>$order->id]);
+                    Log::info('支付成功更新流水信息', ['third_trade_no'=>$third_trade_no]);
                     OrderCashFlow::add($order->id, $order->pay_type, $order_goods->package_type, $order->price, 0, 0, $order->price, $order->third_trade_no, '', OrderCashFlow::CURRENCY_1_USD);
 
                     //更新用户类型
@@ -336,6 +336,8 @@ class SaaSOrderService
         try{
             DB::beginTransaction();
             $order_goods = OrderGoods::getByOrderId($order->id);
+            $old_next_billing_time = $order_goods->next_billing_time;
+
             $combo = Goodsclassification::getComboById($order_goods->level1);
             //年订阅更新有效期
             if($combo == Goods::COMBO_ANNUALLY){
@@ -345,15 +347,13 @@ class SaaSOrderService
             $order_goods->save();
 
             //更新流水信息
-            Log::info('订阅扣款成功更新流水信息', ['order_id'=>$order->id]);
+            Log::info('订阅扣款成功更新流水信息', ['third_trade_no'=>$third_trade_no]);
             OrderCashFlow::add($order->id, $order->pay_type, $order_goods->package_type, $order->price, 0, 0, $order->price, $order->third_trade_no, '', OrderCashFlow::CURRENCY_1_USD);
 
-            //更新用户SaaS资产信息
-            $remain_service = new UserRemainService();
-            $total_files = Goods::getTotalFilesByGoods($order_goods->goods_id);
-            Log::info('订阅扣款成功更新资产信息', ['order_id'=>$order->id, 'user_id'=>$user->id, 'total_files'=>$total_files, 'package_type'=>$order_goods->package_type]);
-            $start_date = Carbon::now()->format('Y-m-d H:i:s');
-            $remain_service->resetRemain($user->id, $user->email, $total_files, $order_goods->package_type, BackGroundUserRemain::STATUS_1_ACTIVE, BackGroundUserRemain::OPERATE_TYPE_2_RESET, $start_date, $next_billing_time);
+            //增加用户扣款成功操作
+            $reset_date = Carbon::parse($old_next_billing_time)->addDay()->format('Y-m-d');
+            UserSubscriptionProcess::add($order_goods->id, $user->id, UserSubscriptionProcess::TYPE_1_DEDUCTED_SUCCESS, $reset_date);
+
             DB::commit();
         }catch (Exception $e){
             DB::rollBack();
@@ -385,17 +385,11 @@ class SaaSOrderService
                 $order_goods->status = OrderGoods::STATUS_5_UNSUBSCRIBE;
                 $order_goods->save();
 
-                //更新用户SaaS资产信息
-                Log::info('订阅周期扣款失败更新资产信息', ['order_id'=>$order->id]);
-                $remain_service = new UserRemainService();
-                $total_files = Goods::getTotalFilesByGoods($order_goods->goods_id);
-                $remain_service->resetRemain($user->id, $user->email, $total_files, $order_goods->package_type, BackGroundUserRemain::STATUS_2_INACTIVE, BackGroundUserRemain::OPERATE_TYPE_3_CANCEL);
-
-                //新增订阅取消记录
-                Log::info('订阅周期扣款失败增加已处理取消订阅记录', ['order_id'=>$order->id]);
-                $reset_date = date('Y-m-d');
-                $remark = '扣款失败回调事件';
-                OrderGoodsCancel::add($order_goods->id, OrderGoodsCancel::STATUS_2_PROCESSED, $reset_date, $remark);
+                Log::info('订阅周期扣款失败增加已处理取消订阅记录', ['third_trade_no'=>$third_trade_no]);
+                //新增订阅取消操作
+                $next_billing_time = $order_goods->next_billing_time;
+                $reset_date = Carbon::parse($next_billing_time)->addDay()->format('Y-m-d');
+                UserSubscriptionProcess::add($order_goods->id, $user->id, UserSubscriptionProcess::TYPE_2_DEDUCTED_FAILED, $reset_date);
 
                 DB::commit();
             }catch (Exception $e){
@@ -425,17 +419,13 @@ class SaaSOrderService
 
                 $order_goods = OrderGoods::getByOrderId($order->id);
                 $order_goods->status = OrderGoods::STATUS_5_UNSUBSCRIBE;
-
                 $order_goods->save();
 
-                //新增订阅取消记录
+                Log::info('取消订阅回调增加待处理的取消订阅记录', ['third_trade_no'=>$third_trade_no]);
                 //获取处理时间
-                Log::info('取消订阅回调增加待处理的取消订阅记录', ['order_id'=>$order->id]);
-
                 $next_billing_time = $order_goods->next_billing_time;
                 $reset_date = Carbon::parse($next_billing_time)->addDay()->format('Y-m-d');
-                $remark = '取消订阅回调事件';
-                OrderGoodsCancel::add($order_goods->id, OrderGoodsCancel::STATUS_1_UNPROCESSED, $reset_date, $remark);
+                UserSubscriptionProcess::add($order_goods->id, $order_goods->user_id,UserSubscriptionProcess::TYPE_3_CANCEL_SUBSCRIPTION, $reset_date);
 
                 DB::commit();
             }catch (Exception $e){

@@ -154,6 +154,8 @@ class SaaSOrderController extends Controller
      * @return JsonResponse
      */
     public function webHook(Request $request){
+        Log::info('支付服务回调', ['params'=>$request->all()]);
+
         $event_type = $request->input('event_type');
         $third_trade_no = $request->input('third_trade_id');
         $next_billing_time = $request->input('next_billing_time');
