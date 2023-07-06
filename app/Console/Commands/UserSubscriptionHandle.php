@@ -43,6 +43,8 @@ class UserSubscriptionHandle extends Command
      */
     public function handle()
     {
+        \Log::info('-------在线购买月订阅资产重置定时任务开始执行-------');
+
         //获取未处理的订阅操作
         $date = date('Y-m-d');
         $orders_goods = UserSubscriptionProcess::query()
@@ -50,7 +52,7 @@ class UserSubscriptionHandle extends Command
             ->leftJoin('users', 'user_subscription_process.user_id', '=', 'users.id')
             ->where('user_subscription_process.status', UserSubscriptionProcess::STATUS_1_UNPROCESSED)
             ->where('user_subscription_process.reset_date', $date)
-            ->select(['user_subscription_process.id', 'users.id as user_id', 'users.email', 'orders_goods.package_type', 'orders_goods.goods_id', 'user_subscription_process.type', 'user_subscription_operation.next_billing_time'])
+            ->select(['user_subscription_process.id', 'users.id as user_id', 'users.email', 'orders_goods.package_type', 'orders_goods.goods_id', 'user_subscription_process.type', 'user_subscription_process.next_billing_time'])
             ->get();
 
         foreach ($orders_goods as $order){
@@ -68,11 +70,17 @@ class UserSubscriptionHandle extends Command
 
             $remain_service = new UserRemainService();
             $total_files = Goods::getTotalFilesByGoods($order['goods_id']);
+
+            \Log::info('在线购买月订阅资产重置', ['user_id'=>$order['user_id'], 'order_goods_id'=>$order['goods_id'], 'total_files'=>$total_files]);
+
             $remain_service->resetRemain($order['user_id'], $order['email'], $total_files, $order['package_type'], $status, $type, $start_date ?? null, $end_date ?? null);
 
             //将记录修改为已处理
-            UserSubscriptionProcess::query()->where('id', $order['id'])->update(['status' => UserSubscriptionProcess::STATUS_2_PROCESSED]);
+            $order->status = UserSubscriptionProcess::STATUS_2_PROCESSED;
+            $order->save();
         }
+
+        \Log::info('-------在线购买月订阅资产重置定时任务执行完成-------');
 
         return;
     }

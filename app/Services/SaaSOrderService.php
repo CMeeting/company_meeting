@@ -352,7 +352,7 @@ class SaaSOrderService
 
             //增加用户扣款成功操作
             $reset_date = Carbon::parse($old_next_billing_time)->addDay()->format('Y-m-d');
-            UserSubscriptionProcess::add($order_goods->id, $user->id, UserSubscriptionProcess::TYPE_1_DEDUCTED_SUCCESS, $reset_date);
+            UserSubscriptionProcess::add($order_goods->id, $user->id, UserSubscriptionProcess::TYPE_1_DEDUCTED_SUCCESS, $reset_date, $next_billing_time);
 
             DB::commit();
         }catch (Exception $e){

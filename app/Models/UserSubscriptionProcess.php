@@ -32,13 +32,14 @@ class UserSubscriptionProcess extends Model
     const STATUS_1_UNPROCESSED = 1;
     const STATUS_2_PROCESSED = 2;
 
-    public static function add($order_goods_id, $user_id, $type, $reset_date){
+    public static function add($order_goods_id, $user_id, $type, $reset_date, $next_billing_time = null){
         $model = new UserSubscriptionProcess();
         $model->user_id = $user_id;
         $model->type = $type;
         $model->order_goods_id = $order_goods_id;
         $model->status = UserSubscriptionProcess::STATUS_1_UNPROCESSED;
         $model->reset_date = $reset_date;
+        $model->next_billing_time = $next_billing_time;
         $model->save();
     }
 }
