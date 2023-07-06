@@ -331,11 +331,15 @@ class SaaSOrderService
     public function deductionSuccess($third_trade_no, $next_billing_time){
         $order = Order::getByTradeNo($third_trade_no);
         $user = User::find($order->user_id);
+        $order_goods = OrderGoods::getByOrderId($order->id);
+
+        if($order_goods->status != OrderGoods::STATUS_1_PAID){
+            return false;
+        }
 
         //更新下次扣款时间
         try{
             DB::beginTransaction();
-            $order_goods = OrderGoods::getByOrderId($order->id);
             $old_next_billing_time = $order_goods->next_billing_time;
 
             $combo = Goodsclassification::getComboById($order_goods->level1);

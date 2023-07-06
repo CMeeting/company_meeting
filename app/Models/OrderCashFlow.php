@@ -60,7 +60,7 @@ class OrderCashFlow extends Model
         return OrderCashFlow::query()
             ->where('order_id', $order_id)
             ->where('del_flag', 0)
-            ->orderByDesc('created_at')
+            ->orderBy('created_at')
             ->paginate(10);
     }
 }
