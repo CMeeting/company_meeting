@@ -308,7 +308,7 @@ class SaaSOrderService
                     Log::info('订单支付成功回调处理成功', ['third_trade_id'=>$order->third_trade_no]);
 
                     //发送支付成功邮件
-                    $this->sendPayEmail('API购买成功', $order->order_no, $order->pay_time, $order->price, $combo, $user);
+                    $this->sendPayEmail('API购买成功', $order_goods->goods_no, $order->pay_time, $order->price, $combo, $user);
 
                     $result = ['start_date'=>$start_date, 'end_date'=>$end_date];
                 }catch (Exception $e){
@@ -447,13 +447,13 @@ class SaaSOrderService
     /**
      * 发送支付成功或者失败邮件
      * @param $email_name
-     * @param $order_no
+     * @param $goods_no
      * @param $pay_time
      * @param $price
      * @param $combo
      * @param $user
      */
-    public function sendPayEmail($email_name, $order_no, $pay_time, $price, $combo, User $user){
+    public function sendPayEmail($email_name, $goods_no, $pay_time, $price, $combo, User $user){
         //主站官网地址
         $website = env('WEB_HOST');
         //SAAS官网地址
@@ -470,7 +470,7 @@ class SaaSOrderService
 
         $data['info'] = str_replace("#@username", $user->full_name, $data['info']);
 
-        $data['info'] = str_replace("#@order_no", $order_no, $data['info']);
+        $data['info'] = str_replace("#@order_goods_no", $goods_no, $data['info']);
 
         $pay_time = Carbon::parse($pay_time)->format('Y/m/d H:i:s');
         $data['info'] = str_replace("#@pay_date", $pay_time, $data['info']);

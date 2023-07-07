@@ -143,7 +143,7 @@ class SaaSOrderController extends Controller
         $goods = Goods::query()->find($order_goods->goods_id);
         $combo = Goodsclassification::getComboById($goods->level1);
 
-        $service->sendPayEmail('API购买失败', $order_no, $order->created_at, $order->price, $combo, $user);
+        $service->sendPayEmail('API购买失败', $order_goods->goods_no, $order->created_at, $order->price, $combo, $user);
 
         return Response::json(['code'=>200, 'message'=>'success']);
     }
