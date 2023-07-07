@@ -202,11 +202,13 @@ class SaaSOrderService
             $total_files = $special_assets ?: $gear;
 
             //获取套餐有效期
-            $start_date = Carbon::now();
-            $start_date_string = (clone $start_date)->format('Y-m-d H:i:s');
-            $end_date = $start_date->addMonthsNoOverflow($pay_years)->format('Y-m-d H:i:s');
+            if($package_type == OrderGoods::PACKAGE_TYPE_1_PLAN){
+                $start_date = Carbon::now();
+                $start_date_string = (clone $start_date)->format('Y-m-d H:i:s');
+                $end_date = $start_date->addMonthsNoOverflow($pay_years)->format('Y-m-d H:i:s');
+            }
 
-            $remain_service->resetRemain($user->id, $user->email, $total_files, $package_type, BackGroundUserRemain::STATUS_1_ACTIVE, BackGroundUserRemain::OPERATE_TYPE_1_ADD, $start_date_string, $end_date, $cycle ?? null);
+            $remain_service->resetRemain($user->id, $user->email, $total_files, $package_type, BackGroundUserRemain::STATUS_1_ACTIVE, BackGroundUserRemain::OPERATE_TYPE_1_ADD, $start_date_string ?? null, $end_date ?? null, $cycle ?? null);
 
             DB::commit();
         }catch (Exception $e){

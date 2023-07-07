@@ -147,7 +147,7 @@
                 return false;
             }
 
-            if($("#province1 option:checked").text()!="package" && !$("#pay_years").val()){
+            if($("#province1 option:checked").text()!="Package" && !$("#pay_years").val()){
                 dd=1;
                 layer.msg("请输入有效期", {time: 1500, anim: 6});
                 layer.closeAll('loading');
@@ -200,7 +200,7 @@
             //获取被点击的省份的索引
             var index = $("#province"+id+" option:checked").index();
 
-            if($("#province"+id+" option:checked").text()=="package"){
+            if($("#province"+id+" option:checked").text()=="Package"){
                 $("#pay_yearsdiv").hide();
             }else{
                 $("#pay_yearsdiv").show();
