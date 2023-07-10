@@ -46,11 +46,11 @@ class Kernel extends ConsoleKernel
         //订单到期续订提醒
         //$schedule->command('command:order:renew:notice')->hourly();
 
-        //订阅资产重置 (后台创建以及在线购买年订阅)
-        $schedule->command('command:update:user:remain')->daily();
+        //订阅资产重置 (后台创建以及在线购买年订阅) 五分钟后执行，需要管理后台先同步使用记录
+        $schedule->command('command:update:user:remain')->dailyAt('00:05');
 
-        //订阅资产处理 (在线购买月订阅)
-        $schedule->command('command:user:subscription:process')->daily();
+        //订阅资产处理 (在线购买月订阅) 五分钟后执行，需要管理后台先同步使用记录
+        $schedule->command('command:user:subscription:process')->dailyAt('00:05');
     }
 
     /**
