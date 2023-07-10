@@ -242,9 +242,10 @@ class SaaSOrderService
      * 订单支付成功
      * @param $third_trade_no
      * @param $next_billing_time
+     * @param $pay_id
      * @return array
      */
-    public function completeOrder($third_trade_no, $next_billing_time = null){
+    public function completeOrder($third_trade_no, $next_billing_time = null, $pay_id = null){
         $lock = 'webhook:' . $third_trade_no;
         $order = Order::getByTradeNo($third_trade_no);
         $result = [];
@@ -273,7 +274,7 @@ class SaaSOrderService
 
                     //更新流水信息
                     Log::info('支付成功更新流水信息', ['third_trade_no'=>$third_trade_no]);
-                    OrderCashFlow::add($order->id, $order->pay_type, $order_goods->package_type, $order->price, 0, 0, $order->price, $order->third_trade_no, '', OrderCashFlow::CURRENCY_1_USD);
+                    OrderCashFlow::add($order->id, $order->pay_type, $order_goods->package_type, $order->price, 0, 0, $order->price, $order->third_trade_no, $pay_id, OrderCashFlow::CURRENCY_1_USD);
 
                     //更新用户类型
                     $user = User::find($order->user_id);
@@ -328,9 +329,10 @@ class SaaSOrderService
      * 订阅周期扣款成功
      * @param $third_trade_no
      * @param $next_billing_time
+     * @param $pay_id
      * @return bool
      */
-    public function deductionSuccess($third_trade_no, $next_billing_time){
+    public function deductionSuccess($third_trade_no, $next_billing_time, $pay_id){
         $order = Order::getByTradeNo($third_trade_no);
         $user = User::find($order->user_id);
         $order_goods = OrderGoods::getByOrderId($order->id);
@@ -354,7 +356,7 @@ class SaaSOrderService
 
             //更新流水信息
             Log::info('订阅扣款成功更新流水信息', ['third_trade_no'=>$third_trade_no]);
-            OrderCashFlow::add($order->id, $order->pay_type, $order_goods->package_type, $order->price, 0, 0, $order->price, $order->third_trade_no, '', OrderCashFlow::CURRENCY_1_USD);
+            OrderCashFlow::add($order->id, $order->pay_type, $order_goods->package_type, $order->price, 0, 0, $order->price, $order->third_trade_no, $pay_id, OrderCashFlow::CURRENCY_1_USD);
 
             //增加用户扣款成功操作
             $reset_date = Carbon::parse($old_next_billing_time)->addDay()->format('Y-m-d');

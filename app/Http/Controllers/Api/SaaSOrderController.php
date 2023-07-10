@@ -159,6 +159,7 @@ class SaaSOrderController extends Controller
         $event_type = $request->input('event_type');
         $third_trade_no = $request->input('third_trade_id');
         $next_billing_time = $request->input('next_billing_time');
+        $pay_id = $request->input('pay_id');
 
         $order = Order::getByTradeNo($third_trade_no);
         if(!$order instanceof Order){
@@ -171,11 +172,11 @@ class SaaSOrderController extends Controller
             switch ($event_type){
                 case OrderGoods::EVENT_1_PAYMENT_SUCCESS:
                     //在方法里面上锁，还有其他地方调用了这个方法
-                    $orderService->completeOrder($third_trade_no, $next_billing_time);
+                    $orderService->completeOrder($third_trade_no, $next_billing_time, $pay_id);
                     break;
                 case OrderGoods::EVENT_3_DEDUCTION_SUCCESS:
-                    Cache::lock($lock)->get(function () use($orderService, $third_trade_no, $next_billing_time){
-                        $orderService->deductionSuccess($third_trade_no, $next_billing_time);
+                    Cache::lock($lock)->get(function () use($orderService, $third_trade_no, $next_billing_time, $pay_id){
+                        $orderService->deductionSuccess($third_trade_no, $next_billing_time, $pay_id);
                     });
                     break;
                 case  OrderGoods::EVENT_4_DEDUCTION_FAILED:
