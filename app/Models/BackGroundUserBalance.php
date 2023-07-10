@@ -74,6 +74,6 @@ class BackGroundUserBalance extends Model
             $query->where('description_type', $description_type);
         }
 
-        return $query->orderByDesc('create_date')->value('remaining_files');
+        return $query->orderByDesc('id')->value('remaining_files');
     }
 }

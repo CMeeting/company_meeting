@@ -45,12 +45,18 @@ class UserRemainService
         if($type == BackGroundUserRemain::OPERATE_TYPE_1_ADD){
             BackGroundUserBalance::add($backgroundUser->id, $backgroundUser->tenant_id, $package_type, $total_files, BackGroundUserBalance::CHANGE_TYPE_1_RECHARGE);
         }elseif($type == BackGroundUserRemain::OPERATE_TYPE_2_RESET){
-            if(isset($balance_change) && $balance_change != 0){
+            if(isset($balance_change) && $balance_change > 0){
                 BackGroundUserBalance::add($backgroundUser->id, $backgroundUser->tenant_id, $package_type, $balance_change, BackGroundUserBalance::CHANGE_TYPE_2_USED);
             }
             BackGroundUserBalance::add($backgroundUser->id, $backgroundUser->tenant_id, $package_type, $total_files, BackGroundUserBalance::CHANGE_TYPE_1_RECHARGE);
-        }elseif($type == BackGroundUserRemain::OPERATE_TYPE_3_CANCEL && isset($balance_change) && $balance_change != 0){
-            BackGroundUserBalance::add($backgroundUser->id, $backgroundUser->tenant_id, $package_type, $balance_change, BackGroundUserBalance::CHANGE_TYPE_2_USED);
+        }elseif($type == BackGroundUserRemain::OPERATE_TYPE_3_CANCEL){
+            if(isset($balance_change)){
+                //取消订阅，用户还存在订阅资产，证明用户取消订阅后，又购买了，扣除的资产不能超过本订单的资产数
+                $balance_change_new = $balance_change - $remain->total_files;
+                if($balance_change_new > 0){
+                    BackGroundUserBalance::add($backgroundUser->id, $backgroundUser->tenant_id, $package_type, $balance_change, BackGroundUserBalance::CHANGE_TYPE_2_USED);
+                }
+            }
         }
 
         //推送资产到SaaS
