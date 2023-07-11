@@ -357,7 +357,7 @@ class SaaSOrderService
             $order_goods->next_billing_time = $next_billing_time;
             $order_goods->save();
 
-            //获取重置执行时间 需要在流水表更新之前获取，上个月的结束时间加一天
+            //获取重置执行时间即套餐开始时间 需要在流水表更新之前获取，上个月的结束时间加一天
             $remain_service = new UserRemainService();
             $reset_date = $remain_service->getResetDate($order_goods);
 

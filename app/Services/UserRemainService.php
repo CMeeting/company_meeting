@@ -119,6 +119,11 @@ class UserRemainService
         }
     }
 
+    /**
+     * 获取重置时间
+     * @param OrderGoods $order_goods
+     * @return string
+     */
     public function getResetDate(OrderGoods $order_goods){
         $goods = Goods::query()->find($order_goods->goods_id);
         $combo = Goodsclassification::getComboById($goods->level1);
@@ -128,6 +133,7 @@ class UserRemainService
             $cycle = OrderGoods::CYCLE_2_YEAR;
         }
 
-        return  Carbon::parse($this->getSubEndDate($order_goods->id, $order_goods->pay_time, $cycle))->addDay()->toDateString();
+        $last_end_date = $this->getSubEndDate($order_goods->id, $order_goods->pay_time, $cycle);
+        return  Carbon::parse($last_end_date)->addDay()->toDateString();
     }
 }
