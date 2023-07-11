@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use App\Models\BackGroundUserRemain;
 use App\Models\Goods;
+use App\Models\Goodsclassification;
 use App\Models\OrderGoods;
 use App\Models\UserSubscriptionProcess;
 use App\Models\User;
@@ -60,7 +61,14 @@ class UserSubscriptionHandle extends Command
             if($order['type'] == UserSubscriptionProcess::TYPE_1_DEDUCTED_SUCCESS){
                 //订阅扣款成功重置资产
                 $start_date = Carbon::now()->toDateTimeString();
-                $end_date = $remain_service->getSubEndDate($order['order_goods_id'], $order['pay_time']);
+                $goods = Goods::query()->find($order['order_goods_id']);
+                $combo = Goodsclassification::getComboById($goods->level1);
+                if($combo == Goods::COMBO_MONTHLY) {
+                    $cycle = OrderGoods::CYCLE_1_MONTH;
+                }else{
+                    $cycle = OrderGoods::CYCLE_2_YEAR;
+                }
+                $end_date = $remain_service->getSubEndDate($order['order_goods_id'], $order['pay_time'], $cycle);
                 $status = BackGroundUserRemain::STATUS_1_ACTIVE;
                 $type = BackGroundUserRemain::OPERATE_TYPE_2_RESET;
             }else{

@@ -286,21 +286,18 @@ class SaaSOrderService
                     $total_files = Goods::getTotalFilesByGoods($order_goods->goods_id);
                     Log::info('支付成功更新资产信息', ['order_id'=>$order->id, 'user_id'=>$user->id, 'total_files'=>$total_files, 'package_type'=>$order_goods->package_type]);
 
-                    //获取套餐有效期
-                    $start_date = $end_date = null;
-                    if($order_goods->package_type == OrderGoods::PACKAGE_TYPE_1_PLAN){
-                        $start_date = $pay_time_string;
-                        $end_date = $remain_service->getSubEndDate($order_goods->id, $start_date);
-                    }
-
-                    //获取周期
-                    $cycle = null;
+                    //获取套餐有效期，周期
+                    $start_date = $end_date = $cycle = null;
                     $goods = Goods::query()->find($order_goods->goods_id);
                     $combo = Goodsclassification::getComboById($goods->level1);
                     if($combo == Goods::COMBO_MONTHLY){
                         $cycle = OrderGoods::CYCLE_1_MONTH;
+                        $start_date = $pay_time_string;
+                        $end_date = $remain_service->getSubEndDate($order_goods->id, $start_date, $cycle);
                     }elseif ($combo == Goods::COMBO_ANNUALLY){
                         $cycle = OrderGoods::CYCLE_2_YEAR;
+                        $start_date = $pay_time_string;
+                        $end_date = $remain_service->getSubEndDate($order_goods->id, $start_date, $cycle);
                     }
 
                     $remain_service->resetRemain($user->id, $user->email, $total_files, $order_goods->package_type, BackGroundUserRemain::STATUS_1_ACTIVE, BackGroundUserRemain::OPERATE_TYPE_1_ADD, $start_date, $end_date, $cycle);

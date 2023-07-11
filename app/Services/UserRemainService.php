@@ -104,11 +104,16 @@ class UserRemainService
      * 根据周期计算套餐结束时间。规避31号购买这种特殊情况。比如7.31-8.31，9.1-9.30, 10.1-10.31
      * @param $order_goods_id
      * @param $start_date
+     * @param $cycle
      * @return string
      */
-    public function getSubEndDate($order_goods_id, $start_date){
+    public function getSubEndDate($order_goods_id, $start_date, $cycle){
         $period = OrderCashFlow::getPeriodByOrderId($order_goods_id);
 
-        return Carbon::parse($start_date)->addMonthsNoOverflow($period)->toDateString();
+        if($cycle == OrderGoods::CYCLE_1_MONTH){
+            return Carbon::parse($start_date)->addMonthsNoOverflow($period)->toDateString();
+        }else{
+            return Carbon::parse($start_date)->addYearsNoOverflow($period)->toDateString();
+        }
     }
 }
