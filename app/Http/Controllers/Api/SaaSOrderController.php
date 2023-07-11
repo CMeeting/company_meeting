@@ -116,8 +116,8 @@ class SaaSOrderController extends Controller
                     $order_result = $orderService->completeOrder($order->third_trade_no, $result['data']['next_billing_time']);
                     if(!empty($order_result)){
                         $status = OrderGoods::STATUS_1_PAID;
-                        $start_date = $order_result['start_date'] ? Carbon::parse($order_result['start_date'])->format('Y-m-d') : '';
-                        $end_date = $order_result['end_date'] ? Carbon::parse($order_result['end_date'])->format('Y-m-d') : '';
+                        $start_date = $order_result['start_date'] ? Carbon::parse($order_result['start_date'])->format('Y/m/d') : '';
+                        $end_date = $order_result['end_date'] ? Carbon::parse($order_result['end_date'])->format('Y/m/d') : '';
                     }
                 }
             }
