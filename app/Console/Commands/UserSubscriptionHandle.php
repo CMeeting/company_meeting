@@ -52,14 +52,15 @@ class UserSubscriptionHandle extends Command
             ->leftJoin('users', 'user_subscription_process.user_id', '=', 'users.id')
             ->where('user_subscription_process.status', UserSubscriptionProcess::STATUS_1_UNPROCESSED)
             ->where('user_subscription_process.reset_date', $date)
-            ->select(['user_subscription_process.id', 'users.id as user_id', 'users.email', 'orders_goods.package_type', 'orders_goods.goods_id', 'user_subscription_process.type', 'user_subscription_process.next_billing_time'])
+            ->select(['user_subscription_process.id', 'users.id as user_id', 'users.email', 'orders_goods.package_type', 'orders_goods.goods_id', 'user_subscription_process.type', 'orders_goods.pay_time', 'order_goods.id as order_goods_id'])
             ->get();
 
+        $remain_service = new UserRemainService();
         foreach ($orders_goods as $order){
             if($order['type'] == UserSubscriptionProcess::TYPE_1_DEDUCTED_SUCCESS){
                 //订阅扣款成功重置资产
-                $start_date = Carbon::now()->format('Y-m-d H:i:s');
-                $end_date = $order['next_billing_time'];
+                $start_date = Carbon::now()->toDateTimeString();
+                $end_date = $remain_service->getSubEndDate($order['order_goods_id'], $order['pay_time']);
                 $status = BackGroundUserRemain::STATUS_1_ACTIVE;
                 $type = BackGroundUserRemain::OPERATE_TYPE_2_RESET;
             }else{
@@ -68,7 +69,6 @@ class UserSubscriptionHandle extends Command
                 $type = BackGroundUserRemain::OPERATE_TYPE_3_CANCEL;
             }
 
-            $remain_service = new UserRemainService();
             $total_files = Goods::getTotalFilesByGoods($order['goods_id']);
 
             \Log::info('在线购买月订阅资产重置', ['user_id'=>$order['user_id'], 'order_goods_id'=>$order['goods_id'], 'total_files'=>$total_files]);

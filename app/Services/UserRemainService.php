@@ -7,7 +7,9 @@ namespace App\Services;
 use App\Models\BackGroundUser;
 use App\Models\BackGroundUserBalance;
 use App\Models\BackGroundUserRemain;
+use App\Models\OrderCashFlow;
 use App\Models\OrderGoods;
+use Carbon\Carbon;
 
 class UserRemainService
 {
@@ -96,5 +98,17 @@ class UserRemainService
         $url = env('BACKGROUND_USER_SAAS') . '/user-api/v1/user/verify';
 
         return HttpClientService::get($url, [], $headers);
+    }
+
+    /**
+     * 根据周期计算套餐结束时间。规避31号购买这种特殊情况。比如7.31-8.31，9.1-9.30, 10.1-10.31
+     * @param $order_goods_id
+     * @param $start_date
+     * @return string
+     */
+    public function getSubEndDate($order_goods_id, $start_date){
+        $period = OrderCashFlow::getPeriodByOrderId($order_goods_id);
+
+        return Carbon::parse($start_date)->addMonthsNoOverflow($period)->toDateString();
     }
 }

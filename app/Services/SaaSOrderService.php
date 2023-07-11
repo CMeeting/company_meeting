@@ -188,10 +188,10 @@ class SaaSOrderService
                 default:
                     break;
             }
-            OrderGoods::add($order_id, $order_no, $order_goods_no, $pay_type, $status, $type, $details_type, $price, $user->id, $goods->id, $package_type, $pay_years, $special_assets);
+            $goods_model = OrderGoods::add($order_id, $order_no, $order_goods_no, $pay_type, $status, $type, $details_type, $price, $user->id, $goods->id, $package_type, $pay_years, $special_assets);
 
             //更新流水信息
-            OrderCashFlow::add($order_id, $pay_type, $package_type, $price, 0, 0, $price, '', '', OrderCashFlow::CURRENCY_1_USD);
+            OrderCashFlow::add($goods_model->id, $pay_type, $package_type, $price, 0, 0, $price, '', '', OrderCashFlow::CURRENCY_1_USD);
 
             //更新用户类型
             $user_service = new UserService();
@@ -262,7 +262,7 @@ class SaaSOrderService
 
                     //修改订单和子订单为已支付状态
                     $pay_time = Carbon::now();
-                    $pay_time_string = $pay_time->format('Y-m-d H:i:s');
+                    $pay_time_string = $pay_time->toDateTimeString();
                     $order->status = OrderGoods::STATUS_1_PAID;
                     $order->pay_time = $pay_time_string;
                     $order->save();
@@ -274,7 +274,7 @@ class SaaSOrderService
 
                     //更新流水信息
                     Log::info('支付成功更新流水信息', ['third_trade_no'=>$third_trade_no]);
-                    OrderCashFlow::add($order->id, $order->pay_type, $order_goods->package_type, $order->price, 0, 0, $order->price, $order->third_trade_no, $pay_id, OrderCashFlow::CURRENCY_1_USD);
+                    OrderCashFlow::add($order_goods->id, $order->pay_type, $order_goods->package_type, $order->price, 0, 0, $order->price, $order->third_trade_no, $pay_id, OrderCashFlow::CURRENCY_1_USD);
 
                     //更新用户类型
                     $user = User::find($order->user_id);
@@ -290,7 +290,7 @@ class SaaSOrderService
                     $start_date = $end_date = null;
                     if($order_goods->package_type == OrderGoods::PACKAGE_TYPE_1_PLAN){
                         $start_date = $pay_time_string;
-                        $end_date = $next_billing_time;
+                        $end_date = $remain_service->getSubEndDate($order_goods->id, $start_date);
                     }
 
                     //获取周期
@@ -338,6 +338,13 @@ class SaaSOrderService
         $order_goods = OrderGoods::getByOrderId($order->id);
 
         if($order_goods->status != OrderGoods::STATUS_1_PAID){
+            Log::info('订阅扣款成功回调订单状态错误', ['pay_id'=>$pay_id, 'third_trade_no'=>$third_trade_no]);
+            return false;
+        }
+
+        //回调id已存在
+        if(OrderCashFlow::existsPayId($pay_id)){
+            Log::info('订阅扣款成功回调重复', ['pay_id'=>$pay_id, 'third_trade_no'=>$third_trade_no]);
             return false;
         }
 
@@ -356,7 +363,7 @@ class SaaSOrderService
 
             //更新流水信息
             Log::info('订阅扣款成功更新流水信息', ['third_trade_no'=>$third_trade_no]);
-            OrderCashFlow::add($order->id, $order->pay_type, $order_goods->package_type, $order->price, 0, 0, $order->price, $order->third_trade_no, $pay_id, OrderCashFlow::CURRENCY_1_USD);
+            OrderCashFlow::add($order_goods->id, $order->pay_type, $order_goods->package_type, $order->price, 0, 0, $order->price, $order->third_trade_no, $pay_id, OrderCashFlow::CURRENCY_1_USD);
 
             //增加用户扣款成功操作
             $reset_date = Carbon::parse($old_next_billing_time)->addDay()->format('Y-m-d');
@@ -393,7 +400,7 @@ class SaaSOrderService
                 $order_goods->status = OrderGoods::STATUS_5_UNSUBSCRIBE;
                 $order_goods->save();
 
-                Log::info('订阅周期扣款失败增加已处理取消订阅记录', ['third_trade_no'=>$third_trade_no]);
+                Log::info('订阅周期扣款失败', ['third_trade_no'=>$third_trade_no]);
                 //新增订阅取消操作
                 $next_billing_time = $order_goods->next_billing_time;
                 $reset_date = Carbon::parse($next_billing_time)->addDay()->format('Y-m-d');
@@ -432,7 +439,7 @@ class SaaSOrderService
                 Log::info('取消订阅回调增加待处理的取消订阅记录', ['third_trade_no'=>$third_trade_no]);
                 //获取处理时间
                 $next_billing_time = $order_goods->next_billing_time;
-                $reset_date = Carbon::parse($next_billing_time)->addDay()->format('Y-m-d');
+                $reset_date = Carbon::parse($next_billing_time)->addDay()->toDateString();
                 UserSubscriptionProcess::add($order_goods->id, $order_goods->user_id,UserSubscriptionProcess::TYPE_3_CANCEL_SUBSCRIPTION, $reset_date);
 
                 DB::commit();

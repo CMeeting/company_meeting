@@ -118,9 +118,10 @@ class OrderController extends BaseController {
         $data = $order->data_saasinfo($id);
 //        $info = $order->getOrderInfo($id);//获取发票信息
 
-        //流水信息
+        //流水信息 目前只能一次购买一个商品
+        $order_goods_id = $data[0]['id'];
         $service = new OrderCashFlowService();
-        $cash_flow = $service->getPageByOrderId($id);
+        $cash_flow = $service->getPageByOrderId($order_goods_id);
 
         //账单信息
         $billService = new UserBillingInfoService();
