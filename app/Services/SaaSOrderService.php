@@ -348,7 +348,6 @@ class SaaSOrderService
         //更新下次扣款时间
         try{
             DB::beginTransaction();
-            $old_next_billing_time = $order_goods->next_billing_time;
 
             $combo = Goodsclassification::getComboById($order_goods->level1);
             //年订阅更新有效期
@@ -358,12 +357,15 @@ class SaaSOrderService
             $order_goods->next_billing_time = $next_billing_time;
             $order_goods->save();
 
+            //获取重置执行时间 需要在流水表更新之前获取，上个月的结束时间加一天
+            $remain_service = new UserRemainService();
+            $reset_date = $remain_service->getResetDate($order_goods);
+
             //更新流水信息
             Log::info('订阅扣款成功更新流水信息', ['third_trade_no'=>$third_trade_no]);
             OrderCashFlow::add($order_goods->id, $order->pay_type, $order_goods->package_type, $order->price, 0, 0, $order->price, $order->third_trade_no, $pay_id, OrderCashFlow::CURRENCY_1_USD);
 
             //增加用户扣款成功操作
-            $reset_date = Carbon::parse($old_next_billing_time)->addDay()->format('Y-m-d');
             UserSubscriptionProcess::add($order_goods->id, $user->id, UserSubscriptionProcess::TYPE_1_DEDUCTED_SUCCESS, $reset_date, $next_billing_time);
 
             DB::commit();
@@ -399,8 +401,9 @@ class SaaSOrderService
 
                 Log::info('订阅周期扣款失败', ['third_trade_no'=>$third_trade_no]);
                 //新增订阅取消操作
-                $next_billing_time = $order_goods->next_billing_time;
-                $reset_date = Carbon::parse($next_billing_time)->addDay()->format('Y-m-d');
+                $remain_service = new UserRemainService();
+                $reset_date = $remain_service->getResetDate($order_goods);
+
                 UserSubscriptionProcess::add($order_goods->id, $user->id, UserSubscriptionProcess::TYPE_2_DEDUCTED_FAILED, $reset_date);
 
                 DB::commit();
@@ -434,9 +437,9 @@ class SaaSOrderService
                 $order_goods->save();
 
                 Log::info('取消订阅回调增加待处理的取消订阅记录', ['third_trade_no'=>$third_trade_no]);
-                //获取处理时间
-                $next_billing_time = $order_goods->next_billing_time;
-                $reset_date = Carbon::parse($next_billing_time)->addDay()->toDateString();
+                $remain_service = new UserRemainService();
+                $reset_date = $remain_service->getResetDate($order_goods);
+
                 UserSubscriptionProcess::add($order_goods->id, $order_goods->user_id,UserSubscriptionProcess::TYPE_3_CANCEL_SUBSCRIPTION, $reset_date);
 
                 DB::commit();

@@ -7,6 +7,8 @@ namespace App\Services;
 use App\Models\BackGroundUser;
 use App\Models\BackGroundUserBalance;
 use App\Models\BackGroundUserRemain;
+use App\Models\Goods;
+use App\Models\Goodsclassification;
 use App\Models\OrderCashFlow;
 use App\Models\OrderGoods;
 use Carbon\Carbon;
@@ -107,7 +109,7 @@ class UserRemainService
      * @param $cycle
      * @return string
      */
-    public function getSubEndDate($order_goods_id, $start_date, $cycle){
+    public function  getSubEndDate($order_goods_id, $start_date, $cycle){
         $period = OrderCashFlow::getPeriodByOrderId($order_goods_id);
 
         if($cycle == OrderGoods::CYCLE_1_MONTH){
@@ -115,5 +117,17 @@ class UserRemainService
         }else{
             return Carbon::parse($start_date)->addYearsNoOverflow($period)->toDateString();
         }
+    }
+
+    public function getResetDate(OrderGoods $order_goods){
+        $goods = Goods::query()->find($order_goods->goods_id);
+        $combo = Goodsclassification::getComboById($goods->level1);
+        if($combo == Goods::COMBO_MONTHLY){
+            $cycle = OrderGoods::CYCLE_1_MONTH;
+        }else{
+            $cycle = OrderGoods::CYCLE_2_YEAR;
+        }
+
+        return  Carbon::parse($this->getSubEndDate($order_goods->id, $order_goods->pay_time, $cycle))->addDay()->toDateString();
     }
 }
