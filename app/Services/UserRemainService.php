@@ -120,7 +120,7 @@ class UserRemainService
     }
 
     /**
-     * 获取重置时间
+     * 获取取消订阅，资产重置时间，根据扣款成功流水计算最后一次套餐有效期，不能直接拿资产表结束时间，可能存在取消订阅后，又购买订阅的情况
      * @param OrderGoods $order_goods
      * @return string
      */

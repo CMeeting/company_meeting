@@ -357,9 +357,8 @@ class SaaSOrderService
             $order_goods->next_billing_time = $next_billing_time;
             $order_goods->save();
 
-            //获取重置执行时间即套餐开始时间 需要在流水表更新之前获取，上个月的结束时间加一天
-            $remain_service = new UserRemainService();
-            $reset_date = $remain_service->getResetDate($order_goods);
+            //扣款成功第二天重置
+            $reset_date = Carbon::now()->addDay()->toDateString();
 
             //更新流水信息
             Log::info('订阅扣款成功更新流水信息', ['third_trade_no'=>$third_trade_no]);
@@ -400,9 +399,8 @@ class SaaSOrderService
                 $order_goods->save();
 
                 Log::info('订阅周期扣款失败', ['third_trade_no'=>$third_trade_no]);
-                //新增订阅取消操作
-                $remain_service = new UserRemainService();
-                $reset_date = $remain_service->getResetDate($order_goods);
+                //扣款失败第二天重置资产
+                $reset_date = Carbon::now()->addDay()->toDateString();
 
                 UserSubscriptionProcess::add($order_goods->id, $user->id, UserSubscriptionProcess::TYPE_2_DEDUCTED_FAILED, $reset_date);
 
