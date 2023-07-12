@@ -235,7 +235,7 @@
                             icon: 1,
                             time: 2000
                         });
-                        window.location.href='{{route('order.index')}}';
+                        window.location.href='{{route('order.saasindex')}}';
                     } else {
                         //失败提示
                         layer.msg(resp.msg, {
