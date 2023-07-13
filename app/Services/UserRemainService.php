@@ -58,7 +58,7 @@ class UserRemainService
                 //取消订阅，用户还存在订阅资产，证明用户取消订阅后，又购买了，扣除的资产不能超过本订单的资产数
                 $balance_change_new = $balance_change - $remain->total_files;
                 if($balance_change_new > 0){
-                    BackGroundUserBalance::add($backgroundUser->id, $backgroundUser->tenant_id, $package_type, $balance_change, BackGroundUserBalance::CHANGE_TYPE_2_USED);
+                    BackGroundUserBalance::add($backgroundUser->id, $backgroundUser->tenant_id, $package_type, $balance_change_new, BackGroundUserBalance::CHANGE_TYPE_2_USED);
                 }
             }
         }
