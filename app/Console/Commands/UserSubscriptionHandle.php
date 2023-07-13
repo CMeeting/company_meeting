@@ -53,7 +53,7 @@ class UserSubscriptionHandle extends Command
             ->leftJoin('users', 'user_subscription_process.user_id', '=', 'users.id')
             ->where('user_subscription_process.status', UserSubscriptionProcess::STATUS_1_UNPROCESSED)
             ->where('user_subscription_process.reset_date', $date)
-            ->select(['user_subscription_process.id', 'users.id as user_id', 'users.email', 'orders_goods.package_type', 'orders_goods.goods_id', 'user_subscription_process.type', 'orders_goods.pay_time', 'orders_goods.id as order_goods_id'])
+            ->select(['user_subscription_process.id', 'user_subscription_process.order_goods_id', 'users.id as user_id', 'users.email', 'orders_goods.package_type', 'orders_goods.goods_id', 'user_subscription_process.type', 'orders_goods.pay_time'])
             ->get();
 
         $remain_service = new UserRemainService();
@@ -61,7 +61,7 @@ class UserSubscriptionHandle extends Command
             if($order['type'] == UserSubscriptionProcess::TYPE_1_DEDUCTED_SUCCESS){
                 //订阅扣款成功重置资产
                 $start_date = Carbon::now()->toDateTimeString();
-                $goods = Goods::query()->find($order['order_goods_id']);
+                $goods = Goods::query()->find($order['goods_id']);
                 $combo = Goodsclassification::getComboById($goods->level1);
                 if($combo == Goods::COMBO_MONTHLY) {
                     $cycle = OrderGoods::CYCLE_1_MONTH;
