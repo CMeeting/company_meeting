@@ -340,7 +340,7 @@ class SaaSOrderService
         }
 
         //回调id已存在
-        if(OrderCashFlow::existsPayId($pay_id)){
+        if($pay_id && OrderCashFlow::existsPayId($pay_id)){
             Log::info('订阅扣款成功回调重复', ['pay_id'=>$pay_id, 'third_trade_no'=>$third_trade_no]);
             return false;
         }
