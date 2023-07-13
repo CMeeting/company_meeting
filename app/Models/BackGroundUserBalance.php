@@ -45,9 +45,13 @@ class BackGroundUserBalance extends Model
             }else{
                 $description = 'Annually Subscription Files';
             }
+            //扣除代表重置过期资产
+            if($change_type == self::CHANGE_TYPE_2_USED){
+                $description = 'Files Expired';
+            }
         }else{
             $description_type = self::DESCRIPTION_TYPE_1_PACKAGE;
-            $description = "Package Flies";
+            $description = "Package Files";
         }
 
         $remaining_files = self::getRemainingFiles($user_id);
