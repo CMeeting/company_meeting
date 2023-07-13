@@ -53,7 +53,7 @@ class UserSubscriptionHandle extends Command
             ->leftJoin('users', 'user_subscription_process.user_id', '=', 'users.id')
             ->where('user_subscription_process.status', UserSubscriptionProcess::STATUS_1_UNPROCESSED)
             ->where('user_subscription_process.reset_date', $date)
-            ->select(['user_subscription_process.id', 'users.id as user_id', 'users.email', 'orders_goods.package_type', 'orders_goods.goods_id', 'user_subscription_process.type', 'orders_goods.pay_time', 'order_goods.id as order_goods_id'])
+            ->select(['user_subscription_process.id', 'users.id as user_id', 'users.email', 'orders_goods.package_type', 'orders_goods.goods_id', 'user_subscription_process.type', 'orders_goods.pay_time', 'orders_goods.id as order_goods_id'])
             ->get();
 
         $remain_service = new UserRemainService();
