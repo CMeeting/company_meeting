@@ -37,13 +37,17 @@ class BackGroundUserBalance extends Model
     const CHANGE_TYPE_1_RECHARGE = 1;   //充值
     const CHANGE_TYPE_2_USED = 2;   //消费
 
-    public static function add($user_id, $tenant_id, $asset_type, $balance_change, $change_type){
+    public static function add($user_id, $tenant_id, $asset_type, $balance_change, $change_type, $cycle){
         if($asset_type == OrderGoods::PACKAGE_TYPE_1_PLAN){
             $description_type = self::DESCRIPTION_TYPE_2_SUBSCRIPTION;
-            $description = "Monthly Subscription($balance_change files)";
+            if($cycle == OrderGoods::CYCLE_1_MONTH){
+                $description = 'Monthly Subscription Files';
+            }else{
+                $description = 'Annually Subscription Files';
+            }
         }else{
             $description_type = self::DESCRIPTION_TYPE_1_PACKAGE;
-            $description = "Package($balance_change files)";
+            $description = "Package Flies";
         }
 
         $remaining_files = self::getRemainingFiles($user_id);

@@ -47,18 +47,18 @@ class UserRemainService
 
         //新增资产只增加新增消费记录，重置资产增加消费，充值两条记录，取消订阅增加消费记录
         if($type == BackGroundUserRemain::OPERATE_TYPE_1_ADD){
-            BackGroundUserBalance::add($backgroundUser->id, $backgroundUser->tenant_id, $package_type, $total_files, BackGroundUserBalance::CHANGE_TYPE_1_RECHARGE);
+            BackGroundUserBalance::add($backgroundUser->id, $backgroundUser->tenant_id, $package_type, $total_files, BackGroundUserBalance::CHANGE_TYPE_1_RECHARGE, $cycle);
         }elseif($type == BackGroundUserRemain::OPERATE_TYPE_2_RESET){
             if(isset($balance_change) && $balance_change > 0){
-                BackGroundUserBalance::add($backgroundUser->id, $backgroundUser->tenant_id, $package_type, $balance_change, BackGroundUserBalance::CHANGE_TYPE_2_USED);
+                BackGroundUserBalance::add($backgroundUser->id, $backgroundUser->tenant_id, $package_type, $balance_change, BackGroundUserBalance::CHANGE_TYPE_2_USED, $cycle);
             }
-            BackGroundUserBalance::add($backgroundUser->id, $backgroundUser->tenant_id, $package_type, $total_files, BackGroundUserBalance::CHANGE_TYPE_1_RECHARGE);
+            BackGroundUserBalance::add($backgroundUser->id, $backgroundUser->tenant_id, $package_type, $total_files, BackGroundUserBalance::CHANGE_TYPE_1_RECHARGE, $cycle);
         }elseif($type == BackGroundUserRemain::OPERATE_TYPE_3_CANCEL){
             if(isset($balance_change)){
                 //取消订阅，用户还存在订阅资产，证明用户取消订阅后，又购买了，扣除的资产不能超过本订单的资产数
                 $balance_change_new = $balance_change - $remain->total_files;
                 if($balance_change_new > 0){
-                    BackGroundUserBalance::add($backgroundUser->id, $backgroundUser->tenant_id, $package_type, $balance_change_new, BackGroundUserBalance::CHANGE_TYPE_2_USED);
+                    BackGroundUserBalance::add($backgroundUser->id, $backgroundUser->tenant_id, $package_type, $balance_change_new, BackGroundUserBalance::CHANGE_TYPE_2_USED, $cycle);
                 }
             }
         }
