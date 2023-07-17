@@ -8,6 +8,13 @@ use App\Models\OrderCashFlow;
 
 class PayCenterService
 {
+    private $configId;
+
+    public function __construct()
+    {
+        $this->configId = env('configId');
+    }
+
     /**
      * 调用支付中心接口，生成支付链接(package商品，调用付款的接口)
      * @param $order_no
@@ -32,7 +39,7 @@ class PayCenterService
         ];
 
         $encryptionService = new EncryptionService(EncryptionService::PROJECT_2_SAAS);
-        $token = $encryptionService->encryption(json_encode(['configId' => 3]));
+        $token = $encryptionService->encryption(json_encode(['configId' => $this->configId]));
         $headers = [
             'Content-type' =>  'application/json',
             'Accept' => 'application/json',
@@ -71,7 +78,7 @@ class PayCenterService
         ];
 
         $encryptionService = new EncryptionService(EncryptionService::PROJECT_2_SAAS);
-        $token = $encryptionService->encryption(json_encode(['configId' => 3]));
+        $token = $encryptionService->encryption(json_encode(['configId' => $this->configId]));
         $headers = [
             'Content-type' =>  'application/json',
             'Accept' => 'application/json',
@@ -97,7 +104,7 @@ class PayCenterService
         $query = ['tradeId' => $trade_id, 'tradeType' => $package_type];
 
         $encryptionService = new EncryptionService(EncryptionService::PROJECT_2_SAAS);
-        $token = $encryptionService->encryption(json_encode(['configId' => 3]));
+        $token = $encryptionService->encryption(json_encode(['configId' => $this->configId]));
         $headers = [
             'Content-type' =>  'application/json',
             'Accept' => 'application/json',
