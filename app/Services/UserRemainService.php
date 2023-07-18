@@ -98,6 +98,7 @@ class UserRemainService
             'Authorization' => $token
         ];
         $url = env('BACKGROUND_USER_SAAS') . '/user-api/v1/user/verify';
+        \Log::info('激活接口URL#' . $url);
 
         return HttpClientService::get($url, [], $headers);
     }

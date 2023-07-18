@@ -12,7 +12,7 @@ class PayCenterService
 
     public function __construct()
     {
-        $this->configId = env('configId');
+        $this->configId = env('CONFIG_ID');
     }
 
     /**
