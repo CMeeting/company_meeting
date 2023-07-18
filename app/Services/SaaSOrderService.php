@@ -82,7 +82,7 @@ class SaaSOrderService
             $payService = new PayCenterService();
 
             if($package_type == OrderGoods::PACKAGE_TYPE_2_PACKAGE){
-                if($user->email == env('pay_whitelist')){
+                if($user->email == env('PAY_WHITE')){
                     $price = 1;
                 }else{
                     $price = $goods->price;
