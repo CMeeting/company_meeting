@@ -82,7 +82,12 @@ class SaaSOrderService
             $payService = new PayCenterService();
 
             if($package_type == OrderGoods::PACKAGE_TYPE_2_PACKAGE){
-                $result = $payService->createPackageOrder($order_no, $goods->price);
+                if($user->email == env('pay_whitelist')){
+                    $price = 1;
+                }else{
+                    $price = $goods->price;
+                }
+                $result = $payService->createPackageOrder($order_no, $price);
             }else{
                 $result = $payService->createPlanOrder($order_no, $goods->price, $cycle);
             }
