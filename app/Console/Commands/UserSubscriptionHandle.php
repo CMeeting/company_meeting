@@ -81,7 +81,7 @@ class UserSubscriptionHandle extends Command
 
             \Log::info('在线购买月订阅资产重置', ['user_id'=>$order['user_id'], 'order_goods_id'=>$order['goods_id'], 'total_files'=>$total_files]);
 
-            $remain_service->resetRemain($order['user_id'], $order['email'], $total_files, $order['package_type'], $status, $type, $start_date ?? null, $end_date ?? null);
+            $remain_service->resetRemain($order['user_id'], $order['email'], $total_files, $order['package_type'], $status, $type, $start_date ?? null, $end_date ?? null, $cycle ?? null);
 
             //将记录修改为已处理
             $order->status = UserSubscriptionProcess::STATUS_2_PROCESSED;

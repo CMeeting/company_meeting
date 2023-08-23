@@ -97,13 +97,29 @@ class UpdateUserRemain extends Command
             $user_id = $order_goods['user_id'];
             $email = $order_goods['email'];
 
+            if($combo == Goods::COMBO_MONTHLY) {
+                $cycle = OrderGoods::CYCLE_1_MONTH;
+            }else{
+                $cycle = OrderGoods::CYCLE_2_YEAR;
+            }
+
             for($i = 1; $i < $validity_period; $i++){
                 $next_date = (clone $pay_at)->addMonthsNoOverflow($i)->addDay()->toDateString();
                 //重置资产
                 if($now_date == $next_date){
                     \Log::info('后台创建订阅或在线购买年订阅资产重置', ['user_id'=>$user_id, 'order_goods_id'=>$order_goods['id'], 'total_files'=>$total_files]);
 
-                    $remain_service->resetRemain($user_id, $email, $total_files, OrderGoods::PACKAGE_TYPE_1_PLAN, BackGroundUserRemain::STATUS_1_ACTIVE, BackGroundUserRemain::OPERATE_TYPE_2_RESET);
+                    $remain_service->resetRemain(
+                        $user_id,
+                        $email,
+                        $total_files,
+                        OrderGoods::PACKAGE_TYPE_1_PLAN,
+                        BackGroundUserRemain::STATUS_1_ACTIVE,
+                        BackGroundUserRemain::OPERATE_TYPE_2_RESET,
+                        null,
+                        null,
+                        $cycle
+                    );
                     continue;
                 }
             }
