@@ -23,6 +23,10 @@ Route::group(['namespace' => 'Admin','prefix' => 'admin'], function (){
 
         Route::resource('index', 'IndexsController', ['only' => ['index']]);  //首页
 
+        //Speakers
+        Route::get('fruser_list', 'FrUserController@list')->name('fruser.list');
+        Route::post('fruser_import', 'FrUserController@import')->name('fruser.import');
+
         //电子报
         Route::get('subscription_list', 'NewsletterController@subscription_list')->name('newsletter.subscription_list');
         Route::get('createsubscription', 'NewsletterController@createsubscription')->name('newsletter.createsubscription');

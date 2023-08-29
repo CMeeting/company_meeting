@@ -79,45 +79,18 @@
     <div class="col-lg-12">
       <section class="panel">
         <header class="panel-heading bm0">
-          <span><strong>团队及版权信息</strong></span>
+          <span><strong>2023/08/28 Morning</strong></span>
           <span class="tools pull-right">
-                                <a class="icon-chevron-down" href="javascript:;"></a>
-                            </span>
+              <a class="icon-chevron-down" href="javascript:;"></a>
+          </span>
         </header>
         <div class="panel-body" id="panel-bodys" style="display: block;">
           <table class="table table-hover personal-task">
             <tbody>
             <tr>
               <td>
-                <strong>检测更新</strong>：已是最新版
+                <strong>Aujourd'hui:</strong>Partiellement nuageux avec des orages.
               </td>
-              <td></td>
-            </tr>
-            <tr>
-              <td><strong>程序名称</strong>: ComPDFKit后台系统 </td>
-              <td></td>
-            </tr>
-            <tr>
-              <td><strong>当前版本</strong>：V1.0</td>
-              <td></td>
-            </tr>
-            <tr>
-              <td><strong>开发团队</strong>：凯钿云端服务组 </td>
-              <td></td>
-            </tr>
-            <tr>
-              <td>
-                <strong>操作系统：</strong>：{{PHP_OS}}</td>
-              <td></td>
-            </tr>
-            <tr>
-              <td>
-                <strong>WEB服务器</strong>：{{php_sapi_name()}}</td>
-              <td></td>
-            </tr>
-            <tr>
-              <td>
-                <strong>PHP版本</strong>：{{PHP_VERSION}}</td>
               <td></td>
             </tr>
             </tbody>
