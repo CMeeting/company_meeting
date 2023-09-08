@@ -1,4 +1,4 @@
-<?php $__env->startSection('title', '首页'); ?>
+<?php $__env->startSection('title', 'dashboard'); ?>
 
 <?php $__env->startSection('css'); ?>
   <link href="<?php echo e(loadEdition('/admin/css/pxgridsicons.min.css')); ?>" rel="stylesheet" />

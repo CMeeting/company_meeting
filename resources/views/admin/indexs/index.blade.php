@@ -4,8 +4,8 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="renderer" content="webkit">
-    <meta http-equiv="Cache-Control" content="no-siteapp" />
-    <title>后台管理中心 - @yield('title', config('app.name', 'Laravel'))</title>
+    <meta http-equiv="Cache-Control" content="no-siteapp"/>
+    <title>Backend Administration Center - @yield('title', config('app.name', 'Laravel'))</title>
     <meta name="keywords" content="{{ config('app.name', 'Laravel') }}">
     <meta name="description" content="{{ config('app.name', 'Laravel') }}">
 
@@ -36,7 +36,9 @@
 <script src="{{loadEdition('/js/dialog/artdialog.js')}}"></script>
 @yield('js')
 <script>
-    $(function(){$("#side-menu").metisMenu();})
+    $(function () {
+        $("#side-menu").metisMenu();
+    })
 
     $('div.alert').not('.alert-important').delay(3000).fadeOut(350);
 </script>

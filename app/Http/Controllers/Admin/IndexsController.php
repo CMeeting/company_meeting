@@ -3,14 +3,11 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use Carbon\Carbon;
 
 class IndexsController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+
     public function index()
     {
         return view('admin.indexs.index');
@@ -18,6 +15,7 @@ class IndexsController extends Controller
 
     public function main()
     {
-        return view('admin.indexs.main');
+        Carbon::setLocale('fr');// fr time
+        return view('admin.indexs.main')->with(['now' => Carbon::now() . " | " .Carbon::now()->formatLocalized('%A')]);;
     }
 }

@@ -68,90 +68,68 @@
         .modal-input {
             margin-bottom: 10px;
         }
+
+        #fr_td span {
+            white-space: pre-wrap;
+            text-align: left;
+        }
+
+        #fr_td span::before {
+            content: '•';
+        }
+        #fr_td  span {
+            display: block;
+        }
     </style>
     <div class="row">
         <div class="col-sm-12">
-            <form class="form-horizontal" id="forms" name="form" method="post" action="{{route('fruser.import')}}">
-                {{ csrf_field() }}
-                <div class="alerts alert-warnings alert-dismissables" style="display: block">
-                    <button aria-hidden="true" data-dismiss="alert" class="close" type="button"></button>
-                    You can choose the method of importing files to enter personnel data.
-                    <button class="btn btn-primary btn-sm" type="button" style="background-color: #fcf8e3;border: none;margin-top: 6px;">
-                        <label for="file" class="custom-file-label" id="fr_file">Select File</label>
-                        <input type="file" id="file" name="file" style="display: none;" onchange="updateFileName(this)"/>
-                    </button>
-                    <a class="btn btn-primary btn-sm" onclick="submits()">import</a>
-                </div>
-            </form>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-sm-12">
             <div class="ibox-title">
-                <h5>Users</h5>
+                <h5>Meeting</h5>
                 <div class="btn-group" style="display: inline-block; float: right">
-                    <a style="" href="{{route('fruser.list')}}" link-url="javascript:void(0)">
+                    <a style="" href="{{route('frmeeting.list')}}" link-url="javascript:void(0)">
                         <button class="btn layui-btn-warm btn-sm" type="button">refresh</button>
                     </a>
-                    <button id="export" class="btn layui-btn-primary btn-sm" type="button" style="float: right"><i
-                                class="fa fa-paste"></i>export
-                    </button>
+                    <a style="" href="{{route('frmeeting.create')}}" link-url="javascript:void(0)">
+                        <button class="btn layui-btn-danger btn-sm" type="button"><i class="fa fa-paste"></i>Create</button>
+                    </a>
                 </div>
             </div>
             <div class="ibox-content">
                 <div class="col-xs-10 col-sm-11 margintop5" style="margin-bottom: 5px;padding-left: 0; width: 100%">
-                    <form name="admin_list_sea" class="form-search" method="get" action="{{route('fruser.list')}}">
+                    <form name="admin_list_sea" class="form-search" method="get" action="{{route('frmeeting.list')}}">
                         <div class="input-group" style="display: flex">
                             <div class="layui-form-item" style="display: flex;">
-                                <label class="layui-form-label" style="width:auto;flex-wrap:nowrap">Name</label>
+                                <label class="layui-form-label" style="width:auto;flex-wrap:nowrap">Topic</label>
                                 <div class="input-group-btn" style="display: inline-block;width: auto;">
-                                    <input id="name" type="text" name="name" class="form-control"
+                                    <input id="topic" type="text" name="topic" class="form-control"
                                            style="display: inline-block;width: auto;"
-                                           value="@if(isset($query['name'])){{$query['name']}}@endif"
-                                           placeholder="Speaker's name"/>
+                                           value="@if(isset($query['topic'])){{$query['topic']}}@endif"
+                                           placeholder="Topic(eng) or Topic(fr)"/>
                                 </div>
                             </div>
                             <div class="layui-form-item" style="display: inline-block;">
-                                <label class="layui-form-label" style="width:auto;flex-wrap:nowrap">Status</label>
+                                <label class="layui-form-label" style="width:auto;flex-wrap:nowrap">Speaker</label>
                                 <div class="input-group-btn" style="display: inline-block;width: auto;">
-                                    <select id="status" class="form-control"  name="status">
+                                    <select id="speaker" class="form-control"  name="speaker">
                                         <option value="0">please</option>
-                                        @foreach($status_arr as $key=>$type)
-                                            <option value={{$key}} @if(isset($query['status'])&&$query['status']==$key) selected @endif>{{$type}}</option>
+                                        @foreach($speaker_arr as $key=>$type)
+                                            <option value={{$type['id']}} @if(isset($query['speaker'])&&$query['speaker']==$type['id']) selected @endif>{{$type['name']}}</option>
                                         @endforeach
                                     </select>
                                 </div>
                             </div>
                             <div class="layui-form-item" style="display: inline-block;">
-                                <label class="layui-form-label" style="width:auto;flex-wrap:nowrap">Role</label>
+                                <label class="layui-form-label" style="width:auto;flex-wrap:nowrap">Date</label>
                                 <div class="input-group-btn" style="display: inline-block;width: auto;">
-                                    <select id="role" class="form-control"  name="role">
-                                        <option value="0">please</option>
-                                        @foreach($role_arr as $key=>$type)
-                                            <option value={{$key}} @if(isset($query['role'])&&$query['role']==$key) selected @endif>{{$type}}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="layui-form-item" style="display: inline-block;">
-                                <label class="layui-form-label" style="width:auto;flex-wrap:nowrap">Time</label>
-                                <div class="input-group-btn" style="display: inline-block;width: auto;">
-                                    <input type="text" name="start_date" class="form-control"
-                                           style="display: inline-block;width: 160px;" id="startDate"
-                                           placeholder="start time"
-                                           value="@if(isset($query['start_date'])){{$query['start_date']}}@endif"/>
-                                </div>
-                                <div class="input-group-btn"
-                                     style="display: inline-block;width: auto;margin-left:20px;">
-                                    <input type="text" name="end_date" class="form-control"
-                                           style="display: inline-block;width: 160px;" id="endDate"
-                                           placeholder="end time"
-                                           value="@if(isset($query['end_date'])){{$query['end_date']}}@endif"/>
+                                    <input type="text" name="date" class="form-control"
+                                           style="display: inline-block;width: 160px;" id="date"
+                                           placeholder="Meeting time"
+                                           value="@if(isset($query['date'])){{$query['date']}}@endif"/>
                                 </div>
                                 <span class="input-group-btn" style="display: inline-block;">
                                 <button type="submit" class="btn btn-purple btn-sm">
                                     <span class="ace-icon fa fa-search icon-on-right bigger-110"></span>
-                                    搜索
+                                    search
                                 </button>
                                 </span>
                             </div>
@@ -164,26 +142,28 @@
                     <thead>
                     <tr>
                         <th class="text-center" style="width: 0.5%">ID</th>
-                        <th class="text-center" style="width: 1.5%">Name</th>
-                        <th class="text-center" style="width: 3%">Information(eng)</th>
-                        <th class="text-center" style="width: 3%">Information(fr)</th>
-                        <th class="text-center" style="width: 1.5%">uuid</th>
-                        <th class="text-center" style="width: 1%">role</th>
-                        <th class="text-center" style="width: 1.5%">status</th>
-                        <th class="text-center" style="width: 1.5%">Creation time</th>
-                        <th class="text-center" style="width: 1%">操作</th>
+                        <th class="text-center" style="width: 1.5%">Topic(fr)</th>
+                        <th class="text-center" style="width: 1.5%">Topic(fr)</th>
+                        <th class="text-center" style="width: 3%">Speaker</th>
+                        <th class="text-center" style="width: 1%">Start</th>
+                        <th class="text-center" style="width: 1%">End</th>
+                        <th class="text-center" style="width: 1%">Creation time</th>
+                        <th class="text-center" style="width: 1%">Operation</th>
                     </tr>
                     </thead>
                     <tbody>
                     @foreach($data as $key=>$item)
                         <tr>
                             <td class="text-center">{{$item->id}}</td>
-                            <td class="text-center">{{$item->name}}</td>
-                            <td class="text-center">{{$item->job_information_eng}}</td>
-                            <td class="text-center">{{$item->job_information_fr}}</td>
-                            <td class="text-center">{{$item->uuid}}</td>
-                            <td class="text-center">{{$role_arr[$item->role]}}</td>
-                            <td class="text-center">{{$status_arr[$item->status]}}</td>
+                            <td class="text-center">{{$item->topic_fr}}</td>
+                            <td class="text-center">{{$item->topic_eng}}</td>
+                            <td class="text-center" id="fr_td">
+                                @foreach($item['speaker_info'] as $k =>$val)
+                                <span>{{$val['name']}} : {{$val['job_information_eng']}}</span>
+                                @endforeach
+                            </td>
+                            <td class="text-center">{{$item->start_time}}</td>
+                            <td class="text-center">{{$item->end_time}}</td>
                             <td class="text-center">{{$item->created_at}}</td>
                             <td class="text-center">
                                 <div class="btn-group">
@@ -322,10 +302,10 @@
 
             //执行一个laydate实例
             let start = laydate.render({
-                elem: '#startDate', //指定元素
+                elem: '#date', //指定元素
                 max: 1,//最大值为当前日期
                 trigger: 'click',
-                type: 'datetime',//日期时间选择器
+                type: 'date',//日期时间选择器
                 done: function (value, date) {
                     if (value && (value > $("#endDate").val())) {
                         /*开始时间大于结束时间时，清空结束时间*/
@@ -344,7 +324,7 @@
             let end = laydate.render({
                 elem: '#endDate', //指定元素
                 max: 30,//最大值为当前日期
-                type: 'datetime',//日期时间选择器
+                type: 'day',//日期时间选择器
                 choose: function (datas) {
                     start.max = datas; //结束日选好后，重置开始日的最大日期
                 }

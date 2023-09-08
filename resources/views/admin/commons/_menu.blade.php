@@ -32,7 +32,7 @@
                         <li><a href="{{route('admin.logout')}}">安全退出</a></li>
                     </ul>
                 </div>
-                <div class="logo-element">KDAN</div>
+                <div class="logo-element">S</div>
             </li>
 
             @foreach(Auth::guard('admin')->user()->getMenus() as $key => $rule)

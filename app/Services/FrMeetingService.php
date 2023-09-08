@@ -7,6 +7,7 @@ namespace App\Services;
 use App\Export\UserExport;
 use App\Models\BackGroundUser;
 use App\Models\BackGroundUserRemain;
+use App\Models\FrMeeting;
 use App\Models\FrUser;
 use App\Models\LogoutUser;
 use App\Models\Mailmagicboard;
@@ -23,38 +24,47 @@ use Psy\Util\Str;
 use Response;
 use Maatwebsite\Excel\Facades\Excel;
 
-class FrUserService
+class FrMeetingService
 {
 
-    public function getList($name, $start_date, $end_date, $status, $role, $export)
+    public function getList($topic, $date,$speaker)
     {
-        $query = FrUser::query();
-        $query->where('is_delete',1);
-        if ($name) {
-            $query->where('name', 'like', "%" . $name . "%");
+        $query = FrMeeting::query();
+        if ($topic) {
+            $query->where(function ($item) use ($topic) {
+                $item->where('topic_fr', 'like', "%" . $topic . "%")
+                    ->orWhere('topic_eng', 'like', "%" . $topic . "%");
+            });
         }
-        if ($status > 0) {
-            $query->where('status', $status);
+        if ($date) {
+            $query->where(function ($item) use ($date) {
+                $item->where('start_time', '>=', $date . " 00:00:00 ")
+                    ->where('end_time', '<=', $date . " 23:59:59 ");
+            });
         }
-        if ($role > 0) {
-            $query->where('role', $role);
+        if ($speaker) {
+            $query->where(function ($item) use ($speaker) {
+                $item->where('user_id', 'like', $speaker . ",%")
+                    ->orWhere('user_id', 'like', "%," . $speaker . ",%")
+                    ->orWhere('user_id', 'like', "%," . $speaker)
+                    ->orWhere('user_id',$speaker);
+            });
         }
-        if ($start_date) {
-            $query->where('created_at', '>=', $start_date);
+        $query->orderBy('created_at', 'desc');
+        $data = $query->paginate(10);
+        foreach ($data as $key => $value) {
+            $data[$key]['speaker_info'] = [];
+            if ($value['user_id']) {
+                $users = explode(',', $value['user_id']);
+                if (count($users) == 1) {
+                    $infos = FrUser::query()->where('id', $users)->select('name', 'job_information_eng', 'job_information_fr')->get()->toArray();
+                } else {
+                    $infos = FrUser::query()->whereIn('id', $users, 'or')->select('name', 'job_information_eng', 'job_information_fr')->get()->toArray();
+                }
+                $data[$key]['speaker_info'] = $infos;
+            }
         }
-        if ($end_date) {
-            $query->where('created_at', '<=', $end_date);
-        }
-        if ($export) {
-            return $query->get();
-        } else {
-            return $query->paginate(10);
-        }
-    }
-
-    public function getSpeakerList()
-    {
-        return FrUser::query()->where('is_delete',1)->where('role',2)->get()->toArray();
+        return $data;
     }
 
     public function createUuid()

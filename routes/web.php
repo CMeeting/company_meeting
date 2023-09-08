@@ -21,11 +21,19 @@ Route::group(['namespace' => 'Admin','prefix' => 'admin'], function (){
     /**需要登录认证模块**/
     Route::middleware(['auth:admin','rbac'])->group(function (){
 
-        Route::resource('index', 'IndexsController', ['only' => ['index']]);  //首页
+        Route::resource('index', 'IndexsController', ['only' => ['index']]);
 
         //Speakers
         Route::get('fruser_list', 'FrUserController@list')->name('fruser.list');
         Route::post('fruser_import', 'FrUserController@import')->name('fruser.import');
+        Route::get('fruser_edit/{id}','FrUserController@edit')->name('fruser.edit');
+        Route::post('fruser_update/{id}','FrUserController@update')->name('fruser.update');
+        Route::get('fruser_update/softDel/{id?}', 'FrUserController@softDel')->name('fruser.softDel');
+
+        //Meeting
+        Route::get('frmeeting_list', 'FrMeetingController@list')->name('frmeeting.list');
+        Route::get('frmeeting_create', 'FrMeetingController@create')->name('frmeeting.create');
+        Route::get('frmeeting_save', 'FrMeetingController@save')->name('frmeeting.save');
 
         //电子报
         Route::get('subscription_list', 'NewsletterController@subscription_list')->name('newsletter.subscription_list');
@@ -116,7 +124,6 @@ Route::group(['namespace' => 'Admin','prefix' => 'admin'], function (){
 
         Route::get('admins/status/{statis}/{admin}','AdminsController@status')->name('admins.status');
 
-//        Route::get('admins/delete/{admin}','AdminsController@delete')->name('admins.delete');
         Route::get('admins/delete','AdminsController@del')->name('admins.delete');
 
         Route::resource('admins','AdminsController',['only' => ['index', 'create', 'store', 'update', 'edit']]); //管理员
